@@ -1663,7 +1663,8 @@ function initCourseFilter() {
 
     function filterCourses() {
         const query = searchInput.value.toLowerCase().trim();
-        const selectedFilter = document.querySelector('.filter-btn.active').dataset.category;
+        const activeFilterBtn = document.querySelector('.filter-btn.active');
+        const selectedFilter = activeFilterBtn ? activeFilterBtn.dataset.category : 'all';
 
         courseCards.forEach(card => {
             const cardTitle = card.dataset.title || '';
@@ -1937,12 +1938,12 @@ function openCourseModal(courseId) {
     }
 
     // Show modal
-    modalOverlay.classList.add('open');
+    if (modalOverlay) modalOverlay.classList.add('open');
     document.body.style.overflow = 'hidden'; // Stop page scrolling background
 }
 
 function closeModal() {
-    modalOverlay.classList.remove('open');
+    if (modalOverlay) modalOverlay.classList.remove('open');
     document.body.style.overflow = ''; // Restore page scrolling
 }
 
@@ -2017,6 +2018,24 @@ function initLanguage() {
             applyLanguage(currentLang);
             showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
         });
+    }
+}
+
+function applyLanguage(lang) {
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations && translations[lang] && translations[lang][key]) {
+            if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                element.placeholder = translations[lang][key];
+            } else {
+                element.innerHTML = translations[lang][key];
+            }
+        }
+    });
+
+    const langToggle = document.getElementById('langToggleBtn');
+    if (langToggle) {
+        langToggle.textContent = lang === 'si' ? 'EN' : 'සිං';
     }
 }
 
