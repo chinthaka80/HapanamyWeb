@@ -1900,7 +1900,7 @@ function openCourseModal(courseId) {
         
         // WhatsApp button (Always present for conversion optimization & support)
         const waLink = document.createElement('a');
-        waLink.href = `https://wa.me/94771234567?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
+        waLink.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
         waLink.target = '_blank';
         waLink.className = 'btn btn-secondary';
         waLink.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; font-size:12px; text-decoration:none; border-width:1px; color:#25D366; border-color:#25D366; font-weight:700; border-radius:6px; cursor:pointer; margin-top: 8px; width:100%;';
