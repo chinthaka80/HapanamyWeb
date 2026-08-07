@@ -1994,6 +1994,7 @@ a {
     box-shadow: 0 12px 25px rgba(245, 124, 0, 0.35) !important;
 }
 
+
 /* ==================== HERO SLIDER CUSTOM AESTHETICS ==================== */
 .hero-bg-paddy {
     position: absolute;
@@ -2004,42 +2005,98 @@ a {
     background-image: url('assets/hero_showcase.jpg');
     background-size: cover;
     background-position: center;
-    filter: blur(25px);
-    opacity: 0.15;
+    filter: blur(22px);
+    opacity: 0.12;
     z-index: 1;
     transform: scale(1.1);
-    animation: kenburns 20s infinite ease-in-out;
+    animation: kenburns 25s infinite ease-in-out;
 }
 
 @keyframes kenburns {
-    0% { transform: scale(1) blur(25px); }
-    50% { transform: scale(1.15) blur(25px); }
-    100% { transform: scale(1) blur(25px); }
+    0% { transform: scale(1) blur(22px); }
+    50% { transform: scale(1.12) blur(22px); }
+    100% { transform: scale(1) blur(22px); }
+}
+
+/* Floating Badges styles */
+.floating-badge {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 30px;
+    box-shadow: 0 10px 25px rgba(93, 64, 55, 0.08);
+    z-index: 15;
+    animation: floating 4s ease-in-out infinite;
+    transition: all 0.4s ease;
+}
+
+.fb-badge-icon {
+    font-size: 16px;
+}
+
+.fb-badge-text {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-primary);
+    white-space: nowrap;
+}
+
+/* Badge placements */
+.fb-top-right {
+    top: 60px;
+    right: -20px;
+}
+.fb-mid-right {
+    top: 130px;
+    right: -40px;
+}
+.fb-lower-mid-right {
+    top: 200px;
+    right: -30px;
+}
+.fb-bottom-right {
+    bottom: 80px;
+    right: -10px;
+}
+.fb-bottom-center {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: floatingCenter 4s ease-in-out infinite;
 }
 
 @keyframes floating {
     0% { transform: translateY(0px); }
-    50% { transform: translateY(-10px); }
+    50% { transform: translateY(-8px); }
     100% { transform: translateY(0px); }
 }
 
-.floating-anim {
-    animation: floating 4s ease-in-out infinite;
+@keyframes floatingCenter {
+    0% { transform: translate(-50%, 0px); }
+    50% { transform: translate(-50%, -8px); }
+    100% { transform: translate(-50%, 0px); }
 }
 
-.zoom-anim {
-    transition: transform 0.5s ease;
-}
-.zoom-anim:hover {
-    transform: scale(1.05);
+.hero-stats-card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(93, 64, 55, 0.04);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
-@keyframes glow-pulse {
-    0% { box-shadow: 0 15px 40px rgba(245, 124, 0, 0.35); }
-    50% { box-shadow: 0 15px 45px rgba(245, 124, 0, 0.55); }
-    100% { box-shadow: 0 15px 40px rgba(245, 124, 0, 0.35); }
-}
-
-.btn-primary {
-    animation: glow-pulse 3s infinite ease-in-out;
+.hero-glass-card-panel {
+    animation: floating 6s ease-in-out infinite;
 }

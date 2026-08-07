@@ -2434,102 +2434,191 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
-        badge: '🏆 ශ්‍රී ලංකාවේ නව පරපුරේ Digital Learning Campus',
-        title: '🎓 ඔබේ අනාගත වෘත්තිය අදම ආරම්භ කරන්න',
-        subtitle: 'AI • Trading • Coding • Social Media • Digital Business',
-        desc: 'දහස් ගණනක් සිසුන්ගේ විශ්වාසය දිනාගත් Hapanamy.lk සමඟ නවීන තාක්ෂණය, Online Income සහ Digital Skills සරල සිංහලෙන් ඉගෙන ගන්න.',
-        highlights: [
-            '100% ප්‍රායෝගික පාඨමාලා',
-            'Lifetime Support',
-            'AI සමඟ ඉගෙනීම',
-            'Affiliate Income Program',
-            'Certificates'
-        ],
+        badge: '💛 ශ්‍රී ලංකාවේ අංක 01',
+        title: 'හෙට දවසේ තාක්ෂණයෙන් <br><span style="color:var(--brand-orange);">අදම ස්වාධීන වන්න!</span>',
+        subBadge: '🚀 Learn • Grow • Earn • Connect',
+        desc: 'ලංකාවේ ජනප්‍රියම E-Books, Trading, Social Media සහ AI තාක්ෂණික පාඨමාලා එකම වහලක් යටින් ඉගෙන ගන්න. අපගේ විශේෂිත Affiliate වැඩසටහන සමඟ සම්බන්ධ වී 15% ක සෘජු කොමිස් මුදලක් ලබාගන්න.',
         btnPrimary: { text: '🎓 පාඨමාලා බලන්න', href: '#courses' },
-        btnSecondary: { text: '▶️ නොමිලේ හැඳින්වීම', href: '#contact' }
+        btnSecondary: { text: '🎁 E-Books බලන්න', href: '#courses' },
+        btnTextLink: { text: '▶️ දැන්ම වීඩියෝ බලන්න', href: '#blog' },
+        rightCard: {
+            title: 'HAPANAMY CAMPUS',
+            sub: 'Your Future, Our Mission',
+            icon: '🏛️'
+        },
+        badges: [
+            { icon: '🤖', text: 'AI Technology' },
+            { icon: '📈', text: 'Trading' },
+            { icon: '👍', text: 'Social Media' },
+            { icon: '🤝', text: 'Affiliate' },
+            { icon: '📖', text: 'E-books' }
+        ],
+        stats: [
+            { num: '10,000+', text: 'සතුටු සිසුන්' },
+            { num: '50+', text: 'පාඨමාලා' },
+            { num: '5+', text: 'වසරේ අත්දැකීම්' },
+            { num: 'විශ්වාසදායක', text: 'ප්‍රමුඛ Platform එක' }
+        ],
+        bottomBarText: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
+        bottomBarSub: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම'
     },
     {
-        badge: '🚀 Future Skills for Everyone',
-        title: 'AI සමඟ වැඩ කරන්න... ලෝකයෙන් ආදායම් උපයන්න...',
-        subtitle: 'ChatGPT • AI Video • Social Media • Trading • Automation',
-        desc: 'ChatGPT, AI Video, Social Media, Trading සහ Digital Marketing භාවිතයෙන් ඔබේම Online Career එක ගොඩනගා ගන්න.',
-        highlights: [
-            'AI Mastery',
-            'Social Media Monetization',
-            'Smart Trading Rules',
-            'AI Video Automation',
-            'Freelancing Success'
-        ],
+        badge: '🚀 FUTURE SKILLS',
+        title: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න!</span>',
+        subBadge: '🤖 Future Skills for Everyone',
+        desc: 'ChatGPT, Midjourney, AI Video Generation, Automation, Coding සහ Social Media Monetization සරල සිංහලෙන් ඉගෙන ගෙන ගෝලීය වෙළඳපොළ ජයගන්න.',
         btnPrimary: { text: '🚀 අදම ආරම්භ කරන්න', href: '#courses' },
-        btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' }
+        btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' },
+        btnTextLink: { text: '▶️ AI පාඨමාලා බලන්න', href: '#courses' },
+        rightCard: {
+            title: 'AI KNOWLEDGE HUB',
+            sub: 'Learn to Leverage AI',
+            icon: '🤖'
+        },
+        badges: [
+            { icon: '💬', text: 'ChatGPT' },
+            { icon: '🎨', text: 'Midjourney' },
+            { icon: '🎥', text: 'AI Video' },
+            { icon: '⚙️', text: 'n8n Automation' },
+            { icon: '💡', text: 'Prompting' }
+        ],
+        stats: [
+            { num: '1,500+', text: 'AI සිසුන්' },
+            { num: '100+', text: 'AI Prompts' },
+            { num: '100%', text: 'ප්‍රායෝගික වැඩ' },
+            { num: '24/7', text: 'තාක්ෂණික සහය' }
+        ],
+        bottomBarText: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
+        bottomBarSub: 'ChatGPT • ElevenLabs • Midjourney • CapCut • Runway Automation'
     },
     {
-        badge: '💰 Earn While You Learn',
-        title: 'ඉගෙන ගනිමින් ආදායමත් උපයන්න (Affiliate Program)',
-        subtitle: 'No Investment • 15% Commission • Weekly Payouts',
-        desc: 'Hapanamy Affiliate Program සමඟ සම්බන්ධ වී පාඨමාලා සහ E-Books ප්‍රවර්ධනය කර 15% සෘජු කොමිස් ලබාගන්න. කිසිදු ආයෝජනයක් නොමැතිව ඔබේ Digital Income Journey එක ආරම්භ කරන්න.',
-        highlights: [
-            '15% Direct Commission',
-            'Weekly Payments to Bank',
-            'Free Marketing Training',
-            'Lifetime Partner Support'
-        ],
+        badge: '💰 NO INVESTMENT REQUIRED',
+        title: 'ඉගෙන ගනිමින් ආදායමත් උපයන්න <br><span style="color:var(--brand-orange);">(Affiliate Program)</span>',
+        subBadge: '💰 Earn While You Learn',
+        desc: 'Hapanamy Affiliate Program එක සමඟ නොමිලේ සම්බන්ධ වී පාඨමාලා සහ E-Books ප්‍රවර්ධනය කර 15% සෘජු කොමිස් මුදල් සතිපතා ඔබේ බැංකු ගිණුමට ලබාගන්න.',
         btnPrimary: { text: '🤝 Affiliate එකට එක්වන්න', href: '#affiliate' },
-        btnSecondary: { text: '📊 ආදායම් කැල්කියුලේටරය', href: '#calculator' }
+        btnSecondary: { text: '📊 ආදායම ගණනය කරන්න', href: '#calculator' },
+        btnTextLink: { text: '▶️ Affiliate විස්තර බලන්න', href: '#affiliate' },
+        rightCard: {
+            title: 'EARNING PORTAL',
+            sub: 'Financial Freedom Engine',
+            icon: '💸'
+        },
+        badges: [
+            { icon: '💰', text: '15% Commission' },
+            { icon: '🏦', text: 'Weekly Payouts' },
+            { icon: '🤝', text: 'Free Training' },
+            { icon: '📈', text: 'Marketing Tools' },
+            { icon: '🏆', text: 'Leaderboard' }
+        ],
+        stats: [
+            { num: 'LKR 1M+', text: 'ගෙවූ කොමිස්' },
+            { num: '15%', text: 'සෘජු කොමිස්' },
+            { num: 'සතිපතා', text: 'බැංකුවට ගෙවීම්' },
+            { num: 'නොමිලේ', text: 'අලෙවිකරණ පුහුණුව' }
+        ],
+        bottomBarText: 'කිසිදු මූලික ආයෝජනයකින් තොරව 15% කොමිස් ලබන Affiliate ජාලය ★★★★★',
+        bottomBarSub: 'ක්ෂණික ලියාපදිංචිය • සජීවී ඩෑෂ්බෝඩ් එක • සතිපතා ගෙවීම් බැංකුවට'
     }
 ];
 
 let currentSlideIdx = 0;
-const slideIntervalMs = 7000; // 7 seconds slider
+const slideIntervalMs = 7500; // 7.5 seconds auto slider
 
 function renderHeroSlide(slideIdx) {
     const container = document.getElementById('heroSliderContent');
-    if (!container) return;
+    const statsContainer = document.getElementById('heroStatsContainer');
+    if (!container || !statsContainer) return;
 
     const slide = heroSlides[slideIdx];
 
-    // Fade out first
+    // 1. Fade out left content and stats first
     container.style.opacity = '0';
-    container.style.transform = 'translateY(15px)';
+    container.style.transform = 'translateY(12px)';
+    statsContainer.style.opacity = '0';
+
+    // 2. Animate Right-Side Glass Card Elements Out
+    const badges = [
+        document.getElementById('badge1'),
+        document.getElementById('badge2'),
+        document.getElementById('badge3'),
+        document.getElementById('badge4'),
+        document.getElementById('badge5')
+    ];
+    badges.forEach(b => {
+        if (b) {
+            b.style.opacity = '0';
+            b.style.transform = 'scale(0.8) translateY(10px)';
+        }
+    });
 
     setTimeout(() => {
-        const highlightsHTML = slide.highlights.map(h => `
-            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
-                <span style="color:var(--brand-gold);">✓</span>
-                <span>${h}</span>
-            </div>
-        `).join('');
-
+        // 3. Inject Left-Side text & buttons
         container.innerHTML = `
-            <span class="hero-badge" style="display:inline-block; margin-bottom:15px; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--brand-orange); background-color:var(--brand-orange-soft); padding:6px 14px; border-radius:30px; border:1px solid var(--border-color);">
+            <span class="hero-badge" style="display:inline-block; margin-bottom:15px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:6px 16px; border-radius:30px; border:1px solid rgba(93,64,55,0.15);">
                 ${slide.badge}
             </span>
-            <h1 class="hero-title" style="font-size:36px; font-weight:900; line-height:1.2; color:var(--text-primary); margin-bottom:12px;">
+            <h1 class="hero-title" style="font-size:40px; font-weight:900; line-height:1.2; color:var(--text-primary); margin-bottom:12px; font-family:'Poppins', sans-serif;">
                 ${slide.title}
             </h1>
-            <h3 style="font-size:16px; font-weight:700; color:var(--brand-gold); margin-bottom:15px; text-transform:uppercase; letter-spacing:0.05em;">
-                ${slide.subtitle}
-            </h3>
-            <p class="hero-subtitle" style="font-size:14.5px; color:var(--text-muted); line-height:1.7; margin-bottom:20px; max-width:600px;">
+            <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:3px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block;">
+                ${slide.subBadge}
+            </div>
+            <p class="hero-subtitle" style="font-size:14.5px; color:var(--text-muted); line-height:1.7; margin-bottom:24px; max-width:600px;">
                 ${slide.desc}
             </p>
             
-            <div style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:25px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:15px 0;">
-                ${highlightsHTML}
-            </div>
-
-            <div class="hero-buttons" style="display:flex; gap:15px;">
-                <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none;">${slide.btnPrimary.text}</a>
-                <a href="${slide.btnSecondary.href}" class="btn btn-secondary">${slide.btnSecondary.text}</a>
+            <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
+                <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 28px; border-radius:30px; font-weight:700;">${slide.btnPrimary.text}</a>
+                <a href="${slide.btnSecondary.href}" class="btn btn-secondary" style="padding:12px 28px; border-radius:30px; font-weight:700; background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.4); color:var(--text-primary);">${slide.btnSecondary.text}</a>
+                <a href="${slide.btnTextLink.href}" style="font-size:13.5px; font-weight:800; color:var(--brand-red); text-decoration:none; display:flex; align-items:center; gap:5px; margin-left:10px; transition:0.3s;" onmouseover="this.style.color='var(--brand-orange)'" onmouseout="this.style.color='var(--brand-red)'">${slide.btnTextLink.text}</a>
             </div>
         `;
 
-        // Fade back in
+        // 4. Inject Stats
+        statsContainer.innerHTML = slide.stats.map(s => `
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">${s.num}</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: var(--text-primary); font-weight: 700;">${s.text}</p>
+            </div>
+        `).join('');
+
+        // 5. Update Right-Side Glass Card top badges
+        document.getElementById('rightCardIcon').textContent = slide.rightCard.icon;
+        document.getElementById('rightCardTitle').textContent = slide.rightCard.title;
+        document.getElementById('rightCardSub').textContent = slide.rightCard.sub;
+
+        // 6. Update Right-Side floating badges text and icons
+        slide.badges.forEach((bData, idx) => {
+            const el = document.getElementById('badge' + (idx + 1));
+            if (el) {
+                el.querySelector('.fb-badge-icon').textContent = bData.icon;
+                el.querySelector('.fb-badge-text').textContent = bData.text;
+            }
+        });
+
+        // 7. Update Bottom Gradient Bar
+        document.getElementById('heroBottomBarText').textContent = slide.bottomBarText;
+        document.getElementById('heroBottomBarSubtext').textContent = slide.bottomBarSub;
+
+        // 8. Fade all back in with smooth animations
         container.style.opacity = '1';
         container.style.transform = 'translateY(0)';
+        statsContainer.style.opacity = '1';
+
+        badges.forEach((b, idx) => {
+            if (b) {
+                setTimeout(() => {
+                    b.style.opacity = '1';
+                    b.style.transform = 'scale(1) translateY(0)';
+                }, idx * 100); // Staggered badge fade-in
+            }
+        });
+
     }, 300);
 }
 

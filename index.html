@@ -94,7 +94,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="home">
+    <section class="hero" id="home" style="padding: 120px 0 0 0;">
         <!-- Paddy Field blurred background with gold overlay -->
         <div class="hero-bg-paddy"></div>
         <div class="hero-bg-shapes">
@@ -103,41 +103,72 @@
             <div class="shape shape-3"></div>
         </div>
         
-        <div class="container hero-container" style="position:relative; z-index:5;">
+        <div class="container hero-container" style="position:relative; z-index:5; display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px; align-items: center; padding-bottom: 50px;">
             <!-- Left Side: Dynamic Slider Content -->
-            <div class="hero-content" id="heroSliderContent" style="opacity:1; transition: opacity 0.6s ease, transform 0.6s ease;">
+            <div class="hero-content" id="heroSliderContent" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease;">
                 <!-- Injected dynamically by JS -->
             </div>
             
             <!-- Right Side: Luxury Glass Showcase Card with cartoon boy mockup -->
-            <div class="hero-visual">
-                <div class="hero-card-glow"></div>
-                <div class="hero-image-wrapper floating-anim">
-                    <img src="assets/hero_showcase.jpg" alt="Hapanamy Campus Preview" class="hero-img zoom-anim">
+            <div class="hero-visual" style="position:relative; display:flex; justify-content:center; align-items:center;">
+                <!-- Big Glass Card Panel -->
+                <div class="hero-glass-card-panel" style="position:relative; width:100%; max-width:460px; height:380px; border-radius:30px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); overflow:visible;">
+                    
+                    <!-- HAPANAMY CAMPUS title badge at top of the glass card -->
+                    <div style="position:absolute; top:20px; left:20px; display:flex; align-items:center; gap:8px; z-index:10;">
+                        <span style="font-size:20px;" id="rightCardIcon">🏛️</span>
+                        <div>
+                            <h4 style="font-size:12px; font-weight:800; color:var(--text-primary); margin:0;" id="rightCardTitle">HAPANAMY CAMPUS</h4>
+                            <p style="font-size:9px; color:var(--text-muted); margin:0;" id="rightCardSub">Your Future, Our Mission</p>
+                        </div>
+                    </div>
+
+                    <!-- Center Cartoon Boy Character with custom fade-in on slide change -->
+                    <div style="width:100%; height:100%; display:flex; justify-content:center; align-items:flex-end;">
+                        <img src="assets/hero_showcase.jpg" alt="Cartoon Boy laptop mockup" style="width:90%; height:auto; max-height:330px; object-fit:contain; border-radius:20px; pointer-events:none;" class="zoom-anim">
+                    </div>
+
+                    <!-- Floating Gold Glass Badges around the boy -->
+                    <div id="badge1" class="floating-badge fb-top-right">
+                        <span class="fb-badge-icon">🤖</span>
+                        <span class="fb-badge-text">AI Technology</span>
+                    </div>
+
+                    <div id="badge2" class="floating-badge fb-mid-right" style="animation-delay: 0.8s;">
+                        <span class="fb-badge-icon">📈</span>
+                        <span class="fb-badge-text">Trading</span>
+                    </div>
+
+                    <div id="badge3" class="floating-badge fb-lower-mid-right" style="animation-delay: 1.6s;">
+                        <span class="fb-badge-icon">👍</span>
+                        <span class="fb-badge-text">Social Media</span>
+                    </div>
+
+                    <div id="badge4" class="floating-badge fb-bottom-right" style="animation-delay: 2.4s;">
+                        <span class="fb-badge-icon">🤝</span>
+                        <span class="fb-badge-text">Affiliate</span>
+                    </div>
+
+                    <div id="badge5" class="floating-badge fb-bottom-center" style="animation-delay: 1.2s;">
+                        <span class="fb-badge-icon">📖</span>
+                        <span class="fb-badge-text">E-books</span>
+                    </div>
+
                 </div>
             </div>
         </div>
 
         <!-- Hero Stats Banner -->
-        <div class="container hero-stats" style="margin-top: 50px; position:relative; z-index:5;">
-            <div class="stat-card">
-                <h3 style="color: var(--brand-gold); font-size: 26px; font-weight: 800; margin-bottom: 5px;">10+</h3>
-                <p class="stat-label" style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Professional Courses</p>
-            </div>
-            <div class="stat-card-divider"></div>
-            <div class="stat-card">
-                <h3 style="color: var(--brand-gold); font-size: 26px; font-weight: 800; margin-bottom: 5px;">500+</h3>
-                <p class="stat-label" style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Learning Resources</p>
-            </div>
-            <div class="stat-card-divider"></div>
-            <div class="stat-card">
-                <h3 style="color: var(--brand-gold); font-size: 26px; font-weight: 800; margin-bottom: 5px;">100%</h3>
-                <p class="stat-label" style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Practical Training</p>
-            </div>
-            <div class="stat-card-divider"></div>
-            <div class="stat-card">
-                <h3 style="color: var(--brand-gold); font-size: 26px; font-weight: 800; margin-bottom: 5px;">Lifetime</h3>
-                <p class="stat-label" style="font-size: 13px; color: var(--text-primary); font-weight: 600;">Student Support</p>
+        <div class="container hero-stats" id="heroStatsContainer" style="margin-top: 20px; position:relative; z-index:5; display:grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align:center; transition: opacity 0.4s ease;">
+            <!-- Stats injected dynamically by JS -->
+        </div>
+
+        <!-- Orange Gold Gradient bottom bar -->
+        <div class="hero-bottom-bar" style="background: linear-gradient(90deg, #F57C00, #D4AF37); padding: 15px 0; color: white; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); position:relative; z-index:5;">
+            <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <span style="background-color: var(--brand-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;">100% ප්‍රායෝගික පාඨමාලා</span>
+                <span style="font-size: 15px; font-weight: 800;" id="heroBottomBarText">ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★</span>
+                <span style="font-size: 12px; opacity: 0.9;" id="heroBottomBarSubtext">ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම</span>
             </div>
         </div>
     </section>
