@@ -2527,7 +2527,7 @@ const heroSlides = [
 ];
 
 let currentSlideIdx = 0;
-const slideIntervalMs = 7500; // 7.5 seconds auto slider
+const slideIntervalMs = 7000; // 7.5 seconds auto slider
 
 function renderHeroSlide(slideIdx) {
     const container = document.getElementById('heroSliderContent');
