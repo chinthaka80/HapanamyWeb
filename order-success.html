@@ -97,7 +97,7 @@
                 </div>
                 <div class="order-meta-row">
                     <span data-translate="lbl_status">තත්ත්වය (Payment Status):</span>
-                    <strong style="color: var(--brand-green-light);" data-translate="val_active">Paid & Active</strong>
+                    <strong style="color: var(--brand-green-light);" data-translate="val_active" id="metaPayStatus">Paid & Active</strong>
                 </div>
                 <div class="order-meta-row" id="referrerRow" style="display: none;">
                     <span data-translate="lbl_referrer">ප්‍රවර්ධකයා (Referred By):</span>
@@ -124,6 +124,19 @@
 
             <!-- BANK DEPOSIT SLIP UPLOAD CONTAINER -->
             <div id="bankSlipUploadContainer" style="display: none; margin-top: 25px; margin-bottom: 25px; border: 2px dashed var(--border-color); padding: 20px; border-radius: 8px; text-align: center; background-color: var(--bg-surface);">
+                <div style="background-color: rgba(244,123,32,0.03); border: 1px dashed var(--brand-orange); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 12.5px; line-height: 1.6;">
+                    <h5 style="color: var(--brand-orange); margin-bottom: 8px; font-size: 13.5px; font-weight: 700;">💳 බැංකු තැන්පතු මගින් මුදල් ගෙවීමේ උපදෙස්</h5>
+                    <p style="margin-bottom: 8px; color: var(--text-primary);">ඔබේ ඇණවුම සඳහා මුදල් ගෙවීමට බැංකු තැන්පතු ක්‍රමය (Bank Deposit/Transfer) තෝරාගත්තේ නම්, කරුණාකර පහත පියවර අනුගමනය කරන්න.</p>
+                    <p style="margin-bottom: 6px;"><strong>පියවර 01: අපගේ බැංකු ගිණුමකට මුදල් තැන්පත් කරන්න</strong><br>පහත දැක්වෙන ඕනෑම බැංකු ගිණුමකට ඔබේ ඇණවුමට අදාළ සම්පූර්ණ මුදල තැන්පත් කරන්න. (Online Transfer හෝ CDM යන්ත්‍රයක් මගින් වුවද සිදු කළ හැක.)</p>
+                    <p style="margin-bottom: 6px;"><strong>පියවර 02: Reference ලෙස ඇණවුම් අංකය (USER ID) යොදන්න</strong><br>මුදල් තැන්පත් කිරීමේදී 'Reference' හෝ 'Remarks' යන තීරුවේ ඔබේ ඇණවුම් අංකය (USER ID) අනිවාර්යයෙන්ම සඳහන් කරන්න. මෙය ඔබේ ගෙවීම ඉක්මනින් තහවුරු කර ගැනීමට අපට උපකාරී වේ.</p>
+                    <p style="margin-bottom: 12px;"><strong>පියවර 03: ගෙවීම් රිසිට්පත අපට එවන්න</strong><br>තැන්පතුව සිදු කළ පසු, එහි රිසිට්පතේ ඡායාරූපයක් (Photo/Screenshot) එකක් අප වෙත එවන්න:</p>
+                    <div style="background: var(--bg-main); padding: 10px; border-radius: 6px; border: 1px solid var(--border-color); font-family: monospace; font-size: 12px;">
+                        Account Name: <strong>MAX SAVE INTERNATIONAL (PVT) LTD</strong><br>
+                        Account Number: <strong>019010040197</strong><br>
+                        Bank: <strong>HATTON NATIONAL BANK</strong><br>
+                        Branch: <strong>KURUNEGALA</strong>
+                    </div>
+                </div>
                 <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-primary);">📤 බැංකු රිසිට්පත උඩුගත කරන්න (Upload Bank Slip)</h4>
                 
                 <input type="file" id="bankSlipFileInput" style="display: none;" onchange="handleBankSlipChange(event)">
@@ -267,6 +280,22 @@
         // Random Order ID
         const orderId = '#' + Math.floor(10430 + Math.random() * 50);
         document.getElementById('metaOrderId').textContent = orderId;
+
+        // Show bank slip upload if method is bank
+        if (method === 'bank') {
+            const uploader = document.getElementById('bankSlipUploadContainer');
+            const waReceipt = document.getElementById('btnWhatsAppReceipt');
+            if (uploader) uploader.style.display = 'block';
+            if (waReceipt) {
+                waReceipt.style.display = 'flex';
+                waReceipt.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
+            }
+            const statusEl = document.getElementById('metaPayStatus');
+            if (statusEl) {
+                statusEl.textContent = currentLang === 'si' ? 'අනුමැතිය සඳහා රැඳී පවතී' : 'Verification Pending';
+                statusEl.style.color = 'var(--brand-orange)';
+            }
+        }
 
         // Redirect helper
         function goToStudentDashboard() {
