@@ -2199,3 +2199,67 @@ a {
     height: 100%;
     border: none;
 }
+
+/* Premium Footer Social Icons */
+.footer-main .social-icons {
+    margin-top: 20px;
+    display: flex;
+    gap: 16px;
+}
+
+.footer-main .social-icon {
+    width: 46px;
+    height: 46px;
+    background-color: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.footer-main .social-icon svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+    transition: transform 0.3s ease;
+}
+
+.footer-main .social-icon:hover {
+    color: #fff;
+    transform: translateY(-4px) scale(1.05);
+}
+
+.footer-main .social-icon:hover svg {
+    transform: scale(1.1);
+}
+
+/* Brand specific hover transitions */
+.footer-main .social-icon.facebook:hover {
+    background-color: #1877F2;
+    border-color: #1877F2;
+    box-shadow: 0 10px 20px rgba(24, 119, 242, 0.4);
+}
+
+.footer-main .social-icon.youtube:hover {
+    background-color: #FF0000;
+    border-color: #FF0000;
+    box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+}
+
+.footer-main .social-icon.tiktok:hover {
+    background-color: #010101;
+    border-color: #010101;
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.15);
+}
+
+.footer-main .social-icon.whatsapp:hover {
+    background-color: #25D366;
+    border-color: #25D366;
+    box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
+}
+
