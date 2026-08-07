@@ -2438,56 +2438,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
-        bgImage: 'assets/paddy_field_sunrise.jpg',
-        badge: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus',
-        title: 'අද ඉගෙන ගන්න... <br><span style="color:var(--brand-orange);">හෙට ලෝකය ජයගන්න.</span>',
-        subBadge: 'AI • Trading • Coding • Social Media • Business',
-        desc: 'ලෝකයට ගැළපෙන Digital Skills, AI, Trading, Coding සහ Online Business පාඨමාලා එකම Campus එකකින්.',
+        bgImage: 'assets/glass_digital_campus.jpg',
+        badge: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills University',
+        title: 'ඔබේ අනාගතය <br><span style="color:var(--brand-orange);">අදම නිර්මාණය කරන්න.</span>',
+        subBadge: 'AI • Trading • Coding • Social Media • Business • Freelancing',
+        desc: 'නවීන තාක්ෂණය, Digital Skills, AI, Trading, Coding සහ Online Business එකම Campus එකකින් සරල සිංහලෙන් ඉගෙන ගන්න. Join thousands of students building their future with Hapanamy.lk.',
         highlights: [
             '100% Practical Learning',
             'Lifetime Support',
             'Professional Certificates',
             'AI Powered Education',
-            'Affiliate Income'
+            'Real Projects',
+            'Affiliate Income',
+            'Career Guidance',
+            'Community Support'
         ],
-        btnPrimary: { text: '🎓 සියලුම පාඨමාලා', href: '#courses' },
+        btnPrimary: { text: '🎓 පාඨමාලා බලන්න', href: '#courses' },
         btnSecondary: { text: '▶️ නොමිලේ හඳුන්වාදීම', href: '#contact' },
         stats: [
-            { num: '10+', text: 'Courses' },
+            { num: '10+', text: 'Professional Courses' },
             { num: '500+', text: 'Learning Resources' },
-            { num: '100%', text: 'Practical' },
+            { num: '100%', text: 'Practical Education' },
             { num: 'Lifetime', text: 'Support' }
         ],
         rightHTML: `
             <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
-                <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:20px; text-align:center; margin-bottom:10px;">
-                    <span style="font-size:32px;">🏛️</span>
-                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:8px 0 2px 0;">HAPANAMY CAMPUS</h4>
-                    <p style="font-size:10px; color:#8D6E63; margin:0;">Sri Lanka's No.1 Digital Skills University</p>
+                <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:5px;">
+                    <span style="font-size:32px;">🎓</span>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">DIGITAL ACADEMY</h4>
+                    <p style="font-size:9px; color:#8D6E63; margin:0;">World Class Learning Experience</p>
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">🤖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">AI</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    🤖 AI Mastery
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">📈</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Trading</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    📈 Trading
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">💻</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Coding</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    💻 Coding
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">🎥</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">YouTube</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    📱 Social Media
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">🎵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">TikTok</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    🎥 Video Creation
                 </div>
-                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">🔵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Facebook</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    🌍 Freelancing
                 </div>
-                <div style="grid-column: span 2; background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; justify-content:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
-                    <span style="font-size:18px;">📖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">E-books & Guides</span>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    📘 E-books
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    💰 Affiliate Program
                 </div>
             </div>
         `,
@@ -2554,7 +2561,7 @@ const heroSlides = [
     },
     {
         bgImage: 'assets/paddy_field_sunset.jpg',
-        badge: '💰 Learn • Grow • Earn • Connect',
+        badge: '💰 Learn Today • Earn Tomorrow',
         title: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න.</span>',
         subBadge: 'Affiliate Marketing • Referral Income • Partner Network',
         desc: 'Hapanamy Affiliate Program සමඟ එක්ව පාඨමාලා සහ E-books ප්‍රවර්ධනය කර සෘජු කොමිස් මුදල් උපයන්න.',
@@ -2576,15 +2583,11 @@ const heroSlides = [
         ],
         rightHTML: `
             <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:25px; box-shadow: 0 35px 70px rgba(245, 124, 0, 0.12); display:flex; flex-direction:column; gap:15px;">
-                
-                <!-- Earnings Header -->
                 <div style="background:rgba(245,124,0,0.06); border:1px solid rgba(245,124,0,0.3); border-radius:20px; padding:15px; text-align:center;">
                     <div style="font-size:10px; color:#8D6E63; font-weight:700; text-transform:uppercase;">Affiliate Earnings</div>
                     <div style="font-size:24px; font-weight:900; color:var(--brand-orange); margin-top:2px;">LKR 84,250.00</div>
                     <div style="font-size:10px; color:#66BB6A; font-weight:800; margin-top:4px;">✓ Paid Successfully</div>
                 </div>
-
-                <!-- Stats Grid -->
                 <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
                     <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); text-align:center;">
                         <span style="font-size:10px; color:var(--text-muted);">Course Sales</span>
@@ -2595,8 +2598,6 @@ const heroSlides = [
                         <div style="font-size:13px; font-weight:800; color:#5D4037; margin-top:4px;">Bank Transfer</div>
                     </div>
                 </div>
-
-                <!-- Mini Commission Graph -->
                 <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); display:flex; flex-direction:column; gap:4px;">
                     <span style="font-size:9px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Performance Trend</span>
                     <svg viewBox="0 0 100 20" style="width:100%; height:25px; overflow:visible;">
@@ -2604,7 +2605,6 @@ const heroSlides = [
                         <circle cx="100" cy="2" r="3" fill="var(--brand-orange)" />
                     </svg>
                 </div>
-
             </div>
         `,
         bottomBarText: 'Hapanamy Affiliate ජාලය සමඟ කිසිදු ආයෝජනයකින් තොරව 15% කොමිස් මුදල් සතිපතා ★★★★★',
@@ -2637,6 +2637,7 @@ function renderHeroSlide(slideIdx) {
         bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
 
         // Render Left Side Text Content inside large Glassmorphic Card Panel
+        // Support up to 8 highlights in 2 columns
         const highlightsHTML = slide.highlights.map(h => `
             <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
                 <span style="color:#66BB6A; font-weight:900;">✓</span>
@@ -2665,7 +2666,7 @@ function renderHeroSlide(slideIdx) {
 
                 <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
                     <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${slide.btnPrimary.text}</a>
-                    <a href="#register" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
+                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
                 </div>
             </div>
         `;
