@@ -2435,134 +2435,188 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
+
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
-        badge: '💛 ශ්‍රී ලංකාවේ අංක 01',
-        title: 'හෙට දවසේ තාක්ෂණයෙන් <br><span style="color:var(--brand-orange);">අදම ස්වාධීන වන්න!</span>',
-        subBadge: '🚀 Learn • Grow • Earn • Connect',
-        desc: 'ලංකාවේ ජනප්‍රියම E-Books, Trading, Social Media සහ AI තාක්ෂණික පාඨමාලා එකම වහලක් යටින් ඉගෙන ගන්න. අපගේ විශේෂිත Affiliate වැඩසටහන සමඟ සම්බන්ධ වී 15% ක සෘජු කොමිස් මුදලක් ලබාගන්න.',
+        bgImage: 'assets/ai_tech_banner.jpg', // paddy field morning light
+        badge: '🏆 ශ්‍රී ලංකාවේ නව පරපුරේ Digital Learning Campus',
+        title: 'ඔබේ අනාගත වෘත්තිය <br><span style="color:var(--brand-orange);">අදම ආරම්භ කරන්න</span>',
+        subBadge: 'AI • Trading • Coding • Social Media • Digital Business',
+        desc: 'Hapanamy.lk සමඟ නවීන තාක්ෂණය, Digital Skills සහ Online Income සරල සිංහලෙන් ඉගෙන ගන්න.',
+        highlights: [
+            '100% Practical Courses',
+            'Lifetime Support',
+            'AI Powered Learning',
+            'Certificates',
+            'Affiliate Income Program'
+        ],
         btnPrimary: { text: '🎓 පාඨමාලා බලන්න', href: '#courses' },
-        btnSecondary: { text: '🎁 E-Books බලන්න', href: '#courses' },
-        btnTextLink: { text: '▶️ දැන්ම වීඩියෝ බලන්න', href: '#blog' },
-        rightCard: {
-            title: 'HAPANAMY CAMPUS',
-            sub: 'Your Future, Our Mission',
-            icon: '🏛️'
-        },
-        badges: [
-            { icon: '🤖', text: 'AI Technology' },
-            { icon: '📈', text: 'Trading' },
-            { icon: '👍', text: 'Social Media' },
-            { icon: '🤝', text: 'Affiliate' },
-            { icon: '📖', text: 'E-books' }
-        ],
+        btnSecondary: { text: '▶️ නොමිලේ හැඳින්වීම', href: '#contact' },
         stats: [
-            { num: '10,000+', text: 'සතුටු සිසුන්' },
-            { num: '50+', text: 'පාඨමාලා' },
-            { num: '5+', text: 'වසරේ අත්දැකීම්' },
-            { num: 'විශ්වාසදායක', text: 'ප්‍රමුඛ Platform එක' }
+            { num: '10+', text: 'Professional Courses' },
+            { num: '500+', text: 'Learning Resources' },
+            { num: '100%', text: 'Practical Training' },
+            { num: 'Lifetime', text: 'Support' }
         ],
-        bottomBarText: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
-        bottomBarSub: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම'
+        rightHTML: `
+            <div class="float-anim" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                
+                <!-- Campus Building Mockup center block -->
+                <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:20px; text-align:center; margin-bottom:10px;">
+                    <span style="font-size:32px;">🏛️</span>
+                    <h4 style="font-size:14px; font-weight:800; color:var(--text-primary); margin:8px 0 2px 0;">HAPANAMY CAMPUS</h4>
+                    <p style="font-size:10px; color:var(--text-muted); margin:0;">Sri Lanka's No.1 Digital Skills University</p>
+                </div>
+
+                <!-- 7 Glass Badges -->
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🤖</span> <span style="font-size:11px; font-weight:700;">AI Tech</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">📈</span> <span style="font-size:11px; font-weight:700;">Trading</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🎥</span> <span style="font-size:11px; font-weight:700;">YouTube</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🎵</span> <span style="font-size:11px; font-weight:700;">TikTok</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">🔵</span> <span style="font-size:11px; font-weight:700;">Facebook</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px;">
+                    <span style="font-size:18px;">💻</span> <span style="font-size:11px; font-weight:700;">Coding</span>
+                </div>
+                <div style="grid-column: span 2; background:rgba(255,255,255,0.6); padding:10px; border-radius:15px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; justify-content:center; gap:8px;">
+                    <span style="font-size:18px;">📖</span> <span style="font-size:11px; font-weight:700;">E-Books & Guides</span>
+                </div>
+            </div>
+        `
     },
     {
-        badge: '🚀 FUTURE SKILLS',
-        title: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න!</span>',
-        subBadge: '🤖 Future Skills for Everyone',
-        desc: 'ChatGPT, Midjourney, AI Video Generation, Automation, Coding සහ Social Media Monetization සරල සිංහලෙන් ඉගෙන ගෙන ගෝලීය වෙළඳපොළ ජයගන්න.',
+        bgImage: 'assets/coding_course_banner.jpg', // futuristic green gold
+        badge: '🚀 Future Skills Start Here',
+        title: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න...</span>',
+        subBadge: 'ChatGPT • AI Video • Social Media • Trading',
+        desc: 'ChatGPT, AI Video Creation, Social Media Marketing, Trading සහ Digital Business භාවිතයෙන් ඔබේ Online Career එක ගොඩනගා ගන්න.',
+        highlights: [
+            'AI Mastery',
+            'Video Creation',
+            'Social Media',
+            'Trading',
+            'Freelancing'
+        ],
         btnPrimary: { text: '🚀 අදම ආරම්භ කරන්න', href: '#courses' },
         btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' },
-        btnTextLink: { text: '▶️ AI පාඨමාලා බලන්න', href: '#courses' },
-        rightCard: {
-            title: 'AI KNOWLEDGE HUB',
-            sub: 'Learn to Leverage AI',
-            icon: '🤖'
-        },
-        badges: [
-            { icon: '💬', text: 'ChatGPT' },
-            { icon: '🎨', text: 'Midjourney' },
-            { icon: '🎥', text: 'AI Video' },
-            { icon: '⚙️', text: 'n8n Automation' },
-            { icon: '💡', text: 'Prompting' }
-        ],
         stats: [
-            { num: '1,500+', text: 'AI සිසුන්' },
-            { num: '100+', text: 'AI Prompts' },
-            { num: '100%', text: 'ප්‍රායෝගික වැඩ' },
-            { num: '24/7', text: 'තාක්ෂණික සහය' }
+            { num: '1,500+', text: 'AI Graduates' },
+            { num: '200+', text: 'Done-For-You Prompts' },
+            { num: '100%', text: 'Syllabus Coverage' },
+            { num: '24/7', text: 'Community Support' }
         ],
-        bottomBarText: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
-        bottomBarSub: 'ChatGPT • ElevenLabs • Midjourney • CapCut • Runway Automation'
+        rightHTML: `
+            <div class="float-anim" style="position:relative; display:flex; flex-direction:column; align-items:center;">
+                <!-- Laptop frame mockup -->
+                <div class="mock-laptop" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#1e1e1e;">
+                    <div class="rotate-anim" style="font-size:55px; opacity:0.85; filter: drop-shadow(0 0 15px rgba(102,187,106,0.5));">🧠</div>
+                    <div style="color:#66BB6A; font-size:13px; font-weight:900; margin-top:10px; letter-spacing:0.05em; font-family:monospace;">AI MONETIZED ENGINE</div>
+                </div>
+                <div class="mock-laptop-base"></div>
+
+                <!-- Phone frame mockup alongside -->
+                <div class="mock-phone" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:#111; padding:10px;">
+                    <div style="color:#FFD54F; font-size:22px; font-weight:900; margin-bottom:2px;">📈</div>
+                    <div style="color:white; font-size:8px; font-weight:800; text-transform:uppercase;">EARN ONLINE</div>
+                    <div style="color:#66BB6A; font-size:9px; font-weight:800; margin-top:8px;">+$1,450.00</div>
+                </div>
+            </div>
+        `
     },
     {
-        badge: '💰 NO INVESTMENT REQUIRED',
-        title: 'ඉගෙන ගනිමින් ආදායමත් උපයන්න <br><span style="color:var(--brand-orange);">(Affiliate Program)</span>',
-        subBadge: '💰 Earn While You Learn',
-        desc: 'Hapanamy Affiliate Program එක සමඟ නොමිලේ සම්බන්ධ වී පාඨමාලා සහ E-Books ප්‍රවර්ධනය කර 15% සෘජු කොමිස් මුදල් සතිපතා ඔබේ බැංකු ගිණුමට ලබාගන්න.',
+        bgImage: 'assets/forex_course_banner.jpg', // gold light paddy field
+        badge: '💰 Learn Today • Earn Tomorrow',
+        title: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න</span>',
+        subBadge: 'Hapanamy Affiliate Program (15% Commission)',
+        desc: 'Hapanamy Affiliate Program සමඟ සම්බන්ධ වී පාඨමාලා සහ E-books ප්‍රවර්ධනය කර 15% Direct Commission ලබාගන්න. කිසිදු ආයෝජනයක් නොමැතිව ඔබේ Digital Income Journey එක ආරම්භ කරන්න.',
+        highlights: [
+            '15% Commission',
+            'Weekly Payments',
+            'Marketing Training',
+            'Lifetime Support'
+        ],
         btnPrimary: { text: '🤝 Affiliate එකට එක්වන්න', href: '#affiliate' },
-        btnSecondary: { text: '📊 ආදායම ගණනය කරන්න', href: '#calculator' },
-        btnTextLink: { text: '▶️ Affiliate විස්තර බලන්න', href: '#affiliate' },
-        rightCard: {
-            title: 'EARNING PORTAL',
-            sub: 'Financial Freedom Engine',
-            icon: '💸'
-        },
-        badges: [
-            { icon: '💰', text: '15% Commission' },
-            { icon: '🏦', text: 'Weekly Payouts' },
-            { icon: '🤝', text: 'Free Training' },
-            { icon: '📈', text: 'Marketing Tools' },
-            { icon: '🏆', text: 'Leaderboard' }
-        ],
+        btnSecondary: { text: '📊 ආදායම් ගණනය කරන්න', href: '#calculator' },
         stats: [
-            { num: 'LKR 1M+', text: 'ගෙවූ කොමිස්' },
-            { num: '15%', text: 'සෘජු කොමිස්' },
-            { num: 'සතිපතා', text: 'බැංකුවට ගෙවීම්' },
-            { num: 'නොමිලේ', text: 'අලෙවිකරණ පුහුණුව' }
+            { num: '15%', text: 'Direct Commission' },
+            { num: 'Weekly', text: 'Payments' },
+            { num: 'Free', text: 'Affiliate Training' },
+            { num: 'Lifetime', text: 'Partner Support' }
         ],
-        bottomBarText: 'කිසිදු මූලික ආයෝජනයකින් තොරව 15% කොමිස් ලබන Affiliate ජාලය ★★★★★',
-        bottomBarSub: 'ක්ෂණික ලියාපදිංචිය • සජීවී ඩෑෂ්බෝඩ් එක • සතිපතා ගෙවීම් බැංකුවට'
+        rightHTML: `
+            <div class="float-anim" style="display:flex; align-items:center; gap:25px; position:relative; overflow:visible;">
+                
+                <!-- Glowing Gold Cylinder 15% Commission -->
+                <div class="glow-cylinder">
+                    <h3 style="font-size:38px; font-weight:900; color:#FFD54F; margin:0; line-height:1;">15%</h3>
+                    <p style="font-size:10px; font-weight:800; letter-spacing:0.05em; text-transform:uppercase; margin:5px 0;">DIRECT COMMISSION</p>
+                    <span style="font-size:10px; opacity:0.75;">ඔබේ වටිනා වැඩ එසැනින් බැංකුවට</span>
+                </div>
+
+                <!-- 3D Stack of Books with Graduation Cap -->
+                <div style="display:flex; flex-direction:column; align-items:center; position:relative;">
+                    <!-- Graduation Cap icon -->
+                    <span style="font-size:36px; position:absolute; top:-35px; z-index:25; filter:drop-shadow(0 4px 6px rgba(0,0,0,0.2));">🎓</span>
+                    
+                    <!-- Stacks -->
+                    <div style="width:120px; height:20px; background:#66BB6A; border-bottom:3px solid #388e3c; border-radius:3px; box-shadow:0 4px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; color:white; font-size:9px; font-weight:800; font-family:sans-serif;">AI MASTY</div>
+                    <div style="width:125px; height:20px; background:#EF5350; border-bottom:3px solid #d32f2f; border-radius:3px; box-shadow:0 4px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; color:white; font-size:9px; font-weight:800; font-family:sans-serif; margin-top:2px;">TRADING</div>
+                    <div style="width:130px; height:20px; background:#29b6f6; border-bottom:3px solid #0288d1; border-radius:3px; box-shadow:0 4px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; color:white; font-size:9px; font-weight:800; font-family:sans-serif; margin-top:2px;">SOCIAL MEDIA</div>
+                    <div style="width:135px; height:22px; background:#FFD54F; border-bottom:3px solid #fbc02d; border-radius:3px; box-shadow:0 4px 8px rgba(0,0,0,0.15); display:flex; align-items:center; justify-content:center; color:#5D4037; font-size:9px; font-weight:800; font-family:sans-serif; margin-top:2px;">DIGITAL BUSINESS</div>
+                </div>
+
+            </div>
+        `
     }
 ];
 
 let currentSlideIdx = 0;
-const slideIntervalMs = 7000; // 7.5 seconds auto slider
+const slideIntervalMs = 7000; // 7 seconds auto-slide
 
 function renderHeroSlide(slideIdx) {
     const container = document.getElementById('heroSliderContent');
+    const visualContainer = document.getElementById('heroSliderVisual');
     const statsContainer = document.getElementById('heroStatsContainer');
-    if (!container || !statsContainer) return;
+    const bgPaddy = document.getElementById('heroBgPaddy');
+
+    if (!container || !visualContainer || !statsContainer || !bgPaddy) return;
 
     const slide = heroSlides[slideIdx];
 
-    // 1. Fade out left content and stats first
+    // Fade out first
     container.style.opacity = '0';
     container.style.transform = 'translateY(12px)';
+    visualContainer.style.opacity = '0';
+    visualContainer.style.transform = 'scale(0.95)';
     statsContainer.style.opacity = '0';
 
-    // 2. Animate Right-Side Glass Card Elements Out
-    const badges = [
-        document.getElementById('badge1'),
-        document.getElementById('badge2'),
-        document.getElementById('badge3'),
-        document.getElementById('badge4'),
-        document.getElementById('badge5')
-    ];
-    badges.forEach(b => {
-        if (b) {
-            b.style.opacity = '0';
-            b.style.transform = 'scale(0.8) translateY(10px)';
-        }
-    });
-
     setTimeout(() => {
-        // 3. Inject Left-Side text & buttons
+        // Change background image dynamically
+        bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
+
+        // Render Left Side Text Content
+        const highlightsHTML = slide.highlights.map(h => `
+            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
+                <span style="color:#66BB6A; font-weight:900;">✓</span>
+                <span>${h}</span>
+            </div>
+        `).join('');
+
         container.innerHTML = `
             <span class="hero-badge" style="display:inline-block; margin-bottom:15px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:6px 16px; border-radius:30px; border:1px solid rgba(93,64,55,0.15);">
                 ${slide.badge}
             </span>
-            <h1 class="hero-title" style="font-size:40px; font-weight:900; line-height:1.2; color:var(--text-primary); margin-bottom:12px; font-family:'Poppins', sans-serif;">
+            <h1 class="hero-title" style="font-size:38px; font-weight:900; line-height:1.2; color:var(--text-primary); margin-bottom:12px; font-family:'Poppins', sans-serif;">
                 ${slide.title}
             </h1>
             <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:3px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block;">
@@ -2572,14 +2626,20 @@ function renderHeroSlide(slideIdx) {
                 ${slide.desc}
             </p>
             
+            <div style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:25px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:15px 0;">
+                ${highlightsHTML}
+            </div>
+
             <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
                 <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 28px; border-radius:30px; font-weight:700;">${slide.btnPrimary.text}</a>
                 <a href="${slide.btnSecondary.href}" class="btn btn-secondary" style="padding:12px 28px; border-radius:30px; font-weight:700; background:rgba(255,255,255,0.7); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.4); color:var(--text-primary);">${slide.btnSecondary.text}</a>
-                <a href="${slide.btnTextLink.href}" style="font-size:13.5px; font-weight:800; color:var(--brand-red); text-decoration:none; display:flex; align-items:center; gap:5px; margin-left:10px; transition:0.3s;" onmouseover="this.style.color='var(--brand-orange)'" onmouseout="this.style.color='var(--brand-red)'">${slide.btnTextLink.text}</a>
             </div>
         `;
 
-        // 4. Inject Stats
+        // Render Right Side HTML Visuals
+        visualContainer.innerHTML = slide.rightHTML;
+
+        // Render Bottom Stats Bar
         statsContainer.innerHTML = slide.stats.map(s => `
             <div class="hero-stats-card">
                 <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">${s.num}</h3>
@@ -2587,37 +2647,12 @@ function renderHeroSlide(slideIdx) {
             </div>
         `).join('');
 
-        // 5. Update Right-Side Glass Card top badges
-        document.getElementById('rightCardIcon').textContent = slide.rightCard.icon;
-        document.getElementById('rightCardTitle').textContent = slide.rightCard.title;
-        document.getElementById('rightCardSub').textContent = slide.rightCard.sub;
-
-        // 6. Update Right-Side floating badges text and icons
-        slide.badges.forEach((bData, idx) => {
-            const el = document.getElementById('badge' + (idx + 1));
-            if (el) {
-                el.querySelector('.fb-badge-icon').textContent = bData.icon;
-                el.querySelector('.fb-badge-text').textContent = bData.text;
-            }
-        });
-
-        // 7. Update Bottom Gradient Bar
-        document.getElementById('heroBottomBarText').textContent = slide.bottomBarText;
-        document.getElementById('heroBottomBarSubtext').textContent = slide.bottomBarSub;
-
-        // 8. Fade all back in with smooth animations
+        // Fade back in
         container.style.opacity = '1';
         container.style.transform = 'translateY(0)';
+        visualContainer.style.opacity = '1';
+        visualContainer.style.transform = 'scale(1)';
         statsContainer.style.opacity = '1';
-
-        badges.forEach((b, idx) => {
-            if (b) {
-                setTimeout(() => {
-                    b.style.opacity = '1';
-                    b.style.transform = 'scale(1) translateY(0)';
-                }, idx * 100); // Staggered badge fade-in
-            }
-        });
 
     }, 300);
 }

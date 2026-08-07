@@ -1995,6 +1995,7 @@ a {
 }
 
 
+
 /* ==================== HERO SLIDER CUSTOM AESTHETICS ==================== */
 .hero-bg-paddy {
     position: absolute;
@@ -2002,87 +2003,102 @@ a {
     left: 0;
     width: 100%;
     height: 100%;
-    background-image: url('assets/hero_showcase.jpg');
     background-size: cover;
     background-position: center;
-    filter: blur(22px);
-    opacity: 0.12;
+    filter: blur(20px);
+    opacity: 0.15;
     z-index: 1;
     transform: scale(1.1);
-    animation: kenburns 25s infinite ease-in-out;
+    animation: kenburns 22s infinite ease-in-out;
+    transition: background-image 0.8s ease-in-out;
 }
 
 @keyframes kenburns {
-    0% { transform: scale(1) blur(22px); }
-    50% { transform: scale(1.12) blur(22px); }
-    100% { transform: scale(1) blur(22px); }
+    0% { transform: scale(1) blur(20px); }
+    50% { transform: scale(1.1) blur(20px); }
+    100% { transform: scale(1) blur(20px); }
 }
 
-/* Floating Badges styles */
-.floating-badge {
-    position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(212, 175, 55, 0.4);
-    border-radius: 30px;
-    box-shadow: 0 10px 25px rgba(93, 64, 55, 0.08);
-    z-index: 15;
-    animation: floating 4s ease-in-out infinite;
-    transition: all 0.4s ease;
-}
-
-.fb-badge-icon {
-    font-size: 16px;
-}
-
-.fb-badge-text {
-    font-size: 11px;
-    font-weight: 700;
-    color: var(--text-primary);
-    white-space: nowrap;
-}
-
-/* Badge placements */
-.fb-top-right {
-    top: 60px;
-    right: -20px;
-}
-.fb-mid-right {
-    top: 130px;
-    right: -40px;
-}
-.fb-lower-mid-right {
-    top: 200px;
-    right: -30px;
-}
-.fb-bottom-right {
-    bottom: 80px;
-    right: -10px;
-}
-.fb-bottom-center {
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    animation: floatingCenter 4s ease-in-out infinite;
-}
-
-@keyframes floating {
+/* Floating Animation */
+@keyframes floatUp {
     0% { transform: translateY(0px); }
     50% { transform: translateY(-8px); }
     100% { transform: translateY(0px); }
 }
-
-@keyframes floatingCenter {
-    0% { transform: translate(-50%, 0px); }
-    50% { transform: translate(-50%, -8px); }
-    100% { transform: translate(-50%, 0px); }
+.float-anim {
+    animation: floatUp 5s ease-in-out infinite;
 }
 
+/* Rotating Animation */
+@keyframes rotateSlow {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+.rotate-anim {
+    animation: rotateSlow 20s infinite linear;
+}
+
+/* Laptop and Phone CSS frames */
+.mock-laptop {
+    position: relative;
+    width: 320px;
+    height: 190px;
+    background: #111;
+    border-radius: 12px 12px 0 0;
+    border: 6px solid #333;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    overflow: hidden;
+}
+.mock-laptop-base {
+    width: 360px;
+    height: 12px;
+    background: #555;
+    border-radius: 0 0 10px 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.mock-phone {
+    position: absolute;
+    width: 90px;
+    height: 160px;
+    background: #111;
+    border: 4px solid #333;
+    border-radius: 12px;
+    bottom: -10px;
+    right: -25px;
+    box-shadow: 0 15px 30px rgba(0,0,0,0.4);
+    z-index: 20;
+    overflow: hidden;
+}
+
+/* Cylinder commission glow */
+.glow-cylinder {
+    position: relative;
+    width: 160px;
+    height: 220px;
+    background: linear-gradient(180deg, rgba(212,175,55,0.4), rgba(245,124,0,0.1));
+    border: 2px solid rgba(212,175,55,0.6);
+    border-radius: 80px / 40px;
+    box-shadow: 0 20px 50px rgba(245,124,0,0.25), inset 0 0 20px rgba(212,175,55,0.3);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+.glow-cylinder::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    background: rgba(212,175,55,0.6);
+    border-radius: 50%;
+    border: 1px solid rgba(212,175,55,0.8);
+}
+
+/* Dynamic Stats styling */
 .hero-stats-card {
     background: rgba(255, 255, 255, 0.55);
     backdrop-filter: blur(12px);
@@ -2097,6 +2113,18 @@ a {
     justify-content: center;
 }
 
-.hero-glass-card-panel {
-    animation: floating 6s ease-in-out infinite;
+/* Golden Sparkle particles */
+@keyframes sparkle {
+    0% { opacity: 0; transform: translateY(0) scale(0.8); }
+    50% { opacity: 0.8; }
+    100% { opacity: 0; transform: translateY(-40px) scale(1.2); }
+}
+.sparkle-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #FFD54F;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #FFD54F;
+    animation: sparkle 3s infinite ease-in-out;
 }
