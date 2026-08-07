@@ -2439,7 +2439,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
-        bgImage: 'assets/ai_tech_banner.jpg', // paddy field morning light
+        bgImage: 'assets/paddy_field_sunrise.jpg', // paddy field morning light
         badge: '🏆 ශ්‍රී ලංකාවේ නව පරපුරේ Digital Learning Campus',
         title: 'ඔබේ අනාගත වෘත්තිය <br><span style="color:var(--brand-orange);">අදම ආරම්භ කරන්න</span>',
         subBadge: 'AI • Trading • Coding • Social Media • Digital Business',
@@ -2534,7 +2534,7 @@ const heroSlides = [
         `
     },
     {
-        bgImage: 'assets/forex_course_banner.jpg', // gold light paddy field
+        bgImage: 'assets/paddy_field_sunrise.jpg', // gold light paddy field
         badge: '💰 Learn Today • Earn Tomorrow',
         title: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න</span>',
         subBadge: 'Hapanamy Affiliate Program (15% Commission)',
