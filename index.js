@@ -2031,7 +2031,10 @@ const translations = {
         calc_financial_level: 'මූල්‍ය මට්ටම (Status Level)',
         cart_title: 'ඔබේ කාට් එක (Your Cart)',
         cart_total: 'මුළු එකතුව (Total):',
-        cart_checkout: 'ගෙවීම් පිටුවට යන්න (Checkout)'
+        cart_checkout: 'ගෙවීම් පිටුවට යන්න (Checkout)',
+        video_sub_badge: '🎓 HAPANAMY INTRODUCTION',
+        video_main_title: 'විශ්වවිද්‍යාලය ක්‍රියාත්මක වන ආකාරය',
+        video_desc: 'ශ්‍රී ලංකාවේ ප්‍රථම සහ විශාලතම ඩිජිටල් අධ්‍යාපනික සහ අනුබද්ධිත (Affiliate) අලෙවිකරණ සරසවිය පිළිබඳ අපගේ ප්‍රධාන හඳුන්වාදීමේ වීඩියෝව නරඹන්න.'
     },
     en: {
         nav_home: 'Home',
@@ -2058,7 +2061,10 @@ const translations = {
         calc_financial_level: 'Financial Status Level (Status Level)',
         cart_title: 'Your Cart',
         cart_total: 'Total Value (Total):',
-        cart_checkout: 'Proceed to Checkout'
+        cart_checkout: 'Proceed to Checkout',
+        video_sub_badge: '🎓 HAPANAMY INTRODUCTION',
+        video_main_title: 'How Our Campus Works',
+        video_desc: "Watch our official introduction video to understand the operations and earning models of Sri Lanka's leading digital academy."
     }
 };
 
