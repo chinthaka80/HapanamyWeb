@@ -2525,13 +2525,13 @@ const heroSlides = [
     {
         bgImage: 'assets/glass_digital_campus.jpg',
         badge_si: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus',
-        badge_en: '🏆 Sri Lanka's No.1 Digital Skills Campus',
+        badge_en: "🏆 Sri Lanka's No.1 Digital Skills Campus",
         title_si: 'ඔබේ අනාගතය <br><span style="color:var(--brand-orange);">අදම නිර්මාණය කරන්න.</span>',
         title_en: 'Create Your Future <br><span style="color:var(--brand-orange);">Starting Today.</span>',
         subBadge_si: 'AI • Trading • Coding • Social Media • Business • Freelancing',
         subBadge_en: 'AI • Trading • Coding • Social Media • Business • Freelancing',
         desc_si: 'නවීන තාක්ෂණය, Digital Skills, AI, Trading, Coding සහ Online Business එකම Campus එකකින් සරල සිංහලෙන් ඉගෙන ගන්න. Join thousands of students building their future with Hapanamy.lk.',
-        desc_en: 'Learn cutting-edge AI, Trading, Coding, Social Media, and Online Business in simple language from Sri Lanka's premier Digital Campus.',
+        desc_en: "Learn cutting-edge AI, Trading, Coding, Social Media, and Online Business in simple language from Sri Lanka's premier Digital Campus.",
         highlights_si: [
             '100% ප්‍රායෝගික පුහුණුව',
             'ජීවිත කාලයටම සහය',
@@ -2635,7 +2635,7 @@ const heroSlides = [
             </div>
         `,
         bottomBarText_si: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
-        bottomBarText_en: 'Sri Lanka's No.1 Tech Courses and E-Learning Platform ★★★★★',
+        bottomBarText_en: "Sri Lanka's No.1 Tech Courses and E-Learning Platform ★★★★★",
         bottomBarSub_si: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම',
         bottomBarSub_en: 'Practical Learning • Lifetime Support • Your Best Choice for Success'
     },
