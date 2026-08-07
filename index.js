@@ -2433,3 +2433,116 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 });
+
+// ==================== HERO AUTO SLIDER CONTROLLERS ====================
+const heroSlides = [
+    {
+        badge: '🏆 ශ්‍රී ලංකාවේ නව පරපුරේ Digital Learning Campus',
+        title: '🎓 ඔබේ අනාගත වෘත්තිය අදම ආරම්භ කරන්න',
+        subtitle: 'AI • Trading • Coding • Social Media • Digital Business',
+        desc: 'දහස් ගණනක් සිසුන්ගේ විශ්වාසය දිනාගත් Hapanamy.lk සමඟ නවීන තාක්ෂණය, Online Income සහ Digital Skills සරල සිංහලෙන් ඉගෙන ගන්න.',
+        highlights: [
+            '100% ප්‍රායෝගික පාඨමාලා',
+            'Lifetime Support',
+            'AI සමඟ ඉගෙනීම',
+            'Affiliate Income Program',
+            'Certificates'
+        ],
+        btnPrimary: { text: '🎓 පාඨමාලා බලන්න', href: '#courses' },
+        btnSecondary: { text: '▶️ නොමිලේ හැඳින්වීම', href: '#contact' }
+    },
+    {
+        badge: '🚀 Future Skills for Everyone',
+        title: 'AI සමඟ වැඩ කරන්න... ලෝකයෙන් ආදායම් උපයන්න...',
+        subtitle: 'ChatGPT • AI Video • Social Media • Trading • Automation',
+        desc: 'ChatGPT, AI Video, Social Media, Trading සහ Digital Marketing භාවිතයෙන් ඔබේම Online Career එක ගොඩනගා ගන්න.',
+        highlights: [
+            'AI Mastery',
+            'Social Media Monetization',
+            'Smart Trading Rules',
+            'AI Video Automation',
+            'Freelancing Success'
+        ],
+        btnPrimary: { text: '🚀 අදම ආරම්භ කරන්න', href: '#courses' },
+        btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' }
+    },
+    {
+        badge: '💰 Earn While You Learn',
+        title: 'ඉගෙන ගනිමින් ආදායමත් උපයන්න (Affiliate Program)',
+        subtitle: 'No Investment • 15% Commission • Weekly Payouts',
+        desc: 'Hapanamy Affiliate Program සමඟ සම්බන්ධ වී පාඨමාලා සහ E-Books ප්‍රවර්ධනය කර 15% සෘජු කොමිස් ලබාගන්න. කිසිදු ආයෝජනයක් නොමැතිව ඔබේ Digital Income Journey එක ආරම්භ කරන්න.',
+        highlights: [
+            '15% Direct Commission',
+            'Weekly Payments to Bank',
+            'Free Marketing Training',
+            'Lifetime Partner Support'
+        ],
+        btnPrimary: { text: '🤝 Affiliate එකට එක්වන්න', href: '#affiliate' },
+        btnSecondary: { text: '📊 ආදායම් කැල්කියුලේටරය', href: '#calculator' }
+    }
+];
+
+let currentSlideIdx = 0;
+const slideIntervalMs = 7000; // 7 seconds slider
+
+function renderHeroSlide(slideIdx) {
+    const container = document.getElementById('heroSliderContent');
+    if (!container) return;
+
+    const slide = heroSlides[slideIdx];
+
+    // Fade out first
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(15px)';
+
+    setTimeout(() => {
+        const highlightsHTML = slide.highlights.map(h => `
+            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:600; color:var(--text-primary);">
+                <span style="color:var(--brand-gold);">✓</span>
+                <span>${h}</span>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <span class="hero-badge" style="display:inline-block; margin-bottom:15px; font-size:12px; font-weight:800; text-transform:uppercase; color:var(--brand-orange); background-color:var(--brand-orange-soft); padding:6px 14px; border-radius:30px; border:1px solid var(--border-color);">
+                ${slide.badge}
+            </span>
+            <h1 class="hero-title" style="font-size:36px; font-weight:900; line-height:1.2; color:var(--text-primary); margin-bottom:12px;">
+                ${slide.title}
+            </h1>
+            <h3 style="font-size:16px; font-weight:700; color:var(--brand-gold); margin-bottom:15px; text-transform:uppercase; letter-spacing:0.05em;">
+                ${slide.subtitle}
+            </h3>
+            <p class="hero-subtitle" style="font-size:14.5px; color:var(--text-muted); line-height:1.7; margin-bottom:20px; max-width:600px;">
+                ${slide.desc}
+            </p>
+            
+            <div style="display:flex; flex-wrap:wrap; gap:15px; margin-bottom:25px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:15px 0;">
+                ${highlightsHTML}
+            </div>
+
+            <div class="hero-buttons" style="display:flex; gap:15px;">
+                <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none;">${slide.btnPrimary.text}</a>
+                <a href="${slide.btnSecondary.href}" class="btn btn-secondary">${slide.btnSecondary.text}</a>
+            </div>
+        `;
+
+        // Fade back in
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+    }, 300);
+}
+
+function initHeroSlider() {
+    renderHeroSlide(0);
+
+    setInterval(() => {
+        currentSlideIdx = (currentSlideIdx + 1) % heroSlides.length;
+        renderHeroSlide(currentSlideIdx);
+    }, slideIntervalMs);
+}
+
+// Auto-run slider on load
+document.addEventListener('DOMContentLoaded', () => {
+    initHeroSlider();
+});

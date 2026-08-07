@@ -1993,3 +1993,53 @@ a {
     transform: translateY(-2px) scale(1.05) !important;
     box-shadow: 0 12px 25px rgba(245, 124, 0, 0.35) !important;
 }
+
+/* ==================== HERO SLIDER CUSTOM AESTHETICS ==================== */
+.hero-bg-paddy {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('assets/hero_showcase.jpg');
+    background-size: cover;
+    background-position: center;
+    filter: blur(25px);
+    opacity: 0.15;
+    z-index: 1;
+    transform: scale(1.1);
+    animation: kenburns 20s infinite ease-in-out;
+}
+
+@keyframes kenburns {
+    0% { transform: scale(1) blur(25px); }
+    50% { transform: scale(1.15) blur(25px); }
+    100% { transform: scale(1) blur(25px); }
+}
+
+@keyframes floating {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0px); }
+}
+
+.floating-anim {
+    animation: floating 4s ease-in-out infinite;
+}
+
+.zoom-anim {
+    transition: transform 0.5s ease;
+}
+.zoom-anim:hover {
+    transform: scale(1.05);
+}
+
+@keyframes glow-pulse {
+    0% { box-shadow: 0 15px 40px rgba(245, 124, 0, 0.35); }
+    50% { box-shadow: 0 15px 45px rgba(245, 124, 0, 0.55); }
+    100% { box-shadow: 0 15px 40px rgba(245, 124, 0, 0.35); }
+}
+
+.btn-primary {
+    animation: glow-pulse 3s infinite ease-in-out;
+}
