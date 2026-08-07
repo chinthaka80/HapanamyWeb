@@ -2437,6 +2437,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
@@ -2550,6 +2551,64 @@ const heroSlides = [
         `,
         bottomBarText: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
         bottomBarSub: 'ChatGPT • Claude • ElevenLabs • Midjourney • CapCut Automation'
+    },
+    {
+        bgImage: 'assets/paddy_field_sunset.jpg',
+        badge: '💰 Learn • Grow • Earn • Connect',
+        title: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න.</span>',
+        subBadge: 'Affiliate Marketing • Referral Income • Partner Network',
+        desc: 'Hapanamy Affiliate Program සමඟ එක්ව පාඨමාලා සහ E-books ප්‍රවර්ධනය කර සෘජු කොමිස් මුදල් උපයන්න.',
+        highlights: [
+            '15% Direct Commission',
+            'Weekly Payments',
+            'Marketing Training',
+            'Lifetime Community',
+            'Passive Income',
+            'Affiliate Dashboard'
+        ],
+        btnPrimary: { text: '💰 Affiliate Program', href: '#affiliate' },
+        btnSecondary: { text: '🌍 Join Now', href: '#register' },
+        stats: [
+            { num: 'LKR 1M+', text: 'Paid Commission' },
+            { num: '15%', text: 'Direct Commission' },
+            { num: 'Weekly', text: 'Payouts' },
+            { num: 'Free', text: 'Marketing Tools' }
+        ],
+        rightHTML: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:25px; box-shadow: 0 35px 70px rgba(245, 124, 0, 0.12); display:flex; flex-direction:column; gap:15px;">
+                
+                <!-- Earnings Header -->
+                <div style="background:rgba(245,124,0,0.06); border:1px solid rgba(245,124,0,0.3); border-radius:20px; padding:15px; text-align:center;">
+                    <div style="font-size:10px; color:#8D6E63; font-weight:700; text-transform:uppercase;">Affiliate Earnings</div>
+                    <div style="font-size:24px; font-weight:900; color:var(--brand-orange); margin-top:2px;">LKR 84,250.00</div>
+                    <div style="font-size:10px; color:#66BB6A; font-weight:800; margin-top:4px;">✓ Paid Successfully</div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); text-align:center;">
+                        <span style="font-size:10px; color:var(--text-muted);">Course Sales</span>
+                        <div style="font-size:16px; font-weight:800; color:#5D4037; margin-top:2px;">45 Units</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); text-align:center;">
+                        <span style="font-size:10px; color:var(--text-muted);">Payout Type</span>
+                        <div style="font-size:13px; font-weight:800; color:#5D4037; margin-top:4px;">Bank Transfer</div>
+                    </div>
+                </div>
+
+                <!-- Mini Commission Graph -->
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:9px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">Performance Trend</span>
+                    <svg viewBox="0 0 100 20" style="width:100%; height:25px; overflow:visible;">
+                        <path d="M 0 18 Q 20 15 40 10 T 80 5 T 100 2" fill="none" stroke="var(--brand-orange)" stroke-width="2" />
+                        <circle cx="100" cy="2" r="3" fill="var(--brand-orange)" />
+                    </svg>
+                </div>
+
+            </div>
+        `,
+        bottomBarText: 'Hapanamy Affiliate ජාලය සමඟ කිසිදු ආයෝජනයකින් තොරව 15% කොමිස් මුදල් සතිපතා ★★★★★',
+        bottomBarSub: 'ක්ෂණික ලියාපදිංචිය • සජීවී ඩෑෂ්බෝඩ් එක • සතිපතා ගෙවීම් ඔබේ බැංකු ගිණුමට'
     }
 ];
 
@@ -2593,7 +2652,7 @@ function renderHeroSlide(slideIdx) {
                 <h1 class="hero-title" style="font-size:38px; font-weight:900; line-height:1.2; color:#5D4037; margin-bottom:12px; font-family:'Poppins', sans-serif;">
                     ${slide.title}
                 </h1>
-                <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:4px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block; letter-spacing:0.05em;">
+                <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:3px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block; letter-spacing:0.05em;">
                     ${slide.subBadge}
                 </div>
                 <p class="hero-subtitle" style="font-size:14.5px; color:#6D4C41; line-height:1.7; margin-bottom:24px; max-width:600px;">
@@ -2606,7 +2665,7 @@ function renderHeroSlide(slideIdx) {
 
                 <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
                     <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${slide.btnPrimary.text}</a>
-                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
+                    <a href="#register" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
                 </div>
             </div>
         `;
