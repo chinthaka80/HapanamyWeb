@@ -2004,6 +2004,64 @@ function handleNewsletterSubmit(event) {
 
 
 // Initialize Language Switcher
+
+const translations = {
+    si: {
+        nav_home: 'ප්‍රධාන පිටුව',
+        nav_courses: 'පාඨමාලා',
+        nav_affiliate: 'Affiliate',
+        nav_calculator: 'ඉපැයීම් කැල්කියුලේටරය',
+        nav_testimonials: 'අදහස්',
+        nav_contact: 'සම්බන්ධ වන්න',
+        nav_login: 'ලොගින් වන්න',
+        section_courses_sub: 'අපගේ ජනප්‍රියතම වෘත්තීය පාඨමාලා',
+        section_courses_main: 'ලෝකය ජයගන්නා Digital Skills ඉගෙන ගන්න',
+        section_courses_desc: 'AI, Trading, Coding, Social Media සහ E-Books එකම වහලක් යටින්. ඔබේ අනාගත වෘත්තිය අදම ආරම්භ කරන්න.',
+        aim_title: 'AI තාක්ෂණික විප්ලවය',
+        aim_subtitle: 'හෙට දවසේ රැකියා වෙළඳපොළට අදම සූදානම් වන්න',
+        aim_master_title: 'AI සමඟ වැඩ කරන්න... ලෝකයෙන් ආදායම් උපයන්න.',
+        aim_career_title: 'ඔබේ Online Career එක ගොඩනගන්න',
+        aim_career_subtitle: 'ChatGPT, AI Video, Social Media Marketing, Trading සහ Digital Business භාවිතයෙන් ඔබේ අනාගතය සකසා ගන්න.',
+        calc_sub: 'මසකට කොපමණ මුදලක් උපයන්න පුලුවන්ද?',
+        calc_main: 'Affiliate ඉපැයීම් කැල්කියුලේටරය',
+        calc_desc: 'ස්ලයිඩර් මඟින් ඔබ මසකට විකිණීමට බලාපොරොත්තු වන ප්‍රමාණ තෝරා ඔබේ දළ මාසික සහ වාර්ෂික ආදායම ගණනය කර බලන්න.',
+        calc_card_title: 'ඔබේ ඇස්තමේන්තුගත මාසික ආදායම',
+        calc_annual: 'වාර්ෂික ආදායම් පුරෝකථනය (Annual Projection):',
+        calc_sales_vol: 'මාසික මුළු අලෙවි වටිනාකම (Total Sales Volume):',
+        calc_financial_level: 'මූල්‍ය මට්ටම (Status Level)',
+        cart_title: 'ඔබේ කාට් එක (Your Cart)',
+        cart_total: 'මුළු එකතුව (Total):',
+        cart_checkout: 'ගෙවීම් පිටුවට යන්න (Checkout)'
+    },
+    en: {
+        nav_home: 'Home',
+        nav_courses: 'Courses',
+        nav_affiliate: 'Affiliate',
+        nav_calculator: 'Earnings Calculator',
+        nav_testimonials: 'Testimonials',
+        nav_contact: 'Contact Us',
+        nav_login: 'LOGIN',
+        section_courses_sub: 'Our Most Popular Professional Courses',
+        section_courses_main: 'Learn World-Class Digital Skills',
+        section_courses_desc: 'AI, Trading, Coding, Social Media, and E-Books under one roof. Start your future career today.',
+        aim_title: 'AI Technology Revolution',
+        aim_subtitle: "Prepare Today for Tomorrow's Job Market",
+        aim_master_title: 'Work with AI... Earn from the World.',
+        aim_career_title: 'Build Your Online Career',
+        aim_career_subtitle: 'Shape your future using ChatGPT, AI Video, Social Media Marketing, Trading, and Digital Business.',
+        calc_sub: 'How much can you earn per month?',
+        calc_main: 'Affiliate Earnings Calculator',
+        calc_desc: 'Select the quantities you expect to sell per month using sliders to estimate your gross monthly and annual income.',
+        calc_card_title: 'Your Estimated Monthly Earnings',
+        calc_annual: 'Annual Income Projection (Annual Projection):',
+        calc_sales_vol: 'Monthly Total Sales Volume (Total Sales Volume):',
+        calc_financial_level: 'Financial Status Level (Status Level)',
+        cart_title: 'Your Cart',
+        cart_total: 'Total Value (Total):',
+        cart_checkout: 'Proceed to Checkout'
+    }
+};
+
 function initLanguage() {
     const langToggleBtn = document.getElementById('langToggleBtn');
     let currentLang = localStorage.getItem('language') || 'si';
@@ -2016,6 +2074,9 @@ function initLanguage() {
             currentLang = currentLang === 'si' ? 'en' : 'si';
             localStorage.setItem('language', currentLang);
             applyLanguage(currentLang);
+            if (typeof renderHeroSlide === 'function') {
+                renderHeroSlide(currentSlideIdx);
+            }
             showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
         });
     }
@@ -2035,7 +2096,7 @@ function applyLanguage(lang) {
 
     const langToggle = document.getElementById('langToggleBtn');
     if (langToggle) {
-        langToggle.textContent = lang === 'si' ? 'EN' : 'සිං';
+        langToggle.textContent = lang === 'si' ? 'EN' : 'SIN';
     }
 }
 
@@ -2458,15 +2519,30 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
 // ==================== HERO AUTO SLIDER CONTROLLERS ====================
 const heroSlides = [
     {
         bgImage: 'assets/glass_digital_campus.jpg',
-        badge: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills University',
-        title: 'ඔබේ අනාගතය <br><span style="color:var(--brand-orange);">අදම නිර්මාණය කරන්න.</span>',
-        subBadge: 'AI • Trading • Coding • Social Media • Business • Freelancing',
-        desc: 'නවීන තාක්ෂණය, Digital Skills, AI, Trading, Coding සහ Online Business එකම Campus එකකින් සරල සිංහලෙන් ඉගෙන ගන්න. Join thousands of students building their future with Hapanamy.lk.',
-        highlights: [
+        badge_si: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus',
+        badge_en: '🏆 Sri Lanka's No.1 Digital Skills Campus',
+        title_si: 'ඔබේ අනාගතය <br><span style="color:var(--brand-orange);">අදම නිර්මාණය කරන්න.</span>',
+        title_en: 'Create Your Future <br><span style="color:var(--brand-orange);">Starting Today.</span>',
+        subBadge_si: 'AI • Trading • Coding • Social Media • Business • Freelancing',
+        subBadge_en: 'AI • Trading • Coding • Social Media • Business • Freelancing',
+        desc_si: 'නවීන තාක්ෂණය, Digital Skills, AI, Trading, Coding සහ Online Business එකම Campus එකකින් සරල සිංහලෙන් ඉගෙන ගන්න. Join thousands of students building their future with Hapanamy.lk.',
+        desc_en: 'Learn cutting-edge AI, Trading, Coding, Social Media, and Online Business in simple language from Sri Lanka's premier Digital Campus.',
+        highlights_si: [
+            '100% ප්‍රායෝගික පුහුණුව',
+            'ජීවිත කාලයටම සහය',
+            'වෘත්තීය සහතික පත්‍ර',
+            'AI පාදක අධ්‍යාපනය',
+            'සැබෑ ව්‍යාපෘති',
+            'Affiliate ආදායම් මාර්ග',
+            'වෘත්තීය මගපෙන්වීම',
+            'ප්‍රජා සහයෝගීතාවය'
+        ],
+        highlights_en: [
             '100% Practical Learning',
             'Lifetime Support',
             'Professional Certificates',
@@ -2476,57 +2552,112 @@ const heroSlides = [
             'Career Guidance',
             'Community Support'
         ],
-        btnPrimary: { text: '🎓 පාඨමාලා බලන්න', href: '#courses' },
-        btnSecondary: { text: '▶️ නොමිලේ හඳුන්වාදීම', href: '#contact' },
-        stats: [
+        btnPrimary_si: '🎓 සියලුම පාඨමාලා',
+        btnPrimary_en: '🎓 Explore Courses',
+        btnSecondary_si: '▶️ නොමිලේ හඳුන්වාදීම',
+        btnSecondary_en: '▶️ Free Introduction',
+        stats_si: [
+            { num: '10+', text: 'පාඨමාලා' },
+            { num: '500+', text: 'සම්පත්' },
+            { num: '100%', text: 'ප්‍රායෝගික' },
+            { num: 'ජීවිත කාලයටම', text: 'සහයෝගය' }
+        ],
+        stats_en: [
             { num: '10+', text: 'Professional Courses' },
             { num: '500+', text: 'Learning Resources' },
             { num: '100%', text: 'Practical Education' },
             { num: 'Lifetime', text: 'Support' }
         ],
-        rightHTML: `
+        rightHTML_si: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:5px;">
+                    <span style="font-size:32px;">🎓</span>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">HAPANAMY ACADEMY</h4>
+                    <p style="font-size:9px; color:#8D6E63; margin:0;">විශිෂ්ඨතම ඩිජිටල් අධ්‍යාපනය</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🤖 AI පුහුණුව
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    📈 Trading
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💻 Coding
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    📱 Social Media
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🎥 Video Editing
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🌍 Freelancing
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    📘 E-books
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💰 Affiliate ක්‍රමවේදය
+                </div>
+            </div>
+        `,
+        rightHTML_en: `
             <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
                 <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:5px;">
                     <span style="font-size:32px;">🎓</span>
                     <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">DIGITAL ACADEMY</h4>
                     <p style="font-size:9px; color:#8D6E63; margin:0;">World Class Learning Experience</p>
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     🤖 AI Mastery
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     📈 Trading
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     💻 Coding
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     📱 Social Media
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     🎥 Video Creation
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     🌍 Freelancing
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     📘 E-books
                 </div>
-                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     💰 Affiliate Program
                 </div>
             </div>
         `,
-        bottomBarText: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
-        bottomBarSub: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම'
+        bottomBarText_si: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
+        bottomBarText_en: 'Sri Lanka's No.1 Tech Courses and E-Learning Platform ★★★★★',
+        bottomBarSub_si: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම',
+        bottomBarSub_en: 'Practical Learning • Lifetime Support • Your Best Choice for Success'
     },
     {
         bgImage: 'assets/ai_future_city.jpg',
-        badge: '🚀 Future Skills Start Today',
-        title: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න.</span>',
-        subBadge: 'Artificial Intelligence • Automation • Digital Business',
-        desc: 'ChatGPT, Claude, Midjourney, AI Video, AI Voice, AI Automation සහ Freelancing සම්පූර්ණයෙන්ම සරල සිංහලෙන්.',
-        highlights: [
+        badge_si: '🚀 Future Skills Start Today',
+        badge_en: '🚀 Future Skills Start Today',
+        title_si: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න.</span>',
+        title_en: 'Work with AI... <br><span style="color:var(--brand-orange);">Earn Global Income.</span>',
+        subBadge_si: 'Artificial Intelligence • Automation • Digital Business',
+        subBadge_en: 'Artificial Intelligence • Automation • Digital Business',
+        desc_si: 'ChatGPT, Claude, Midjourney, AI Video, AI Voice, AI Automation සහ Freelancing සම්පූර්ණයෙන්ම සරල සිංහලෙන්.',
+        desc_en: 'ChatGPT, Claude, Midjourney, AI Video, AI Voice, AI Automation, and Freelancing completely explained in simple language.',
+        highlights_si: [
+            'AI හැදෑරීම',
+            'AI වීඩියෝ',
+            'ස්වයංක්‍රීයකරණය',
+            'නිදහස් සේවා',
+            'Online ආදායම්',
+            'වාණිජ්‍යමය AI'
+        ],
+        highlights_en: [
             'AI Mastery',
             'AI Video',
             'Automation',
@@ -2534,20 +2665,28 @@ const heroSlides = [
             'Online Income',
             'Commercial AI'
         ],
-        btnPrimary: { text: '🚀 AI පාඨමාලා බලන්න', href: '#courses' },
-        btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' },
-        stats: [
+        btnPrimary_si: '🚀 AI පාඨමාලා',
+        btnPrimary_en: '🚀 AI Courses',
+        btnSecondary_si: '💬 WhatsApp විමසීම්',
+        btnSecondary_en: '💬 WhatsApp Inquiry',
+        stats_si: [
+            { num: '1,500+', text: 'AI උපාධිධාරීන්' },
+            { num: '200+', text: 'AI Prompts' },
+            { num: '100%', text: 'ප්‍රායෝගික වැඩ' },
+            { num: '24/7', text: 'තාක්ෂණික සහය' }
+        ],
+        stats_en: [
             { num: '1,500+', text: 'AI Graduates' },
             { num: '200+', text: 'Done-For-You Prompts' },
             { num: '100%', text: 'Syllabus Coverage' },
             { num: '24/7', text: 'Community Support' }
         ],
-        rightHTML: `
+        rightHTML_si: `
             <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(102, 187, 106, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
                 <div style="grid-column: span 2; background:rgba(102,187,106,0.06); border:1px solid rgba(102,187,106,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:10px;">
                     <span style="font-size:32px;">🤖</span>
-                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">AI KNOWLEDGE PORTAL</h4>
-                    <p style="font-size:9px; color:#6D4C41; margin:0;">Future Skills Dashboard</p>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">AI දැනුම් පද්ධතිය</h4>
+                    <p style="font-size:9px; color:#6D4C41; margin:0;">අනාගත තාක්ෂණික උපකරණ පුවරුව</p>
                 </div>
                 <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
                     💬 ChatGPT
@@ -2575,16 +2714,63 @@ const heroSlides = [
                 </div>
             </div>
         `,
-        bottomBarText: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
-        bottomBarSub: 'ChatGPT • Claude • ElevenLabs • Midjourney • CapCut Automation'
+        rightHTML_en: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(102, 187, 106, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                <div style="grid-column: span 2; background:rgba(102,187,106,0.06); border:1px solid rgba(102,187,106,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:10px;">
+                    <span style="font-size:32px;">🤖</span>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">AI KNOWLEDGE PORTAL</h4>
+                    <p style="font-size:9px; color:#6D4C41; margin:0;">Future Skills Dashboard</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💬 ChatGPT
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💡 Claude
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ✨ Gemini
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🎨 Midjourney
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🎬 Runway
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🗣️ ElevenLabs
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ✂️ CapCut
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ⚙️ OpenAI
+                </div>
+            </div>
+        `,
+        bottomBarText_si: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
+        bottomBarText_en: 'Leveraging AI and Modern Technology to Dominate the Digital Space ★★★★★',
+        bottomBarSub_si: 'ChatGPT • Claude • ElevenLabs • Midjourney • CapCut Automation',
+        bottomBarSub_en: 'ChatGPT • Claude • ElevenLabs • Midjourney • CapCut Automation'
     },
     {
         bgImage: 'assets/paddy_field_sunset.jpg',
-        badge: '💰 Learn Today • Earn Tomorrow',
-        title: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න.</span>',
-        subBadge: 'Affiliate Marketing • Referral Income • Partner Network',
-        desc: 'Hapanamy Affiliate Program සමඟ එක්ව පාඨමාලා සහ E-books ප්‍රවර්ධනය කර සෘජු කොමිස් මුදල් උපයන්න.',
-        highlights: [
+        badge_si: '💰 Learn Today • Earn Tomorrow',
+        badge_en: '💰 Learn Today • Earn Tomorrow',
+        title_si: 'ඉගෙන ගනිමින් <br><span style="color:var(--brand-orange);">ආදායමත් උපයන්න.</span>',
+        title_en: 'Earn Passive Income <br><span style="color:var(--brand-orange);">While You Learn.</span>',
+        subBadge_si: 'Affiliate Marketing • Referral Income • Partner Network',
+        subBadge_en: 'Affiliate Marketing • Referral Income • Partner Network',
+        desc_si: 'Hapanamy Affiliate Program සමඟ එක්ව පාඨමාලා සහ E-books ප්‍රවර්ධනය කර සෘජු කොමිස් මුදල් උපයන්න.',
+        desc_en: 'Promote Hapanamy courses and e-books using your affiliate link and earn direct bank commissions.',
+        highlights_si: [
+            '15% සෘජු කොමිස්',
+            'සතිපතා බැංකුවට',
+            'නොමිලේ පුහුණුව',
+            'ජීවිත කාලයටම සහය',
+            'නිෂ්ක්‍රීය ආදායම්',
+            'Affiliate Dashboard'
+        ],
+        highlights_en: [
             '15% Direct Commission',
             'Weekly Payments',
             'Marketing Training',
@@ -2592,15 +2778,49 @@ const heroSlides = [
             'Passive Income',
             'Affiliate Dashboard'
         ],
-        btnPrimary: { text: '💰 Affiliate Program', href: '#affiliate' },
-        btnSecondary: { text: '🌍 Join Now', href: '#register' },
-        stats: [
+        btnPrimary_si: '💰 Affiliate එකට එක්වන්න',
+        btnPrimary_en: '💰 Affiliate Program',
+        btnSecondary_si: '🌍 ලියාපදිංජි වන්න',
+        btnSecondary_en: '🌍 Join Now',
+        stats_si: [
+            { num: 'LKR 1M+', text: 'ගෙවූ කොමිස් මුදල්' },
+            { num: '15%', text: 'සෘජු කොමිස් ප්‍රතිශතය' },
+            { num: 'සතිපතා', text: 'බැංකුවට ගෙවීම්' },
+            { num: 'නොමිලේ', text: 'අලෙවිකරණ පුහුණුව' }
+        ],
+        stats_en: [
             { num: 'LKR 1M+', text: 'Paid Commission' },
             { num: '15%', text: 'Direct Commission' },
             { num: 'Weekly', text: 'Payouts' },
             { num: 'Free', text: 'Marketing Tools' }
         ],
-        rightHTML: `
+        rightHTML_si: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:25px; box-shadow: 0 35px 70px rgba(245, 124, 0, 0.12); display:flex; flex-direction:column; gap:15px;">
+                <div style="background:rgba(245,124,0,0.06); border:1px solid rgba(245,124,0,0.3); border-radius:20px; padding:15px; text-align:center;">
+                    <div style="font-size:10px; color:#8D6E63; font-weight:700; text-transform:uppercase;">Affiliate ඉපැයීම්</div>
+                    <div style="font-size:24px; font-weight:900; color:var(--brand-orange); margin-top:2px;">රු. 84,250.00</div>
+                    <div style="font-size:10px; color:#66BB6A; font-weight:800; margin-top:4px;">✓ බැංකුවට බැර කරන ලදී</div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); text-align:center;">
+                        <span style="font-size:10px; color:var(--text-muted);">අලෙවි වූ ප්‍රමාණය</span>
+                        <div style="font-size:16px; font-weight:800; color:#5D4037; margin-top:2px;">45ක්</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); text-align:center;">
+                        <span style="font-size:10px; color:var(--text-muted);">ගෙවීම් ක්‍රමය</span>
+                        <div style="font-size:13px; font-weight:800; color:#5D4037; margin-top:4px;">Direct Bank</div>
+                    </div>
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(212,175,55,0.2); display:flex; flex-direction:column; gap:4px;">
+                    <span style="font-size:9px; font-weight:800; color:var(--text-muted); text-transform:uppercase;">ඉපැයීම් ප්‍රස්ථාරය</span>
+                    <svg viewBox="0 0 100 20" style="width:100%; height:25px; overflow:visible;">
+                        <path d="M 0 18 Q 20 15 40 10 T 80 5 T 100 2" fill="none" stroke="var(--brand-orange)" stroke-width="2" />
+                        <circle cx="100" cy="2" r="3" fill="var(--brand-orange)" />
+                    </svg>
+                </div>
+            </div>
+        `,
+        rightHTML_en: `
             <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:25px; box-shadow: 0 35px 70px rgba(245, 124, 0, 0.12); display:flex; flex-direction:column; gap:15px;">
                 <div style="background:rgba(245,124,0,0.06); border:1px solid rgba(245,124,0,0.3); border-radius:20px; padding:15px; text-align:center;">
                     <div style="font-size:10px; color:#8D6E63; font-weight:700; text-transform:uppercase;">Affiliate Earnings</div>
@@ -2626,8 +2846,10 @@ const heroSlides = [
                 </div>
             </div>
         `,
-        bottomBarText: 'Hapanamy Affiliate ජාලය සමඟ කිසිදු ආයෝජනයකින් තොරව 15% කොමිස් මුදල් සතිපතා ★★★★★',
-        bottomBarSub: 'ක්ෂණික ලියාපදිංචිය • සජීවී ඩෑෂ්බෝඩ් එක • සතිපතා ගෙවීම් ඔබේ බැංකු ගිණුමට'
+        bottomBarText_si: 'Hapanamy Affiliate ජාලය සමඟ කිසිදු ආයෝජනයකින් තොරව 15% කොමිස් මුදල් සතිපතා ★★★★★',
+        bottomBarText_en: 'Hapanamy Affiliate Network - Earn 15% Payouts Weekly with Zero Investment ★★★★★',
+        bottomBarSub_si: 'ක්ෂණික ලියාපදිංචිය • සජීවී ඩෑෂ්බෝඩ් එක • සතිපතා ගෙවීම් ඔබේ බැංකු ගිණුමට',
+        bottomBarSub_en: 'Instant Registration • Live Affiliate Dashboard • Weekly Bank Payouts'
     }
 ];
 
@@ -2643,6 +2865,7 @@ function renderHeroSlide(slideIdx) {
     if (!container || !visualContainer || !statsContainer || !bgPaddy) return;
 
     const slide = heroSlides[slideIdx];
+    const lang = localStorage.getItem('language') || 'si';
 
     // Fade out first
     container.style.opacity = '0';
@@ -2655,9 +2878,20 @@ function renderHeroSlide(slideIdx) {
         // Change background image dynamically
         bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
 
-        // Render Left Side Text Content inside large Glassmorphic Card Panel
-        // Support up to 8 highlights in 2 columns
-        const highlightsHTML = slide.highlights.map(h => `
+        // Load translated strings
+        const badge = lang === 'si' ? slide.badge_si : slide.badge_en;
+        const title = lang === 'si' ? slide.title_si : slide.title_en;
+        const subBadge = lang === 'si' ? slide.subBadge_si : slide.subBadge_en;
+        const desc = lang === 'si' ? slide.desc_si : slide.desc_en;
+        const highlights = lang === 'si' ? slide.highlights_si : slide.highlights_en;
+        const btnPrimaryText = lang === 'si' ? slide.btnPrimary_si : slide.btnPrimary_en;
+        const btnSecondaryText = lang === 'si' ? slide.btnSecondary_si : slide.btnSecondary_en;
+        const stats = lang === 'si' ? slide.stats_si : slide.stats_en;
+        const rightHTML = lang === 'si' ? slide.rightHTML_si : slide.rightHTML_en;
+        const bottomBarText = lang === 'si' ? slide.bottomBarText_si : slide.bottomBarText_en;
+        const bottomBarSub = lang === 'si' ? slide.bottomBarSub_si : slide.bottomBarSub_en;
+
+        const highlightsHTML = highlights.map(h => `
             <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
                 <span style="color:#66BB6A; font-weight:900;">✓</span>
                 <span>${h}</span>
@@ -2667,16 +2901,16 @@ function renderHeroSlide(slideIdx) {
         container.innerHTML = `
             <div style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 32px; padding: 40px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); position:relative; z-index:10;">
                 <span class="hero-badge" style="display:inline-block; margin-bottom:20px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:8px 18px; border-radius:30px; border:1px solid rgba(93,64,55,0.15); box-shadow: 0 4px 15px rgba(255, 213, 79, 0.2);">
-                    ${slide.badge}
+                    ${badge}
                 </span>
                 <h1 class="hero-title" style="font-size:38px; font-weight:900; line-height:1.2; color:#5D4037; margin-bottom:12px; font-family:'Poppins', sans-serif;">
-                    ${slide.title}
+                    ${title}
                 </h1>
                 <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:3px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block; letter-spacing:0.05em;">
-                    ${slide.subBadge}
+                    ${subBadge}
                 </div>
                 <p class="hero-subtitle" style="font-size:14.5px; color:#6D4C41; line-height:1.7; margin-bottom:24px; max-width:600px;">
-                    ${slide.desc}
+                    ${desc}
                 </p>
                 
                 <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-bottom:30px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:20px 0;">
@@ -2684,17 +2918,17 @@ function renderHeroSlide(slideIdx) {
                 </div>
 
                 <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
-                    <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${slide.btnPrimary.text}</a>
-                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
+                    <a href="#courses" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${btnPrimaryText}</a>
+                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${btnSecondaryText}</a>
                 </div>
             </div>
         `;
 
         // Render Right Side HTML Visuals
-        visualContainer.innerHTML = slide.rightHTML;
+        visualContainer.innerHTML = rightHTML;
 
         // Render Bottom Stats Bar
-        statsContainer.innerHTML = slide.stats.map(s => `
+        statsContainer.innerHTML = stats.map(s => `
             <div class="hero-stats-card">
                 <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">${s.num}</h3>
                 <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">${s.text}</p>
@@ -2702,8 +2936,8 @@ function renderHeroSlide(slideIdx) {
         `).join('');
 
         // Update Bottom Gradient Bar
-        document.getElementById('heroBottomBarText').textContent = slide.bottomBarText;
-        document.getElementById('heroBottomBarSubtext').textContent = slide.bottomBarSub;
+        document.getElementById('heroBottomBarText').textContent = bottomBarText;
+        document.getElementById('heroBottomBarSubtext').textContent = bottomBarSub;
 
         // Fade back in
         container.style.opacity = '1';
