@@ -2436,3 +2436,216 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
 
+
+// ==================== HERO AUTO SLIDER CONTROLLERS ====================
+const heroSlides = [
+    {
+        bgImage: 'assets/paddy_field_sunrise.jpg',
+        badge: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus',
+        title: 'අද ඉගෙන ගන්න... <br><span style="color:var(--brand-orange);">හෙට ලෝකය ජයගන්න.</span>',
+        subBadge: 'AI • Trading • Coding • Social Media • Business',
+        desc: 'ලෝකයට ගැළපෙන Digital Skills, AI, Trading, Coding සහ Online Business පාඨමාලා එකම Campus එකකින්.',
+        highlights: [
+            '100% Practical Learning',
+            'Lifetime Support',
+            'Professional Certificates',
+            'AI Powered Education',
+            'Affiliate Income'
+        ],
+        btnPrimary: { text: '🎓 සියලුම පාඨමාලා', href: '#courses' },
+        btnSecondary: { text: '▶️ නොමිලේ හඳුන්වාදීම', href: '#contact' },
+        stats: [
+            { num: '10+', text: 'Courses' },
+            { num: '500+', text: 'Learning Resources' },
+            { num: '100%', text: 'Practical' },
+            { num: 'Lifetime', text: 'Support' }
+        ],
+        rightHTML: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:20px; text-align:center; margin-bottom:10px;">
+                    <span style="font-size:32px;">🏛️</span>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:8px 0 2px 0;">HAPANAMY CAMPUS</h4>
+                    <p style="font-size:10px; color:#8D6E63; margin:0;">Sri Lanka's No.1 Digital Skills University</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">🤖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">AI</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">📈</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Trading</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">💻</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Coding</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">🎥</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">YouTube</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">🎵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">TikTok</span>
+                </div>
+                <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">🔵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Facebook</span>
+                </div>
+                <div style="grid-column: span 2; background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; justify-content:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                    <span style="font-size:18px;">📖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">E-books & Guides</span>
+                </div>
+            </div>
+        `,
+        bottomBarText: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
+        bottomBarSub: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම'
+    },
+    {
+        bgImage: 'assets/ai_future_city.jpg',
+        badge: '🚀 Future Skills Start Today',
+        title: 'AI සමඟ වැඩ කරන්න... <br><span style="color:var(--brand-orange);">ලෝකයෙන් ආදායම් උපයන්න.</span>',
+        subBadge: 'Artificial Intelligence • Automation • Digital Business',
+        desc: 'ChatGPT, Claude, Midjourney, AI Video, AI Voice, AI Automation සහ Freelancing සම්පූර්ණයෙන්ම සරල සිංහලෙන්.',
+        highlights: [
+            'AI Mastery',
+            'AI Video',
+            'Automation',
+            'Freelancing',
+            'Online Income',
+            'Commercial AI'
+        ],
+        btnPrimary: { text: '🚀 AI පාඨමාලා බලන්න', href: '#courses' },
+        btnSecondary: { text: '💬 WhatsApp විමසීම්', href: 'https://wa.me/94771234567' },
+        stats: [
+            { num: '1,500+', text: 'AI Graduates' },
+            { num: '200+', text: 'Done-For-You Prompts' },
+            { num: '100%', text: 'Syllabus Coverage' },
+            { num: '24/7', text: 'Community Support' }
+        ],
+        rightHTML: `
+            <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.5); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(102, 187, 106, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                <div style="grid-column: span 2; background:rgba(102,187,106,0.06); border:1px solid rgba(102,187,106,0.3); border-radius:20px; padding:15px; text-align:center; margin-bottom:10px;">
+                    <span style="font-size:32px;">🤖</span>
+                    <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:6px 0 2px 0;">AI KNOWLEDGE PORTAL</h4>
+                    <p style="font-size:9px; color:#6D4C41; margin:0;">Future Skills Dashboard</p>
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💬 ChatGPT
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    💡 Claude
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ✨ Gemini
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🎨 Midjourney
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🎬 Runway
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    🗣️ ElevenLabs
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ✂️ CapCut
+                </div>
+                <div style="background:rgba(255,255,255,0.7); padding:10px; border-radius:12px; border:1px solid rgba(102,187,106,0.25); display:flex; align-items:center; gap:8px; font-size:11px; font-weight:700; color:#5D4037;">
+                    ⚙️ OpenAI
+                </div>
+            </div>
+        `,
+        bottomBarText: 'කෘත්‍රිම බුද්ධිය සහ නවීන තාක්ෂණයෙන් ලොව දිනන AI Masterclass ★★★★★',
+        bottomBarSub: 'ChatGPT • Claude • ElevenLabs • Midjourney • CapCut Automation'
+    }
+];
+
+let currentSlideIdx = 0;
+const slideIntervalMs = 7000; // 7 seconds slider
+
+function renderHeroSlide(slideIdx) {
+    const container = document.getElementById('heroSliderContent');
+    const visualContainer = document.getElementById('heroSliderVisual');
+    const statsContainer = document.getElementById('heroStatsContainer');
+    const bgPaddy = document.getElementById('heroBgPaddy');
+
+    if (!container || !visualContainer || !statsContainer || !bgPaddy) return;
+
+    const slide = heroSlides[slideIdx];
+
+    // Fade out first
+    container.style.opacity = '0';
+    container.style.transform = 'translateY(12px)';
+    visualContainer.style.opacity = '0';
+    visualContainer.style.transform = 'scale(0.95)';
+    statsContainer.style.opacity = '0';
+
+    setTimeout(() => {
+        // Change background image dynamically
+        bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
+
+        // Render Left Side Text Content inside large Glassmorphic Card Panel
+        const highlightsHTML = slide.highlights.map(h => `
+            <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
+                <span style="color:#66BB6A; font-weight:900;">✓</span>
+                <span>${h}</span>
+            </div>
+        `).join('');
+
+        container.innerHTML = `
+            <div style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 32px; padding: 40px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); position:relative; z-index:10;">
+                <span class="hero-badge" style="display:inline-block; margin-bottom:20px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:8px 18px; border-radius:30px; border:1px solid rgba(93,64,55,0.15); box-shadow: 0 4px 15px rgba(255, 213, 79, 0.2);">
+                    ${slide.badge}
+                </span>
+                <h1 class="hero-title" style="font-size:38px; font-weight:900; line-height:1.2; color:#5D4037; margin-bottom:12px; font-family:'Poppins', sans-serif;">
+                    ${slide.title}
+                </h1>
+                <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:4px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block; letter-spacing:0.05em;">
+                    ${slide.subBadge}
+                </div>
+                <p class="hero-subtitle" style="font-size:14.5px; color:#6D4C41; line-height:1.7; margin-bottom:24px; max-width:600px;">
+                    ${slide.desc}
+                </p>
+                
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-bottom:30px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:20px 0;">
+                    ${highlightsHTML}
+                </div>
+
+                <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
+                    <a href="${slide.btnPrimary.href}" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${slide.btnPrimary.text}</a>
+                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${slide.btnSecondary.text}</a>
+                </div>
+            </div>
+        `;
+
+        // Render Right Side HTML Visuals
+        visualContainer.innerHTML = slide.rightHTML;
+
+        // Render Bottom Stats Bar
+        statsContainer.innerHTML = slide.stats.map(s => `
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">${s.num}</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">${s.text}</p>
+            </div>
+        `).join('');
+
+        // Update Bottom Gradient Bar
+        document.getElementById('heroBottomBarText').textContent = slide.bottomBarText;
+        document.getElementById('heroBottomBarSubtext').textContent = slide.bottomBarSub;
+
+        // Fade back in
+        container.style.opacity = '1';
+        container.style.transform = 'translateY(0)';
+        visualContainer.style.opacity = '1';
+        visualContainer.style.transform = 'scale(1)';
+        statsContainer.style.opacity = '1';
+
+    }, 300);
+}
+
+function initHeroSlider() {
+    renderHeroSlide(0);
+
+    setInterval(() => {
+        currentSlideIdx = (currentSlideIdx + 1) % heroSlides.length;
+        renderHeroSlide(currentSlideIdx);
+    }, slideIntervalMs);
+}
+
+// Auto-run slider on load
+document.addEventListener('DOMContentLoaded', () => {
+    initHeroSlider();
+});
