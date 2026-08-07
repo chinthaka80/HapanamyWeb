@@ -1,0 +1,1313 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account | HAPANAMY.lk</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Unified Dashboard Styles -->
+    <style>
+        :root {
+            --brand-orange: #F47B20;
+            --brand-orange-hover: #D7620F;
+            --brand-gold: #F0B323;
+            --brand-green-light: #B9E769;
+            --ph-red: #E53E3E;
+            
+            /* Dark Theme variables */
+            --bg-main: #0B192C;
+            --bg-surface: #1E3E62;
+            --text-primary: #FFF5E4;
+            --text-muted: #B2C8DF;
+            --border-color: rgba(255,245,228,0.08);
+            --transition-smooth: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="light"] {
+            --bg-main: #F4F6F9;
+            --bg-surface: #FFFFFF;
+            --text-primary: #102A43;
+            --text-muted: #627D98;
+            --border-color: #D3E2F2;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Layout */
+        .dashboard-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar styling */
+        .dashboard-sidebar {
+            background-color: #102A43; /* Always deep navy for sidebar visual consistency */
+            color: #FFF5E4;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 249, 240, 0.1);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .sidebar-logo img {
+            height: 38px;
+            border-radius: 6px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14.5px;
+            font-weight: 600;
+            color: #B2C8DF;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #FFF5E4;
+        }
+
+        .nav-link.active {
+            border-left: 4px solid var(--brand-orange);
+            background-color: rgba(244, 123, 32, 0.1);
+            color: var(--brand-orange) !important;
+        }
+
+        .nav-icon {
+            font-size: 18px;
+        }
+
+        /* Content Area */
+        .dashboard-content-area {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        /* Top Bar */
+        .dashboard-topbar {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 18px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+
+        .topbar-title {
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+            color: var(--text-primary);
+        }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .btn-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .user-profile-badge {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 6px 12px;
+            background-color: rgba(0,0,0,0.05);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background-color: var(--brand-orange);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 12px;
+        }
+
+        /* Panels Container */
+        .main-content {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        .account-panel {
+            display: none;
+        }
+
+        .account-panel.active {
+            display: block;
+        }
+
+        /* Cards and Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            transition: 0.3s;
+        }
+
+        .stat-label {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        /* Forms styling */
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group textarea:not(:placeholder-shown) ~ label {
+            top: 0;
+            font-size: 11px;
+            background-color: var(--bg-surface);
+            padding: 0 6px;
+            transform: translateY(-50%) translateX(2px);
+            color: var(--brand-orange);
+            font-weight: 700;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-orange);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--brand-orange-hover);
+        }
+
+        .btn-secondary {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* Tables styling */
+        .admin-table-box {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .admin-table-title {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 800;
+            font-size: 15px;
+            color: var(--text-primary);
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .admin-table th, .admin-table td {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 13.5px;
+        }
+
+        .admin-table th {
+            background-color: rgba(0,0,0,0.08);
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        /* Status Badges */
+        .badge-status {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        .badge-status.pending {
+            background-color: rgba(244, 123, 32, 0.15);
+            color: var(--brand-orange);
+        }
+
+        .badge-status.paid {
+            background-color: rgba(185, 231, 105, 0.15);
+            color: var(--brand-green-light);
+        }
+
+        /* Toast Container */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background-color: #102A43;
+            color: #FFF5E4;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-left: 5px solid var(--brand-orange);
+            font-size: 13.5px;
+            animation: slideIn 0.3s ease;
+        }
+
+        /* Course Player custom layouts */
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .course-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-orange);
+        }
+
+        .course-banner {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .course-info {
+            padding: 20px;
+        }
+
+        .course-title {
+            font-size: 15px;
+            font-weight: 800;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 6px;
+            background-color: rgba(0,0,0,0.15);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 15px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
+            width: 0%;
+            transition: width 0.5s;
+        }
+
+        .course-workspace {
+            display: none;
+            grid-template-columns: 280px 1fr;
+            background-color: var(--bg-surface);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .workspace-sidebar {
+            background-color: rgba(0,0,0,0.12);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+        }
+
+        .playlist-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 15px;
+        }
+
+        .playlist-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .playlist-item {
+            padding: 10px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-muted);
+            transition: 0.2s;
+        }
+
+        .playlist-item:hover, .playlist-item.active {
+            background-color: rgba(255,255,255,0.05);
+            color: var(--text-primary);
+        }
+
+        .playlist-item.active {
+            border-left: 3px solid var(--brand-orange);
+            font-weight: 700;
+        }
+
+        .workspace-content {
+            padding: 30px;
+        }
+
+        /* Mobile adaptation */
+        @media (max-width: 900px) {
+            .dashboard-layout {
+                grid-template-columns: 1fr;
+            }
+            .dashboard-sidebar {
+                display: none;
+            }
+            .mobile-bottom-nav {
+                display: flex !important;
+            }
+            .dashboard-content-area {
+                padding-bottom: 70px;
+            }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-layout">
+        <!-- SIDEBAR NAVIGATION -->
+        <aside class="dashboard-sidebar">
+            <div class="sidebar-logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li class="nav-link active" onclick="switchTab('dashboard')" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span data-translate="menu_overview">Overview</span>
+                </li>
+                <li class="nav-link" onclick="switchTab('courses')" id="nav-courses">
+                    <span class="nav-icon">🎥</span>
+                    <span data-translate="menu_courses">My Courses</span>
+                </li>
+                <li class="nav-link" onclick="switchTab('links')" id="nav-links">
+                    <span class="nav-icon">🔗</span>
+                    <span data-translate="menu_links">Referral Links</span>
+                </li>
+                <li class="nav-link" onclick="switchTab('network')" id="nav-network">
+                    <span class="nav-icon">👥</span>
+                    <span data-translate="menu_network">My Team</span>
+                </li>
+                <li class="nav-link" onclick="switchTab('payouts')" id="nav-payouts">
+                    <span class="nav-icon">💸</span>
+                    <span data-translate="menu_payouts">Payout Requests</span>
+                </li>
+                <li class="nav-link" onclick="switchTab('settings')" id="nav-settings">
+                    <span class="nav-icon">⚙️</span>
+                    <span data-translate="menu_settings">Profile Settings</span>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255,245,228,0.08); display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="nav-link" style="color: var(--brand-gold);">
+                    <span class="nav-icon">🏠</span>
+                    <span data-translate="menu_exit">View Website</span>
+                </a>
+                <div class="nav-link" onclick="logoutUser()" style="color: var(--ph-red) !important; cursor: pointer;">
+                    <span class="nav-icon">🚪</span>
+                    <span data-translate="menu_logout">Log Out</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- CONTENT AREA -->
+        <main class="dashboard-content-area">
+            <!-- Top Bar -->
+            <div class="dashboard-topbar">
+                <div class="topbar-title" id="pageHeaderTitle">MY ACCOUNT (මගේ ගිණුම)</div>
+                
+                <div class="topbar-controls">
+                    <!-- Language selector -->
+                    <button class="btn-toggle" id="langToggleBtn" onclick="toggleLanguage()">🇬🇧/🇱🇰</button>
+                    <!-- Theme selector -->
+                    <button class="btn-toggle" id="themeToggleBtn">🌓</button>
+                    
+                    <div class="user-profile-badge">
+                        <div class="user-avatar" id="avatarLetter">K</div>
+                        <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Kasun Tharaka</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content Container -->
+            <div class="main-content">
+                
+                <!-- 1. OVERVIEW PANEL -->
+                <div class="account-panel active" id="panel-dashboard">
+                    <!-- BIG CTA COURSE BOARD -->
+                    <div style="background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); padding: 25px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(244,123,32,0.25);">
+                        <div>
+                            <h3 style="font-size: 18px; margin-bottom: 6px; font-weight: 800; font-family: 'Outfit', sans-serif;">🎥 ඔබේ පාඨමාලා හැදෑරීම අරඹන්න (Start Learning Now)</h3>
+                            <p style="font-size: 13px; opacity: 0.9;">ඔබ මිලදී ගත් සියලුම පාඨමාලා නැරඹීමට සහ විභාග සඳහා පෙනී සිටීමට මෙතැනින් පිවිසෙන්න.</p>
+                        </div>
+                        <button class="btn" onclick="switchTab('courses')" style="background-color: #102A43; color: white; border: none; padding: 12px 24px; font-weight: 800; border-radius: 8px; cursor: pointer; transition: 0.2s;">
+                            Go to My Courses 🎥
+                        </button>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">ආදායම (Total Earnings LKR)</div>
+                            <div class="stat-value" style="color: var(--brand-gold);">රු. 23,790.00</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">ප්‍රවර්ධන ක්ලික් කිරීම් (Link Clicks)</div>
+                            <div class="stat-value">1,248 Clicks</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">මුළු විකුණුම් (Direct Referrals)</div>
+                            <div class="stat-value">12 Sales</div>
+                        </div>
+                    </div>
+
+                    <!-- Earnings trend mock chart -->
+                    <div class="admin-table-box" style="padding: 24px;">
+                        <h4 style="margin-bottom: 20px; color: var(--text-primary); font-size: 15px;">පසුගිය මාස 6 කොමිස් ලැබීමේ ප්‍රස්ථාරය (Last 6 Months Earnings Trend)</h4>
+                        <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 160px; padding: 10px 20px; border-left: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color); max-width: 600px; margin: 0 auto;">
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 4.2K</span>
+                                <div style="width: 20px; height: 35px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Feb</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 8.5K</span>
+                                <div style="width: 20px; height: 60px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Mar</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 12.0K</span>
+                                <div style="width: 20px; height: 90px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Apr</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 9.8K</span>
+                                <div style="width: 20px; height: 75px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">May</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 16.5K</span>
+                                <div style="width: 20px; height: 120px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Jun</span>
+                            </div>
+                            <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-gold);">රු. 23.7K</span>
+                                <div style="width: 20px; height: 145px; background: var(--brand-gold); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted); font-weight: 700;">Jul</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. MY COURSES PANEL -->
+                <div class="account-panel" id="panel-courses">
+                    <div class="courses-grid" id="studentCoursesGrid">
+                        <!-- Dynamic purchased courses render here -->
+                    </div>
+
+                    <!-- Video player workspace simulator (Visible when course clicked) -->
+                    <div class="course-workspace" id="coursePlayerWorkspace">
+                        <div class="workspace-sidebar">
+                            <div class="playlist-title">Chapters & Lessons</div>
+                            <ul class="playlist-list">
+                                <li class="playlist-item active" onclick="playLesson('Lesson 01: Introductions to Market Structure', 1)">
+                                    <span>⏹️</span> Lesson 01: Introduction & Basics
+                                </li>
+                                <li class="playlist-item" onclick="playLesson('Lesson 02: Liquidity Pools & Stop Runs', 2)">
+                                    <span>⏹️</span> Lesson 02: Liquidity & Stop Runs
+                                </li>
+                                <li class="playlist-item" onclick="playLesson('Lesson 03: Order Blocks & Fair Value Gaps', 3)">
+                                    <span>⏹️</span> Lesson 03: Order Blocks & FVG
+                                </li>
+                            </ul>
+                            
+                            <!-- PDF Ebooks list inside course sidebar -->
+                            <div class="playlist-title" style="margin-top: 30px;">Attachments (PDF)</div>
+                            <ul class="playlist-list">
+                                <li class="playlist-item" onclick="alert('Downloading attachment: Chapter 1 SMC Cheat Sheet.pdf')">
+                                    <span>📄</span> Download SMC Guide
+                                </li>
+                                <li class="playlist-item" onclick="openFlipbook()">
+                                    <span>📖</span> Read E-Book Flipbook
+                                </li>
+                            </ul>
+
+                            <button class="btn btn-secondary" style="width:100%; border-color:var(--brand-orange); color:var(--brand-orange); margin-top:30px;" onclick="openMCQQuiz()">
+                                📝 Take Course Quiz
+                            </button>
+                        </div>
+
+                        <div class="workspace-content">
+                            <h3 id="currentPlayingLessonTitle" style="font-size: 18px; margin-bottom: 20px;">Lesson 01: Introduction & Basics</h3>
+                            
+                            <!-- Simulated Video Box -->
+                            <div style="background-color: black; aspect-ratio: 16/9; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative;" id="videoSimulator">
+                                <button class="btn" style="background-color: var(--brand-orange); border: none;" onclick="simulateVideoProgress()">Play Simulator Video ▶</button>
+                            </div>
+                            
+                            <div style="margin-top: 20px; display: flex; justify-content: space-between;">
+                                <button class="btn btn-secondary" onclick="alert('First lesson of course.')">Previous Lesson</button>
+                                <button class="btn btn-primary" onclick="markLessonCompleted()">Mark as Completed & Next</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. REFERRAL LINKS PANEL -->
+                <div class="account-panel" id="panel-links">
+                    <div class="admin-table-box" style="padding: 24px;">
+                        <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px;">ඔබේ පොදු අනුබද්ධිත සබැඳිය (Your Main Referral Link)</h3>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ මිලදී ගන්නා සියලුම ගනුදෙනු සඳහා ඔබට 15% සෘජු කොමිස් සහ මට්ටම් 5 කින් නිෂ්ක්‍රීය ආදායම් ලැබෙනු ඇත.</p>
+                        
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" id="mainReferralLinkVal" readonly value="http://localhost:3000/?ref=kasun_t" style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px;">
+                            <button class="btn btn-primary" onclick="copyReferralLink('mainReferralLinkVal')">Copy Link</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. MY TEAM PANEL (5 MLM LAYERS STRUCTURE) -->
+                <div class="account-panel" id="panel-network">
+                    <div style="background-color: var(--bg-surface); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
+                        <input type="text" id="downlineSearchInput" oninput="filterDownlineNetwork()" placeholder="🔍 Search team member by name..." style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <!-- Level 1 Card: Direct Referrals -->
+                        <div class="admin-table-box" style="border-left: 5px solid #B9E769; box-shadow: 0 4px 10px rgba(185,231,105,0.05);">
+                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                                <span style="font-weight: 800; font-size: 14.5px; color: #B9E769;">👥 Layer 01 (Direct Team) - 10% Commission</span>
+                                <span style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Active Volume: රු. 35,000</span>
+                            </div>
+                            <div id="level1DownlinesList" style="padding: 10px 20px;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Level 2 Card: Indirect Referrals -->
+                        <div class="admin-table-box" style="border-left: 5px solid #3182CE; box-shadow: 0 4px 10px rgba(49,130,206,0.05);">
+                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                                <span style="font-weight: 800; font-size: 14.5px; color: #3182CE;">👥 Layer 02 (Indirect Team L2) - 5% Commission</span>
+                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 24,000</span>
+                            </div>
+                            <div id="level2DownlinesList" style="padding: 10px 20px;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Level 3 Card: Indirect Referrals -->
+                        <div class="admin-table-box" style="border-left: 5px solid #F0B323; box-shadow: 0 4px 10px rgba(240,179,35,0.05);">
+                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                                <span style="font-weight: 800; font-size: 14.5px; color: #F0B323;">👥 Layer 03 (Indirect Team L3) - 3% Commission</span>
+                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 12,000</span>
+                            </div>
+                            <div id="level3DownlinesList" style="padding: 10px 20px;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Level 4 Card: Indirect Referrals -->
+                        <div class="admin-table-box" style="border-left: 5px solid #9F7AEA; box-shadow: 0 4px 10px rgba(159,122,234,0.05);">
+                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                                <span style="font-weight: 800; font-size: 14.5px; color: #9F7AEA;">👥 Layer 04 (Indirect Team L4) - 3% Commission</span>
+                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 8,000</span>
+                            </div>
+                            <div id="level4DownlinesList" style="padding: 10px 20px;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Level 5 Card: Indirect Referrals -->
+                        <div class="admin-table-box" style="border-left: 5px solid #ED64A6; box-shadow: 0 4px 10px rgba(237,100,166,0.05);">
+                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                                <span style="font-weight: 800; font-size: 14.5px; color: #ED64A6;">👥 Layer 05 (Indirect Team L5) - 3% Commission</span>
+                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 5,000</span>
+                            </div>
+                            <div id="level5DownlinesList" style="padding: 10px 20px;">
+                                <!-- Injected dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. PAYOUTS PANEL -->
+                <div class="account-panel" id="panel-payouts">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                        <div class="stat-card">
+                            <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">මුදල් ලබාගැනීමේ ඉල්ලීම (Request Payout)</h3>
+                            
+                            <div style="margin-bottom: 20px; background-color: rgba(185, 231, 105, 0.08); padding: 15px; border-radius: 8px; border: 1px dashed var(--brand-green-light);">
+                                <span style="font-size: 12px; color: var(--text-muted); display: block;">ගෙවිය හැකි මුළු කොමිස් ශේෂය (Withdrawable Balance)</span>
+                                <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 23,790.00</span>
+                            </div>
+
+                            <form id="payoutRequestForm" onsubmit="submitPayoutRequest(event)">
+                                <div class="form-group">
+                                    <input type="number" id="payoutAmountInput" required min="1000" placeholder=" " style="width: 100%;">
+                                    <label for="payoutAmountInput">ලබා ගැනීමට අවශ්‍ය මුදල (Amount LKR)</label>
+                                </div>
+
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details)</label>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">ඉල්ලීම යොමු කරන්න (Request Bank Payout)</button>
+                            </form>
+                        </div>
+
+                        <div class="admin-table-box">
+                            <div class="admin-table-title">පසුගිය ගෙවීම් ලොගය (Payout History Log)</div>
+                            <table class="admin-table" id="payoutLogTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Txn Ref</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Injected dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. PROFILE SETTINGS PANEL -->
+                <div class="account-panel" id="panel-settings">
+                    <div class="stat-card" style="max-width: 600px;">
+                        <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">පැතිකඩ සැකසුම් (Profile Settings Database)</h3>
+                        
+                        <form id="unifiedSettingsForm" onsubmit="saveUserProfile(event)">
+                            <div class="form-group">
+                                <input type="text" id="setUserName" value="Kasun Tharaka" required placeholder=" ">
+                                <label for="setUserName">සම්පූර්ණ නම (Full Name)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" id="setUserEmail" value="student@hapanamy.lk" required placeholder=" ">
+                                <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" id="setUserPhone" value="0771234567" required placeholder=" ">
+                                <label for="setUserPhone">දුරකථන අංකය (Phone Number)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="setUserAddress" value="No. 45, Temple Road, Maharagama" required placeholder=" ">
+                                <label for="setUserAddress">ලිපිනය (Home Address)</label>
+                            </div>
+                            
+                            <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; background-color: rgba(255,255,255,0.02);">
+                                <h4 style="font-size: 13px; margin-bottom: 12px; color: var(--brand-orange);">🏦 ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):</h4>
+                                <div class="form-group">
+                                    <input type="text" id="setUserBankName" value="Commercial Bank" required placeholder=" ">
+                                    <label for="setUserBankName">බැංකුවේ නම (Bank Name)</label>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <input type="text" id="setUserBankBranch" value="Maharagama" required placeholder=" ">
+                                    <label for="setUserBankBranch">ශාඛාව (Branch)</label>
+                                </div>
+                                <div class="form-group" style="margin-top: 15px;">
+                                    <input type="text" id="setUserBankAcc" value="8010294851" required placeholder=" ">
+                                    <label for="setUserBankAcc">ගිණුම් අංකය (Account Number)</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
+                        </form>
+                    </div>
+
+                    <!-- PASSKEY SETUP CARD -->
+                    <div class="stat-card" style="max-width: 600px; margin-top: 25px;">
+                        <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🔐 ගෙවීම් ආරක්ෂණ මුරපදය (Payout Passkey Settings)</h3>
+                        <form id="passkeySetupForm" onsubmit="savePayoutPasskey(event)">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="password" id="payoutPasskeyVal" placeholder=" " required maxlength="6" minlength="4" pattern="[0-9]*" inputmode="numeric">
+                                <label for="payoutPasskeyVal">නව මුදල් ලබාගැනීමේ මුරපදය (4-6 Digit Passkey/PIN)</label>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%; border: none;">මුරපදය සුරකින්න (Save Passkey)</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- PASSKEY VERIFICATION MODAL OVERLAY -->
+    <div class="cart-drawer" id="passkeyModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 340px; height: auto; background-color: var(--bg-surface); border: 2px solid var(--brand-orange); box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-radius: 12px; z-index: 2001; display: none; flex-direction: column; padding: 25px; text-align: center;">
+        <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px; font-family: 'Outfit', sans-serif;">🔐 Confirm Payout Passkey</h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 20px;">ගනුදෙනුව තහවුරු කිරීම සඳහා ඔබ සැකසූ 4-6 අංක ගෙවීම් මුරපදය (Passkey) ඇතුළත් කරන්න.</p>
+        
+        <form onsubmit="verifyAndSubmitPayout(event)">
+            <div class="form-group" style="margin-bottom: 20px;">
+                <input type="password" id="confirmPasskeyInput" required maxlength="6" placeholder=" " style="text-align: center; font-size: 20px; letter-spacing: 5px; background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-primary);">
+                <label for="confirmPasskeyInput" style="left: 0; right: 0; text-align: center;">ENTER PASSKEY</label>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" class="btn btn-secondary" onclick="closePasskeyModal()" style="flex: 1; padding: 10px;">Cancel</button>
+                <button type="submit" class="btn btn-primary" style="flex: 1; padding: 10px; border: none; background-color: var(--brand-orange);">Confirm</button>
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal backdrop -->
+    <div id="modalBackdrop" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(0,0,0,0.6); z-index: 2000; display: none;" onclick="closePasskeyModal()"></div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // 🔒 Session Security Guard
+        (function() {
+            const activeUser = JSON.parse(localStorage.getItem('active_user'));
+            if (!activeUser) {
+                alert('🔒 Access Denied! Please sign in first.');
+                window.location.href = 'login-register.html';
+            }
+        })();
+
+        // Theme and Theme settings init
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+                showToast('Theme set to ' + next);
+            });
+        }
+
+        // Switch Tabs function
+        function switchTab(tabId) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
+            
+            const activeLink = document.getElementById('nav-' + tabId);
+            const activePanel = document.getElementById('panel-' + tabId);
+            if (activeLink) activeLink.classList.add('active');
+            if (activePanel) activePanel.classList.add('active');
+        }
+
+        // Show Toast Utility
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 4000);
+        }
+
+        // Logout
+        function logoutUser() {
+            localStorage.removeItem('active_user');
+            showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
+            setTimeout(() => { window.location.href = 'login-register.html'; }, 1500);
+        }
+
+        // Filter downline members across all 5 levels dynamically
+        function filterDownlineNetwork() {
+            const query = document.getElementById('downlineSearchInput').value.toLowerCase();
+            const members = document.querySelectorAll('.network-member-item');
+            
+            members.forEach(item => {
+                const nameNode = item.querySelector('.network-member-name');
+                if (nameNode) {
+                    const nameText = nameNode.textContent.toLowerCase();
+                    if (nameText.includes(query)) {
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+        }
+
+        // Load dynamically referred downline members grouped into layers (Levels 1 to 5)
+        function loadDynamicDownlines() {
+            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
+            const myRefCode = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'kasun_t';
+            
+            // Containers
+            const l1Container = document.getElementById('level1DownlinesList');
+            const l2Container = document.getElementById('level2DownlinesList');
+            const l3Container = document.getElementById('level3DownlinesList');
+            const l4Container = document.getElementById('level4DownlinesList');
+            const l5Container = document.getElementById('level5DownlinesList');
+
+            if (!l1Container || !l2Container) return;
+
+            // Load baseline mock data
+            l1Container.innerHTML = `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">සඳුනි පෙරේරා (Direct Referral)</div>
+                        <div style="font-size:11px; color:var(--text-muted);">3 Sales generated</div>
+                    </div>
+                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 3,500.00</div>
+                </div>
+                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">නිමල් සිරි (Direct Referral)</div>
+                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
+                    </div>
+                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>
+                </div>`;
+
+            l2Container.innerHTML = `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">රුවන් බණ්ඩාර</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 1,200.00</div>
+                </div>
+                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">කවීන් සිල්වා</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 350.00</div>
+                </div>`;
+
+            l3Container.innerHTML = `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">ප්‍රියන්ත කුමාර</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by රුවන් | L3 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 240.00</div>
+                </div>`;
+
+            l4Container.innerHTML = `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">දිල්හානි ජයවර්ධන</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by ප්‍රියන්ත | L4 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>
+                </div>`;
+
+            l5Container.innerHTML = `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">තිළිණ පෙරේරා</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by දිල්හානි | L5 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 300.00</div>
+                </div>`;
+
+            // Load dynamically signed up users from local storage
+            const dynamicMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
+            dynamicMembers.forEach(member => {
+                // 1. Direct referral (Level 1)
+                const div1 = document.createElement('div');
+                div1.className = 'network-member-item';
+                div1.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
+                div1.innerHTML = `
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">${member.name} (Direct Referral)</div>
+                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
+                    </div>
+                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>`;
+                l1Container.insertBefore(div1, l1Container.firstChild);
+
+                // 2. Simulate an indirect referral under this user (Level 2) to show unilevel flow
+                const div2 = document.createElement('div');
+                div2.className = 'network-member-item';
+                div2.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
+                div2.innerHTML = `
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">${member.name}'s Referral (Indirect)</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Referred by ${member.name.split(' ')[0]} | L2 Split active</div>
+                    </div>
+                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>`;
+                l2Container.insertBefore(div2, l2Container.firstChild);
+            });
+        }
+
+        // Save profile
+        function saveUserProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('setUserName').value;
+            const email = document.getElementById('setUserEmail').value;
+            const phone = document.getElementById('setUserPhone').value;
+            const address = document.getElementById('setUserAddress').value;
+            const bankName = document.getElementById('setUserBankName').value;
+            const branch = document.getElementById('setUserBankBranch').value;
+            const accNumber = document.getElementById('setUserBankAcc').value;
+
+            const profile = { name, email, phone, address, bankName, branch, accNumber };
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
+
+            // Sync topbar
+            document.getElementById('headerUserName').textContent = name;
+            document.getElementById('avatarLetter').textContent = name.charAt(0);
+
+            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
+        }
+
+        // Load profile datasets
+        function loadUserProfile() {
+            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {
+                name: 'Kasun Tharaka',
+                email: 'student@hapanamy.lk',
+                phone: '0771234567',
+                address: 'No. 45, Temple Road, Maharagama',
+                bankName: 'Commercial Bank',
+                branch: 'Maharagama',
+                accNumber: '8010294851'
+            };
+
+            document.getElementById('setUserName').value = profile.name;
+            document.getElementById('setUserEmail').value = profile.email;
+            document.getElementById('setUserPhone').value = profile.phone;
+            document.getElementById('setUserAddress').value = profile.address;
+            document.getElementById('setUserBankName').value = profile.bankName;
+            document.getElementById('setUserBankBranch').value = profile.branch;
+            document.getElementById('setUserBankAcc').value = profile.accNumber;
+
+            document.getElementById('headerUserName').textContent = profile.name;
+            document.getElementById('avatarLetter').textContent = profile.name.charAt(0);
+        }
+
+        // Load Payouts queue
+        function getAffiliateBalance() {
+            let balance = localStorage.getItem('affiliate_balance');
+            if (balance === null) {
+                balance = '23790';
+                localStorage.setItem('affiliate_balance', balance);
+            }
+            return parseFloat(balance);
+        }
+
+        function loadPayoutHistory() {
+            const balance = getAffiliateBalance();
+            document.getElementById('payoutWithdrawableBalVal').textContent = 'රු. ' + balance.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('payoutAmountInput').max = balance;
+
+            const list = JSON.parse(localStorage.getItem('payout_requests_queue')) || [];
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+            const tbody = document.querySelector('#payoutLogTable tbody');
+            if (!tbody) return;
+
+            let rowsHtml = `
+                <tr>
+                    <td>2026-08-01</td>
+                    <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">TXN-WD-8291-K4A7</td>
+                    <td style="font-weight: 700;">රු. 15,000.00</td>
+                    <td><span class="badge-status paid">Paid & Completed</span></td>
+                </tr>`;
+
+            list.forEach(item => {
+                if (item.email === activeUser.email) {
+                    const statusClass = item.status.toLowerCase().includes('pending') ? 'pending' : 'paid';
+                    const displayTxn = item.txnCode || 'TXN-WD-PEND-LOG';
+                    rowsHtml = `
+                        <tr>
+                            <td>${item.date}</td>
+                            <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${displayTxn}</td>
+                            <td style="font-weight: 700;">රු. ${item.amount.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td><span class="badge-status ${statusClass}">${item.status}</span></td>
+                        </tr>` + rowsHtml;
+                }
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        // Save Payout Passkey Setup
+        function savePayoutPasskey(event) {
+            event.preventDefault();
+            const pin = document.getElementById('payoutPasskeyVal').value;
+            localStorage.setItem('payout_passkey', pin);
+            
+            showToast('🔐 <strong>මුරපදය සුරැකිණි!</strong> ඔබගේ මුදල් ලබාගැනීමේ ආරක්ෂණ මුරපදය (Passkey) සාර්ථකව සුරකින ලදී.');
+            document.getElementById('payoutPasskeyVal').value = '';
+        }
+
+        // Temporary storage for pending withdrawal
+        let tempPayoutAmount = 0;
+        let tempPayoutBank = '';
+
+        function openPasskeyModal() {
+            document.getElementById('passkeyModal').style.display = 'flex';
+            document.getElementById('modalBackdrop').style.display = 'block';
+            document.getElementById('confirmPasskeyInput').focus();
+        }
+
+        function closePasskeyModal() {
+            document.getElementById('passkeyModal').style.display = 'none';
+            document.getElementById('modalBackdrop').style.display = 'none';
+            document.getElementById('confirmPasskeyInput').value = '';
+        }
+
+        // Submit payout request action (Checks passkey)
+        function submitPayoutRequest(event) {
+            event.preventDefault();
+            const amount = parseFloat(document.getElementById('payoutAmountInput').value);
+            const bank = document.getElementById('payoutBankDetails').value;
+            const balance = getAffiliateBalance();
+
+            const savedPasskey = localStorage.getItem('payout_passkey');
+            if (!savedPasskey) {
+                showToast('⚠️ <strong>ආරක්ෂණ මුරපදයක් නැත!</strong> මුදල් ලබාගැනීමට පෙර කරුණාකර Settings වෙත ගොස් Payout Passkey එකක් සකසා ගන්න.');
+                switchTab('settings');
+                return;
+            }
+
+            if (amount > balance) {
+                showToast('❌ <strong>අසමත් විය!</strong> ලබාගත හැකි ඉහළම ශේෂය ඉක්මවා මුදල් ඉල්ලුම් කළ නොහැක.');
+                return;
+            }
+
+            // Store in temp vars and request passkey confirmation
+            tempPayoutAmount = amount;
+            tempPayoutBank = bank;
+            openPasskeyModal();
+        }
+
+        // Verify passkey and submit request
+        function verifyAndSubmitPayout(event) {
+            event.preventDefault();
+            const typedPIN = document.getElementById('confirmPasskeyInput').value;
+            const savedPasskey = localStorage.getItem('payout_passkey');
+
+            if (typedPIN === savedPasskey) {
+                closePasskeyModal();
+                
+                const balance = getAffiliateBalance();
+                const newBalance = balance - tempPayoutAmount;
+                localStorage.setItem('affiliate_balance', newBalance.toString());
+
+                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+                const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
+                
+                const payoutReq = {
+                    id: 'payout-' + Math.floor(1000 + Math.random() * 9000),
+                    name: profile.name,
+                    email: activeUser.email,
+                    amount: tempPayoutAmount,
+                    bank: tempPayoutBank,
+                    date: new Date().toLocaleDateString(),
+                    status: 'Pending approval'
+                };
+
+                let allPayouts = JSON.parse(localStorage.getItem('payout_requests_queue')) || [];
+                allPayouts.push(payoutReq);
+                localStorage.setItem('payout_requests_queue', JSON.stringify(allPayouts));
+
+                showToast(`💸 <strong>ඉල්ලීම යොමු කරන ලදී!</strong> රු. ${tempPayoutAmount.toLocaleString()} ක මුදල් ලබාගැනීමේ ඉල්ලීම සාර්ථකව Admin වෙත යවන ලදී.`);
+
+                document.getElementById('payoutAmountInput').value = '';
+                loadPayoutHistory();
+            loadDynamicDownlines();
+            } else {
+                showToast('❌ <strong>වැරදි මුරපදයක්!</strong> ඔබ ඇතුළත් කළ ආරක්ෂණ මුරපදය (Passkey) වැරදියි. උත්සාහය ප්‍රතික්ෂේප විය.');
+                closePasskeyModal();
+            }
+        }
+
+        // Copy Links
+        function copyReferralLink(inputId) {
+            const input = document.getElementById(inputId);
+            input.select();
+            document.execCommand('copy');
+            showToast('📋 <strong>Referral Link Copied!</strong> Start sharing to earn LKR.');
+        }
+
+        // Video Player Simulator
+        function openCoursePlayer(courseId) {
+            document.getElementById('studentCoursesGrid').style.display = 'none';
+            document.getElementById('coursePlayerWorkspace').style.display = 'grid';
+        }
+
+        function playLesson(title, number) {
+            document.getElementById('currentPlayingLessonTitle').textContent = title;
+            document.querySelectorAll('.playlist-item').forEach(i => i.classList.remove('active'));
+            // Set active list item
+            const items = document.querySelectorAll('.playlist-item');
+            if (items[number - 1]) items[number - 1].classList.add('active');
+        }
+
+        function simulateVideoProgress() {
+            const video = document.getElementById('videoSimulator');
+            video.innerHTML = `<div style="color:white; font-size:14px; text-align:center;">⏳ Loading video stream...</div>`;
+            setTimeout(() => {
+                video.innerHTML = `<div style="color:var(--brand-green-light); font-size:15px; text-align:center; font-weight:800;">▶ Video Streaming Active (Titan Elite SMC Lesson)</div>`;
+            }, 1500);
+        }
+
+        function markLessonCompleted() {
+            showToast('✅ Lesson marked as completed! Course progress updated.');
+        }
+
+        // Language toggle dummy
+        function toggleLanguage() {
+            showToast('🔄 Switching language between English & Sinhala...');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStudentPurchasedCourses();
+            loadUserProfile();
+            loadPayoutHistory();
+        });
+    </script>
+</body>
+</html>
