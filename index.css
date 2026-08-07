@@ -2005,8 +2005,8 @@ a {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: saturate(1.4) brightness(1.05) contrast(1.02); /* Boost saturation, brightness, and contrast to make colors pop */
-    opacity: 0.9; /* High visibility so the beautiful green and golden sunset details stand out */
+    filter: saturate(1.6) brightness(1.1) contrast(1.05); /* Increased saturation to 1.6 and brightness to 1.1 */
+    opacity: 1.0; /* Maximized opacity to 1.0 (100% visible) */
     z-index: 1;
     transform: scale(1.1);
     animation: kenburns 22s infinite ease-in-out;
