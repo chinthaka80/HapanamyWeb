@@ -96,36 +96,126 @@
     <!-- Hero Section -->
     <section class="hero" id="home" style="padding: 120px 0 0 0; position:relative; overflow:hidden;">
         <!-- Paddy Field blurred background with gold overlay -->
-        <div class="hero-bg-paddy" id="heroBgPaddy"></div>
+        <div class="hero-bg-paddy" style="background-image: url('assets/paddy_field_sunrise.jpg');"></div>
         <div class="hero-bg-shapes">
             <div class="shape shape-1"></div>
             <div class="shape shape-2"></div>
             <div class="shape shape-3"></div>
         </div>
         
-        <div class="container hero-container" style="position:relative; z-index:5; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; padding-bottom: 50px;">
-            <!-- Left Side: Dynamic Slider Content -->
-            <div class="hero-content" id="heroSliderContent" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease;">
-                <!-- Injected dynamically by JS -->
+        <div class="container hero-container" style="position:relative; z-index:5; display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: center; padding-bottom: 50px;">
+            <!-- Left Side: Luxury Glassmorphism Content Card -->
+            <div class="hero-content float-anim" style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 32px; padding: 40px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); position:relative; z-index:10;">
+                
+                <!-- Gold Badge -->
+                <span class="hero-badge" style="display:inline-block; margin-bottom:20px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:8px 18px; border-radius:30px; border:1px solid rgba(93,64,55,0.15); box-shadow: 0 4px 15px rgba(255, 213, 79, 0.2);">
+                    🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus
+                </span>
+                
+                <!-- Main Title -->
+                <h1 class="hero-title" style="font-size:42px; font-weight:900; line-height:1.2; color:#5D4037; margin-bottom:12px; font-family:'Poppins', sans-serif;">
+                    අද ඉගෙන ගන්න... <br><span style="color:var(--brand-orange);">හෙට ලෝකය ජයගන්න.</span>
+                </h1>
+                
+                <!-- Sub Title -->
+                <div style="font-size:13.5px; font-weight:700; color:#5D4037; background:rgba(212,175,55,0.08); border-left:4px solid var(--brand-gold); padding:6px 12px; margin-bottom:18px; border-radius:4px; display:inline-block; letter-spacing:0.05em;">
+                    AI • Trading • Coding • Social Media • Business
+                </div>
+                
+                <!-- Description -->
+                <p class="hero-subtitle" style="font-size:14.5px; color:#6D4C41; line-height:1.7; margin-bottom:24px; max-width:600px;">
+                    ලෝකයට ගැළපෙන Digital Skills, AI, Trading, Coding සහ Online Business පාඨමාලා එකම Campus එකකින්.
+                </p>
+                
+                <!-- Features Grid -->
+                <div style="display:grid; grid-template-columns: repeat(2, 1fr); gap:12px; margin-bottom:30px; border-top:1px solid var(--border-color); border-bottom:1px solid var(--border-color); padding:20px 0;">
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
+                        <span style="color:#66BB6A; font-weight:900;">✓</span> <span>100% Practical Learning</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
+                        <span style="color:#66BB6A; font-weight:900;">✓</span> <span>Lifetime Support</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
+                        <span style="color:#66BB6A; font-weight:900;">✓</span> <span>Professional Certificates</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037;">
+                        <span style="color:#66BB6A; font-weight:900;">✓</span> <span>AI Powered Education</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px; font-size:13.5px; font-weight:700; color:#5D4037; grid-column: span 2;">
+                        <span style="color:#66BB6A; font-weight:900;">✓</span> <span>Affiliate Income Opportunities</span>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
+                    <a href="#courses" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">🎓 සියලුම පාඨමාලා</a>
+                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">▶️ නොමිලේ හඳුන්වාදීම</a>
+                </div>
             </div>
             
-            <!-- Right Side: Dynamic Slider Content (Laptop, Cylinder, Categories Panel) -->
-            <div class="hero-visual" id="heroSliderVisual" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease; display:flex; justify-content:center; align-items:center; min-height:400px;">
-                <!-- Injected dynamically by JS -->
+            <!-- Right Side: Luxury Glass Category Panel -->
+            <div class="hero-visual" style="display:flex; justify-content:center; align-items:center; min-height:400px;">
+                <div class="float-anim hero-glass-card-panel" style="position:relative; width:100%; max-width:440px; background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius:30px; padding:30px; box-shadow: 0 35px 70px rgba(93, 64, 55, 0.12); display:grid; grid-template-columns: repeat(2, 1fr); gap:12px;">
+                    
+                    <!-- HAPANAMY CAMPUS title badge at top of the glass card -->
+                    <div style="grid-column: span 2; background:rgba(212,175,55,0.06); border:1px solid rgba(212,175,55,0.3); border-radius:20px; padding:20px; text-align:center; margin-bottom:10px;">
+                        <span style="font-size:32px;">🏛️</span>
+                        <h4 style="font-size:14px; font-weight:800; color:#5D4037; margin:8px 0 2px 0;">HAPANAMY CAMPUS</h4>
+                        <p style="font-size:10px; color:#8D6E63; margin:0;">Sri Lanka's No.1 Digital Skills University</p>
+                    </div>
+
+                    <!-- 7 Glass Badges -->
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">🤖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">AI</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">📈</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Trading</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">💻</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Coding</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">🎥</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">YouTube</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">🎵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">TikTok</span>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">🔵</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">Facebook</span>
+                    </div>
+                    <div style="grid-column: span 2; background:rgba(255,255,255,0.65); padding:12px; border-radius:15px; border:1px solid rgba(212,175,55,0.25); display:flex; align-items:center; justify-content:center; gap:10px; box-shadow: 0 4px 10px rgba(0,0,0,0.02);">
+                        <span style="font-size:18px;">📖</span> <span style="font-size:12px; font-weight:700; color:#5D4037;">E-books & Guides</span>
+                    </div>
+                </div>
             </div>
         </div>
 
         <!-- Hero Stats Banner -->
-        <div class="container hero-stats" id="heroStatsContainer" style="margin-top: 20px; position:relative; z-index:5; display:grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align:center; transition: opacity 0.4s ease;">
-            <!-- Stats injected dynamically by JS -->
+        <div class="container hero-stats" style="margin-top: 20px; position:relative; z-index:5; display:grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align:center;">
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;" class="stat-number" data-target="10">0</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">Courses</p>
+            </div>
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;" class="stat-number" data-target="500">0</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">Learning Resources</p>
+            </div>
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">100%</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">Practical</p>
+            </div>
+            <div class="hero-stats-card">
+                <h3 style="color: var(--brand-orange); font-size: 24px; font-weight: 800; margin-bottom: 5px;">Lifetime</h3>
+                <p class="stat-label" style="font-size: 11.5px; color: #5D4037; font-weight: 700;">Student Support</p>
+            </div>
         </div>
 
         <!-- Orange Gold Gradient bottom bar -->
         <div class="hero-bottom-bar" style="background: linear-gradient(90deg, #F57C00, #D4AF37); padding: 15px 0; color: white; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); position:relative; z-index:5;">
             <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <span style="background-color: var(--brand-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;">100% ප්‍රායෝගික පාඨමාලා</span>
-                <span style="font-size: 15px; font-weight: 800;" id="heroBottomBarText">ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★</span>
-                <span style="font-size: 12px; opacity: 0.9;" id="heroBottomBarSubtext">ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම</span>
+                <span style="font-size: 15px; font-weight: 800;">ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★</span>
+                <span style="font-size: 12px; opacity: 0.9;">ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම</span>
             </div>
         </div>
     </section>
