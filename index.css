@@ -2011,6 +2011,7 @@ a {
     transform: scale(1.1);
     animation: kenburns 22s infinite ease-in-out;
     transition: background-image 0.8s ease-in-out;
+    background-image: url('assets/glass_digital_campus.jpg');
 }
 
 @keyframes kenburns {
