@@ -69,6 +69,7 @@
                 <a href="#affiliate" class="nav-link" data-translate="nav_affiliate">Affiliate</a>
                 <a href="#calculator" class="nav-link" data-translate="nav_calculator">Earnings Calculator</a>
                 <a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonials</a>
+                <a href="#blog" class="nav-link">Blog</a>
                 <a href="#contact" class="nav-link" data-translate="nav_contact">Contact</a>
             </nav>
 
@@ -847,6 +848,28 @@
         </div>
     </section>
 
+    <!-- Blog Article Modal Overlay -->
+    <div class="modal-overlay" id="blogModal" style="z-index: 1100;">
+        <div class="modal-box" style="max-width: 750px;">
+            <button class="modal-close-btn" id="blogModalCloseBtn">&times;</button>
+            <div class="modal-header-banner" style="height: 200px;">
+                <img id="blogModalBanner" src="" alt="Blog Banner" style="height: 100%; width: 100%; object-fit: cover;">
+                <div class="modal-header-overlay" style="background: linear-gradient(transparent, rgba(93, 64, 55, 0.95)); padding: 20px;">
+                    <span class="modal-badge" id="blogModalCategory" style="background-color: var(--brand-orange); color:white; font-weight:700;">Category</span>
+                    <h2 id="blogModalTitle" style="color: white; font-size: 22px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Article Title</h2>
+                </div>
+            </div>
+            <div class="modal-body-content" style="display: block; padding: 30px; max-height: 60vh; overflow-y: auto;">
+                <div id="blogModalBody" style="line-height: 1.8; color: var(--text-primary); font-size: 15px;">
+                    <!-- Article content injected dynamically -->
+                </div>
+                <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" id="blogModalCloseActionBtn" style="border: none;">කියවා අවසන් (Close Article)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Course Details Modals Wrapper -->
     <div class="modal-overlay" id="courseModal">
         <div class="modal-box">
@@ -1157,6 +1180,68 @@
                             <p>Entrepreneur</p>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section" id="blog" style="padding: 80px 0; background-color: var(--brand-orange-soft); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <span class="sub-title">Hapanamy දැනුම ගබඩාව (Knowledge Hub)</span>
+                <h2 class="section-main-title">අලුත්ම ලිපි සහ පාඩම් (Latest Articles)</h2>
+                <div class="title-line"></div>
+                <p class="section-desc">ඩිජිටල් අලෙවිකරණය, කෘත්‍රිම බුද්ධිය (AI), Trading සහ මුදල් ඉපැයීමේ නවතම ක්‍රම පිළිබඳව ලියැවුණු වටිනා ලිපි කියවා ඔබේ දැනුම වර්ධනය කරගන්න.</p>
+            </div>
+
+            <div class="testimonials-grid" style="margin-top: 40px;">
+                <!-- Blog Article 1 -->
+                <div class="course-card" style="border-radius: 24px;">
+                     <div class="card-image-box">
+                         <img src="assets/ai_prompts_ebook_banner.jpg" alt="ChatGPT Prompts Guide" class="card-img">
+                         <span class="badge-category" style="background-color: var(--brand-gold);">AI & Tech</span>
+                     </div>
+                     <div class="card-content" style="padding: 24px;">
+                         <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">📅 2026-08-07 • ⏱️ විනාඩි 5ක කියවීමක්</div>
+                         <h3 class="card-title" style="font-size: 18px; margin-bottom: 12px; line-height: 1.4;">ChatGPT හරහා නිවැරදිව Prompt ලියන ආකාරය (Prompt Engineering)</h3>
+                         <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">AI සමඟ වැඩ කරන විට නිවැරදි ප්‍රතිඵල ලබාගැනීමට නම් අප ලබාදෙන උපදෙස් (Prompts) නිවැරදි විය යුතුය. මෙන්න ඒ සඳහා සරල පියවර කිහිපයක්...</p>
+                     </div>
+                     <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
+                         <button class="btn btn-primary" onclick="openBlogModal('prompt-guide')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+                     </div>
+                </div>
+
+                <!-- Blog Article 2 -->
+                <div class="course-card" style="border-radius: 24px;">
+                     <div class="card-image-box">
+                         <img src="assets/advanced_trading_banner.jpg" alt="Trading Mistakes Guide" class="card-img">
+                         <span class="badge-category" style="background-color: var(--brand-orange);">Trading</span>
+                     </div>
+                     <div class="card-content" style="padding: 24px;">
+                         <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">📅 2026-08-06 • ⏱️ විනාඩි 6ක කියවීමක්</div>
+                         <h3 class="card-title" style="font-size: 18px; margin-bottom: 12px; line-height: 1.4;">Trading වලදී සිදුවන ප්‍රධාන වැරදි 5ක් සහ ඒවායින් බේරෙන ක්‍රම</h3>
+                         <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">නවක මෙන්ම අත්දැකීම් බහුල Traders ලා පවා නිතර සිදුකරන, ඔවුන්ගේ ගිණුම් අහිමි වීමට (Account Blowout) බලපාන ප්‍රධාන වැරදි 5ක් සහ ඒවා මඟහරවා ගන්නා ආකාරය...</p>
+                     </div>
+                     <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
+                         <button class="btn btn-primary" onclick="openBlogModal('trading-mistakes')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+                     </div>
+                </div>
+
+                <!-- Blog Article 3 -->
+                <div class="course-card" style="border-radius: 24px;">
+                     <div class="card-image-box">
+                         <img src="assets/youtube_course_banner.jpg" alt="Faceless YouTube Guide" class="card-img">
+                         <span class="badge-category" style="background-color: var(--brand-red);">Social Media</span>
+                     </div>
+                     <div class="card-content" style="padding: 24px;">
+                         <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">📅 2026-08-05 • ⏱️ විනාඩි 7ක කියවීමක්</div>
+                         <h3 class="card-title" style="font-size: 18px; margin-bottom: 12px; line-height: 1.4;">2026 වසරේ Faceless YouTube Channel එකක් සාර්ථකව කරන හැටි</h3>
+                         <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">මුහුණ නොපෙන්වා සහ තමන්ගේම හඬ භාවිතා නොකර AI සහ විවිධ මෙවලම් ආධාරයෙන් YouTube හරහා ඩොලර් උපයන වීඩියෝ නිර්මාණය කරන සම්පූර්ණ මාර්ගෝපදේශය...</p>
+                     </div>
+                     <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
+                         <button class="btn btn-primary" onclick="openBlogModal('faceless-yt')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+                     </div>
                 </div>
             </div>
         </div>

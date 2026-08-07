@@ -2341,3 +2341,95 @@ function syncCourseCatalogDOM() {
         });
     });
 }
+// ==================== BLOG SYSTEM CONTROLLERS ====================
+const blogArticles = {
+    'prompt-guide': {
+        title: 'ChatGPT හරහා නිවැරදිව Prompt ලියන ආකාරය (Prompt Engineering)',
+        category: 'AI & Tech',
+        banner: 'assets/ai_prompts_ebook_banner.jpg',
+        content: `
+            <p>කෘත්‍රිම බුද්ධිය (Artificial Intelligence) සමඟ සාර්ථකව වැඩ කිරීමේදී අප සතු විය යුතු වැදගත්ම කුසලතාවක් වන්නේ <strong>Prompt Engineering</strong> හෙවත් AI එකට නිවැරදි උපදෙස් ලබාදීමේ කලාවයි.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">💡 සාර්ථක Prompt එකක් ලිවීම සඳහා වන මූලධර්ම 4:</h4>
+            <ol style="margin-left:20px; margin-top:10px;">
+                <li><strong>Role (කාර්යභාරය):</strong> AI එක කවුද යන්න මුලින්ම තීරණය කරන්න. (උදා: "ඔබ පළපුරුදු Copywriter කෙනෙක් ලෙස සිතන්න.")</li>
+                <li><strong>Context (පසුබිම):</strong> ලිපිය හෝ කාර්යය කුමක් සඳහාද යන්න පැහැදිලි කරන්න. (උදා: "මම මගේ නව AI පාඨමාලාව ප්‍රවර්ධනය කිරීමට සූදානම් වෙනවා.")</li>
+                <li><strong>Task (කළ යුතු කාර්යය):</strong> පැහැදිලිව කළ යුතු දෙය සඳහන් කරන්න. (උදා: "මෙය සඳහා ආකර්ශනීය Facebook post 3ක් ලියා දෙන්න.")</li>
+                <li><strong>Format (ආකෘතිය):</strong> ප්‍රතිඵලය අවශ්‍ය ආකාරය දක්වන්න. (උදා: "එක් පෝස්ට් එකක් වචන 100කට නොවැඩි විය යුතු අතර, Emojis සහ Bullet points ඇතුළත් කරන්න.")</li>
+            </ol>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">✍️ උදාහරණයක්:</h4>
+            <div style="background-color:var(--brand-orange-soft); padding:15px; border-left:4px solid var(--brand-orange); border-radius:6px; font-style:italic; margin-top:10px; color:var(--text-primary);">
+                "ඔබ ජ්‍යෙෂ්ඨ අලෙවිකරණ විශේෂඥයෙක් (Marketing Specialist) ලෙස ක්‍රියා කරන්න. මාගේ 'Trading E-Book' එක විකිණීම සඳහා ආකර්ශනීය සහ කියවන්නා පෙළඹෙන සුළු කෙටි විද්‍යුත් තැපෑලක් (Sales Email) ලියා දෙන්න. එහි E-Book එකෙහි ඇති වාසි සහ 20% සීමිත වට්ටම ඉස්මතු කරන්න."
+            </div>
+        `
+    },
+    'trading-mistakes': {
+        title: 'Trading වලදී සිදුවන ප්‍රධාන වැරදි 5ක් සහ ඒවායෙන් බේරෙන ක්‍රම',
+        category: 'Trading',
+        banner: 'assets/advanced_trading_banner.jpg',
+        content: `
+            <p>Forex හෝ Cryptocurrency වෙළඳපොළ තුළ බහුතරයක් නවකයන් තමන්ගේ මුදල් අහිමි කරගන්නේ දැනුම නොමැතිකම නිසාම නොවේ. ඔවුන් සිදුකරන පොදු වැරදි 5ක් සහ ඒවා මඟහරවා ගන්නා ආකාරය මෙන්න:</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">❌ 1. Risk Management (අවදානම් පාලනය) නොමැතිකම:</h4>
+            <p>කිසිම විටෙක එක් Trade එකක් සඳහා ඔබේ මුළු ප්‍රාග්ධනයෙන් (Capital) 1% - 2% කට වඩා අවදානමට ලක් නොකරන්න. Stop Loss යෙදීම අනිවාර්ය වේ.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">❌ 2. Over-trading (අධික ලෙස Trade කිරීම):</h4>
+            <p>දිනකට ලොකු Trade ප්‍රමාණයක් කිරීමෙන් සාර්ථක විය නොහැක. වඩාත්ම සුදුසු Setup එකක් ලැබෙන තෙක් ඉවසිලිවන්තව බලා සිටින්න.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">❌ 3. Revenge Trading (පළිගැනීමේ ආශාව):</h4>
+            <p>Trade එකක් පාඩු (Loss) වූ විට, එය පියවා ගැනීමට එසැනින් තව Trade දැමීමෙන් වළකින්න. එයින් සිදුවන්නේ පාඩුව තවත් වැඩි වීමයි.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">❌ 4. FOMO (Fear Of Missing Out):</h4>
+            <p>වෙළඳපොළ වේගයෙන් ඉහළ යන විට, අතරමඟදී එක්වීමට උත්සාහ නොකරන්න. Pullback (නැවත පහළ බැසීමක්) වන තෙක් රැඳී සිටින්න.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">❌ 5. Trading සැලැස්මක් නොමැතිකම:</h4>
+            <p>ඔබ ඇතුල් වන්නේ ඇයිද, පිටවන්නේ කොතැනින්ද යන්න කලින්ම ලියා තබාගත් සැලැස්මකට අනුව පමණක් Trade කරන්න.</p>
+        `
+    },
+    'faceless-yt': {
+        title: '2026 වසරේ Faceless YouTube Channel එකක් සාර්ථකව කරන හැටි',
+        category: 'Social Media',
+        banner: 'assets/youtube_course_banner.jpg',
+        content: `
+            <p>ඔබේ මුහුණ පෙන්වීමට අකමැති වුවත්, YouTube හරහා සාර්ථකව ඩොලර් ආදායම් ලැබිය හැක. AI මෙවලම් සහ පහසු මෘදුකාංග භාවිතයෙන් වීඩියෝ සාදන පියවර 4 මෙන්න:</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">📌 පියවර 01: Niche (ක්ෂේත්‍රය) තෝරාගැනීම:</h4>
+            <p>වැඩි නරඹන්නන් පිරිසක් සිටින මෙන්ම ඉහළ RPM එකක් (මුදල් ගෙවන අනුපාතය) ලැබෙන ක්ෂේත්‍රයක් තෝරන්න. (උදා: Finance, Life Hacks, AI News, Space, Travel Guides).</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">📌 පියවර 02: AI Script & Voiceover:</h4>
+            <p>ChatGPT හෝ Claude භාවිතයෙන් වීඩියෝ පිටපත (Script) ලියාගන්න. ElevenLabs වැනි උසස් මෘදුකාංග මඟින් ස්වභාවික මිනිස් හඬක් (Realistic Voice) සාදාගන්න.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">📌 පියවර 03: Video Editing:</h4>
+            <p>CapCut හෝ Premiere Pro භාවිතයෙන්, නොමිලේ ලබාගත හැකි stock videos (Pexels, Pixabay) සහ අදාළ Images එකතු කර වීඩියෝව සංස්කරණය කරන්න. AI Captions (උපසිරැසි) යෙදීම නරඹන්නන් රඳවා ගැනීමට උපකාරී වේ.</p>
+            <h4 style="margin-top:20px; color:var(--brand-gold);">📌 පියවර 04: SEO & Thumbnails:</h4>
+            <p>ආකර්ශනීය Thumbnail එකක් සාදන්න. වීඩියෝවේ Title සහ Description නිවැරදිව Keywords යොදා (SEO) සකසන්න.</p>
+        `
+    }
+};
+
+function openBlogModal(articleId) {
+    const article = blogArticles[articleId];
+    if (!article) return;
+    document.getElementById('blogModalBanner').src = article.banner;
+    document.getElementById('blogModalCategory').textContent = article.category;
+    document.getElementById('blogModalTitle').textContent = article.title;
+    document.getElementById('blogModalBody').innerHTML = article.content;
+    
+    document.getElementById('blogModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeBlogModal() {
+    document.getElementById('blogModal').classList.remove('open');
+    document.body.style.overflow = '';
+}
+
+// Hook Blog Close buttons
+document.addEventListener('DOMContentLoaded', () => {
+    const blogCloseBtn = document.getElementById('blogModalCloseBtn');
+    const blogCloseActionBtn = document.getElementById('blogModalCloseActionBtn');
+    const blogModal = document.getElementById('blogModal');
+
+    if (blogCloseBtn) blogCloseBtn.addEventListener('click', closeBlogModal);
+    if (blogCloseActionBtn) blogCloseActionBtn.addEventListener('click', closeBlogModal);
+    
+    // Close on overlay click
+    if (blogModal) {
+        blogModal.addEventListener('click', (e) => {
+            if (e.target === blogModal) {
+                closeBlogModal();
+            }
+        });
+    }
+});
