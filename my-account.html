@@ -60,12 +60,13 @@
 
         /* Sidebar styling */
         .dashboard-sidebar {
-            background-color: #102A43; /* Always deep navy for sidebar visual consistency */
+            background: linear-gradient(180deg, #07111E 0%, #0F2338 100%);
             color: #FFF5E4;
-            padding: 30px 20px;
+            padding: 35px 22px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255, 249, 240, 0.1);
+            border-right: 1px solid rgba(255, 245, 228, 0.06);
+            box-shadow: 4px 0 25px rgba(0,0,0,0.15);
         }
 
         .sidebar-logo {
@@ -80,42 +81,53 @@
             height: 38px;
             border-radius: 6px;
             border: 2px solid var(--brand-gold);
+            box-shadow: 0 4px 10px rgba(240, 179, 35, 0.2);
         }
 
         .sidebar-nav {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 8px;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 12px;
             cursor: pointer;
-            font-size: 14.5px;
+            font-size: 14px;
             font-weight: 600;
             color: #B2C8DF;
             text-decoration: none;
-            transition: 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-left: 4px solid transparent;
         }
 
-        .nav-link:hover, .nav-link.active {
-            background-color: rgba(255, 255, 255, 0.08);
-            color: #FFF5E4;
+        .nav-link:hover {
+            background-color: rgba(255, 255, 255, 0.04);
+            color: var(--brand-gold) !important;
+            transform: translateX(6px);
         }
 
         .nav-link.active {
             border-left: 4px solid var(--brand-orange);
-            background-color: rgba(244, 123, 32, 0.1);
+            background-color: rgba(244, 123, 32, 0.12) !important;
             color: var(--brand-orange) !important;
+            box-shadow: inset 5px 0 15px rgba(244, 123, 32, 0.08);
+            font-weight: 700;
         }
 
         .nav-icon {
-            font-size: 18px;
+            font-size: 23px;
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .nav-link:hover .nav-icon {
+            transform: scale(1.25) rotate(5deg);
         }
 
         /* Content Area */
