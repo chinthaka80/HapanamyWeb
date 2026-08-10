@@ -1955,6 +1955,11 @@
                 return;
             }
 
+            if (file && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                showToast('⚠️ <strong>සජීවී වෙබ් අඩවියේදී සෘජුවම File Upload කළ නොහැක!</strong> කරුණාකර ImgBB වැනි සේවාවකට පින්තූරය දමා එහි ලින්ක් එක පහළ කොටසට ඇතුළත් කරන්න.');
+                return;
+            }
+
             const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
             submitBtn.textContent = '🔄 Processing Article...';
