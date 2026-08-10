@@ -1849,6 +1849,85 @@
             showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> Direct: ' + direct + '%, L1: ' + l1 + '%, L2: ' + l2 + '%, L3: ' + l3 + '%, L4: ' + l4 + '%, L5: ' + l5 + '%. (Sandbox: ' + (sandbox ? 'ON' : 'OFF') + ')');
         }
 
+        // ==================== BLOG POST MANAGEMENT ====================
+        function renderAdminBlogArticles() {
+            const blogListBody = document.getElementById('adminBlogList');
+            if (!blogListBody) return;
+            
+            blogListBody.innerHTML = '';
+            
+            // Retrieve custom articles from localStorage
+            const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+            
+            if (customArticles.length === 0) {
+                blogListBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No custom articles published yet.</td></tr>`;
+                return;
+            }
+            
+            customArticles.forEach((article, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${article.title}</strong></td>
+                    <td><span class="badge-status active" style="background-color: var(--brand-orange); color: white;">${article.category}</span></td>
+                    <td>${article.date}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="deleteBlogArticle(${idx})" style="padding: 6px 12px; background-color: var(--ph-red); color: white; border: none; font-size: 11px; cursor: pointer; border-radius: 4px;">🗑️ Delete</button>
+                    </td>
+                `;
+                blogListBody.appendChild(tr);
+            });
+        }
+
+        function publishBlogArticle() {
+            const title = document.getElementById('blogPostTitle').value.trim();
+            const category = document.getElementById('blogPostCategory').value;
+            const image = document.getElementById('blogPostImage').value.trim() || 'assets/ai_prompts_ebook_banner.jpg';
+            const readTime = document.getElementById('blogPostReadTime').value || '5';
+            const intro = document.getElementById('blogPostIntro').value.trim();
+            const content = document.getElementById('blogPostContent').value.trim();
+            
+            if (!title || !intro || !content) {
+                showToast('⚠️ Please fill in all required fields (Title, Intro, and Content)!');
+                return;
+            }
+            
+            // Generate slug-based ID
+            const articleId = 'custom-' + title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+            
+            const newArticle = {
+                id: articleId,
+                title: title,
+                category: category,
+                banner: image,
+                readTime: readTime,
+                intro: intro,
+                content: content,
+                date: new Date().toLocaleDateString()
+            };
+            
+            let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+            customArticles.push(newArticle);
+            localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+            
+            showToast('🎉 <strong>Success!</strong> Blog article published and live on homepage!');
+            
+            // Reset form
+            document.getElementById('blogPostForm').reset();
+            
+            // Re-render
+            renderAdminBlogArticles();
+        }
+
+        function deleteBlogArticle(index) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+                customArticles.splice(index, 1);
+                localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                showToast('🗑️ Article deleted successfully!');
+                renderAdminBlogArticles();
+            }
+        }
+
         // Run load on start
         document.addEventListener('DOMContentLoaded', () => {
             initCoursesList();
