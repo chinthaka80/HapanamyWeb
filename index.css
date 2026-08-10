@@ -2263,3 +2263,25 @@ a {
     box-shadow: 0 10px 20px rgba(37, 211, 102, 0.4);
 }
 
+
+/* Responsive styling for Video Showcase on mobile screen */
+@media (max-width: 768px) {
+    .intro-video-section {
+        padding: 40px 0 !important;
+    }
+    .intro-video-section .sub-title {
+        font-size: 11px !important;
+        padding: 4px 10px !important;
+    }
+    .intro-video-section .section-main-title {
+        font-size: 24px !important;
+        margin-bottom: 12px !important;
+    }
+    .video-container-wrapper {
+        border-radius: 16px !important;
+        padding: 4px !important;
+    }
+    .video-iframe-container {
+        border-radius: 12px !important;
+    }
+}

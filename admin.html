@@ -179,6 +179,11 @@
         }
 
         /* Stats grid override */
+        .blog-manager-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
         .admin-stats-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -388,6 +393,21 @@
         }
 
         @media (max-width: 1000px) {
+            .blog-manager-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+            .mobile-bottom-nav {
+                justify-content: flex-start !important;
+                overflow-x: auto !important;
+                gap: 8px !important;
+                padding: 8px 12px !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            .mobile-nav-item {
+                flex-shrink: 0 !important;
+                min-width: 65px !important;
+            }
             .admin-layout {
                 grid-template-columns: 1fr;
             }
@@ -1081,7 +1101,7 @@
 
                 <!-- PANEL: BLOG MANAGER -->
                 <div class="admin-panel" id="panel-blog">
-                    <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px;">
+                    <div class="blog-manager-grid">
                         <!-- Left: Create Post Form -->
                         <div class="admin-card">
                             <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-primary);">📝 බ්ලොග් ලිපියක් පළ කිරීම (Create New Blog Post)</h3>
@@ -1241,6 +1261,10 @@
         <div class="mobile-nav-item" onclick="switchAdminTab('receipts')" id="mob-nav-receipts">
             <span class="mobile-nav-icon">📥</span>
             <span>Receipts</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('blog')" id="mob-nav-blog">
+            <span class="mobile-nav-icon">✍️</span>
+            <span>Blog</span>
         </div>
         <div class="mobile-nav-item" onclick="switchAdminTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
