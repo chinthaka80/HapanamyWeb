@@ -17,6 +17,35 @@ const MIME_TYPES = {
 };
 
 const server = http.createServer((req, res) => {
+    // API Route: Image Upload
+    if (req.method === 'POST' && req.url.startsWith('/api/upload')) {
+        const urlParams = new URL(req.url, `http://${req.headers.host}`);
+        const filename = urlParams.searchParams.get('filename');
+        if (!filename) {
+            res.writeHead(400, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ error: 'Missing filename parameter' }));
+            return;
+        }
+
+        // Clean filename to prevent path traversal
+        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const uploadPath = path.join(__dirname, 'assets', safeFilename);
+
+        const writeStream = fs.createWriteStream(uploadPath);
+        req.pipe(writeStream);
+
+        writeStream.on('finish', () => {
+            res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: true, filePath: 'assets/' + safeFilename }));
+        });
+
+        writeStream.on('error', (err) => {
+            res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+            res.end(JSON.stringify({ success: false, error: err.message }));
+        });
+        return;
+    }
+
     // Prevent directory traversal attacks
     let safeUrl = req.url.split('?')[0];
     let filePath = path.join(__dirname, safeUrl === '/' ? 'index.html' : safeUrl);

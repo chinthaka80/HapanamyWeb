@@ -1107,7 +1107,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group" style="margin-bottom: 15px;">
-                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">පින්තූරයේ ලිපිනය (Banner Image URL/Path)</label>
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">පින්තූරය තෝරන්න (Select Image File)</label>
+                                    <input type="file" id="blogPostImageFile" accept="image/*" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                    <div style="font-size:11px; color:var(--text-muted); margin-top:5px;">පරිගණකයෙන් පින්තූරය තෝරා Upload කරන්න.</div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">නැතහොත් පින්තූරයේ ලිපිනය (Or Banner Image URL/Path)</label>
                                     <input type="text" id="blogPostImage" placeholder="assets/ai_prompts_ebook_banner.jpg" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
                                 </div>
                                 <div class="form-group" style="margin-bottom: 15px;">
@@ -1850,6 +1855,8 @@
         }
 
         // ==================== BLOG POST MANAGEMENT ====================
+        let editingArticleId = null;
+
         function renderAdminBlogArticles() {
             const blogListBody = document.getElementById('adminBlogList');
             if (!blogListBody) return;
@@ -1871,6 +1878,7 @@
                     <td><span class="badge-status active" style="background-color: var(--brand-orange); color: white;">${article.category}</span></td>
                     <td>${article.date}</td>
                     <td>
+                        <button class="btn btn-secondary" onclick="editBlogArticle(${idx})" style="padding: 6px 12px; background-color: var(--brand-orange); color: white; border: none; font-size: 11px; cursor: pointer; border-radius: 4px; margin-right: 5px;">✏️ Edit</button>
                         <button class="btn btn-secondary" onclick="deleteBlogArticle(${idx})" style="padding: 6px 12px; background-color: var(--ph-red); color: white; border: none; font-size: 11px; cursor: pointer; border-radius: 4px;">🗑️ Delete</button>
                     </td>
                 `;
@@ -1878,44 +1886,145 @@
             });
         }
 
+        function uploadBlogImage(file) {
+            if (!file) return Promise.resolve(null);
+            
+            return new Promise((resolve, reject) => {
+                const filename = file.name;
+                fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
+                    method: 'POST',
+                    body: file,
+                    headers: {
+                        'Content-Type': 'application/octet-stream'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        resolve(data.filePath);
+                    } else {
+                        reject(new Error(data.error || 'Upload failed'));
+                    }
+                })
+                .catch(err => reject(err));
+            });
+        }
+
         function publishBlogArticle() {
             const title = document.getElementById('blogPostTitle').value.trim();
             const category = document.getElementById('blogPostCategory').value;
-            const image = document.getElementById('blogPostImage').value.trim() || 'assets/ai_prompts_ebook_banner.jpg';
+            const textImage = document.getElementById('blogPostImage').value.trim();
             const readTime = document.getElementById('blogPostReadTime').value || '5';
             const intro = document.getElementById('blogPostIntro').value.trim();
             const content = document.getElementById('blogPostContent').value.trim();
+            const fileInput = document.getElementById('blogPostImageFile');
+            const file = fileInput ? fileInput.files[0] : null;
             
             if (!title || !intro || !content) {
                 showToast('⚠️ Please fill in all required fields (Title, Intro, and Content)!');
                 return;
             }
+
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = '🔄 Processing Article...';
+            submitBtn.disabled = true;
+
+            // Handle image upload first if a file is selected
+            uploadBlogImage(file)
+                .then(uploadedPath => {
+                    const finalBanner = uploadedPath || textImage || 'assets/ai_prompts_ebook_banner.jpg';
+                    let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+                    
+                    if (editingArticleId) {
+                        // Update existing article
+                        const articleIdx = customArticles.findIndex(art => art.id === editingArticleId);
+                        if (articleIdx !== -1) {
+                            customArticles[articleIdx].title = title;
+                            customArticles[articleIdx].category = category;
+                            customArticles[articleIdx].banner = finalBanner;
+                            customArticles[articleIdx].readTime = readTime;
+                            customArticles[articleIdx].intro = intro;
+                            customArticles[articleIdx].content = content;
+                            
+                            localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                            showToast('🎉 <strong>Success!</strong> Blog article updated successfully!');
+                        }
+                        cancelEdit();
+                    } else {
+                        // Create a new article
+                        const articleId = 'custom-' + title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+                        
+                        const newArticle = {
+                            id: articleId,
+                            title: title,
+                            category: category,
+                            banner: finalBanner,
+                            readTime: readTime,
+                            intro: intro,
+                            content: content,
+                            date: new Date().toLocaleDateString()
+                        };
+                        
+                        customArticles.push(newArticle);
+                        localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                        showToast('🎉 <strong>Success!</strong> Blog article published and live on homepage!');
+                        document.getElementById('blogPostForm').reset();
+                    }
+
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                    renderAdminBlogArticles();
+                })
+                .catch(err => {
+                    showToast('❌ <strong>Error:</strong> Image upload failed: ' + err.message);
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+        }
+
+        function editBlogArticle(index) {
+            const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+            const article = customArticles[index];
+            if (!article) return;
             
-            // Generate slug-based ID
-            const articleId = 'custom-' + title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+            document.getElementById('blogPostTitle').value = article.title;
+            document.getElementById('blogPostCategory').value = article.category;
+            document.getElementById('blogPostImage').value = article.banner;
+            document.getElementById('blogPostReadTime').value = article.readTime;
+            document.getElementById('blogPostIntro').value = article.intro;
+            document.getElementById('blogPostContent').value = article.content;
             
-            const newArticle = {
-                id: articleId,
-                title: title,
-                category: category,
-                banner: image,
-                readTime: readTime,
-                intro: intro,
-                content: content,
-                date: new Date().toLocaleDateString()
-            };
+            editingArticleId = article.id;
             
-            let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
-            customArticles.push(newArticle);
-            localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            submitBtn.textContent = 'ලිපිය යාවත්කාලීන කරන්න (Update Article)';
+            submitBtn.style.backgroundColor = 'var(--brand-gold)';
             
-            showToast('🎉 <strong>Success!</strong> Blog article published and live on homepage!');
+            if (!document.getElementById('cancelEditBtn')) {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.id = 'cancelEditBtn';
+                cancelBtn.className = 'btn btn-secondary';
+                cancelBtn.textContent = 'සංස්කරණය අවලංගු කරන්න (Cancel Edit)';
+                cancelBtn.style.cssText = 'width: 100%; padding: 10px; margin-top: 10px; border-width: 1px; cursor: pointer; font-weight:700; border-radius:6px;';
+                cancelBtn.onclick = cancelEdit;
+                document.getElementById('blogPostForm').appendChild(cancelBtn);
+            }
             
-            // Reset form
+            document.getElementById('blogPostForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            editingArticleId = null;
             document.getElementById('blogPostForm').reset();
             
-            // Re-render
-            renderAdminBlogArticles();
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            submitBtn.textContent = 'ලිපිය සජීවීව පළ කරන්න (Publish Article)';
+            submitBtn.style.backgroundColor = '';
+            
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            if (cancelBtn) cancelBtn.remove();
         }
 
         function deleteBlogArticle(index) {
