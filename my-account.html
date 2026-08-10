@@ -943,6 +943,10 @@
             const activePanel = document.getElementById('panel-' + tabId);
             if (activeLink) activeLink.classList.add('active');
             if (activePanel) activePanel.classList.add('active');
+
+            if (tabId === 'network') {
+                loadDynamicDownlines();
+            }
         }
 
         // Show Toast Utility
@@ -982,105 +986,127 @@
 
         // Load dynamically referred downline members grouped into layers (Levels 1 to 5)
         function loadDynamicDownlines() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
-            const myRefCode = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'kasun_t';
+            const userSlug = getActiveUserSlug();
             
-            // Containers
+            // Seed mock network for kasun_t / affiliate if not set yet
+            if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
+                if (!localStorage.getItem('referred_users_kasun_t') && !localStorage.getItem('referred_users_affiliate')) {
+                    localStorage.setItem('referred_users_' + userSlug, JSON.stringify([
+                        { name: 'සඳුනි පෙරේරා', email: 'sanduni@hapanamy.lk', phone: '0771234567', date: '2026-06-01' },
+                        { name: 'නිමල් සිරි', email: 'nimal@hapanamy.lk', phone: '0777654321', date: '2026-06-15' }
+                    ]));
+                    localStorage.setItem('referred_users_sanduni', JSON.stringify([
+                        { name: 'රුවන් බණ්ඩාර', email: 'ruwan@hapanamy.lk', phone: '0711112222', date: '2026-06-10' },
+                        { name: 'කවීන් සිල්වා', email: 'kaveen@hapanamy.lk', phone: '0722223333', date: '2026-06-12' }
+                    ]));
+                    localStorage.setItem('referred_users_ruwan', JSON.stringify([
+                        { name: 'ප්‍රියන්ත කුමාර', email: 'priyantha@hapanamy.lk', phone: '0755556666', date: '2026-06-20' }
+                    ]));
+                    localStorage.setItem('referred_users_priyantha', JSON.stringify([
+                        { name: 'දිල්හානි ජයවර්ධන', email: 'dilhani@hapanamy.lk', phone: '0788889999', date: '2026-06-25' }
+                    ]));
+                    localStorage.setItem('referred_users_dilhani', JSON.stringify([
+                        { name: 'තිළිණ පෙරේරා', email: 'thilina@hapanamy.lk', phone: '0700001111', date: '2026-07-01' }
+                    ]));
+                }
+            }
+
+            // Get containers
             const l1Container = document.getElementById('level1DownlinesList');
             const l2Container = document.getElementById('level2DownlinesList');
             const l3Container = document.getElementById('level3DownlinesList');
             const l4Container = document.getElementById('level4DownlinesList');
             const l5Container = document.getElementById('level5DownlinesList');
 
-            if (!l1Container || !l2Container) return;
+            if (!l1Container || !l2Container || !l3Container || !l4Container || !l5Container) return;
 
-            // Load baseline mock data
-            l1Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">සඳුනි පෙරේරා (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">3 Sales generated</div>
-                    </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 3,500.00</div>
-                </div>
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">නිමල් සිරි (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
-                    </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>
-                </div>`;
+            // Clear all containers
+            l1Container.innerHTML = '';
+            l2Container.innerHTML = '';
+            l3Container.innerHTML = '';
+            l4Container.innerHTML = '';
+            l5Container.innerHTML = '';
 
-            l2Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">රුවන් බණ්ඩාර</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 1,200.00</div>
-                </div>
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">කවීන් සිල්වා</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 350.00</div>
-                </div>`;
+            // Helper to get slug from email/username
+            const getSlug = (email) => {
+                return (email || '').split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+            };
 
-            l3Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">ප්‍රියන්ත කුමාර</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by රුවන් | L3 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 240.00</div>
-                </div>`;
-
-            l4Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">දිල්හානි ජයවර්ධන</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by ප්‍රියන්ත | L4 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>
-                </div>`;
-
-            l5Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">තිළිණ පෙරේරා</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by දිල්හානි | L5 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 300.00</div>
-                </div>`;
-
-            // Load dynamically signed up users from local storage
-            const dynamicMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
-            dynamicMembers.forEach(member => {
-                // 1. Direct referral (Level 1)
-                const div1 = document.createElement('div');
-                div1.className = 'network-member-item';
-                div1.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
-                div1.innerHTML = `
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">${member.name} (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
-                    </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>`;
-                l1Container.insertBefore(div1, l1Container.firstChild);
-
-                // 2. Simulate an indirect referral under this user (Level 2) to show unilevel flow
-                const div2 = document.createElement('div');
-                div2.className = 'network-member-item';
-                div2.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
-                div2.innerHTML = `
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">${member.name}'s Referral (Indirect)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by ${member.name.split(' ')[0]} | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>`;
-                l2Container.insertBefore(div2, l2Container.firstChild);
+            // Traversal queues
+            // Level 1
+            const l1Members = JSON.parse(localStorage.getItem('referred_users_' + userSlug)) || [];
+            l1Members.forEach(m => {
+                l1Container.innerHTML += createMemberHTML(m.name, 'Direct Referral', 1500); // Direct referral commission L1
             });
+
+            // Level 2
+            const l2Members = [];
+            l1Members.forEach(m1 => {
+                const slug1 = getSlug(m1.email);
+                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug1)) || [];
+                referrals.forEach(m2 => {
+                    l2Members.push(m2);
+                    l2Container.innerHTML += createMemberHTML(m2.name, 'Referred by ' + m1.name, 450); // L2 commission
+                });
+            });
+
+            // Level 3
+            const l3Members = [];
+            l2Members.forEach(m2 => {
+                const slug2 = getSlug(m2.email);
+                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug2)) || [];
+                referrals.forEach(m3 => {
+                    l3Members.push(m3);
+                    l3Container.innerHTML += createMemberHTML(m3.name, 'Referred by ' + m2.name, 250); // L3 commission
+                });
+            });
+
+            // Level 4
+            const l4Members = [];
+            l3Members.forEach(m3 => {
+                const slug3 = getSlug(m3.email);
+                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug3)) || [];
+                referrals.forEach(m4 => {
+                    l4Members.push(m4);
+                    l4Container.innerHTML += createMemberHTML(m4.name, 'Referred by ' + m3.name, 150); // L4 commission
+                });
+            });
+
+            // Level 5
+            l4Members.forEach(m4 => {
+                const slug4 = getSlug(m4.email);
+                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug4)) || [];
+                referrals.forEach(m5 => {
+                    l5Container.innerHTML += createMemberHTML(m5.name, 'Referred by ' + m4.name, 100); // L5 commission
+                });
+            });
+
+            // Show empty state messages if no members exist in levels
+            checkEmptyState(l1Container, 'Level 1');
+            checkEmptyState(l2Container, 'Level 2');
+            checkEmptyState(l3Container, 'Level 3');
+            checkEmptyState(l4Container, 'Level 4');
+            checkEmptyState(l5Container, 'Level 5');
+        }
+
+        function createMemberHTML(name, subtext, commission) {
+            return `
+                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
+                    <div>
+                        <div class="network-member-name" style="font-weight:700;">${name}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${subtext}</div>
+                    </div>
+                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. ${commission.toLocaleString()}</div>
+                </div>`;
+        }
+
+        function checkEmptyState(container, levelName) {
+            if (container.children.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">
+                        මෙම මට්ටමේ (Level) සාමාජිකයින් කිසිවෙක් තවමත් නැත.
+                    </div>`;
+            }
         }
 
         // Save profile
@@ -1473,6 +1499,7 @@
             loadUserProfile();
             loadPayoutHistory();
             loadDashboardStats();
+            loadDynamicDownlines();
             
             // Prefill dynamic user-specific referral link
             const userSlug = getActiveUserSlug();
