@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ඇණවුම සාර්ථකයි! (Order Successful)</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        .success-page-container {
+            max-width: 650px;
+            margin: 80px auto;
+            padding: 0 20px;
+            text-align: center;
+        }
+
+        .success-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Checkmark animation style */
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: rgba(185, 231, 105, 0.1);
+            color: var(--brand-green-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            margin: 0 auto 25px;
+            border: 2px solid var(--brand-green-light);
+            animation: bounceIn 0.6s ease;
+        }
+
+        .order-meta-box {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .order-meta-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13.5px;
+            margin-bottom: 8px;
+            border-bottom: 1px dashed rgba(255,255,255,0.05);
+            padding-bottom: 8px;
+        }
+
+        .order-meta-row:last-child {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="success-page-container">
+        <div class="success-card">
+            <!-- Animated Checkmark -->
+            <div class="success-checkmark">✓</div>
+
+            <h1 style="font-size: 26px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;" data-translate="success_heading">ගෙවීම සාර්ථකයි!</h1>
+            <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;" data-translate="success_desc">Hapanamy.lk වෙතින් පාඨමාලාව මිලදී ගැනීම සාර්ථක විය. ඔබගේ ඇණවුම් විස්තර සහ පිවිසුම් දත්ත පහත පරිදි වේ.</p>
+
+            <div class="order-meta-box">
+                <div class="order-meta-row">
+                    <span>ගනුදෙනු කේතය (Transaction Code):</span>
+                    <strong style="color: var(--brand-gold);" id="metaTxnCode">TXN-GEN-1234</strong>
+                </div>
+                <div class="order-meta-row">
+                    <span data-translate="lbl_order">ඇණවුම් අංකය (Order ID):</span>
+                    <strong style="color: var(--brand-orange);" id="metaOrderId">#10433</strong>
+                </div>
+                <div class="order-meta-row">
+                    <span data-translate="lbl_amount">ගෙවූ මුදල (Paid LKR):</span>
+                    <strong style="color: var(--text-primary);" id="metaPaidAmount">රු. 0.00</strong>
+                </div>
+                <div class="order-meta-row">
+                    <span data-translate="lbl_method">ගෙවීම් ක්‍රමය (Method):</span>
+                    <strong style="color: var(--text-primary);" id="metaPayMethod">PayHere Gateway</strong>
+                </div>
+                <div class="order-meta-row">
+                    <span data-translate="lbl_status">තත්ත්වය (Payment Status):</span>
+                    <strong style="color: var(--brand-green-light);" data-translate="val_active" id="metaPayStatus">Paid & Active</strong>
+                </div>
+                <div class="order-meta-row" id="referrerRow" style="display: none;">
+                    <span data-translate="lbl_referrer">ප්‍රවර්ධකයා (Referred By):</span>
+                    <strong style="color: var(--brand-gold);" id="metaReferrer">kasun_t</strong>
+                </div>
+            </div>
+
+            <!-- FREE AFFILIATE PROMOTION BOX -->
+            <div style="background-color: rgba(185, 231, 105, 0.05); border: 1px dashed var(--brand-green-light); padding: 20px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
+                <h4 style="font-size: 14px; margin-bottom: 6px; color: var(--brand-green-light); font-weight: 700;" data-translate="free_aff_title">🎁 නොමිලේ මුදල් උපයන්න (Free Affiliate Opportunity)!</h4>
+                <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5; margin-bottom: 15px;" data-translate="free_aff_desc">ඔබේම අනුබද්ධිත සබැඳිය (Affiliate Link) නොමිලේ ලබාගෙන මිතුරන් සමඟ බෙදාගෙන 15% ක කොමිස් මුදල් උපයාගන්න.</p>
+                
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="successAffLinkInput" readonly style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 12.5px; outline: none;" value="http://localhost:3000/?ref=student">
+                    <button class="btn btn-primary" style="border: none; padding: 0 16px; border-radius: 6px; font-size: 12.5px; cursor: pointer; font-weight: 700; height: 38px; background-color: var(--brand-orange);" onclick="copySuccessAffLink()">Copy Link</button>
+                </div>
+            </div>
+
+            <!-- Login Instructions -->
+            <div style="background-color: rgba(244, 123, 32, 0.03); border: 1px dashed var(--brand-orange); padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: left;">
+                <h4 style="font-size: 14.5px; margin-bottom: 6px; color: var(--brand-orange);" data-translate="instr_title">🔐 ඔබගේ අධ්‍යාපන පුවරුව (Student Dashboard) සක්‍රියයි!</h4>
+                <p style="font-size: 12.5px; color: var(--text-muted); line-height: 1.5;" data-translate="instr_desc">ඔබගේ පාඨමාලාවේ වීඩියෝ නැරඹීම සඳහා පහත ඇති බොත්තම ක්ලික් කර ශිෂ්‍ය පුවරුව වෙත සෘජුවම පිවිසෙන්න.</p>
+            </div>
+
+            <!-- BANK DEPOSIT SLIP UPLOAD CONTAINER -->
+            <div id="bankSlipUploadContainer" style="display: none; margin-top: 25px; margin-bottom: 25px; border: 2px dashed var(--border-color); padding: 20px; border-radius: 8px; text-align: center; background-color: var(--bg-surface);">
+                <div style="background-color: rgba(244,123,32,0.03); border: 1px dashed var(--brand-orange); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; font-size: 12.5px; line-height: 1.6;">
+                    <h5 style="color: var(--brand-orange); margin-bottom: 8px; font-size: 13.5px; font-weight: 700;">💳 බැංකු තැන්පතු මගින් මුදල් ගෙවීමේ උපදෙස්</h5>
+                    <p style="margin-bottom: 8px; color: var(--text-primary);">ඔබේ ඇණවුම සඳහා මුදල් ගෙවීමට බැංකු තැන්පතු ක්‍රමය (Bank Deposit/Transfer) තෝරාගත්තේ නම්, කරුණාකර පහත පියවර අනුගමනය කරන්න.</p>
+                    <p style="margin-bottom: 6px;"><strong>පියවර 01: අපගේ බැංකු ගිණුමකට මුදල් තැන්පත් කරන්න</strong><br>පහත දැක්වෙන ඕනෑම බැංකු ගිණුමකට ඔබේ ඇණවුමට අදාළ සම්පූර්ණ මුදල තැන්පත් කරන්න. (Online Transfer හෝ CDM යන්ත්‍රයක් මගින් වුවද සිදු කළ හැක.)</p>
+                    <p style="margin-bottom: 6px;"><strong>පියවර 02: Reference ලෙස ඇණවුම් අංකය (USER ID) යොදන්න</strong><br>මුදල් තැන්පත් කිරීමේදී 'Reference' හෝ 'Remarks' යන තීරුවේ ඔබේ ඇණවුම් අංකය (USER ID) අනිවාර්යයෙන්ම සඳහන් කරන්න. මෙය ඔබේ ගෙවීම ඉක්මනින් තහවුරු කර ගැනීමට අපට උපකාරී වේ.</p>
+                    <p style="margin-bottom: 12px;"><strong>පියවර 03: ගෙවීම් රිසිට්පත අපට එවන්න</strong><br>තැන්පතුව සිදු කළ පසු, එහි රිසිට්පතේ ඡායාරූපයක් (Photo/Screenshot) එකක් අප වෙත එවන්න:</p>
+                    <div style="background: var(--bg-main); padding: 18px; border-radius: 10px; border: 1px solid var(--border-color); text-align: left;">
+                        <p style="margin: 0; color: var(--text-primary); font-size: 14.5px; line-height: 1.7; font-weight: 600;">
+                            Account Name: <strong style="color: var(--text-primary); font-size: 15px;">MAX SAVE INTERNATIONAL (PVT) LTD</strong><br>
+                            Account Number: <strong style="color: var(--brand-gold); font-size: 17px; font-family: monospace; letter-spacing: 0.5px;">019010040197</strong><br>
+                            Bank: <strong style="color: var(--text-primary); font-size: 15px;">HATTON NATIONAL BANK</strong><br>
+                            Branch: <strong style="color: var(--text-primary); font-size: 15px;">KURUNEGALA</strong>
+                        </p>
+                    </div>
+                </div>
+                <h4 style="font-size: 14px; margin-bottom: 12px; color: var(--text-primary);">📤 බැංකු රිසිට්පත උඩුගත කරන්න (Upload Bank Slip)</h4>
+                
+                <input type="file" id="bankSlipFileInput" style="display: none;" onchange="handleBankSlipChange(event)">
+                
+                <div onclick="document.getElementById('bankSlipFileInput').click()" style="cursor: pointer; padding: 25px 15px; background-color: var(--bg-main); border-radius: 6px; border: 1px dashed var(--border-color); transition: 0.2s;" id="dragDropArea">
+                    📁 Click to select Bank Slip Image
+                </div>
+                
+                <div id="slipPreviewContainer" style="display: none; margin-top: 15px; text-align: center;">
+                    <img id="slipPreviewImg" src="" style="max-height: 150px; border-radius: 4px; border: 1px solid var(--border-color); margin-bottom: 10px;">
+                    <p style="font-size: 12px; color: var(--brand-orange); font-weight: 700;">Slip selected! Click submit below.</p>
+                </div>
+                
+                <button class="btn btn-primary" id="btnSubmitSlip" style="width: 100%; border: none; padding: 10px; font-size: 13.5px; margin-top: 15px; display: none; cursor: pointer;" onclick="submitBankSlip()">
+                    රිසිට්පත ඉදිරිපත් කරන්න (Submit Receipt)
+                </button>
+            </div>
+
+            <!-- WHATSAPP DIRECT SUBMIT BUTTON -->
+            <a id="btnWhatsAppReceipt" class="btn btn-secondary" style="width: 100%; padding: 12px; font-size: 14.5px; border-color: #25D366; color: #25D366; display: none; margin-bottom: 15px; text-decoration: none; font-weight: 700; align-items: center; justify-content: center; gap: 8px;" target="_blank">
+                💬 WhatsApp හරහා රිසිට්පත යොමු කරන්න (Send to WhatsApp)
+            </a>
+
+            <!-- Actions -->
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="btn btn-primary" style="width: 100%; border: none; padding: 12px; font-size: 14.5px; cursor: pointer;" onclick="goToStudentDashboard()">
+                    Go to Student Dashboard ➔
+                </button>
+                <button class="btn btn-secondary" style="width: 100%; padding: 12px; font-size: 14.5px; border-width: 1px; cursor: pointer;" onclick="printInvoicePDF()">
+                    📄 Download / Print PDF Invoice
+                </button>
+                <a href="index.html" class="btn btn-secondary" style="width: 100%; padding: 12px; font-size: 14.5px; border-width: 1px;" data-translate="back_home">
+                    Back to Homepage
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Set Theme initially from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = parseFloat(urlParams.get('amount')) || 0;
+        const method = urlParams.get('method') || 'payhere';
+
+        // Handle file upload changes
+        function handleBankSlipChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const previewImg = document.getElementById('slipPreviewImg');
+                const previewContainer = document.getElementById('slipPreviewContainer');
+                const submitBtn = document.getElementById('btnSubmitSlip');
+                
+                previewImg.src = URL.createObjectURL(file);
+                previewContainer.style.display = 'block';
+                submitBtn.style.display = 'block';
+                document.getElementById('dragDropArea').textContent = '📁 ' + file.name + ' selected!';
+            }
+        }
+
+        // Submit bank slip directly to Admin Queue in localStorage
+        function submitBankSlip() {
+            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0719226600' };
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
+            
+            const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
+            const courseTitles = purchasedList.length > 0 ? purchasedList.map(c => c.title).join(', ') : 'Titan Elite Trading Academy (Advance Course)';
+
+            const newSlip = {
+                orderId: orderId,
+                txnCode: txnCode,
+                userName: billingInfo.name,
+                email: activeUser.email,
+                phone: billingInfo.phone,
+                course: courseTitles,
+                amount: amount || 19900,
+                status: 'Pending Verification',
+                referrer: billingInfo.referrer || 'kasun_t',
+                date: new Date().toLocaleDateString()
+            };
+
+            let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            slipsQueue.push(newSlip);
+            localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+
+            showToast('📁 <strong>රිසිට්පත යොමු විය!</strong> ඔබගේ බැංකු රිසිට්පත සාර්ථකව Admin අනුමැතිය සඳහා යොමු කරන ලදී.');
+            
+            // Hide uploader and show pending validation
+            document.getElementById('bankSlipUploadContainer').innerHTML = `
+                <div style="padding:15px; color:var(--brand-gold); background-color:rgba(240,179,35,0.08); border:1px dashed var(--brand-gold); border-radius:6px;">
+                    ⏳ බැංකු තැන්පතු රිසිට්පත පරීක්ෂා කරමින් පවතී. (Awaiting manual slip verification from Admin...)
+                </div>`;
+        }
+
+        // Print PDF Invoice Trigger
+        function printInvoicePDF() {
+            window.print();
+        }
+
+        // Generate/Get unique Transaction Code
+        let txnCode = urlParams.get('txn');
+        if (!txnCode) {
+            txnCode = 'TXN-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+        }
+        document.getElementById('metaTxnCode').textContent = txnCode;
+
+        // Set billing info
+        document.getElementById('metaPaidAmount').textContent = 'රු. ' + amount.toLocaleString();
+        
+        // Generate personal affiliate link for the buyer
+        const buyerName = billing.name || 'Student';
+        const buyerRefCode = buyerName.toLowerCase().replace(/[^a-z0-9]/g, '_') + '_' + Math.floor(10 + Math.random() * 90);
+        const successRefLink = window.location.origin + '/?ref=' + buyerRefCode;
+        
+        const successAffInput = document.getElementById('successAffLinkInput');
+        if (successAffInput) {
+            successAffInput.value = successRefLink;
+        }
+
+        function copySuccessAffLink() {
+            const input = document.getElementById('successAffLinkInput');
+            if (!input) return;
+            input.select();
+            document.execCommand('copy');
+            showToast('📋 <strong>Affiliate Link Copied!</strong> Start sharing to earn LKR commissions.');
+        }
+
+        // Show referrer row if present in billing
+        const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
+        if (billing.referrer) {
+            document.getElementById('referrerRow').style.display = 'flex';
+            document.getElementById('metaReferrer').textContent = billing.referrer;
+        }
+        document.getElementById('metaPayMethod').textContent = method === 'payhere' ? 'PayHere Gateway (Online)' : 'Direct Bank Deposit (Pending Receipt Verification)';
+        
+        // Random Order ID
+        const orderId = '#' + Math.floor(10430 + Math.random() * 50);
+        document.getElementById('metaOrderId').textContent = orderId;
+
+        // Show bank slip upload if method is bank
+        if (method === 'bank') {
+            const uploader = document.getElementById('bankSlipUploadContainer');
+            const waReceipt = document.getElementById('btnWhatsAppReceipt');
+            if (uploader) uploader.style.display = 'block';
+            if (waReceipt) {
+                waReceipt.style.display = 'flex';
+                waReceipt.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
+            }
+            const statusEl = document.getElementById('metaPayStatus');
+            if (statusEl) {
+                statusEl.textContent = currentLang === 'si' ? 'අනුමැතිය සඳහා රැඳී පවතී' : 'Verification Pending';
+                statusEl.style.color = 'var(--brand-orange)';
+            }
+        }
+
+        // Redirect helper
+        function goToStudentDashboard() {
+            // Retrieve purchaser's name from localStorage
+            const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
+            const name = billing.name || 'Kasun Tharaka';
+            
+            // Clear cart
+            localStorage.removeItem('hapanamy_cart');
+            
+            showToast(`🚀 <strong>පිවිසීම සාර්ථකයි!</strong> ${name} ගේ ශිෂ්‍ය උපකරණ පුවරුව පූරණය වෙමින් පවතී...`);
+            
+            setTimeout(() => {
+                window.location.href = 'my-account.html';
+            }, 1500);
+        }
+
+        // Toast Helper
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Language settings
+        const translations = {
+            si: {
+                success_heading: 'ගෙවීම් සාර්ථකයි!',
+                success_desc: 'Hapanamy.lk වෙතින් පාඨමාලාව මිලදී ගැනීම සාර්ථක විය. ඔබගේ ඇණවුම් විස්තර සහ පිවිසුම් දත්ත පහත පරිදි වේ.',
+                lbl_order: 'ඇණවුම් අංකය (Order ID):',
+                lbl_amount: 'ගෙවූ මුදල (Paid LKR):',
+                lbl_method: 'ගෙවීම් ක්‍රමය (Method):',
+                lbl_status: 'තත්ත්වය (Payment Status):',
+                val_active: 'ගෙවා ඇත (Paid & Active)',
+                lbl_referrer: 'ප්‍රවර්ධකයා (Referred By):',
+                free_aff_title: '🎁 නොමිලේ මුදල් උපයන්න (Free Affiliate Opportunity)!',
+                free_aff_desc: 'ඔබේම අනුබද්ධිත සබැඳිය (Affiliate Link) නොමිලේ ලබාගෙන මිතුරන් සමඟ බෙදාගෙන 15% ක සෘජු කොමිස් මුදල් උපයාගන්න.',
+                instr_title: '🔐 ඔබගේ අධ්‍යාපන පුවරුව (Student Dashboard) සක්‍රියයි!',
+                instr_desc: 'ඔබගේ පාඨමාලාවේ වීඩියෝ නැරඹීම සඳහා පහත ඇති බොත්තම ක්ලික් කර ශිෂ්‍ය පුවරුව වෙත සෘජුවම පිවිසෙන්න.',
+                back_home: 'ප්‍රධාන පිටුවට'
+            },
+            en: {
+                success_heading: 'Payment Successful!',
+                success_desc: 'Your purchase on Hapanamy.lk has been processed successfully. Your receipt and access credentials are below.',
+                lbl_order: 'Order ID:',
+                lbl_amount: 'Amount Paid (LKR):',
+                lbl_method: 'Payment Method:',
+                lbl_status: 'Payment Status:',
+                val_active: 'Paid & Activated',
+                instr_title: '🔐 Your Learning Dashboard is Activated!',
+                instr_desc: 'To watch your purchased recorded videos and zoom schedules, click the button below to go directly to your panel.',
+                back_home: 'Back to Homepage'
+            }
+        };
+
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    element.innerHTML = translations[lang][key];
+                }
+            });
+        }
+
+        const currentLang = localStorage.getItem('language') || 'si';
+        applyLanguage(currentLang);
+    </script>
+</body>
+</html>

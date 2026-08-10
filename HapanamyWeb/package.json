@@ -1,0 +1,10 @@
+{
+  "name": "hapanamy-web",
+  "version": "1.0.0",
+  "description": "Hapanamy.lk Premium Website",
+  "main": "index.js",
+  "scripts": {
+    "dev": "npx -y serve -l 3000"
+  },
+  "dependencies": {}
+}

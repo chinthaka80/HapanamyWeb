@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PayHere Secure Payment Gateway</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --ph-red: #D82D3E;
+            --ph-blue: #0E2B4B;
+            --ph-text: #2D3A4B;
+            --ph-bg: #F4F6F9;
+            --ph-border: #E1E5EC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background-color: var(--ph-bg);
+            color: var(--ph-text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .payhere-container {
+            width: 100%;
+            max-width: 650px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(14, 43, 75, 0.08);
+            overflow: hidden;
+            border: 1px solid var(--ph-border);
+        }
+
+        .payhere-header {
+            background-color: var(--ph-blue);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payhere-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 700;
+        }
+
+        .payhere-logo span {
+            color: var(--ph-red);
+        }
+
+        .merchant-badge {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .payment-info-banner {
+            background-color: #FFF2F3;
+            border-bottom: 1px solid var(--ph-border);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .payment-info-banner span {
+            font-size: 13.5px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .payment-info-banner strong {
+            font-size: 20px;
+            color: var(--ph-red);
+            font-weight: 800;
+        }
+
+        .payment-layout {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+        }
+
+        .payment-tabs {
+            background-color: #FAFBFD;
+            border-right: 1px solid var(--ph-border);
+            list-style: none;
+        }
+
+        .payment-tab {
+            padding: 16px 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            border-bottom: 1px solid var(--ph-border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .payment-tab:hover, .payment-tab.active {
+            background-color: white;
+            color: var(--ph-red);
+            border-left: 4px solid var(--ph-red);
+        }
+
+        .payment-form-body {
+            padding: 30px;
+        }
+
+        .form-row {
+            margin-bottom: 20px;
+        }
+
+        .form-row label {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: #777;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 6px;
+            border: 1px solid var(--ph-border);
+            font-size: 14.5px;
+            font-weight: 600;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--ph-blue);
+        }
+
+        .btn-ph-pay {
+            width: 100%;
+            background-color: var(--ph-red);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(216, 45, 62, 0.2);
+            transition: 0.2s;
+        }
+
+        .btn-ph-pay:hover {
+            background-color: #be2332;
+        }
+
+        /* Spinner elements */
+        .processing-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            z-index: 100;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(14, 43, 75, 0.1);
+            border-left-color: var(--ph-red);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="payhere-container" style="position: relative;">
+        <!-- Processing Screen overlay -->
+        <div class="processing-overlay" id="loadingOverlay">
+            <div class="spinner"></div>
+            <h3 style="font-size: 18px; color: var(--ph-blue); margin-bottom: 8px;">Processing Secure Payment...</h3>
+            <p style="font-size: 13.5px; color: #555;">Please do not close this window or refresh the page.</p>
+        </div>
+
+        <!-- Header -->
+        <div class="payhere-header">
+            <div class="payhere-logo">
+                pay<span>here</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <span id="sandboxBadge" style="background-color: var(--ph-red); color: white; padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 800; display: none;">SANDBOX TEST</span>
+                <div class="merchant-badge">
+                    HAPANAMY.lk
+                </div>
+            </div>
+        </div>
+
+        <!-- Price Info -->
+        <div class="payment-info-banner">
+            <span>Payment for: Hapanamy Course Purchase</span>
+            <span>LKR <strong id="phAmountText">0.00</strong></span>
+        </div>
+
+        <!-- Main Body Grid -->
+        <div class="payment-layout">
+            <ul class="payment-tabs">
+                <li class="payment-tab active">💳 Cards</li>
+                <li class="payment-tab" onclick="alert('eZ Cash / mCash payment simulated under Card option.')">📱 Mobile Wallet</li>
+                <li class="payment-tab" onclick="alert('Internet Banking transfers simulated under Card option.')">🏦 Internet Banking</li>
+            </ul>
+
+            <div class="payment-form-body">
+                <form id="payHereMockForm" onsubmit="handlePayHerePayment(event)">
+                    <div class="form-row">
+                        <label>Card Number</label>
+                        <input type="text" class="form-control" placeholder="4111 2222 3333 4444" required value="4111 2222 3333 4444">
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                        <div>
+                            <label>Expiry Date</label>
+                            <input type="text" class="form-control" placeholder="12/28" required value="12/28">
+                        </div>
+                        <div>
+                            <label>CVV / CVC</label>
+                            <input type="password" class="form-control" placeholder="•••" required value="123">
+                        </div>
+                    </div>
+
+                    <div class="form-row" style="margin-bottom: 25px;">
+                        <label>Cardholder Name</label>
+                        <input type="text" class="form-control" placeholder="KASUN THARAKA" required id="phCardholderName">
+                    </div>
+
+                    <button type="submit" class="btn-ph-pay" id="phPayButton">
+                        Pay LKR 0.00
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const amount = parseFloat(urlParams.get('amount')) || 0;
+        const name = urlParams.get('name') || 'KASUN THARAKA';
+
+        document.getElementById('phAmountText').textContent = amount.toLocaleString();
+        document.getElementById('phPayButton').textContent = `Pay LKR ${amount.toLocaleString()}`;
+        document.getElementById('phCardholderName').value = name.toUpperCase();
+
+        function handlePayHerePayment(event) {
+            event.preventDefault();
+            
+            // Show loading animation
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.style.display = 'flex';
+
+            // Simulate server transaction check
+            setTimeout(() => {
+                window.location.href = `order-success.html?method=payhere&amount=${amount}`;
+            }, 2500);
+        }
+    </script>
+</body>
+</html>

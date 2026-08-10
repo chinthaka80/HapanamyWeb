@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ඇතුල්වීම සහ ලියාපදිංචිය (Login & Register)</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        /* Specific Page Styles for Login/Register */
+        .auth-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            position: relative;
+            overflow: hidden;
+            background-color: var(--bg-main);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 1000px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            display: grid;
+            grid-template-columns: 1fr 1.1fr;
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-sidebar {
+            background: var(--navy-gradient);
+            padding: 50px 40px;
+            color: #FFF9F0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-sidebar::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: rgba(244, 123, 32, 0.15);
+            filter: blur(40px);
+        }
+
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-logo img {
+            height: 44px;
+            border-radius: 8px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .sidebar-logo span {
+            font-size: 26px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .sidebar-logo span span {
+            color: var(--brand-orange);
+        }
+
+        .sidebar-main h2 {
+            font-size: 32px;
+            line-height: 1.25;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .sidebar-main h2 span {
+            color: var(--brand-gold);
+        }
+
+        .sidebar-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .sidebar-features li {
+            display: flex;
+            gap: 12px;
+            font-size: 14px;
+            color: rgba(255, 249, 240, 0.85);
+        }
+
+        .sidebar-feat-icon {
+            color: var(--brand-gold);
+            font-weight: 800;
+        }
+
+        .sidebar-footer {
+            margin-top: 50px;
+            font-size: 12.5px;
+            color: rgba(255, 249, 240, 0.6);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-home-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--brand-gold);
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        .back-home-btn:hover {
+            color: var(--brand-orange);
+        }
+
+        .auth-form-side {
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .auth-tab-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            padding-bottom: 8px;
+            position: relative;
+            transition: var(--transition-smooth);
+        }
+
+        .auth-tab-btn.active {
+            color: var(--text-primary);
+        }
+
+        .auth-tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -11px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background-color: var(--brand-orange);
+            transition: var(--transition-smooth);
+        }
+
+        .auth-tab-btn.active::after {
+            width: 100%;
+        }
+
+        .form-panel {
+            display: none;
+        }
+
+        .form-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .auth-role-select {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 24px;
+        }
+
+        .role-option {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: var(--transition-smooth);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .role-option.selected {
+            border-color: var(--brand-orange);
+            background-color: rgba(244, 123, 32, 0.08);
+            color: var(--brand-orange);
+        }
+
+        .extra-fields {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .extra-fields.show {
+            max-height: 300px;
+            opacity: 1;
+            margin-bottom: 24px;
+        }
+
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 24px;
+            color: var(--text-muted);
+        }
+
+        .remember-forgot a {
+            color: var(--brand-orange);
+            font-weight: 600;
+        }
+
+        .remember-forgot a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 900px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+            }
+            .auth-sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Theme Toggle Floating Button -->
+    <div style="position: absolute; top: 20px; right: 20px; z-index: 100; display: flex; gap: 10px; align-items: center;">
+        <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
+            EN
+        </button>
+        <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+            <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+    </div>
+
+    <div class="auth-wrapper">
+        <!-- Floating shapes -->
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1" style="opacity: 0.1;"></div>
+            <div class="shape shape-2" style="opacity: 0.1;"></div>
+        </div>
+
+        <div class="auth-container">
+            <!-- Sidebar panel -->
+            <div class="auth-sidebar">
+                <div>
+                    <a href="index.html" class="sidebar-logo">
+                        <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                        <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                    </a>
+                    
+                    <div class="sidebar-main">
+                        <h2>හෙට දවසේ තාක්ෂණයෙන් <br><span>මූල්‍ය ස්වාධීනත්වය</span> ලබන්න.</h2>
+                        <p style="font-size: 14.5px; opacity: 0.8; line-height: 1.6;">ශ්‍රී ලංකාවේ ප්‍රමුඛතම E-learning සහ Affiliate අලෙවිකරණ පද්ධතිය සමඟ නොමිලේම එක්වී ආදායම් මාර්ග නිර්මාණය කරගන්න.</p>
+                        
+                        <ul class="sidebar-features">
+                            <li>
+                                <span class="sidebar-feat-icon">✓</span>
+                                <span>වෘත්තීය මට්ටමේ වීඩියෝ සහ සජීවී (Live) පාඨමාලා.</span>
+                            </li>
+                            <li>
+                                <span class="sidebar-feat-icon">✓</span>
+                                <span>ලියාපදිංචි වී 15% ක සෘජු කොමිස් මුදලක් ලබන්න.</span>
+                            </li>
+                            <li>
+                                <span class="sidebar-feat-icon">✓</span>
+                                <span>මට්ටම් 5කින් සමන්විත නිෂ්ක්‍රීය (Passive) ආදායම් මාර්ග.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="sidebar-footer">
+                    <a href="index.html" class="back-home-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                        ප්‍රධාන පිටුවට (Go Home)
+                    </a>
+                    <span>HAPANAMY &copy; 2026</span>
+                </div>
+            </div>
+
+            <!-- Forms Form Side -->
+            <div class="auth-form-side">
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" onclick="switchTab('login')">ඇතුල්වීම (Login)</button>
+                    <button class="auth-tab-btn" onclick="switchTab('register')">ලියාපදිංචිය (Register)</button>
+                </div>
+
+                <!-- LOGIN PANEL -->
+                <div class="form-panel active" id="loginPanel">
+                    <form onsubmit="handleAuthSubmit(event, 'login')">
+                        <div class="form-group">
+                            <input type="text" id="loginEmail" required placeholder=" ">
+                            <label for="loginEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="password" id="loginPassword" required placeholder=" ">
+                            <label for="loginPassword">මුරපදය (Password)</label>
+                        </div>
+
+                        <div class="remember-forgot">
+                            <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                                <input type="checkbox" style="width: auto; margin-bottom: 0;"> මතක තබාගන්න (Remember me)
+                            </label>
+                            <a href="#" onclick="openForgotPasswordModal(event)">Forgot Password?</a>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; border: none; cursor: pointer; height: 50px;">ඇතුල්වන්න (Sign In)</button>
+                    </form>
+                </div>
+
+                <!-- REGISTER PANEL -->
+                <div class="form-panel" id="registerPanel">
+                    <form onsubmit="handleAuthSubmit(event, 'register')">
+                        <div class="form-group">
+                            <input type="text" id="regName" required placeholder=" ">
+                            <label for="regName">සම්පූර්ණ නම (Full Name)</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="email" id="regEmail" required placeholder=" ">
+                            <label for="regEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="tel" id="regPhone" required placeholder=" ">
+                            <label for="regPhone">දුරකථන අංකය (Phone Number)</label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <input type="text" id="regAddress" required placeholder=" ">
+                            <label for="regAddress">ලිපිනය / නගරය (Address / City)</label>
+                        </div>
+
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <input type="password" id="regPassword" required placeholder=" " oninput="checkPasswordStrength(this.value)">
+                            <label for="regPassword">මුරපදය (Password)</label>
+                        </div>
+                        <div id="pswStrength" style="font-size: 11px; font-weight: 700; margin-bottom: 18px; transition: 0.2s; color: var(--text-muted); display: none; text-align: left; padding-left: 5px;"></div>
+
+                        <!-- Role selector (Student / Affiliate) -->
+                        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px; font-weight: 600;">ගිණුම් වර්ගය තෝරන්න (Select Account Type)</div>
+                        <div class="auth-role-select">
+                            <div class="role-option selected" id="roleStudent" onclick="selectRole('student')">
+                                ශිෂ්‍ය (Student)
+                            </div>
+                            <div class="role-option" id="roleAffiliate" onclick="selectRole('affiliate')">
+                                අනුබද්ධිත (Affiliate)
+                            </div>
+                        </div>
+
+                        <!-- Hidden inputs for Affiliate extra details -->
+                        <div class="extra-fields" id="affiliateFields">
+                            <div class="form-group">
+                                <input type="text" id="regReferral" placeholder=" ">
+                                <label for="regReferral">ප්‍රවර්ධන කේතය (Referral Code - Optional)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="regBank" placeholder=" ">
+                                <label for="regBank">බැංකු ගිණුම් විස්තර (Bank & Account Number for payouts)</label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" style="width: 100%; border: none; cursor: pointer; height: 50px;">ලියාපදිංචි වන්න (Sign Up)</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD MODAL -->
+    <div class="modal-overlay" id="forgotPasswordModal" style="z-index: 2000;">
+        <div class="modal-box" style="max-width: 450px; padding: 30px;">
+            <h3 style="font-size: 18px; margin-bottom: 15px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">🔑 මුරපදය නැවත සැකසීම (Reset Password)</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">ඔබගේ ගිණුමට සම්බන්ධ ඊමේල් ලිපිනය ඇතුළත් කරන්න. එවිට අප ඔබට මුරපදය නැවත සැකසීමට සබැඳියක් (Reset Link) එවනු ඇත.</p>
+            <form onsubmit="handleForgotPasswordSubmit(event)">
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <input type="email" id="forgotEmail" required placeholder=" ">
+                    <label for="forgotEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight: 700;">Reset Link යොමු කරන්න</button>
+                    <button type="button" class="btn btn-secondary" style="border-width: 1px; padding: 12px; cursor: pointer;" onclick="closeForgotPasswordModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdminPortal = urlParams.get('access') === 'admin';
+        
+        // Auth internationalization translations
+        const authTranslations = {
+            si: {
+                title: 'Hapanamy.lk | ඇතුල්වීම සහ ලියාපදිංචිය (Login & Register)',
+                heading: 'හෙට දවසේ තාක්ෂණයෙන් <br><span>මූල්‍ය ස්වාධීනත්වය</span> ලබන්න.',
+                desc: 'ශ්‍රී ලංකාවේ ප්‍රමුඛතම E-learning සහ Affiliate අලෙවිකරණ පද්ධතිය සමඟ නොමිලේම එක්වී ආදායම් මාර්ග නිර්මාණය කරගන්න.',
+                feat1: 'වෘත්තීය මට්ටමේ වීඩියෝ සහ සජීවී (Live) පාඨමාලා.',
+                feat2: 'ලියාපදිංචි වී 15% ක සෘජු කොමිස් මුදලක් ලබන්න.',
+                feat3: 'මට්ටම් 4කින් සමන්විත නිෂ්ක්‍රීය (Passive) ආදායම් මාර්ග.',
+                homeLink: 'ප්‍රධාන පිටුවට (Go Home)',
+                loginTab: 'ඇතුල්වීම (Login)',
+                registerTab: 'ලියාපදිංචිය (Register)',
+                loginBtn: 'ඇතුල්වන්න (Sign In)',
+                registerBtn: 'ලියාපදිංචි වන්න (Sign Up)'
+            },
+            en: {
+                title: 'Hapanamy.lk | Login & Register Authorization',
+                heading: 'Obtain <br><span>Financial Freedom</span> through Tech.',
+                desc: 'Join Sri Lanka\'s premier digital skill learning and affiliate community. Sign up for free and generate passive income streams.',
+                feat1: 'High-quality recorded and scheduled Live (Zoom) training.',
+                feat2: 'Earn flat 15% direct sales (15%) + unilevel (24%) commissions on all courses.',
+                feat3: 'Passive multi-level commissions (5 levels unilevel system).',
+                homeLink: 'Back to Homepage',
+                loginTab: 'Sign In (Login)',
+                registerTab: 'Sign Up (Register)',
+                loginBtn: 'Sign In Now',
+                registerBtn: 'Register Account'
+            }
+        };
+
+        function applyAuthLanguage(lang) {
+            const trans = authTranslations[lang];
+            if (!trans) return;
+            
+            document.title = trans.title;
+            document.querySelector('.sidebar-main h2').innerHTML = trans.heading;
+            document.querySelector('.sidebar-main p').textContent = trans.desc;
+            
+            const features = document.querySelectorAll('.sidebar-features li span');
+            features[0].textContent = trans.feat1;
+            features[1].textContent = trans.feat2;
+            features[2].textContent = trans.feat3;
+            
+            document.querySelector('.back-home-btn').innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>` + trans.homeLink;
+            
+            const tabs = document.querySelectorAll('.auth-tab-btn');
+            tabs[0].textContent = trans.loginTab;
+            tabs[1].textContent = trans.registerTab;
+            
+            document.querySelector('#loginPanel button').textContent = trans.loginBtn;
+            document.querySelector('#registerPanel button').textContent = trans.registerBtn;
+
+            const langToggle = document.getElementById('langToggleBtn');
+            if (langToggle) {
+                langToggle.textContent = lang === 'si' ? 'EN' : 'සිං';
+            }
+        }
+
+        // Initialize auth language switcher
+        function initAuthLanguage() {
+            const langToggle = document.getElementById('langToggleBtn');
+            let currentLang = localStorage.getItem('language') || 'si';
+            
+            applyAuthLanguage(currentLang);
+            
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    currentLang = currentLang === 'si' ? 'en' : 'si';
+                    localStorage.setItem('language', currentLang);
+                    applyAuthLanguage(currentLang);
+                    showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
+                });
+            }
+        }
+
+        initAuthLanguage();
+
+        // Set Theme initially from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
+            });
+        }
+
+        // Tab switcher (Login vs Register)
+        function switchTab(type) {
+            const tabs = document.querySelectorAll('.auth-tab-btn');
+            const loginPanel = document.getElementById('loginPanel');
+            const registerPanel = document.getElementById('registerPanel');
+
+            tabs.forEach(t => t.classList.remove('active'));
+            
+            if (type === 'login') {
+                tabs[0].classList.add('active');
+                loginPanel.classList.add('active');
+                registerPanel.classList.remove('active');
+            } else {
+                tabs[1].classList.add('active');
+                registerPanel.classList.add('active');
+                loginPanel.classList.remove('active');
+            }
+        }
+
+        
+
+        // Success Toast Notification Helper
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Form Submit Actions
+        function handleAuthSubmit(event, type) {
+            event.preventDefault();
+
+            if (type === 'login') {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                
+                // Enforce default user credentials check
+                if (email === 'NamoBudhdhaya') {
+                    if (password === 'Araliya321#') {
+                        localStorage.setItem('active_user', JSON.stringify({ email: 'namobudhdhaya@hapanamy.lk', role: 'student' }));
+                        const profile = {
+                            name: 'NamoBudhdhaya',
+                            email: 'namobudhdhaya@hapanamy.lk',
+                            phone: '0778899123',
+                            address: 'Maharagama, Sri Lanka',
+                            bankName: 'Commercial Bank',
+                            branch: 'Maharagama',
+                            accNumber: '8010294851'
+                        };
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
+                        
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු NamoBudhdhaya!`);
+                        setTimeout(() => {
+                            window.location.href = 'my-account.html';
+                        }, 1500);
+                    } else {
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> NamoBudhdhaya සඳහා ඇතුළත් කළ මුරපදය වැරදියි.`);
+                    }
+                    return;
+                }
+                
+                // Enforce Admin credentials check
+                if (email.toLowerCase() === 'admin' || email === 'admin@hapanamy.lk') {
+                    if (!isAdminPortal) {
+                        showToast('⚠️ <strong>Access Denied!</strong> මෙම පිවිසුම සිසුන් සඳහා පමණි. Admin ලොගින් වීමට රහස් සබැඳිය භාවිතා කරන්න.');
+                        return;
+                    }
+                    if (password === 'Araliya321#') {
+                        localStorage.setItem('active_user', JSON.stringify({ email, role: 'admin' }));
+                        showToast(`👑 <strong>ආයුබෝවන් Admin!</strong> Hapanamy Admin Panel වෙත පිවිසෙමින්...`);
+                        setTimeout(() => {
+                            window.location.href = 'admin.html';
+                        }, 1500);
+                    } else {
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> Admin සඳහා ඇතුළත් කළ මුරපදය වැරදියි.`);
+                    }
+                    return;
+                }
+                
+                // Check if user is registered inside local storage
+                const registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.name.toLowerCase() === email.toLowerCase());
+                
+                if (matchedUser) {
+                    if (matchedUser.password === password) {
+                        localStorage.setItem('active_user', JSON.stringify({ email: matchedUser.email, role: matchedUser.role }));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                            name: matchedUser.name,
+                            email: matchedUser.email,
+                            phone: matchedUser.phone,
+                            address: matchedUser.address,
+                            bankName: matchedUser.bank.split(' ')[0] || 'Bank',
+                            branch: 'Branch',
+                            accNumber: matchedUser.bank.split(' ').slice(1).join(' ') || 'Account'
+                        }));
+                        
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.name}!`);
+                        setTimeout(() => {
+                            window.location.href = 'my-account.html';
+                        }, 1500);
+                    } else {
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
+                    }
+                    return;
+                }
+                
+                // If logging in with an affiliate/partner email
+                if (email.includes('affiliate') || email.includes('partner')) {
+                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'affiliate' }));
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                    setTimeout(() => {
+                        window.location.href = 'my-account.html';
+                    }, 1500);
+                    return;
+                }
+                
+                localStorage.setItem('active_user', JSON.stringify({ email, role: 'student' }));
+                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                
+                // Redirect to student dashboard after mock latency
+                setTimeout(() => {
+                    window.location.href = 'my-account.html';
+                }, 1500);
+            } else {
+                const name = document.getElementById('regName').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const address = document.getElementById('regAddress').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const bankInfo = document.getElementById('regBank').value.trim() || 'HNB Bank';
+                const roleText = selectedRole === 'affiliate' ? 'අනුබද්ධිත (Affiliate Partner)' : 'ශිෂ්‍යයෙක් (Student)';
+                
+                // Check if user already exists
+                let registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+                if (userExists) {
+                    showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
+                    return;
+                }
+                
+                const newUser = {
+                    name,
+                    email,
+                    phone,
+                    address,
+                    password,
+                    role: selectedRole,
+                    bank: bankInfo
+                };
+                registeredUsers.push(newUser);
+                localStorage.setItem('hapanamy_registered_users', JSON.stringify(registeredUsers));
+
+                // Save active user and profile
+                localStorage.setItem('active_user', JSON.stringify({ email, role: selectedRole }));
+                localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    bankName: bankInfo.split(' ')[0] || 'Bank',
+                    branch: 'Branch',
+                    accNumber: bankInfo.split(' ').slice(1).join(' ') || 'Account'
+                }));
+                
+                // Record under referrer's downlines in local storage
+                const refCode = localStorage.getItem('hapanamy_referrer') || 'kasun_t';
+                if (refCode) {
+                    let referredList = JSON.parse(localStorage.getItem('referred_users_' + refCode)) || [];
+                    referredList.push({
+                        name: name,
+                        email: email,
+                        date: new Date().toLocaleDateString(),
+                        sales: 0,
+                        earnings: 0
+                    });
+                    localStorage.setItem('referred_users_' + refCode, JSON.stringify(referredList));
+                }
+
+                showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> ස්තූතියි ${name}, ඔබ ${roleText} ලෙස සාර්ථකව සම්බන්ධ විය.`);
+                
+                // Redirect to appropriate dashboard after latency
+                setTimeout(() => {
+                    window.location.href = 'my-account.html';
+                }, 2000);
+            }
+        }
+
+        // Role Selection script
+        let selectedRole = 'student';
+        function selectRole(role) {
+            selectedRole = role;
+            const studentBtn = document.getElementById('roleStudent');
+            const affiliateBtn = document.getElementById('roleAffiliate');
+            
+            if (role === 'student') {
+                studentBtn.style.backgroundColor = 'var(--brand-orange)';
+                studentBtn.style.color = 'white';
+                affiliateBtn.style.backgroundColor = 'var(--bg-main)';
+                affiliateBtn.style.color = 'var(--text-muted)';
+            } else {
+                affiliateBtn.style.backgroundColor = 'var(--brand-orange)';
+                affiliateBtn.style.color = 'white';
+                studentBtn.style.backgroundColor = 'var(--bg-main)';
+                studentBtn.style.color = 'var(--text-muted)';
+            }
+        }
+
+        // Set initial selected style on load
+        document.addEventListener('DOMContentLoaded', () => {
+            selectRole('student');
+            
+            // Auto switch to Register tab and prefill if referrer ref is present in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam) {
+                switchTab('register');
+                const refInput = document.getElementById('regReferral');
+                if (refInput) {
+                    refInput.value = refParam;
+                }
+            }
+        });
+
+        // Live Password Strength Check
+        function checkPasswordStrength(password) {
+            const pswIndicator = document.getElementById('pswStrength');
+            if (!pswIndicator) return;
+            
+            if (password.length === 0) {
+                pswIndicator.style.display = 'none';
+                return;
+            }
+            
+            pswIndicator.style.display = 'block';
+            let strength = 0;
+            if (password.length >= 6) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^a-zA-Z0-9]/.test(password)) strength++;
+            
+            if (password.length < 6) {
+                pswIndicator.innerHTML = '❌ මුරපදය ඉතා කෙටියි (Too Short - min 6 characters)';
+                pswIndicator.style.color = '#E53E3E';
+            } else if (strength <= 1) {
+                pswIndicator.innerHTML = '⚠️ දුර්වල මුරපදයක් (Weak Password)';
+                pswIndicator.style.color = '#F6AD55';
+            } else if (strength === 2) {
+                pswIndicator.innerHTML = '🟡 මධ්‍යස්ථ මුරපදයක් (Medium Password)';
+                pswIndicator.style.color = '#D69E2E';
+            } else {
+                pswIndicator.innerHTML = '✅ ශක්තිමත් මුරපදයක් (Strong Password)';
+                pswIndicator.style.color = 'var(--brand-green-light)';
+            }
+        }
+    
+        // Forgot Password Modal Handlers
+        function openForgotPasswordModal(event) {
+            event.preventDefault();
+            document.getElementById('forgotPasswordModal').classList.add('open');
+        }
+
+        function closeForgotPasswordModal() {
+            document.getElementById('forgotPasswordModal').classList.remove('open');
+        }
+
+        function handleForgotPasswordSubmit(event) {
+            event.preventDefault();
+            const email = document.getElementById('forgotEmail').value;
+            closeForgotPasswordModal();
+            
+            showToast('📧 <strong>මුරපදය නැවත සැකසීමේ සබැඳිය යොමු කරන ලදී!</strong> ඔබගේ <strong>' + email + '</strong> ලිපිනයට සබැඳියක් යොමු කර ඇත. කරුණාකර Inbox පරීක්ෂා කරන්න.');
+        }
+
+    </script>
+</body>
+</html>

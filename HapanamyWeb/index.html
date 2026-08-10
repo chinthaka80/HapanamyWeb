@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Hapanamy.lk - ශ්‍රී ලංකාවේ ප්‍රමුඛතම ඩිජිටල් අධ්‍යාපනික සහ Affiliate අලෙවිකරණ වේදිකාව. Trading, AI, Social Media සහ E-Books හරහා ඔබේ කුසලතා වර්ධනය කරගෙන නිවසේ සිටම මුදල් උපයන්න.">
+    <meta name="keywords" content="Hapanamy, hapanamy.lk, Crypto Trading Sri Lanka, Forex Sri Lanka, AI courses Sri Lanka, Social Media Earning, Sri Lanka Affiliate Program, Ebooks Sri Lanka">
+    <meta name="author" content="HAPANAMY.lk">
+    
+    <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | Learn • Grow • Earn • Connect">
+    <meta property="og:description" content="ශ්‍රී ලංකාවේ විශාලතම ඩිජිටල් කුසලතා සහ 15% Affiliate කොමිස් ලබාදෙන අධ්‍යාපනික වේදිකාව.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="index.css">
+    <!-- Structured Data (JSON-LD) for SEO -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Hapanamy.lk",
+      "url": "https://www.hapanamy.lk",
+      "logo": "https://www.hapanamy.lk/assets/logo.jpg",
+      "sameAs": [
+        "https://web.facebook.com/hapanamy.lk/",
+        "https://www.youtube.com/channel/UCFSe4Ckef_tkz-nh1QOkaTQ",
+        "https://www.tiktok.com/@hapanamy"
+      ],
+      "description": "ශ්‍රී ලංකාවේ ප්‍රමුඛතම ඩිජිටල් අධ්‍යාපනික සහ Affiliate අලෙවිකරණ වේදිකාව. Trading, AI, Social Media සහ E-Books හරහා ඔබේ කුසලතා වර්ධනය කරගෙන නිවසේ සිටම මුදල් උපයන්න."
+    }
+    </script>
+</head>
+<body>
+
+    <!-- Top Info Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-content">
+            <div class="top-bar-left">
+                <span>🔥 ශ්‍රී ලංකාවේ ප්‍රථම වරට 40% Affiliate කොමිස් මුදලක්!</span>
+            </div>
+            <div class="top-bar-right">
+                <a href="mailto:info@hapanamy.lk">info@hapanamy.lk</a>
+                <span class="bar-separator">|</span>
+                <a href="tel:+94719226600">+94 71 922 6600</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="#" class="logo" ondblclick="window.location.href='login-register.html?access=admin'" title="Hapanamy Portal">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <span class="logo-text" style="font-weight: 900;">HAPANAමයි<span>.lk</span></span>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="#home" class="nav-link active" data-translate="nav_home">Home</a>
+                <a href="#courses" class="nav-link" data-translate="nav_courses">Courses</a>
+                <a href="#affiliate" class="nav-link" data-translate="nav_affiliate">Affiliate</a>
+                <a href="#calculator" class="nav-link" data-translate="nav_calculator">Earnings Calculator</a>
+                <a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonials</a>
+                <a href="#blog" class="nav-link">Blog</a>
+                <a href="#contact" class="nav-link" data-translate="nav_contact">Contact</a>
+            </nav>
+
+            <div class="header-actions">
+                <!-- Language Switcher Toggle -->
+                <button class="lang-toggle" id="langToggleBtn" aria-label="Toggle Language" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
+                    EN
+                </button>
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <!-- Moon Icon (Dark Mode default representation) -->
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="login-register.html" class="cta-btn btn-primary-glass" id="headerCtaBtn"><span data-translate="nav_login">LOGIN</span></a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home" style="padding: 120px 0 0 0; position:relative; overflow:hidden;">
+        <!-- Paddy Field blurred background with gold overlay -->
+        <div class="hero-bg-paddy" id="heroBgPaddy"></div>
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        
+        <div class="container hero-container" style="position:relative; z-index:5; display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: center; padding-bottom: 50px;">
+            <!-- Left Side: Dynamic Slider Content -->
+            <div class="hero-content" id="heroSliderContent" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease;">
+                <!-- Injected dynamically by JS -->
+            </div>
+            
+            <!-- Right Side: Dynamic Slider Content (Holographic Dashboard, Categories Panel) -->
+            <div class="hero-visual" id="heroSliderVisual" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease; display:flex; justify-content:center; align-items:center; min-height:400px;">
+                <!-- Injected dynamically by JS -->
+            </div>
+        </div>
+
+        <!-- Hero Stats Banner -->
+        <div class="container hero-stats" id="heroStatsContainer" style="margin-top: 20px; position:relative; z-index:5; display:grid; grid-template-columns: repeat(4, 1fr); gap: 15px; text-align:center; transition: opacity 0.4s ease;">
+            <!-- Stats injected dynamically by JS -->
+        </div>
+
+        <!-- Orange Gold Gradient bottom bar -->
+        <div class="hero-bottom-bar" style="background: linear-gradient(90deg, #F57C00, #D4AF37); padding: 15px 0; color: white; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); position:relative; z-index:5;">
+            <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+                <span style="background-color: var(--brand-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;">100% ප්‍රායෝගික පාඨමාලා</span>
+                <span style="font-size: 15px; font-weight: 800;" id="heroBottomBarText">ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★</span>
+                <span style="font-size: 12px; opacity: 0.9;" id="heroBottomBarSubtext">ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introduction Video Section -->
+    <section class="intro-video-section" id="intro-video">
+        <div class="container">
+            <div class="section-title-wrapper" style="margin-bottom: 40px;">
+                <span class="sub-title" data-translate="video_sub_badge">🎓 HAPANAMY INTRODUCTION</span>
+                <h2 class="section-main-title" data-translate="video_main_title">විශ්වවිද්‍යාලය ක්‍රියාත්මක වන ආකාරය</h2>
+                <div class="title-line"></div>
+                <p class="section-desc" data-translate="video_desc">ශ්‍රී ලංකාවේ ප්‍රථම සහ විශාලතම ඩිජිටල් අධ්‍යාපනික සහ අනුබද්ධිත (Affiliate) අලෙවිකරණ සරසවිය පිළිබඳ අපගේ ප්‍රධාන හඳුන්වාදීමේ වීඩියෝව නරඹන්න.</p>
+            </div>
+
+            <div class="video-container-wrapper">
+                <div class="video-frame-glow"></div>
+                <div class="video-iframe-container">
+                    <iframe src="https://www.youtube.com/embed/WWKnPvnCUF8?autoplay=0&rel=0&modestbranding=1" title="Hapanamy.lk Introduction Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Course Section -->
+    <section class="courses-section" id="courses">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <span class="sub-title" data-translate="section_courses_sub">අපගේ පාඨමාලා සහ ග්‍රන්ථ</span>
+                <h2 class="section-main-title" data-translate="section_courses_main">ඩිජිටල් අධ්‍යාපන නිෂ්පාදන</h2>
+                <div class="title-line"></div>
+                <p class="section-desc" data-translate="section_courses_desc">මූල්‍ය වෙළඳපොලවල්, කෘත්‍රිම බුද්ධිය (AI), සමාජ මාධ්‍ය සහ ඩිජිටල් අත්පොත් (E-Books) හරහා දැනුම ලබාගෙන ඉදිරියට යන්න.</p>
+            </div>
+
+            <!-- Course Controls -->
+            <div class="course-controls">
+                <!-- Search bar -->
+                <div class="search-box">
+                    <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                    <input type="text" id="courseSearchInput" placeholder="පාඨමාලාවක් හෝ පොතක් සොයන්න (Search course or book)...">
+                </div>
+
+                <!-- Filter Tabs -->
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-category="all">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                        <span>සියල්ල (All)</span>
+                    </button>
+                    <button class="filter-btn" data-category="ebooks">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                        <span>E-Books</span>
+                    </button>
+                    <button class="filter-btn" data-category="trading">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                        <span>Trading</span>
+                    </button>
+                    <button class="filter-btn" data-category="social-media">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"></path><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        <span>Social Media</span>
+                    </button>
+                    <button class="filter-btn" data-category="ai-tech">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>
+                        <span>AI & Tech</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Courses Grid -->
+            <div class="courses-grid" id="coursesGrid">
+                <!-- Dynamic cards injected via JS, fallbacks written in HTML for SEO -->
+                                <!-- Card 1: Facebook Earning (MAIN PRODUCT) -->
+                <div class="course-card" data-category="social-media" data-title="facebook monetization zoom">
+                    <div class="card-image-box">
+                        <img src="assets/facebook_course_banner.jpg" alt="Facebook Monetization" class="card-img">
+                        <span class="badge-category">Social Media</span>
+                        <span class="badge-discount">25% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)</h3>
+                        <p class="card-intro">Facebook සහ AI භාවිතයෙන් ආයෝජන මුදලක් නොමැතිව Dollar Income උපයා ගැනීමට අවශ්‍ය සම්පූර්ණ ප්‍රායෝගික පුහුණුව.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,900</div>
+                            <div class="price-current">රු. 7,425</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,113.75</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('facebook-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 2: TikTok Monetization (MAIN PRODUCT 02) -->
+                <div class="course-card" data-category="social-media" data-title="tiktok monetization zoom">
+                    <div class="card-image-box">
+                        <img src="assets/tiktok_course_banner.jpg" alt="TikTok Monetization" class="card-img">
+                        <span class="badge-category">Social Media</span>
+                        <span class="badge-discount">10% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)</h3>
+                        <p class="card-intro">TikTok සහ AI භාවිතයෙන් ආයෝජන මුදලක් නොමැතිව Dollar Income උපයා ගැනීමට අවශ්‍ය සම්පූර්ණ ප්‍රායෝගික පුහුණුව.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 5,000</div>
+                            <div class="price-current">රු. 4,500</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 675.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 2</span>
+                        <button class="btn-card-action" onclick="openCourseModal('tiktok-course')">View Details</button>
+                    </div>
+                </div>
+                <!-- Card 3: YouTube Monetization (MAIN PRODUCT 03) -->
+                <div class="course-card" data-category="social-media" data-title="youtube monetization zoom">
+                    <div class="card-image-box">
+                        <img src="assets/youtube_course_banner.jpg" alt="YouTube Monetization" class="card-img">
+                        <span class="badge-category">Social Media</span>
+                        <span class="badge-discount">25% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)</h3>
+                        <p class="card-intro">YouTube සහ AI භාවිතයෙන් ආයෝජන මුදලක් නොමැතිව Dollar Income උපයා ගැනීමට අවශ්‍ය සම්පූර්ණ ප්‍රායෝගික පුහුණුව.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,900</div>
+                            <div class="price-current">රු. 7,425</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,113.75</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('youtube-course')">View Details</button>
+                    </div>
+                </div>
+
+<!-- Card 8: 🚀 Social Media Income Masterclass 2026 (MAIN PRODUCT 08) -->
+                <div class="course-card" data-category="social-media" data-title="social media income masterclass facebook youtube tiktok zoom complete monetization">
+                    <div class="card-image-box">
+                        <img src="assets/social_media_masterclass_banner.jpg" alt="Social Media Income Masterclass" class="card-img">
+                        <span class="badge-category">Social Media</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🚀 Social Media Income Masterclass 2026</h3>
+                        <p class="card-intro">Facebook + YouTube + TikTok Complete Monetization Program (Online Zoom - 100% Practical Course)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 19,990</div>
+                            <div class="price-current">රු. 15,992</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 2,398.80</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 7</span>
+                        <button class="btn-card-action" onclick="openCourseModal('social-media-masterclass')">View Details</button>
+                    </div>
+                </div>
+                <!-- Card 4: Beginner – Forex Trading Course (MAIN PRODUCT 04) -->
+                <div class="course-card" data-category="trading" data-title="forex trading course zoom beginner">
+                    <div class="card-image-box">
+                        <img src="assets/forex_course_banner.jpg" alt="Forex Trading Course" class="card-img">
+                        <span class="badge-category">Trading Course</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)</h3>
+                        <p class="card-intro">Forex Market තුළ Currency Pairs විශ්ලේෂණය කරමින් සාර්ථක Professional Trader කෙනෙකු වීමට අවශ්‍ය ප්‍රායෝගික පුහුණුව.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,900</div>
+                            <div class="price-current">රු. 7,920</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,188.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('forex-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 5: Beginner – Crypto Trading Course (MAIN PRODUCT 05) -->
+                <div class="course-card" data-category="trading" data-title="crypto trading course zoom beginner">
+                    <div class="card-image-box">
+                        <img src="assets/crypto_course_banner.jpg" alt="Crypto Trading Course" class="card-img">
+                        <span class="badge-category">Trading Course</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)</h3>
+                        <p class="card-intro">Cryptocurrency Trading මුල සිටම ප්‍රායෝගිකව ඉගෙන ගනිමින්, ආරක්ෂිතව වෙළඳපොළ විශ්ලේෂණය කර Trade කරන ආකාරය.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,900</div>
+                            <div class="price-current">රු. 7,920</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,188.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('crypto-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 6: Intermediate – Options Trading Course (MAIN PRODUCT 06) -->
+                <div class="course-card" data-category="trading" data-title="options trading course zoom intermediate">
+                    <div class="card-image-box">
+                        <img src="assets/options_course_banner.jpg" alt="Options Trading Course" class="card-img">
+                        <span class="badge-category">Trading Course</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)</h3>
+                        <p class="card-intro">Options Trading සහ Deriv Synthetic Indices භාවිතයෙන් නිවැරදි Trading Opportunities හඳුනාගෙන ආදායම් උපයන ආකාරය.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,900</div>
+                            <div class="price-current">රු. 7,920</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,188.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('options-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 7: Professional – Advanced Institutional Trading Masterclass (MAIN PRODUCT 07) -->
+                <div class="course-card" data-category="trading" data-title="advanced institutional trading masterclass smc ict zoom professional">
+                    <div class="card-image-box">
+                        <img src="assets/advanced_trading_banner.jpg" alt="Advanced Trading Masterclass" class="card-img">
+                        <span class="badge-category">Trading Course</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)</h3>
+                        <p class="card-intro">Banks and Smart Money Institutions භාවිතා කරන Institutional Trading Concepts (SMC / ICT) සම්පූර්ණයෙන්ම ප්‍රායෝගිකව.</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 24,900</div>
+                            <div class="price-current">රු. 19,900</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 2,985.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 8</span>
+                        <button class="btn-card-action" onclick="openCourseModal('titan-elite')">View Details</button>
+                    </div>
+                </div>
+
+                
+
+                <!-- Card 9: 🎬 AI Video Generation Masterclass 2026 (MAIN PRODUCT 09) -->
+                <div class="course-card" data-category="ai-tech" data-title="ai video generation masterclass zoom complete monetization faceless editor">
+                    <div class="card-image-box">
+                        <img src="assets/ai_video_course_banner.jpg" alt="AI Video Generation Masterclass" class="card-img">
+                        <span class="badge-category">AI & Tech</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🎬 AI Video Generation Masterclass 2026</h3>
+                        <p class="card-intro">Facebook + YouTube + TikTok Faceless Video Creation & Automation Program (Online Zoom - 100% Practical Course)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 6,500</div>
+                            <div class="price-current">රු. 5,200</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 780.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 4</span>
+                        <button class="btn-card-action" onclick="openCourseModal('ai-video-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 10: 🤖 AI Mastery Program 2026 (MAIN PRODUCT 10) -->
+                <div class="course-card" data-category="ai-tech" data-title="ai mastery program 2026 beginner to professional creator zoom prompt engineering chatgpt Midjourney luma runway elevenlabs make automation">
+                    <div class="card-image-box">
+                        <img src="assets/ai_mastery_banner.jpg" alt="AI Mastery Program" class="card-img">
+                        <span class="badge-category">AI & Tech</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">🤖 AI Mastery Program 2026</h3>
+                        <p class="card-intro">Beginner to Professional AI Creator Masterclass (Online Zoom - 100% Practical Course)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 18,750</div>
+                            <div class="price-current">රු. 15,000</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 2,250.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • මාස 2</span>
+                        <button class="btn-card-action" onclick="openCourseModal('ai-mastery-course')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 11: 💻 Coding & Web Development Masterclass 2026 (MAIN PRODUCT 11) -->
+                <div class="course-card" data-category="ai-tech" data-title="coding web development masterclass HTML CSS JavaScript WordPress Elementor WooCommerce zoom developer">
+                    <div class="card-image-box">
+                        <img src="assets/coding_course_banner.jpg" alt="Coding & Web Development Masterclass" class="card-img">
+                        <span class="badge-category">AI & Tech</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">💻 Coding & Web Development Masterclass 2026</h3>
+                        <p class="card-intro">HTML • CSS • JavaScript • WordPress • Elementor • WooCommerce (Online Zoom - 100% Practical Course)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 9,000</div>
+                            <div class="price-current">රු. 7,200</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 1,080.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">🎥 Zoom Live • සති 7</span>
+                        <button class="btn-card-action" onclick="openCourseModal('coding-course')">View Details</button>
+                    </div>
+                </div>
+                <!-- Card 12: 📘 Trading A to Z – Master E-Book 2026 -->
+                <div class="course-card" data-category="ebooks" data-title="trading a to z master e-book 2026 digital book pdf markets crypto forex price action charts indicators">
+                    <div class="card-image-box">
+                        <img src="assets/ebooks_banner.jpg" alt="Trading A to Z – Master E-Book 2026" class="card-img">
+                        <span class="badge-category">E-Book</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">📘 Trading A to Z Master 2026</h3>
+                        <p class="card-intro">මුල සිට Professional Trader කෙනෙකු දක්වා සම්පූර්ණ Trading මාර්ගෝපදේශය (Digital E-Book | PDF Format)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 4,990</div>
+                            <div class="price-current">රු. 3,992</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 598.80</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">📘 PDF Format • පිටු 120+</span>
+                        <button class="btn-card-action" onclick="openCourseModal('trading-ebook')">View Details</button>
+                    </div>
+                </div>
+                
+
+
+
+
+
+                
+
+                <!-- Card 13: 📖 Motivation & Self-Development Master E-Book 2026 -->
+                <div class="course-card" data-category="ebooks" data-title="motivation self development master e-book 2026 digital book pdf life change habits goal planner">
+                    <div class="card-image-box">
+                        <img src="assets/motivation_ebook_banner.jpg" alt="Motivation & Self-Development Master E-Book 2026" class="card-img">
+                        <span class="badge-category">E-Book</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">📖 Motivation & Self-Dev 2026</h3>
+                        <p class="card-intro">ඔබේ ජීවිතය වෙනස් කරන ආශ්වාදජනක මාර්ගෝපදේශය (Digital E-Book | PDF Format)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 6,990</div>
+                            <div class="price-current">රු. 5,592</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 838.80</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">📘 PDF Format • පිටු 180+</span>
+                        <button class="btn-card-action" onclick="openCourseModal('motivation-ebook')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card 14: 📘 AI Prompts & Templates Ultimate Collection 2026 -->
+                <div class="course-card" data-category="ebooks" data-title="ai prompts templates ultimate collection 2026 digital book pdf chatgpt Midjourney flux luma runway elevenlabs">
+                    <div class="card-image-box">
+                        <img src="assets/ai_prompts_ebook_banner.jpg" alt="AI Prompts & Templates Ultimate Collection" class="card-img">
+                        <span class="badge-category">E-Book</span>
+                        <span class="badge-discount">20% OFF</span>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-rating">
+                            <span class="stars">★★★★★</span>
+                            <span class="rating-val">4.9</span>
+                        </div>
+                        <h3 class="card-title">📘 AI Prompts & Templates 2026</h3>
+                        <p class="card-intro">1000+ Professional AI Prompts & Ready-to-Use Templates (Digital E-Book | PDF Format)</p>
+                        
+                        <div class="card-pricing-box">
+                            <div class="price-original">රු. 2,500</div>
+                            <div class="price-current">රු. 2,000</div>
+                        </div>
+                        
+                        <div class="card-affiliate-badge">
+                            <span class="badge-label">Affiliate Commission (15%)</span>
+                            <span class="badge-value">රු. 300.00</span>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="card-meta-info">📘 PDF Format • Prompts 1000+</span>
+                        <button class="btn-card-action" onclick="openCourseModal('ai-prompts-ebook')">View Details</button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Flagship AI Mastery Program Visual Details Showcase -->
+    <section class="ai-masterclass-details-section" id="ai-masterclass-details" style="padding: 100px 0; background-color: rgba(244,123,32,0.01); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden;">
+        <div class="affiliate-bg-glow" style="top: -20%; left: 60%; width: 500px; height: 500px; opacity: 0.15;"></div>
+        <div class="container">
+            
+            <!-- Section Header -->
+            <div style="text-align: center; margin-bottom: 60px;">
+                <span class="badge-category" style="margin-bottom: 15px; display: inline-block;">Flagship Course Spotlight</span>
+                <h2 style="font-size: 32px; font-weight: 800; margin-bottom: 15px; color: var(--text-primary);" data-translate="aim_title">කෘතිම බුද්ධිය (AI) ප්‍රවීණතා පාඨමාලාව</h2>
+                <p style="font-size: 16px; color: var(--text-muted); max-width: 700px; margin: 0 auto; line-height: 1.6;" data-translate="aim_subtitle">AI Content Creation, Filmmaking & Business (2026 Edition) • Beginner සිට Professional දක්වා</p>
+            </div>
+
+            <!-- Visual Grid: What You Will Master -->
+            <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 30px; text-align: center; color: var(--text-primary);" data-translate="aim_master_title">🎓 මෙම පාඨමාලාව අවසානයේ ඔබට හැකි වන දේ (What You Will Master)</h3>
+            
+            <div class="ai-mastery-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-bottom: 70px;">
+                
+                <!-- Card 1 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🧠 AI පිළිබඳ ප්‍රවීණ දැනුම</div>
+                    <ul class="ai-card-list">
+                        <li>AI ක්‍රියා කරන ආකාරය තේරුම් ගැනීම.</li>
+                        <li>AI Models සහ AI Platforms වෘත්තීය මට්ටමින් භාවිතා කිරීම.</li>
+                        <li>ඕනෑම AI Tool එකක් ඉක්මනින් ඉගෙන ගැනීමේ හැකියාව.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">✍️ Professional Prompt Engineer</div>
+                    <ul class="ai-card-list">
+                        <li>උසස් Prompt ලිවීම සහ Templates නිර්මාණය.</li>
+                        <li>JSON, XML සහ Markdown Prompts භාවිතය.</li>
+                        <li>Cinematic, Commercial, Character Consistency සහ Complex Workflow Prompts.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎨 ලෝක මට්ටමේ AI Images</div>
+                    <ul class="ai-card-list">
+                        <li>Hyper Realistic, Product & Food Photography.</li>
+                        <li>Luxury Ads, Fashion, Wildlife & Fantasy Art.</li>
+                        <li>Architecture, Book Covers, Posters & Social Media Designs.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎬 Professional AI Video Creator</div>
+                    <ul class="ai-card-list">
+                        <li>Cinematic, Commercial Advertisements & Product Videos.</li>
+                        <li>Documentary & Viral Social Media Videos.</li>
+                        <li>CGI Commercials, Luxury Brand Videos & Storytelling.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 5 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎭 AI Character Designer</div>
+                    <ul class="ai-card-list">
+                        <li>Consistent Characters (ස්ථාවර චරිත නිර්මාණය).</li>
+                        <li>Character Bible & Character Sheets නිර්මාණය.</li>
+                        <li>Expressions (ඉරියව්) සහ Animation සඳහා සූදානම් කිරීම.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 6 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎥 AI Filmmaker</div>
+                    <ul class="ai-card-list">
+                        <li>Short Films (කෙටි චිත්‍රපට) සහ Music Videos.</li>
+                        <li>Animated Stories & Documentary Films.</li>
+                        <li>Feature Film Production (සිනමාපට නිෂ්පාදනය).</li>
+                    </ul>
+                </div>
+
+                <!-- Card 7 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎙️ AI Voice Artist</div>
+                    <ul class="ai-card-list">
+                        <li>AI Voice Creation & Cloning (හඬ අනුකරණය).</li>
+                        <li>Sinhala Voice Generation (සිංහල හඬ නිර්මාණය).</li>
+                        <li>Lip Sync, Character Voices & Dubbing (හඬකැවීම්).</li>
+                    </ul>
+                </div>
+
+                <!-- Card 8 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🎵 AI Music Producer</div>
+                    <ul class="ai-card-list">
+                        <li>AI Songs (ගීත නිර්මාණය) සහ Background Scores.</li>
+                        <li>Cinematic & Theme Music නිර්මාණය.</li>
+                        <li>Sound Effects (ශබ්ද ප්‍රයෝග) නිර්මාණය.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 9 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🖥️ Professional Video Editor</div>
+                    <ul class="ai-card-list">
+                        <li>CapCut, Adobe Premiere Pro සහ DaVinci Resolve භාවිතය.</li>
+                        <li>Color Grading (වර්ණ ශ්‍රේණිගත කිරීම).</li>
+                        <li>Motion Graphics සහ උසස් සංස්කරණ ශිල්පීය ක්‍රම.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 10 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">📱 Social Media Content Expert</div>
+                    <ul class="ai-card-list">
+                        <li>Facebook, YouTube, TikTok සහ Instagram.</li>
+                        <li>Pinterest & LinkedIn සඳහා Professional Content.</li>
+                        <li>වයිරල් (Viral) වීඩියෝ සහ සමාජ මාධ්‍ය ප්‍රචාරණය.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 11 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">📈 Marketing & Monetization</div>
+                    <ul class="ai-card-list">
+                        <li>Facebook & YouTube Monetization ක්‍රමවේද.</li>
+                        <li>Affiliate Marketing සහ UGC Content.</li>
+                        <li>Stock Image & Video Selling (ඡායාරූප/වීඩියෝ විකිණීම).</li>
+                    </ul>
+                </div>
+
+                <!-- Card 12 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">💼 Freelancing Career</div>
+                    <ul class="ai-card-list">
+                        <li>Fiverr, Upwork සහ Freelancer.com භාවිතය.</li>
+                        <li>ගිණුම් සැකසීම, SEO සහ Gigs ප්‍රශස්තිකරණය.</li>
+                        <li>ජාත්‍යන්තර සේවාදායකයින් සමඟ ගනුදෙනු කිරීම.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 13 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🏢 AI Creative Studio</div>
+                    <ul class="ai-card-list">
+                        <li>Client Handling & Pricing උපායමාර්ග.</li>
+                        <li>Portfolio Creation & Branding කටයුතු.</li>
+                        <li>Team Workflow & AI Agency Management.</li>
+                    </ul>
+                </div>
+
+                <!-- Card 14 -->
+                <div class="ai-mastery-card">
+                    <div class="ai-card-header">🤖 AI Automation (ස්වයංක්‍රීයකරණය)</div>
+                    <ul class="ai-card-list">
+                        <li>AI Agents (නියෝජිතයන්) සහ AI Workflows සැලසුම් කිරීම.</li>
+                        <li>Make.com, n8n මෘදුකාංග භාවිතය.</li>
+                        <li>API Integration (මූලික හැඳින්වීම).</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Career Levels Grid -->
+            <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 40px; border-radius: 12px; box-shadow: var(--card-shadow); text-align: center;">
+                <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 25px; color: var(--text-primary);" data-translate="aim_career_title">🌍 මෙම දැනුමෙන් ඔබට ළඟා විය හැකි වෘත්තීය මට්ටම් (Career Levels)</h3>
+                <p style="font-size: 14.5px; color: var(--text-muted); max-width: 600px; margin: 0 auto 30px; line-height: 1.6;" data-translate="aim_career_subtitle">පාඨමාලාව සාර්ථකව අවසන් කිරීමෙන් පසු ඔබට පහත ක්ෂේත්‍රයන්හි වෘත්තීය මට්ටමෙන් රැකියා හෝ ස්වයං-රැකියා අවස්ථා ලබාගත හැක.</p>
+                
+                <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;" id="careerLevelsContainer">
+                    <span class="career-chip">✅ AI Content Creator</span>
+                    <span class="career-chip">✅ Professional Prompt Engineer</span>
+                    <span class="career-chip">✅ AI Image Artist</span>
+                    <span class="career-chip">✅ AI Video Creator</span>
+                    <span class="career-chip">✅ Commercial Ad Creator</span>
+                    <span class="career-chip">✅ CGI Ad Specialist</span>
+                    <span class="career-chip">✅ AI Character Designer</span>
+                    <span class="career-chip">✅ AI Voice Creator</span>
+                    <span class="career-chip">✅ AI Music Producer</span>
+                    <span class="career-chip">✅ AI Film Director</span>
+                    <span class="career-chip">✅ AI Video Editor</span>
+                    <span class="career-chip">✅ Social Media Strategist</span>
+                    <span class="career-chip">✅ Digital Marketing Creator</span>
+                    <span class="career-chip">✅ Freelance AI Specialist</span>
+                    <span class="career-chip">✅ AI Creative Agency Owner</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Blog Article Modal Overlay -->
+    <div class="modal-overlay" id="blogModal" style="z-index: 1100;">
+        <div class="modal-box" style="max-width: 750px;">
+            <button class="modal-close-btn" id="blogModalCloseBtn">&times;</button>
+            <div class="modal-header-banner" style="height: 200px;">
+                <img id="blogModalBanner" src="" alt="Blog Banner" style="height: 100%; width: 100%; object-fit: cover;">
+                <div class="modal-header-overlay" style="background: linear-gradient(transparent, rgba(93, 64, 55, 0.95)); padding: 20px;">
+                    <span class="modal-badge" id="blogModalCategory" style="background-color: var(--brand-orange); color:white; font-weight:700;">Category</span>
+                    <h2 id="blogModalTitle" style="color: white; font-size: 22px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Article Title</h2>
+                </div>
+            </div>
+            <div class="modal-body-content" style="display: block; padding: 30px; max-height: 60vh; overflow-y: auto;">
+                <div id="blogModalBody" style="line-height: 1.8; color: var(--text-primary); font-size: 15px;">
+                    <!-- Article content injected dynamically -->
+                </div>
+                <div style="margin-top: 30px; border-top: 1px solid var(--border-color); padding-top: 20px; text-align: center;">
+                    <button class="btn btn-primary" id="blogModalCloseActionBtn" style="border: none;">කියවා අවසන් (Close Article)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Details Modals Wrapper -->
+    <div class="modal-overlay" id="courseModal">
+        <div class="modal-box">
+            <button class="modal-close-btn" id="modalCloseBtn">&times;</button>
+            <div class="modal-header-banner">
+                <img id="modalBanner" src="" alt="Course Banner">
+                <div class="modal-header-overlay">
+                    <span class="modal-badge" id="modalCategory">Category</span>
+                    <h2 id="modalTitle">Course Name</h2>
+                </div>
+            </div>
+            <div class="modal-body-content">
+                <div class="modal-main-detail">
+                    <h3>💡 පාඨමාලාව ගැන (Course Overview)</h3>
+                    <p id="modalDesc">Detailed description goes here...</p>
+                    
+                    <h3 style="margin-top: 25px;">📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)</h3>
+                    <ul class="syllabus-list" id="modalSyllabus">
+                        <!-- Injected dynamically -->
+                    </ul>
+                </div>
+                <div class="modal-sidebar-detail">
+                    <div class="modal-price-card">
+                        <div class="sidebar-price-label">මිල ගණන් සහ ප්‍රවර්ධන</div>
+                        <div class="sidebar-price-original" id="modalOriginalPrice">රු. 9,900</div>
+                        <div class="sidebar-price-current" id="modalCurrentPrice">රු. 7,920</div>
+                        <div class="sidebar-discount" id="modalDiscount">20% OFF</div>
+                        
+                        <div class="sidebar-affiliate-box">
+                            <div class="sidebar-aff-label">Affiliate කොමිස් මුදල (15%)</div>
+                            <div class="sidebar-aff-val" id="modalCommission">රු. 3,168.00</div>
+                        </div>
+                        
+                        <button class="sidebar-buy-btn" id="modalBuyBtn" style="border: none; width: 100%; text-align: center; cursor: pointer; text-decoration: none; display: block;">Enroll / Buy Course</button>
+                        <div id="modalSocialLinksContainer" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Affiliate Program Section -->
+    <section class="affiliate-section" id="affiliate">
+        <div class="affiliate-bg-glow"></div>
+        <div class="container">
+            <div class="affiliate-layout">
+                <div class="affiliate-info-box">
+                    <span class="affiliate-badge">💰 HAPANAMY PARTNERSHIP PROGRAM</span>
+                    <h2>ලංකාවේ වැඩිම කොමිස් මුදලක් ගෙවන Affiliate වැඩසටහන</h2>
+                    <p class="affiliate-sin-text">
+                        අපගේ උසස් තත්ත්වයේ ඩිජිටල් නිෂ්පාදන සහ පාඨමාලා සමාජ මාධ්‍ය හරහා හඳුන්වා දී, සෑම සාර්ථක අලෙවියක් සඳහාම <strong>15% ක සෘජු කොමිස් මුදලක් (රු. 896 සිට රු. 6,396 දක්වා)</strong> උපයා ගන්න.
+                    </p>
+                    
+                    <div class="affiliate-steps">
+                        <div class="aff-step">
+                            <div class="step-num">1</div>
+                            <div class="step-text">
+                                <h4>නොමිලේ ලියාපදිංචි වන්න (Register Free)</h4>
+                                <p>මිනිත්තුවකින් ඔබගේ Affiliate ගිණුම සාදාගෙන ඔබගේ සුවිශේෂී ප්‍රවර්ධන ලින්ක් එක (Unique Link) ලබා ගන්න.</p>
+                            </div>
+                        </div>
+                        <div class="aff-step">
+                            <div class="step-num">2</div>
+                            <div class="step-text">
+                                <h4>ලින්ක් එක බෙදා හරින්න (Share Link)</h4>
+                                <p>Facebook, WhatsApp, YouTube, TikTok හෝ වෙබ් අඩවි ඔස්සේ අපගේ නිෂ්පාදන පිළිබඳ තොරතුරු ප්‍රවර්ධනය කරන්න.</p>
+                            </div>
+                        </div>
+                        <div class="aff-step">
+                            <div class="step-num">3</div>
+                            <div class="step-text">
+                                <h4>15% බැගින් උපයන්න (Earn Payouts)</h4>
+                                <p>ඔබගේ ලින්ක් එකෙන් මිලදී ගන්නා සෑම විටම කොමිස් මුදල සෘජුවම ගිණුමට එකතු වේ. සතිපතා බැංකු ගිණුමට ලබාගත හැක.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="affiliate-features-box">
+                    <div class="feature-card-glow">
+                        <h3>අප සමඟ සම්බන්ධ වීමේ වාසි</h3>
+                        <ul class="feature-list">
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span><strong>15% ක ඉහළම කොමිස් අනුපාතය:</strong> වෙනත් කිසිම තැනක නොලැබෙන ඉහළ ආදායමක්.</span>
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span><strong>පහසු ඩෑෂ්බෝඩ් එකක්:</strong> ක්ලික්ස් ප්‍රමාණය, අලෙවි සහ ඉපැයීම් සජීවීව බලාගත හැක.</span>
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span><strong>නොමිලේ Affiliate පුහුණුව:</strong> අලෙවිකරණය කරන ආකාරය අප විසින් කියා දෙයි.</span>
+                            </li>
+                            <li>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
+                                <span><strong>සතිපතා ගෙවීම් (Weekly Payouts):</strong> කිසිදු ප්‍රමාදයකින් තොරව සෘජුවම ලංකාවේ ඕනෑම බැංකුවකට.</span>
+                            </li>
+                        </ul>
+                        <div style="margin-top: 25px; text-align: center;">
+                            <a href="login-register.html" class="btn btn-primary" style="width: 100%;">Affiliate සාමාජිකයෙකු වන්න</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Earnings Calculator Section -->
+    <section class="calculator-section" id="calculator">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <span class="sub-title" data-translate="calc_sub">මසකට කොපමණ මුදලක් උපයන්න පුලුවන්ද?</span>
+                <h2 class="section-main-title" data-translate="calc_main">Affiliate ඉපැයීම් කැල්කියුලේටරය</h2>
+                <div class="title-line"></div>
+                <p class="section-desc" data-translate="calc_desc">ස්ලයිඩර් මඟින් ඔබ මසකට විකිණීමට බලාපොරොත්තු වන ප්‍රමාණ තෝරා ඔබේ දළ මාසික සහ වාර්ෂික ආදායම ගණනය කර බලන්න.</p>
+            </div>
+
+            <div class="calculator-box">
+                <div class="sliders-container">
+                    <!-- Ebooks Slider -->
+                    <div class="calc-slider-group">
+                        <div class="slider-header">
+                            <span class="slider-label">E-Books අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,476)</span>
+                            <span class="slider-count" id="ebooksCount">0</span>
+                        </div>
+                        <input type="range" id="ebooksSlider" min="0" max="100" value="0" class="calc-range-input">
+                        <div class="slider-footer-labels">
+                            <span>0</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <!-- Trading Courses Slider -->
+                    <div class="calc-slider-group">
+                        <div class="slider-header">
+                            <span class="slider-label">Trading පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,877)</span>
+                            <span class="slider-count" id="tradingCount">0</span>
+                        </div>
+                        <input type="range" id="tradingSlider" min="0" max="100" value="0" class="calc-range-input">
+                        <div class="slider-footer-labels">
+                            <span>0</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <!-- Social Media Slider -->
+                    <div class="calc-slider-group">
+                        <div class="slider-header">
+                            <span class="slider-label">Social Media පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,150)</span>
+                            <span class="slider-count" id="socialCount">0</span>
+                        </div>
+                        <input type="range" id="socialSlider" min="0" max="100" value="0" class="calc-range-input">
+                        <div class="slider-footer-labels">
+                            <span>0</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+
+                    <!-- AI & Tech Slider -->
+                    <div class="calc-slider-group">
+                        <div class="slider-header">
+                            <span class="slider-label">AI & Tech පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,266)</span>
+                            <span class="slider-count" id="aiCount">0</span>
+                        </div>
+                        <input type="range" id="aiSlider" min="0" max="100" value="0" class="calc-range-input">
+                        <div class="slider-footer-labels">
+                            <span>0</span>
+                            <span>50</span>
+                            <span>100</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="results-container">
+                    <div class="results-card">
+                        <h3 class="results-card-title" data-translate="calc_card_title">ඔබේ ඇස්තමේන්තුගත මාසික ආදායම</h3>
+                        <div class="earnings-value" id="monthlyEarnings">රු. 0.00</div>
+                        
+                        <div class="results-divider"></div>
+                        
+                        <div class="annual-row">
+                            <span data-translate="calc_annual">වාර්ෂික ආදායම් පුරෝකථනය (Annual Projection):</span>
+                            <strong id="annualEarnings">රු. 0.00</strong>
+                        </div>
+                        
+                        <div class="sales-row">
+                            <span data-translate="calc_sales_vol">මාසික මුළු අලෙවි වටිනාකම (Total Sales Volume):</span>
+                            <span id="totalSalesVolume">රු. 0.00</span>
+                        </div>
+
+                        <!-- Progress indicator toward financial goals -->
+                        <div class="goal-indicator-box">
+                            <div class="goal-header">
+                                <span data-translate="calc_financial_level">මූල්‍ය මට්ටම (Status Level)</span>
+                                <span id="statusLevel">Bronze Partner</span>
+                            </div>
+                            <div class="goal-progress-bar">
+                                <div class="goal-progress-fill" id="goalProgressFill" style="width: 0%;"></div>
+                            </div>
+                            <p class="goal-desc" id="statusDesc">අර්ධකාලීනව අමතර ආදායමක් උපයා ගැනීමට පටන් ගන්න.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials-section" id="testimonials">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <span class="sub-title">අපගේ සිසුන්ගේ සාර්ථක අත්දැකීම්</span>
+                <h2 class="section-main-title">අපගේ සාමාජිකයින් පවසන දේ</h2>
+                <div class="title-line"></div>
+                <p class="section-desc">Hapanamy Academy සමඟ ඉගෙනගෙන තමන්ගේ දැනුම, වෘත්තීය කුසලතා සහ ඩිජිටල් ගමන ඉදිරියට ගෙන ගිය සිසුන්ගේ අදහස්. 🌟</p>
+            </div>
+
+            <div class="testimonials-grid">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"මම Social Media Earning Masterclass එකට සම්බන්ධ වුණේ කිසිම Online Income අත්දැකීමක් නැතිව. Course එකේ පියවරෙන් පියවර කියලා දෙන නිසා අද මට Facebook සහ YouTube හරහා මගේම Content Brand එකක් ගොඩනගාගෙන ඉදිරියට යන්න පුළුවන් වෙලා තියෙනවා. ඇත්තටම වටිනා පාඨමාලාවක්."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #D4AF37;">A</div>
+                        <div class="author-info">
+                            <h4>අමිල ජයවර්ධන</h4>
+                            <p>Content Creator</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"AI Mastery Program එකෙන් පස්සේ මගේ වැඩ කරන වේගය විශාල ලෙස වැඩි වුණා. ChatGPT, AI Image සහ AI Video Tools භාවිතා කරන විදිහ ඉතා සරලව ඉගැන්වීම නිසා දැන් මගේ ව්‍යාපාරික වැඩ ටික ඉතාම කෙටි කාලයකින් අවසන් කරන්න පුළුවන්."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #F57C00;">P</div>
+                        <div class="author-info">
+                            <h4>ප්‍රියංකා සෙනෙවිරත්න</h4>
+                            <p>Small Business Owner</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"Trading Course එකේ Risk Management සහ Trading Psychology කියලා දෙන ආකාරය තමයි මට වැඩිපුරම වටිනා වුණේ. කලින් තිබුණු වැරදි පුරුදු වෙනස් කරගෙන දැන් සැලසුමකට අනුව Trading කරන්න පුරුදු වුණා."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #EF5350;">D</div>
+                        <div class="author-info">
+                            <h4>දිනේෂ් ප්‍රනාන්දු</h4>
+                            <p>Forex Trader</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"Coding & Web Development Course එකෙන් මම මුල සිට Website එකක් හදන හැටි ඉගෙන ගත්තා. WordPress, Elementor සහ WooCommerce එකම Course එකකින් ඉගෙන ගන්න ලැබුණු එක ලොකු වාසියක් වුණා. දැන් මම Freelance Projects භාරගෙන වැඩ කරනවා."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #66BB6A;">R</div>
+                        <div class="author-info">
+                            <h4>රවිඳු මධුෂාන්</h4>
+                            <p>Freelance Web Developer</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 5 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"AI Video Generation Course එකෙන් මම Face නොපෙන්වා Video හදන ක්‍රම ඉගෙන ගත්තා. AI Voice, AI Avatar සහ CapCut Editing නිසා Content හදන්න යන කාලය ගොඩක් අඩු වුණා. Social Media වලට දිනපතා Videos Upload කරන්න දැන් ඉතා පහසුයි."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #AF87FF;">H</div>
+                        <div class="author-info">
+                            <h4>හිරුණි විජේසූරිය</h4>
+                            <p>Digital Content Creator</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 6 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <div class="stars" style="margin-bottom: 12px; color: var(--brand-yellow);">★★★★★</div>
+                        <p class="quote">"Hapanamy Academy එකේ මට වඩාත්ම කැමති වුණේ පාඨමාලාව ඉවර වුණාට පස්සේත් ලබාදෙන Lifetime Support එක. ප්‍රශ්නයක් ආවම අහන්න පුළුවන්, අලුත් දේවල් ඉගෙන ගන්නත් අවස්ථාව තියෙනවා. ඒ නිසා මේක පාඨමාලාවකට වඩා දිගුකාලීන ඉගෙනීමේ Community එකක් වගේ දැනෙනවා."</p>
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar" style="background-color: #00F2EA;">T</div>
+                        <div class="author-info">
+                            <h4>තිළිණ සම්පත්</h4>
+                            <p>Entrepreneur</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section" id="blog" style="padding: 80px 0; background-color: var(--brand-orange-soft); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <span class="sub-title">Hapanamy දැනුම ගබඩාව (Knowledge Hub)</span>
+                <h2 class="section-main-title">අලුත්ම ලිපි සහ පාඩම් (Latest Articles)</h2>
+                <div class="title-line"></div>
+                <p class="section-desc">ඩිජිටල් අලෙවිකරණය, කෘත්‍රිම බුද්ධිය (AI), Trading සහ මුදල් ඉපැයීමේ නවතම ක්‍රම පිළිබඳව ලියැවුණු වටිනා ලිපි කියවා ඔබේ දැනුම වර්ධනය කරගන්න.</p>
+            </div>
+
+            <div class="testimonials-grid" id="blogArticlesGrid" style="margin-top: 40px;">
+                <!-- Dynamic blog cards will be injected here -->
+            </div>
+    </section>
+
+    <!-- Contact & Register Section -->
+    <section class="contact-section" id="contact">
+        <div class="container contact-container">
+            <div class="contact-info">
+                <h2>අදම සම්බන්ධ වන්න! <br><span>Register with Us</span></h2>
+                <p>ඔබට පාඨමාලා මිලදී ගැනීමට හෝ අපගේ Affiliate කණ්ඩායමට නොමිලේ සම්බන්ධ වී ආදායම් සෙවීමට අවශ්‍ය නම්, පහත පෝරමය පුරවා අප වෙත එවන්න. අපගේ කණ්ඩායම පැය 24ක් ඇතුළත ඔබව සම්බන්ධ කරගනු ඇත.</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method-item">
+                        <span class="c-icon">📍</span>
+                        <div>
+                            <h4>කාර්යාලය (Address)</h4>
+                            <p>Hapanamy Technologies PLC, Colombo 03, Sri Lanka.</p>
+                        </div>
+                    </div>
+                    <div class="contact-method-item">
+                        <span class="c-icon">📞</span>
+                        <div>
+                            <h4>දුරකථන (Phone)</h4>
+                            <p>+94 71 922 6600</p>
+                        </div>
+                    </div>
+                    <div class="contact-method-item">
+                        <span class="c-icon">✉️</span>
+                        <div>
+                            <h4>විද්‍යුත් තැපෑල (Email)</h4>
+                            <p>info@hapanamy.lk / affiliate@hapanamy.lk</p>
+                        </div>
+                    </div>
+                    <!-- Google Maps Embed -->
+                    <div style="margin-top: 30px; border-radius: 20px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); height: 200px; width: 100%;">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.58586036224!2d79.8211059!3d6.9218374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13db7ab5d6d4b1a!2sColombo%2C%20Sri%20Lanka!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="contact-form-box">
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="form-title">අපට පණිවිඩයක් එවන්න</div>
+                    
+                    <div class="form-group">
+                        <input type="text" id="formName" required placeholder=" ">
+                        <label for="formName">ඔබේ නම (Your Name)</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="email" id="formEmail" required placeholder=" ">
+                        <label for="formEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                    </div>
+                    
+                    <div class="form-group">
+                        <input type="tel" id="formPhone" required placeholder=" ">
+                        <label for="formPhone">දුරකථන අංකය (Phone Number)</label>
+                    </div>
+
+                    <div class="form-group">
+                        <select id="formPurpose" required>
+                            <option value="" disabled selected>සම්බන්ධ වීමේ අරමුණ තෝරන්න (Select Purpose)</option>
+                            <option value="buy_course">පාඨමාලාවක් හෝ පොතක් මිලදී ගැනීමට</option>
+                            <option value="join_affiliate">Affiliate සාමාජිකයෙකු ලෙස එකතු වීමට</option>
+                            <option value="course_income">Course එක සාර්ථක කර ආදායම් මාර්ග විවෘත කර ගැනීම කියා දෙන්න</option>
+                            <option value="general_inquiry">වෙනත් සාමාන්‍ය තොරතුරු දැනගැනීමට</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <textarea id="formMessage" rows="4" required placeholder=" "></textarea>
+                        <label for="formMessage">ඔබේ පණිවිඩය (Your Message)</label>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; border: none; cursor: pointer;">පණිවිඩය යොමු කරන්න (Send Message)</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="#" class="logo" style="margin-bottom: 20px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <span class="logo-text" style="font-weight: 900;">HAPANAමයි<span>.lk</span></span>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනය සහ Affiliate අලෙවිකරණයේ පෙරළියක් කරමින්, දහස් ගණනකගේ මූල්‍ය ස්වාධීනත්වය උදෙසා කැපවී ක්‍රියා කරන නිල වේදිකාව වේ.</p>
+                <div class="social-icons">
+                    <!-- Real Social Circle Links -->
+                    <a href="https://web.facebook.com/hapanamy.lk/" target="_blank" class="social-icon facebook" aria-label="Facebook">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.youtube.com/channel/UCFSe4Ckef_tkz-nh1QOkaTQ" target="_blank" class="social-icon youtube" aria-label="YouTube">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 0 0-2.11-2.11C19.517 3.545 12 3.545 12 3.545s-7.517 0-9.388.508a3.003 3.003 0 0 0-2.11 2.11C0 8.033 0 12 0 12s0 3.967.502 5.837a3.003 3.003 0 0 0 2.11 2.11c1.871.508 9.388.508 9.388.508s7.517 0 9.388-.508a3.003 3.003 0 0 0 2.11-2.11C24 15.967 24 12 24 12s0-3.967-.502-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                    </a>
+                    <a href="https://www.tiktok.com/@hapanamy" target="_blank" class="social-icon tiktok" aria-label="TikTok">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.02 1.59 4.23.95.83 2.14 1.44 3.42 1.61v3.7c-1.3-.08-2.58-.52-3.69-1.24-.2-.13-.39-.28-.58-.42-.06 2.8-.02 5.61-.04 8.41-.09 1.9-.84 3.73-2.12 5.09-1.57 1.63-3.9 2.54-6.19 2.53-2.22-.05-4.38-.99-5.85-2.65-1.58-1.85-2.25-4.42-1.78-6.85.5-2.3 2.05-4.34 4.19-5.26 1.49-.64 3.16-.76 4.71-.35.02 1.25.01 2.5.01 3.75-1.1-.38-2.3-.29-3.32.3-.85.53-1.46 1.39-1.63 2.37-.22 1.15.11 2.39.88 3.24.77.89 1.95 1.41 3.12 1.4 1.15.01 2.27-.47 2.99-1.34.72-.9.96-2.11.91-3.24V.02z"/></svg>
+                    </a>
+                    <a href="https://whatsapp.com/channel/hapanamy" target="_blank" class="social-icon whatsapp" aria-label="WhatsApp Channel">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.004 0C5.378 0 0 5.372 0 11.99c0 2.112.551 4.167 1.596 5.973L.04 23.96l6.126-1.603a11.942 11.942 0 0 0 5.838 1.516c6.626 0 12.004-5.379 12.004-12.007c0-3.2-1.245-6.208-3.509-8.472A11.92 11.92 0 0 0 12.004 0zm6.812 17.01c-.297.839-1.724 1.53-2.394 1.621c-.604.081-1.388.151-3.834-.858c-3.13-1.293-5.112-4.48-5.27-4.687c-.157-.209-1.278-1.7-1.278-3.242c0-1.542.808-2.3 1.096-2.585c.245-.241.656-.379 1.036-.379c.125 0 .237.006.338.01c.297.014.444.032.641.498c.246.595.842 2.057.915 2.206c.073.148.121.32.02.518c-.101.2-.152.324-.303.498c-.151.176-.32.395-.456.53c-.152.152-.312.32-.132.628c.18.307.798 1.31 1.706 2.12c1.17 1.042 2.152 1.365 2.457 1.519c.304.153.48.13.659-.074c.18-.204.779-.908.987-1.218c.208-.309.417-.26.697-.156c.28.106 1.782.84 2.091.994c.31.155.518.232.593.36c.074.128.074.743-.223 1.582z"/></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="footer-col">
+                <h3>ප්‍රධාන කාණ්ඩ (Categories)</h3>
+                <ul>
+                    <li><a href="#courses">ඩිජිටල් E-Books</a></li>
+                    <li><a href="#courses">Trading පාඨමාලා</a></li>
+                    <li><a href="#courses">සමාජ මාධ්‍ය පාඨමාලා</a></li>
+                    <li><a href="#courses">AI සහ තාක්ෂණය</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>නවතම සබැඳි (Quick Links)</h3>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#courses">Courses</a></li>
+                    <li><a href="#affiliate">Affiliate Portal</a></li>
+                    <li><a href="#calculator">Earnings Calculator</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-col">
+                <h3>පුවත් පත්‍රිකාව (Newsletter)</h3>
+                <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">Hapanamy.lk වෙතින් ලැබෙන විශේෂ වට්ටම් සහ නව පාඨමාලා පිළිබඳ තොරතුරු එසැනින් ලබාගන්න.</p>
+                <form class="newsletter-form" onsubmit="handleNewsletterSubmit(event)">
+                    <input type="email" id="newsletterEmail" required placeholder="ඔබේ විද්‍යුත් තැපෑල...">
+                    <button type="submit">Subscribe</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk. All Rights Reserved. Designed for Ultimate Growth.</p>
+                <div class="footer-bottom-links">
+                    <a href="privacy-policy.html">Privacy Policy</a>
+                    <span>•</span>
+                    <a href="terms-conditions.html">Terms & Conditions</a>
+                    <span>•</span>
+                    <a href="refund-policy.html">Refund Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <!-- FLOATING LIVE CHAT HELPDESK SUPPORT BUBBLE -->
+    <div id="helpdeskChatBubble" onclick="toggleHelpdeskChat(true)" style="position: fixed; bottom: 30px; left: 30px; width: 60px; height: 60px; background-color: var(--brand-green-light); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 26px; color: #102A43; cursor: pointer; box-shadow: 0 4px 15px rgba(185,231,105,0.4); z-index: 999; transition: var(--transition-smooth);">
+        💬
+    </div>
+
+    <div class="cart-drawer" id="helpdeskChatWindow" style="position: fixed; bottom: 100px; left: 30px; right: auto; top: auto; width: 350px; height: 450px; background-color: var(--bg-surface); border: 1px solid var(--border-color); box-shadow: 0 5px 25px rgba(0,0,0,0.35); border-radius: 12px; z-index: 1000; transition: 0.3s ease; display: none; flex-direction: column; overflow: hidden;">
+        <div style="padding: 16px 20px; background-color: #102A43; color: white; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="width: 10px; height: 10px; background-color: var(--brand-green-light); border-radius: 50%;"></div>
+                <strong style="font-size: 14px;">HAPANAMY Support Chatbot</strong>
+            </div>
+            <button onclick="toggleHelpdeskChat(false)" style="background: none; border: none; font-size: 24px; color: white; cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+        <div id="chatMessageFlow" style="flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+            <div style="background-color: var(--bg-main); padding: 10px 12px; border-radius: 8px 8px 8px 0; align-self: flex-start; max-width: 85%; color: var(--text-primary); line-height: 1.5;">
+                ආයුබෝවන්! Hapanamy.lk සහාය සේවාව වෙත සාදරයෙන් පිළිගනිමු. ඔබට ඇති ගැටලුව කුමක්ද? (Hello! Welcome to Hapanamy Support. How can we help you?)
+            </div>
+        </div>
+        <form onsubmit="sendChatSupportMessage(event)" style="padding: 12px; border-top: 1px solid var(--border-color); display: flex; gap: 8px; background-color: rgba(0,0,0,0.05);">
+            <input type="text" id="chatInputMessage" placeholder="Type a message..." required style="flex-grow: 1; padding: 10px 14px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none;">
+            <button type="submit" style="background-color: var(--brand-orange); color: white; border: none; padding: 0 16px; border-radius: 6px; font-weight: 700; font-size: 13px; cursor: pointer;">Send</button>
+        </form>
+    </div>
+
+    <!-- Floating Cart Trigger Button -->
+    <div id="floatingCartBtn" onclick="toggleCartDrawer(true)" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: var(--brand-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(244,123,32,0.4); z-index: 999; transition: var(--transition-smooth);">
+        🛒
+        <span id="floatingCartCount" style="position: absolute; top: -5px; right: -5px; background-color: var(--brand-gold); color: #102A43; font-size: 11px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">0</span>
+    </div>
+
+    <!-- Sliding Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer" style="position: fixed; top: 0; right: -400px; width: 380px; height: 100vh; background-color: var(--bg-surface); border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.3); z-index: 1000; transition: 0.4s ease; display: flex; flex-direction: column;">
+        <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+            <h3 style="font-size: 18px; color: var(--text-primary);" data-translate="cart_title">සාප්පු සවාරි කරත්තය (Your Cart)</h3>
+            <button onclick="toggleCartDrawer(false)" style="background: none; border: none; font-size: 28px; color: var(--text-primary); cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+        <div id="cartDrawerItemsList" style="flex-grow: 1; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; gap: 15px;">
+            <!-- Cart items injected here -->
+        </div>
+        <div style="padding: 24px; border-top: 1px solid var(--border-color); background-color: rgba(244,123,32,0.02);">
+            <div style="display: flex; justify-content: space-between; font-weight: 800; font-size: 15.5px; margin-bottom: 20px; color: var(--text-primary);">
+                <span data-translate="cart_total">එකතුව (Total):</span>
+                <span id="cartDrawerTotalVal">රු. 0.00</span>
+            </div>
+            <button onclick="proceedToCheckout()" class="btn btn-primary" style="width: 100%; border: none; padding: 12px; font-weight: 800; font-size: 14px; cursor: pointer;" data-translate="cart_checkout">
+                මිලදී ගැනීමට පිවිසෙන්න (Checkout)
+            </button>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Script File -->
+    <script src="index.js"></script>
+</body>
+</html>

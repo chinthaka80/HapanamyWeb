@@ -1,0 +1,1422 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ශිෂ්‍ය උපකරණ පුවරුව (Student Dashboard)</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        /* Specific Student layout */
+        .student-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        .student-sidebar {
+            background-color: #102A43; /* Deep Navy always */
+            color: #FFF9F0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 249, 240, 0.1);
+        }
+
+        .student-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .student-logo img {
+            height: 36px;
+            border-radius: 6px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .student-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .student-logo span span {
+            color: var(--brand-orange);
+        }
+
+        .student-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .student-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 600;
+            opacity: 0.8;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .student-nav-link:hover, .student-nav-link.active {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--brand-orange);
+        }
+
+        .student-nav-icon {
+            font-size: 18px;
+        }
+
+        .student-content-area {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .student-topbar {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .student-topbar h1 {
+            font-size: 22px;
+            color: var(--text-primary);
+        }
+
+        .student-topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .student-avatar-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .student-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--brand-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .student-avatar-info h4 {
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .student-avatar-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .student-main-content {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        .student-panel {
+            display: none;
+        }
+
+        .student-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Stats grid override */
+        .student-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .student-stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border-bottom: 4px solid var(--brand-gold);
+        }
+
+        .student-stat-card.orange { border-bottom-color: var(--brand-orange); }
+        .student-stat-card.green { border-bottom-color: var(--brand-green-light); }
+        .student-stat-card.navy { border-bottom-color: #102A43; }
+
+        .student-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .student-stat-val {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* Enrolled courses grid */
+        .learning-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .learning-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition-smooth);
+        }
+
+        .learning-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-orange);
+        }
+
+        .learning-card-banner {
+            height: 150px;
+            position: relative;
+        }
+
+        .learning-card-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .learning-card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .learning-progress-container {
+            margin: 15px 0;
+        }
+
+        .learning-progress-text {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .learning-progress-bar {
+            height: 6px;
+            background-color: var(--border-color);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .learning-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
+            border-radius: 3px;
+        }
+
+        .btn-learn-action {
+            width: 100%;
+            background-color: var(--brand-orange);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: auto;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-learn-action:hover {
+            background-color: #e06612;
+        }
+
+        /* Visual Video Player Layout */
+        .player-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 25px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+        }
+
+        .player-screen-side {
+            background-color: #000;
+            position: relative;
+            padding-top: 56.25%; /* 16:9 Aspect Ratio */
+        }
+
+        .player-mock-video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            background: linear-gradient(135deg, #102A43, #0B132B);
+            text-align: center;
+            padding: 20px;
+        }
+
+        .player-mock-playbtn {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background-color: var(--brand-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(244, 123, 32, 0.4);
+            transition: var(--transition-smooth);
+        }
+
+        .player-mock-playbtn:hover {
+            transform: scale(1.1);
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .player-playlist-side {
+            border-left: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            max-height: 480px;
+            overflow-y: auto;
+        }
+
+        .playlist-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 700;
+            font-size: 15px;
+        }
+
+        .playlist-items {
+            list-style: none;
+        }
+
+        .playlist-item {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 13.5px;
+            font-weight: 600;
+            transition: var(--transition-smooth);
+        }
+
+        .playlist-item:hover, .playlist-item.active {
+            background-color: rgba(244, 123, 32, 0.05);
+            color: var(--brand-orange);
+        }
+
+        .playlist-item-status {
+            font-size: 16px;
+        }
+
+        /* Live schedule tables */
+        .live-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .live-card-info h3 {
+            font-size: 17px;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .live-card-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .btn-live-zoom {
+            background-color: #2D8CFF; /* Zoom Blue */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(45, 140, 255, 0.3);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-live-zoom:hover {
+            background-color: #1a7ae8;
+            transform: translateY(-2px);
+        }
+
+        /* Ebooks list */
+        .ebook-download-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .ebook-info-side {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ebook-icon {
+            font-size: 32px;
+        }
+
+        .ebook-info-side h3 {
+            font-size: 15.5px;
+            margin-bottom: 4px;
+        }
+
+        .ebook-info-side p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .btn-download-pdf {
+            background-color: var(--brand-orange);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-download-pdf:hover {
+            background-color: #e06612;
+        }
+
+        @media (max-width: 1000px) {
+            .student-layout {
+                grid-template-columns: 1fr;
+            }
+            .student-sidebar {
+                display: none;
+            }
+            .player-layout {
+                grid-template-columns: 1fr;
+            }
+            .mobile-bottom-nav {
+                display: flex !important;
+            }
+            .student-content-area {
+                padding-bottom: 75px !important;
+            }
+            .student-stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .student-topbar {
+                padding: 16px 20px !important;
+            }
+            .student-main-content {
+                padding: 20px !important;
+            }
+        }
+        
+        /* Mobile Bottom Nav styles */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #102A43;
+            border-top: 1px solid rgba(255, 249, 240, 0.1);
+            z-index: 1999;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #FFF9F0;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        .mobile-nav-item.active {
+            opacity: 1;
+            color: var(--brand-orange);
+        }
+        .mobile-nav-icon {
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="student-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="student-sidebar">
+            <div class="student-logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            </div>
+            
+            <ul class="student-nav">
+                <li class="student-nav-link active" onclick="switchStudentTab('dashboard')" id="nav-dashboard">
+                    <span class="student-nav-icon">📊</span>
+                    <span data-translate="menu_overview">Overview</span>
+                </li>
+                <li class="student-nav-link" onclick="switchStudentTab('courses')" id="nav-courses">
+                    <span class="student-nav-icon">🎥</span>
+                    <span data-translate="menu_courses">My Courses</span>
+                </li>
+                <li class="student-nav-link" onclick="switchStudentTab('live')" id="nav-live">
+                    <span class="student-nav-icon">📅</span>
+                    <span data-translate="menu_live">Live Q&A Sessions</span>
+                </li>
+                <li class="student-nav-link" onclick="switchStudentTab('ebooks')" id="nav-ebooks">
+                    <span class="student-nav-icon">📘</span>
+                    <span data-translate="menu_ebooks">Download E-Books</span>
+                </li>
+                <li class="student-nav-link" onclick="switchStudentTab('settings')" id="nav-settings">
+                    <span class="student-nav-icon">⚙️</span>
+                    <span data-translate="menu_settings">Profile Settings</span>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(255, 249, 240, 0.1); display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="student-nav-link" style="color: var(--brand-gold);">
+                    <span class="student-nav-icon">🏠</span>
+                    <span data-translate="menu_exit">View Website</span>
+                </a>
+                <div class="student-nav-link" onclick="logoutUser()" style="color: var(--ph-red) !important; cursor: pointer;">
+                    <span class="student-nav-icon">🚪</span>
+                    <span data-translate="menu_logout">Log Out</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content side -->
+        <main class="student-content-area">
+            <!-- Topbar -->
+            <header class="student-topbar">
+                <h1 id="studentHeaderTitle" data-translate="title_dashboard">My Learning Dashboard</h1>
+                
+                <div class="student-topbar-actions">
+                    <!-- Lang Switcher in student topbar -->
+                    <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
+                        EN
+                    </button>
+                    <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                    
+                    <div class="student-avatar-box">
+                        <div class="student-avatar" id="headerAvatar">KT</div>
+                        <div class="student-avatar-info">
+                            <h4 id="headerStudentName">Kasun Tharaka</h4>
+                            <p data-translate="role_student">Student Member</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content Area -->
+            <div class="student-main-content">
+                
+                <!-- TAB 1: OVERVIEW DASHBOARD -->
+                <div class="student-panel active" id="panel-dashboard">
+                    <div class="student-stats-grid">
+                        <div class="student-stat-card">
+                            <div class="student-stat-label" data-translate="stat_enrolled">Enrolled Courses</div>
+                            <div class="student-stat-val">2</div>
+                        </div>
+                        <div class="student-stat-card orange">
+                            <div class="student-stat-label" data-translate="stat_completed">Completed Lessons</div>
+                            <div class="student-stat-val">18 / 80</div>
+                        </div>
+                        <div class="student-stat-card green">
+                            <div class="student-stat-label" data-translate="stat_live_sessions">Live Q&A This Week</div>
+                            <div class="student-stat-val">1 Session</div>
+                        </div>
+                        <div class="student-stat-card navy">
+                            <div class="student-stat-label" data-translate="stat_ebooks_down">E-Books Access</div>
+                            <div class="student-stat-val">1 PDF</div>
+                        </div>
+                    </div>
+
+                    <!-- Welcome Box -->
+                    <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 30px; border-left: 5px solid var(--brand-orange);">
+                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeStudentTitle">Welcome back, Kasun! 👋</h2>
+                        <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;" data-translate="welcome_desc">Hapanamy.lk අධ්‍යාපන පුවරුව වෙත සාදරයෙන් පිළිගනිමු. ඔබගේ පාඨමාලා හැදෑරීම නැවත ආරම්භ කිරීමට සහ ඉදිරි සජීවී සාකච්ඡාවලට සම්බන්ධ වීමට පහතින් තෝරා ගන්න.</p>
+                    </div>
+                </div>
+
+                <!-- TAB 2: MY COURSES GRID / PLAYER -->
+                <div class="student-panel" id="panel-courses">
+                    <!-- Standard courses list grid -->
+                    <div id="coursesListGrid" class="learning-grid">
+                        
+                        <!-- Course Card 1: Titan Elite Trading Academy -->
+                        <div class="learning-card">
+                            <div class="learning-card-banner">
+                                <img src="assets/trading_banner.jpg" alt="Titan Elite Trading">
+                            </div>
+                            <div class="learning-card-body">
+                                <h3 style="font-size: 16px; margin-bottom: 8px;">Titan Elite Trading Academy</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">දේශක: C N Gunasekara • Forex, Crypto & Options SMC</p>
+                                
+                                <div class="learning-progress-container">
+                                    <div class="learning-progress-text">
+                                        <span>Progress</span>
+                                        <span>25% (2/8 Chapters)</span>
+                                    </div>
+                                    <div class="learning-progress-bar">
+                                        <div class="learning-progress-fill" style="width: 25%;"></div>
+                                    </div>
+                                </div>
+                                <button class="btn-learn-action" onclick="startCourse('crypto')">Continue Course ➔</button>
+                            </div>
+                        </div>
+
+                        <!-- Course Card 2: AI Mastery Program -->
+                        <div class="learning-card">
+                            <div class="learning-card-banner">
+                                <img src="assets/ai_tech_banner.jpg" alt="AI Mastery">
+                            </div>
+                            <div class="learning-card-body">
+                                <h3 style="font-size: 16px; margin-bottom: 8px;">AI Mastery Program</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">ChatGPT & Prompt Engineering Beginner to Pro</p>
+                                
+                                <div class="learning-progress-container">
+                                    <div class="learning-progress-text">
+                                        <span>Progress</span>
+                                        <span>10% (1/8 Semesters) • මාස 2 (2 Months)</span>
+                                    </div>
+                                    <div class="learning-progress-bar">
+                                        <div class="learning-progress-fill" style="width: 12.5%;"></div>
+                                    </div>
+                                </div>
+                                <button class="btn-learn-action" onclick="startCourse('ai')">Continue Course ➔</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Hidden Video Player Interface -->
+                    <div id="coursePlayerBox" style="display: none;">
+                        <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; margin-bottom: 20px; border-width: 1px;" onclick="closeCoursePlayer()">← Back to Courses</button>
+                        
+                        <div class="player-layout">
+                            <!-- Screen side -->
+                            <div>
+                                <div class="player-screen-side">
+                                    <div class="player-mock-video" id="videoContainer" style="position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; min-height: 250px; background-color: #0b1a29; border-radius: 8px;">
+                                        <!-- Play overlay -->
+                                        <div id="videoPlayOverlay" style="text-align: center; z-index: 10;">
+                                            <div class="player-mock-playbtn" onclick="startMockVideoPlayback()" style="margin: 0 auto 15px; cursor: pointer;">▶</div>
+                                            <h3 id="playerLessonTitle" style="font-size: 18px; margin-bottom: 8px; color: white;">Lesson 1: Welcome & Course Overview</h3>
+                                            <p style="font-size: 13px; color: rgba(255,255,255,0.7);" id="playerCourseName">Crypto Trading Course</p>
+                                        </div>
+                                        
+                                        <!-- Loading Spinner overlay -->
+                                        <div id="videoLoadingOverlay" style="display: none; text-align: center; z-index: 10;">
+                                            <div style="border: 4px solid rgba(255,255,255,0.1); width: 45px; height: 45px; border-radius: 50%; border-left-color: var(--brand-orange); animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
+                                            <p style="font-size: 13px; color: white;">වීඩියෝව පූරණය වෙමින් පවතී (Loading Video)...</p>
+                                        </div>
+
+                                        <!-- Playing Progress overlay -->
+                                        <div id="videoPlayingOverlay" style="display: none; text-align: center; width: 80%; z-index: 10;">
+                                            <p style="font-size: 14px; color: white; margin-bottom: 15px; font-weight: 700;">🎥 වීඩියෝව ධාවනය වේ (Video Playing...)</p>
+                                            <div style="background-color: rgba(255,255,255,0.2); height: 8px; border-radius: 4px; overflow: hidden;">
+                                                <div id="videoProgressBar" style="background-color: var(--brand-orange); width: 0%; height: 100%;"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Mark Complete overlay -->
+                                        <div id="videoCompleteOverlay" style="display: none; text-align: center; z-index: 10;">
+                                            <button class="btn btn-primary" onclick="markLessonAsCompleted()" style="padding: 10px 20px; font-size: 13.5px; border: none; cursor: pointer; background-color: var(--brand-green-light); color: #102A43; font-weight: 800;">
+                                                ✅ පාඩම සම්පූර්ණ කළා (Mark as Completed)
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div style="padding: 24px;">
+                                    <h2 id="playerLessonTitleDetail" style="font-size: 20px; margin-bottom: 10px;">Lesson 1: Welcome & Course Overview</h2>
+                                    <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;" data-translate="video_desc">මෙම පාඩම මඟින් පාඨමාලාවේ මූලික සැලසුම, අන්තර්ගතය සහ සාර්ථකව හැදෑරීම සඳහා අවශ්‍ය මෘදුකාංග සකසා ගන්නා ආකාරය සරලව සාකච්ඡා කෙරේ.</p>
+                                    
+                                    <div style="margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+                                        <button class="btn btn-primary" style="padding: 10px 20px; font-size: 13.5px; border: none; cursor: pointer;" onclick="openCourseQuiz()">📝 Take Course Quiz</button>
+                                        <button class="btn-live-zoom" style="padding: 10px 20px; font-size: 13.5px; border: none; cursor: pointer; display: none; background-color: var(--brand-gold); color: #102A43;" id="btnViewCertificate" onclick="openCertificateModal()">🎓 View Certificate</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Playlist side -->
+                            <div class="player-playlist-side">
+                                <div class="playlist-header" data-translate="course_outline">Course Outline & Lessons</div>
+                                <ul class="playlist-items" id="playlistItemsList">
+                                    <!-- Injected dynamically -->
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: LIVE SESSIONS -->
+                <div class="student-panel" id="panel-live">
+                    <div class="live-card">
+                        <div class="live-card-info">
+                            <h3 data-translate="live_title_1">Crypto Trading Live Q&A and Practical Session</h3>
+                            <p><strong>Scheduled:</strong> Friday at 8:00 PM - 9:30 PM (Sri Lanka Time)</p>
+                            <p><strong>Instructor:</strong> Mr. Kasun Tharaka (Lead Mentor)</p>
+                            <p style="margin-top: 10px; color: var(--brand-orange); font-weight: 700;">Status: Scheduled (Zoom link will activate 15 mins before)</p>
+                        </div>
+                        <button class="btn-live-zoom" onclick="showToast('Redirecting to scheduled Zoom Live Session... 🚀')">Join Zoom Class</button>
+                    </div>
+
+                    <div class="live-card" style="opacity: 0.7;">
+                        <div class="live-card-info">
+                            <h3 data-translate="live_title_2">AI Mastery Tools Live Discussion (Past Session)</h3>
+                            <p><strong>Conducted:</strong> Last Wednesday</p>
+                            <p><strong>Instructor:</strong> Mr. Nipun Ranasinha</p>
+                        </div>
+                        <button class="btn btn-secondary" style="font-size: 13px; padding: 10px 15px; border-width: 1px;" onclick="showToast('Loading Recorded Live Q&A Archive... 🎥')">Watch Recording</button>
+                    </div>
+                </div>
+
+                <!-- TAB 4: EBOOKS DOWNLOADS -->
+                <div class="student-panel" id="panel-ebooks">
+                    <div class="ebook-download-card">
+                        <div class="ebook-info-side">
+                            <span class="ebook-icon">📘</span>
+                            <div>
+                                <h3>Trading E-Book A to Z (PDF Document)</h3>
+                                <p data-translate="ebook_pages">120 Pages • Sinhala Translation • Latest 2026 Edition</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" style="padding: 10px 15px; font-size: 13px; border-width: 1px;" onclick="openEbookReader('Trading E-Book A to Z')">📖 Read Online</button>
+                            <button class="btn-download-pdf" onclick="simulatePDFDownload('Trading E-Book A to Z')">Download PDF</button>
+                        </div>
+                    </div>
+                </div>
+
+                    <!-- TAB 5: PROFILE SETTINGS -->
+                <div class="student-panel" id="panel-settings">
+                    <div class="admin-settings-form" style="max-width: 600px; margin: 0 auto; background-color: var(--bg-surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;" data-translate="settings_title">පැතිකඩ සහ ගිණුම් සැකසුම් (Profile Settings)</h3>
+                        
+                        <form id="studentSettingsForm" onsubmit="saveStudentProfile(event)">
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="text" id="setStudentName" value="Kasun Tharaka" required placeholder=" ">
+                                <label for="setStudentName">සම්පූර්ණ නම (Full Name)</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="email" id="setStudentEmail" value="student@hapanamy.lk" required placeholder=" ">
+                                <label for="setStudentEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="tel" id="setStudentPhone" value="0719226600" required placeholder=" ">
+                                <label for="setStudentPhone">දුරකථන අංකය (Phone Number)</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="text" id="setStudentAddress" value="No. 45, Temple Road, Maharagama" required placeholder=" ">
+                                <label for="setStudentAddress">ලිපිනය (Home Address)</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 20px;">
+                                <input type="text" id="setStudentDistrict" value="Colombo" required placeholder=" ">
+                                <label for="setStudentDistrict">දිස්ත්‍රික්කය/නගරය (District/City)</label>
+                            </div>
+                            <div class="form-group" style="margin-bottom: 25px;">
+                                <input type="password" id="setStudentPassword" value="••••••••" required placeholder=" ">
+                                <label for="setStudentPassword">නව මුරපදය (New Password)</label>
+                            </div>
+
+                            <button type="submit" class="btn-learn-action" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- E-BOOK ONLINE FLIPBOOK READER MODAL -->
+            <div class="modal-overlay" id="ebookReaderModal" style="z-index: 2000;">
+                <div class="modal-box" style="max-width: 800px; height: 90vh; display: flex; flex-direction: column;">
+                    <div style="padding: 20px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <h3 id="ebookReaderTitle" style="font-size: 18px; color: var(--text-primary);">Trading E-Book A to Z</h3>
+                        <button onclick="closeEbookReader()" style="background: none; border: none; font-size: 28px; color: var(--text-primary); cursor: pointer; line-height: 1;">&times;</button>
+                    </div>
+                    <div style="flex-grow: 1; padding: 30px; overflow-y: auto; background-color: #FFF9F0; color: #102A43; font-family: 'Outfit', sans-serif; line-height: 1.8;" id="ebookReaderContent">
+                        <!-- Book pages simulated -->
+                        <div id="ebookPage1">
+                            <h2 style="font-size: 24px; text-align: center; margin-bottom: 30px; color: #102A43;">Chapter 1: Trading Concept & Basics</h2>
+                            <p style="margin-bottom: 20px;">මූල්‍ය වෙළඳපොල (Financial Markets) යනු විවිධ වත්කම් (Assets) මිලදී ගැනීම සහ විකිණීම සිදුකරන පොදු ස්ථානයයි. මෙහි ප්‍රධාන වශයෙන් කොටස් වෙළඳපොල (Stock Market), විදේශ විනිමය වෙළඳපොල (Forex Market), සහ ක්‍රිප්ටෝ වෙළඳපොල (Crypto Market) දැකිය හැක.</p>
+                            <p style="margin-bottom: 20px;">ට්‍රේඩින් (Trading) යනු කෙටිකාලීන මිල වෙනස්වීම් මත ලාභ ලැබීම අරමුණු කරගනිමින් වත්කම් ගනුදෙනු කිරීමයි. මෙය සාමාන්‍යයෙන් ආයෝජනයට (Investing) වඩා වෙනස් වන්නේ ආයෝජනය දිගුකාලීනව සිදුකරන බැවිනි.</p>
+                            <p><strong>පාඩමේ සාරාංශය:</strong> Price Action ක්‍රමවේද සහ නිවැරදි ඉලක්ක සැලසුම් කර ට්‍රේඩින් ආරම්භ කිරීම සාර්ථකත්වයට මග පාදයි.</p>
+                        </div>
+                        <div id="ebookPage2" style="display: none;">
+                            <h2 style="font-size: 24px; text-align: center; margin-bottom: 30px; color: #102A43;">Chapter 2: Risk Management & Controls</h2>
+                            <p style="margin-bottom: 20px;">සාර්ථක ට්‍රේඩර් කෙනෙකු වීමට නම් 90% ක්ම වැදගත් වන්නේ අවදානම් කළමනාකරණයයි (Risk Management). ඔබේ මුළු ප්‍රාග්ධනයෙන් 1%-2% කට වඩා එක් ගනුදෙනුවක් සඳහා කිසිවිටෙකත් අවදානමේ නොදමන්න.</p>
+                            <p style="margin-bottom: 20px;">Stop Loss (SL) සහ Take Profit (TP) සීමාවන් සැකසීම අත්‍යවශ්‍ය වේ. මෙය මඟින් හැඟීම් පාලනය කර (Take emotion out) විනයගරුකව ට්‍රේඩින් කිරීමට සහාය වේ.</p>
+                        </div>
+                    </div>
+                    <div style="padding: 20px; border-top: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+                        <button class="btn btn-secondary" style="padding: 8px 16px; font-size: 13px; border-width: 1px;" id="btnPrevPage" onclick="changeEbookPage(-1)" disabled>Previous Page</button>
+                        <span style="font-size: 13.5px; font-weight: 700;" id="ebookPageNumber">Page 1 of 2</span>
+                        <button class="btn btn-primary" style="padding: 8px 16px; font-size: 13px;" id="btnNextPage" onclick="changeEbookPage(1)">Next Page</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+<!-- INTERACTIVE MCQ QUIZ MODAL -->
+    <div class="modal-overlay" id="courseQuizModal" style="z-index: 2000;">
+        <div class="modal-box" style="max-width: 600px; padding: 30px;">
+            <h3 style="font-size: 18.5px; margin-bottom: 20px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">📝 පාඨමාලා පරික්ෂණය (Course Competency Quiz)</h3>
+            
+            <form id="quizForm" onsubmit="submitCourseQuiz(event)">
+                <div style="margin-bottom: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text-primary);">1. Smart Money Concepts (SMC) හි CHOCH යනු කුමක්ද?</p>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q1" value="a" required> Change of Character (ව්‍යුහයේ වෙනස්වීම)</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q1" value="b"> Cash on Cash Return</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q1" value="c"> Break of Structure (ව්‍යුහය බිඳවැටීම)</label>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <p style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text-primary);">2. ElevenLabs මෘදුකාංගය ප්‍රධාන වශයෙන් භාවිතා වන්නේ කුමකටද?</p>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q2" value="a" required> රූප නිර්මාණය කිරීමට (AI Image creation)</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q2" value="b"> හඬ නිර්මාණය සහ පරිවර්තනය කිරීමට (AI Voices & Dubbing)</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q2" value="c"> වීඩියෝ සංස්කරණය කිරීමට (Video Editing)</label>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <p style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text-primary);">3. AffiliateWP MLM පද්ධතියේ Hapanamy direct commission ප්‍රතිශතය කොපමණද?</p>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q3" value="a" required> 10%</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q3" value="b"> 15%</label>
+                    <label style="display: block; margin-bottom: 6px; font-size: 13px; color: var(--text-muted); cursor: pointer;"><input type="radio" name="q3" value="c"> 39%</label>
+                </div>
+
+                <div style="display: flex; gap: 10px;">
+                    <button type="submit" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer;">පිළිතුරු ඉදිරිපත් කරන්න (Submit)</button>
+                    <button type="button" class="btn btn-secondary" style="border-width: 1px; padding: 12px;" onclick="closeCourseQuiz()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CERTIFICATE OF COMPLETION DISPLAY MODAL -->
+    <div class="modal-overlay" id="certificateModal" style="z-index: 2001;">
+        <div class="modal-box" style="max-width: 700px; padding: 30px; text-align: center; border: 4px double var(--brand-gold); background-color: #FFFDF8; color: #102A43;">
+            <button onclick="closeCertificateModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 28px; color: #102A43; cursor: pointer;">&times;</button>
+            
+            <div style="border: 2px solid var(--brand-gold); padding: 40px; border-radius: 8px; background-color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
+                <div style="font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--brand-orange); margin-bottom: 15px;">HAPANAMY EDUCATION</div>
+                <h1 style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: #102A43;">CERTIFICATE OF COMPLETION</h1>
+                <p style="font-style: italic; font-size: 15px; margin-bottom: 30px; color: #486581;">This is proudly presented to</p>
+                
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Kasun Tharaka</h2>
+                
+                <p style="font-size: 14.5px; line-height: 1.6; max-width: 500px; margin: 0 auto 35px; color: #486581;">for successfully completing the advanced competency examinations for the <strong>AI Mastery & Advanced Financial Trading Program</strong> on Hapanamy.lk.</p>
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; max-width: 450px; margin: 0 auto;">
+                    <div style="text-align: center;">
+                        <div style="font-family: cursive; font-size: 16px; margin-bottom: 4px; color: #102A43;">CNGunasekara</div>
+                        <div style="border-top: 1px solid #D9E2EC; padding-top: 4px; font-size: 11px; font-weight: 700; color: #627D98;">C N Gunasekara<br>Lead Trading Mentor</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #102A43;" id="certificateDate">2026.08.03</div>
+                        <div style="border-top: 1px solid #D9E2EC; padding-top: 4px; font-size: 11px; font-weight: 700; color: #627D98;">Verification Date</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" style="margin-top: 25px; width: 100%; border: none; padding: 12px; font-size: 14px;" onclick="window.print()">
+                🖨️ Print / Download Certificate
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-item active" onclick="switchStudentTab('dashboard')" id="mob-nav-dashboard">
+            <span class="mobile-nav-icon">📊</span>
+            <span>Overview</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchStudentTab('courses')" id="mob-nav-courses">
+            <span class="mobile-nav-icon">🎥</span>
+            <span>Courses</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchStudentTab('live')" id="mob-nav-live">
+            <span class="mobile-nav-icon">📅</span>
+            <span>Live</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchStudentTab('ebooks')" id="mob-nav-ebooks">
+            <span class="mobile-nav-icon">📘</span>
+            <span>E-Books</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchStudentTab('settings')" id="mob-nav-settings">
+            <span class="mobile-nav-icon">⚙️</span>
+            <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // 🔒 Session Security Guard
+        (function() {
+            const activeUser = JSON.parse(localStorage.getItem('active_user'));
+            if (!activeUser || activeUser.role !== 'student') {
+                alert('🔒 Access Denied! Please sign in with a student account first.');
+                window.location.href = 'login-register.html';
+            }
+        })();
+        // Init theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
+            });
+        }
+
+        // Switch panel tabs
+        function switchStudentTab(tabId) {
+            const tabs = document.querySelectorAll('.student-nav-link');
+            const panels = document.querySelectorAll('.student-panel');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+            
+            // Sync mobile tab icons
+            const mobItems = document.querySelectorAll('.mobile-nav-item');
+            mobItems.forEach(i => i.classList.remove('active'));
+            const mobActiveItem = document.getElementById(`mob-nav-${tabId}`);
+            if (mobActiveItem) mobActiveItem.classList.add('active');
+
+            const currentLang = localStorage.getItem('language') || 'si';
+
+            const headerTitles = {
+                si: {
+                    'dashboard': 'ශිෂ්‍ය උපකරණ පුවරුව (Overview)',
+                    'courses': 'මගේ පාඨමාලා (My Enrolled Courses)',
+                    'live': 'සජීවී Zoom සාකච්ඡා (Live Zoom Sessions)',
+                    'ebooks': 'E-Books භාගත කිරීම් (My Purchased E-Books)',
+                    'settings': 'පැතිකඩ සැකසුම් (Profile Settings)'
+                },
+                en: {
+                    'dashboard': 'My Learning Dashboard (Overview)',
+                    'courses': 'My Enrolled Courses',
+                    'live': 'Scheduled Live Q&A Sessions',
+                    'ebooks': 'My Purchased E-Books',
+                    'settings': 'Account Profile Settings'
+                }
+            };
+            
+            document.getElementById('studentHeaderTitle').textContent = headerTitles[currentLang][tabId];
+            
+            // Auto close video player if switching tabs
+            if (tabId !== 'courses') {
+                closeCoursePlayer();
+            }
+        }
+
+        // Toast helper
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Simulation of PDF Downloader
+        function simulatePDFDownload(title) {
+            showToast(`📂 <strong>Downloading PDF!</strong> '${title}' is being saved to your downloads...`);
+        }
+
+        // Course Playlists data
+        const playlists = {
+            crypto: [
+                'Chapter 01: ට්‍රේඩින් ලෝකයට පිවිසීම & Broker Setup',
+                'Chapter 02: මූලික ට්‍රේඩින් යාන්ත්‍රණය (PIP, SL/TP, Lot/Position Size)',
+                'Chapter 03: වෙළඳපොල තාක්ෂණික විශ්ලේෂණය (Candlestick, Support/Resistance)',
+                'Chapter 04: උසස් ආයතනික ට්‍රේඩින් (SMC/ICT - BOS, CHOCH, Liquidity, Order Blocks)',
+                'Chapter 05: Crypto & Options Trading (Suno, Deriv Platform, Calls/Puts)',
+                'Chapter 06: උපායමාර්ග සහ ස්වයංක්‍රීයකරණය (90% Win Rate, Trading Bots)',
+                'Chapter 07: කළමනාකරණය සහ ට්‍රේඩින් මනෝවිද්‍යාව (Trading Plan, Psychology)',
+                'Chapter 08: වෘත්තීය මට්ටමට ගමන් කිරීම (Funded Prop Firms Accounts, Live Trading)'
+            ],
+            ai: [
+                'Semester 1: AI Foundations & Ecosystem',
+                'Semester 2: Prompt Engineering Masterclass',
+                'Semester 3: AI Image Creation & Consistent Character Design',
+                'Semester 4: AI Video Production & Filmmaking',
+                'Semester 5: AI Voice & Music Generation (Suno/Udio)',
+                'Semester 6: Commercial AI Ads & Stock Video Monetization',
+                'Semester 7: AI Business & Freelancing (Fiverr, Upwork)',
+                'Semester 8: Advanced AI & Automation (n8n, Make, APIs)'
+            ]
+        };
+
+        // Course Video Player logic
+        function startCourse(courseKey) {
+            const grid = document.getElementById('coursesListGrid');
+            const player = document.getElementById('coursePlayerBox');
+            const playlistUl = document.getElementById('playlistItemsList');
+
+            const courseTitle = courseKey === 'crypto' ? 'Crypto Trading Course' : 'AI Mastery Program';
+            document.getElementById('playerCourseName').textContent = courseTitle;
+
+            // Load playlist
+            playlistUl.innerHTML = '';
+            playlists[courseKey].forEach((lesson, index) => {
+                const li = document.createElement('li');
+                li.className = 'playlist-item' + (index === 0 ? ' active' : '');
+                li.innerHTML = `<span class="playlist-item-status">${index === 0 ? '▶' : '○'}</span> <span>${lesson}</span>`;
+                
+                li.addEventListener('click', () => {
+                    document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
+                    document.querySelectorAll('.playlist-item-status').forEach(el => el.textContent = '○');
+                    
+                    li.classList.add('active');
+                    li.querySelector('.playlist-item-status').textContent = '▶';
+                    
+                    // Update player details
+                    document.getElementById('playerLessonTitle').textContent = lesson;
+                    document.getElementById('playerLessonTitleDetail').textContent = lesson;
+                    showToast(`Loading Lesson: ${lesson}... 🎥`);
+                });
+                
+                playlistUl.appendChild(li);
+            });
+
+            // Set Initial player values
+            document.getElementById('playerLessonTitle').textContent = playlists[courseKey][0];
+            document.getElementById('playerLessonTitleDetail').textContent = playlists[courseKey][0];
+
+            grid.style.display = 'none';
+            player.style.display = 'block';
+            hookPlaylistSelection();
+        }
+
+        function closeCoursePlayer() {
+            document.getElementById('coursesListGrid').style.display = 'grid';
+            document.getElementById('coursePlayerBox').style.display = 'none';
+        }
+
+        // --- Multi-language translation setup for Student Dashboard ---
+        const studentTranslations = {
+            si: {
+                menu_overview: 'Overview',
+                menu_courses: 'මගේ පාඨමාලා',
+                menu_live: 'සජීවී Zoom පන්ති',
+                menu_ebooks: 'E-Books බාගැනීම්',
+                menu_exit: '← වෙබ් අඩවියට',
+                role_student: 'ශිෂ්‍ය සාමාජිකයා',
+                stat_enrolled: 'ලියාපදිංචි පාඨමාලා',
+                stat_completed: 'සම්පූර්ණ කළ පාඩම්',
+                stat_live_sessions: 'මෙම සතියේ සජීවී පන්ති',
+                stat_ebooks_down: 'E-Books ප්‍රමාණය',
+                welcome_desc: 'Hapanamy.lk අධ්‍යාපන පුවරුව වෙත සාදරයෙන් පිළිගනිමු. ඔබගේ පාඨමාලා හැදෑරීම නැවත ආරම්භ කිරීමට සහ ඉදිරි සජීවී සාකච්ඡාවලට සම්බන්ධ වීමට වම්පස මෙනුවෙන් තෝරා ගන්න.',
+                course_outline: 'පාඨමාලා විෂය නිර්දේශය',
+                video_desc: 'මෙම පාඩම මඟින් පාඨමාලාවේ මූලික සැලසුම, අන්තර්ගතය සහ සාර්ථකව හැදෑරීම සඳහා අවශ්‍ය මෘදුකාංග සකසා ගන්නා ආකාරය සරලව සාකච්ඡා කෙරේ.',
+                live_title_1: 'Crypto Trading සජීවී Zoom සාකච්ඡාව සහ ප්‍රායෝගික පන්තිය',
+                live_title_2: 'AI Mastery මෙවලම් පිළිබඳ සජීවී සාකච්ඡාව (පසුගිය පන්තිය)',
+                ebook_pages: '120 පිටු • සිංහල පරිවර්තනය • 2026 නවතම සංස්කරණය',
+                menu_settings: 'පැතිකඩ සැකසුම්',
+                menu_logout: 'පද්ධතියෙන් පිටවීම',
+                settings_title: 'පැතිකඩ සහ ගිණුම් සැකසුම් (Profile Settings)'
+            },
+            en: {
+                menu_overview: 'Overview',
+                menu_courses: 'My Courses',
+                menu_live: 'Live Zoom Sessions',
+                menu_ebooks: 'Download E-Books',
+                menu_exit: '← Back to Live Site',
+                role_student: 'Student Member',
+                stat_enrolled: 'Enrolled Courses',
+                stat_completed: 'Completed Lessons',
+                stat_live_sessions: 'Live Sessions This Week',
+                stat_ebooks_down: 'E-Books Access',
+                welcome_desc: 'Welcome back to the Hapanamy.lk learning center. Use the sidebar menu to select your courses, join upcoming Live Q&A sessions on Zoom, or download purchased reference manuals.',
+                course_outline: 'Course Outline & Lessons',
+                video_desc: 'This video introduces the core objectives of this section, necessary software settings, and instructions on how to practice trading risk-free.',
+                live_title_1: 'Crypto Trading Live Q&A and Practical Session',
+                live_title_2: 'AI Mastery Tools Live Discussion (Past Session)',
+                ebook_pages: '120 Pages • PDF Manual • 2026 Edition',
+                menu_settings: 'Profile Settings',
+                menu_logout: 'Log Out',
+                settings_title: 'Account Profile Settings'
+            }
+        };
+
+        function applyStudentLanguage(lang) {
+            document.querySelectorAll('[data-translate]').forEach(element => {
+                const key = element.getAttribute('data-translate');
+                if (studentTranslations[lang] && studentTranslations[lang][key]) {
+                    element.innerHTML = studentTranslations[lang][key];
+                }
+            });
+
+            // Update welcome name
+            const currentLang = localStorage.getItem('language') || 'si';
+            const welcomeText = currentLang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු, කසුන්! 👋' : 'Welcome back, Kasun! 👋';
+            document.getElementById('welcomeStudentTitle').textContent = welcomeText;
+
+            const langToggle = document.getElementById('langToggleBtn');
+            if (langToggle) {
+                langToggle.textContent = lang === 'si' ? 'EN' : 'සිං';
+            }
+        }
+
+        function initStudentLanguage() {
+            const langToggle = document.getElementById('langToggleBtn');
+            let currentLang = localStorage.getItem('language') || 'si';
+            
+            applyStudentLanguage(currentLang);
+            
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    currentLang = currentLang === 'si' ? 'en' : 'si';
+                    localStorage.setItem('language', currentLang);
+                    applyStudentLanguage(currentLang);
+                    
+                    // Update header title based on active tab
+                    const activeTabId = document.querySelector('.student-nav-link.active').id.replace('nav-', '');
+                    switchStudentTab(activeTabId);
+
+                    showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
+                });
+            }
+        }
+
+        
+        // Save profile logic
+        
+
+        // Online Flipbook Reader logic
+        let currentEbookPage = 1;
+        function openEbookReader(title) {
+            document.getElementById('ebookReaderTitle').textContent = title;
+            document.getElementById('ebookReaderModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            
+            // Reset page view
+            currentEbookPage = 1;
+            changeEbookPage(0);
+        }
+
+        function closeEbookReader() {
+            document.getElementById('ebookReaderModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function changeEbookPage(direction) {
+            currentEbookPage += direction;
+            
+            const page1 = document.getElementById('ebookPage1');
+            const page2 = document.getElementById('ebookPage2');
+            const btnPrev = document.getElementById('btnPrevPage');
+            const btnNext = document.getElementById('btnNextPage');
+            const pageNum = document.getElementById('ebookPageNumber');
+
+            if (currentEbookPage === 1) {
+                page1.style.display = 'block';
+                page2.style.display = 'none';
+                btnPrev.disabled = true;
+                btnNext.disabled = false;
+                pageNum.textContent = 'Page 1 of 2';
+            } else {
+                page1.style.display = 'none';
+                page2.style.display = 'block';
+                btnPrev.disabled = false;
+                btnNext.disabled = true;
+                pageNum.textContent = 'Page 2 of 2';
+            }
+        }
+
+        
+        
+        // --- INTERACTIVE VIDEO PLAYBACK LOGIC ---
+        let activeLessonLi = null;
+        let progressPercent = 0;
+        let playInterval = null;
+
+        // Hook playlist selection
+        function hookPlaylistSelection() {
+            setTimeout(() => {
+                const items = document.querySelectorAll('.playlist-item');
+                if (items.length > 0) {
+                    activeLessonLi = items[0]; // default first item
+                }
+                
+                // Add click triggers to reset player overlays on lesson switch
+                items.forEach(li => {
+                    li.addEventListener('click', () => {
+                        activeLessonLi = li;
+                        resetVideoPlayerView();
+                    });
+                });
+            }, 500);
+        }
+
+        function resetVideoPlayerView() {
+            clearInterval(playInterval);
+            document.getElementById('videoPlayOverlay').style.display = 'block';
+            document.getElementById('videoLoadingOverlay').style.display = 'none';
+            document.getElementById('videoPlayingOverlay').style.display = 'none';
+            document.getElementById('videoCompleteOverlay').style.display = 'none';
+        }
+
+        function startMockVideoPlayback() {
+            document.getElementById('videoPlayOverlay').style.display = 'none';
+            document.getElementById('videoLoadingOverlay').style.display = 'block';
+
+            // 1.5s loading buffer
+            setTimeout(() => {
+                document.getElementById('videoLoadingOverlay').style.display = 'none';
+                document.getElementById('videoPlayingOverlay').style.display = 'block';
+                
+                // Animate progress bar
+                let width = 0;
+                const bar = document.getElementById('videoProgressBar');
+                bar.style.width = '0%';
+                
+                playInterval = setInterval(() => {
+                    width += 5;
+                    bar.style.width = width + '%';
+                    
+                    if (width >= 100) {
+                        clearInterval(playInterval);
+                        document.getElementById('videoPlayingOverlay').style.display = 'none';
+                        document.getElementById('videoCompleteOverlay').style.display = 'block';
+                    }
+                }, 300); // Takes ~6 seconds to complete playback simulation
+            }, 1500);
+        }
+
+        function markLessonAsCompleted() {
+            if (activeLessonLi) {
+                // Set checked status in playlist row
+                activeLessonLi.querySelector('.playlist-item-status').textContent = '✅';
+                activeLessonLi.style.opacity = '0.7';
+            }
+            
+            resetVideoPlayerView();
+            showToast('🎉 <strong>පාඩම සාර්ථකව අවසන්!</strong> ඔබගේ ඉගෙනුම් දර්ශකය යාවත්කාලීන විය.');
+            
+            // Increment progress status bar
+            const fill = document.querySelector('.learning-progress-fill');
+            const txt = document.querySelector('.learning-progress-text span:last-child');
+            if (fill && txt) {
+                // Dynamically upgrade progress values
+                fill.style.width = '37.5%';
+                txt.textContent = '37.5% (3/8 Semesters) • මාස 2 (2 Months)';
+            }
+        }
+
+        // Run Hook on load
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(hookPlaylistSelection, 1000);
+        });
+
+        // --- QUIZ & CERTIFICATE SYSTEM LOGIC ---
+        function openCourseQuiz() {
+            document.getElementById('courseQuizModal').classList.add('open');
+        }
+
+        function closeCourseQuiz() {
+            document.getElementById('courseQuizModal').classList.remove('open');
+        }
+
+        function openCertificateModal() {
+            // Set dynamic student name from profile input/welcome title
+            const rawName = document.getElementById('setStudentName').value || 'Kasun Tharaka';
+            document.getElementById('certificateStudentName').textContent = rawName;
+            
+            // Set dynamic date
+            const today = new Date();
+            const dateStr = today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
+            document.getElementById('certificateDate').textContent = dateStr;
+
+            document.getElementById('certificateModal').classList.add('open');
+        }
+
+        function closeCertificateModal() {
+            document.getElementById('certificateModal').classList.remove('open');
+        }
+
+        function submitCourseQuiz(event) {
+            event.preventDefault();
+            const q1 = document.querySelector('input[name="q1"]:checked').value;
+            const q2 = document.querySelector('input[name="q2"]:checked').value;
+            const q3 = document.querySelector('input[name="q3"]:checked').value;
+
+            closeCourseQuiz();
+
+            // Correct answers: q1 = a, q2 = b, q3 = b
+            let score = 0;
+            if (q1 === 'a') score++;
+            if (q2 === 'b') score++;
+            if (q3 === 'b') score++;
+
+            if (score >= 2) {
+                showToast('🎉 <strong>සුභ පැතුම්!</strong> ඔබ පරීක්ෂණය සමත් විය. ලකුණු: ' + score + '/3');
+                document.getElementById('btnViewCertificate').style.display = 'block';
+                
+                // Show certificate modal automatically on pass
+                setTimeout(openCertificateModal, 1500);
+            } else {
+                showToast('❌ <strong>නැවත උත්සාහ කරන්න!</strong> ඔබ පරීක්ෂණය අසමත් විය. ලකුණු: ' + score + '/3 (සමත් වීමට 2ක් නිවැරදි විය යුතුය)');
+            }
+        }
+
+        initStudentLanguage();
+    </script>
+</body>
+</html>
+
+
+        // Logout handler
+        function logoutUser() {
+            showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
+            setTimeout(() => {
+                window.location.href = 'login-register.html';
+            }, 1500);
+        }
+
+        // Save expanded profile
+        function saveStudentProfile(event) {
+            event.preventDefault();
+            const name = document.getElementById('setStudentName').value;
+            const email = document.getElementById('setStudentEmail').value;
+            const phone = document.getElementById('setStudentPhone').value;
+            const address = document.getElementById('setStudentAddress').value;
+            const district = document.getElementById('setStudentDistrict').value;
+            
+            const profile = { name, email, phone, address, district };
+            localStorage.setItem('hapanamy_student_profile', JSON.stringify(profile));
+
+            // Sync dashboard headers
+            document.getElementById('headerStudentName').textContent = name;
+            document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + name.split(' ')[0] + '! 👋';
+            
+            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව Local Database එකට සුරැකිණි.');
+        }
+
+        // Load profile from database
+        function loadStudentProfile() {
+            const profile = JSON.parse(localStorage.getItem('hapanamy_student_profile'));
+            if (profile) {
+                document.getElementById('setStudentName').value = profile.name;
+                document.getElementById('setStudentEmail').value = profile.email;
+                document.getElementById('setStudentPhone').value = profile.phone;
+                document.getElementById('setStudentAddress').value = profile.address || '';
+                document.getElementById('setStudentDistrict').value = profile.district || '';
+                
+                document.getElementById('headerStudentName').textContent = profile.name;
+                document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + profile.name.split(' ')[0] + '! 👋';
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            setTimeout(loadStudentProfile, 400);
+        });
