@@ -1130,8 +1130,7 @@
 
         // Load Payouts queue
         function getAffiliateBalance() {
-            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const userSlug = getActiveUserSlug();
             
             let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
@@ -1241,8 +1240,7 @@
                 
                 const balance = getAffiliateBalance();
                 const newBalance = balance - tempPayoutAmount;
-                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-                const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+                const userSlug = getActiveUserSlug();
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
 
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
@@ -1312,6 +1310,13 @@
             showToast('🔄 Switching language between English & Sinhala...');
         }
 
+        // Helper to get safe user slug from active session email
+        function getActiveUserSlug() {
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
+            const email = activeUser.email || 'affiliate@hapanamy.lk';
+            return email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+        }
+
         // ==================== STUDENT COURSE DASHBOARD ====================
         const courseData = {
             'facebook-course': { title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/facebook_course_banner.jpg', category: 'Social Media' },
@@ -1336,10 +1341,11 @@
             
             grid.innerHTML = '';
             
-            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
+            const email = activeUser.email || 'student@hapanamy.lk';
             
             // Seed default courses for NamoBudhdhaya if not set
-            if (activeUser.email.toLowerCase() === 'namobudhdhaya@hapanamy.lk' || activeUser.email.toLowerCase() === 'namobudhdhaya') {
+            if (email.toLowerCase() === 'namobudhdhaya@hapanamy.lk' || email.toLowerCase() === 'namobudhdhaya') {
                 let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_namobudhdhaya@hapanamy.lk'));
                 if (!unlocked) {
                     unlocked = ['titan-elite', 'youtube-course', 'ai-mastery-course', 'trading-ebook'];
@@ -1348,8 +1354,8 @@
                 }
             }
             
-            const unlockedKeys = JSON.parse(localStorage.getItem('unlocked_courses_' + activeUser.email)) || 
-                                 JSON.parse(localStorage.getItem('unlocked_courses_' + activeUser.email.toLowerCase())) || [];
+            const unlockedKeys = JSON.parse(localStorage.getItem('unlocked_courses_' + email)) || 
+                                 JSON.parse(localStorage.getItem('unlocked_courses_' + email.toLowerCase())) || [];
             
             if (unlockedKeys.length === 0) {
                 grid.innerHTML = `
@@ -1403,8 +1409,7 @@
             loadPayoutHistory();
             
             // Prefill dynamic user-specific referral link
-            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const userSlug = getActiveUserSlug();
             const refInput = document.getElementById('mainReferralLinkVal');
             if (refInput) {
                 refInput.value = window.location.origin + '/?ref=' + userSlug;
