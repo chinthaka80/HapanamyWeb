@@ -1312,6 +1312,91 @@
             showToast('🔄 Switching language between English & Sinhala...');
         }
 
+        // ==================== STUDENT COURSE DASHBOARD ====================
+        const courseData = {
+            'facebook-course': { title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/facebook_course_banner.jpg', category: 'Social Media' },
+            'tiktok-course': { title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/tiktok_course_banner.jpg', category: 'Social Media' },
+            'youtube-course': { title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/youtube_course_banner.jpg', category: 'Social Media' },
+            'social-media-masterclass': { title: 'Social Media Marketing Masterclass', banner: 'assets/social_media_masterclass_banner.jpg', category: 'Social Media' },
+            'forex-course': { title: 'Professional Forex Trading Core Course', banner: 'assets/forex_course_banner.jpg', category: 'Trading' },
+            'crypto-course': { title: 'Cryptocurrency Trading & Investing Course', banner: 'assets/crypto_course_banner.jpg', category: 'Trading' },
+            'options-course': { title: 'Advanced Stock Options Trading Course', banner: 'assets/options_course_banner.jpg', category: 'Trading' },
+            'titan-elite': { title: 'Titan Elite SMC Mentorship Program', banner: 'assets/trading_banner.jpg', category: 'Trading' },
+            'ai-video-course': { title: 'AI-Powered Video Generation Mastery', banner: 'assets/ai_video_course_banner.jpg', category: 'AI & Tech' },
+            'ai-mastery-course': { title: 'Artificial Intelligence Mastery Core Course', banner: 'assets/ai_mastery_banner.jpg', category: 'AI & Tech' },
+            'coding-course': { title: 'Full-Stack Software Development Masterclass', banner: 'assets/coding_course_banner.jpg', category: 'AI & Tech' },
+            'trading-ebook': { title: 'Ultimate Trading Strategy Blueprint (E-Book)', banner: 'assets/ebooks_banner.jpg', category: 'E-Books' },
+            'motivation-ebook': { title: 'Mindset & Success Blueprint E-Book', banner: 'assets/motivation_ebook_banner.jpg', category: 'E-Books' },
+            'ai-prompts-ebook': { title: 'ChatGPT Prompt Engineering Guide (E-Book)', banner: 'assets/ai_prompts_ebook_banner.jpg', category: 'E-Books' }
+        };
+
+        function renderStudentPurchasedCourses() {
+            const grid = document.getElementById('studentCoursesGrid');
+            if (!grid) return;
+            
+            grid.innerHTML = '';
+            
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
+            
+            // Seed default courses for NamoBudhdhaya if not set
+            if (activeUser.email.toLowerCase() === 'namobudhdhaya@hapanamy.lk' || activeUser.email.toLowerCase() === 'namobudhdhaya') {
+                let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_namobudhdhaya@hapanamy.lk'));
+                if (!unlocked) {
+                    unlocked = ['titan-elite', 'youtube-course', 'ai-mastery-course', 'trading-ebook'];
+                    localStorage.setItem('unlocked_courses_namobudhdhaya@hapanamy.lk', JSON.stringify(unlocked));
+                    localStorage.setItem('unlocked_courses_namobudhdhaya', JSON.stringify(unlocked));
+                }
+            }
+            
+            const unlockedKeys = JSON.parse(localStorage.getItem('unlocked_courses_' + activeUser.email)) || 
+                                 JSON.parse(localStorage.getItem('unlocked_courses_' + activeUser.email.toLowerCase())) || [];
+            
+            if (unlockedKeys.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background-color: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 12px; width: 100%;">
+                        <span style="font-size: 40px; display: block; margin-bottom: 15px;">📚</span>
+                        <h4 style="font-size: 16px; margin-bottom: 8px; font-weight: 700; color: var(--text-primary);">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත.</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">පාඨමාලා මිලදී ගැනීමෙන් පසු ඒවා මෙතැනින් හැදෑරීම ආරම්භ කළ හැක.</p>
+                        <a href="index.html#courses" class="btn btn-primary" style="border: none; text-decoration: none; font-size:12.5px;">පාඨමාලා බැලීම (Browse Catalog)</a>
+                    </div>
+`;
+                return;
+            }
+            
+            unlockedKeys.forEach(key => {
+                const course = courseData[key];
+                if (!course) return;
+                
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.style.cssText = 'background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; cursor: pointer;';
+                card.onclick = () => openCoursePlayer(key);
+                
+                card.innerHTML = `
+                    <div style="position: relative; height: 160px; overflow: hidden;">
+                        <img src="${course.banner}" alt="${course.title}" style="width: 100%; height: 100%; object-fit: cover;">
+                        <span style="position: absolute; top: 12px; left: 12px; background-color: var(--brand-orange); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${course.category}</span>
+                    </div>
+                    <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                        <h4 style="font-size: 14.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 15px; line-height: 1.4;">${course.title}</h4>
+                        <button class="btn btn-primary" style="width: 100%; border: none; font-size: 12px; padding: 10px; border-radius: 6px;">නැරඹීම අරඹන්න (Start Learning) 🎥</button>
+                    </div>
+`;
+                
+                // Add hover style behavior via JS
+                card.onmouseover = () => {
+                    card.style.transform = 'translateY(-5px)';
+                    card.style.boxShadow = '0 8px 20px rgba(244,123,32,0.15)';
+                };
+                card.onmouseout = () => {
+                    card.style.transform = 'none';
+                    card.style.boxShadow = 'none';
+                };
+                
+                grid.appendChild(card);
+            });
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             renderStudentPurchasedCourses();
             loadUserProfile();
