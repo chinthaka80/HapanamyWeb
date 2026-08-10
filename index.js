@@ -2484,6 +2484,56 @@ const blogArticles = {
     }
 };
 
+function formatArticleContent(content) {
+    if (!content) return '';
+    // If it already contains HTML elements like <p> or <h>, leave it as is
+    if (/<[a-z][\s\S]*>/i.test(content)) {
+        return content;
+    }
+    
+    // Otherwise, parse plain text
+    const blocks = content.split(/\n\s*\n/);
+    return blocks.map(block => {
+        block = block.trim();
+        if (!block) return '';
+        
+        // Blockquotes starting with >
+        if (block.startsWith('>')) {
+            return `<blockquote style="background: var(--bg-surface); border-left: 4px solid var(--brand-orange); padding: 15px; margin: 15px 0; border-radius: 8px; font-style: italic; color: var(--text-primary); font-size: 14.5px;">${block.substring(1).trim().replace(/\n/g, '<br>')}</blockquote>`;
+        }
+
+        // Headings: H2 (#), H3 (##), H4 (###)
+        if (block.startsWith('###') || block.startsWith('### ')) {
+            return `<h4 style="font-size: 16px; font-weight: 700; color: var(--brand-gold); margin-top: 20px; margin-bottom: 10px;">${block.replace(/^###\s*/, '')}</h4>`;
+        }
+        if (block.startsWith('##') || block.startsWith('## ')) {
+            return `<h3 style="font-size: 19px; font-weight: 700; color: var(--brand-orange); margin-top: 24px; margin-bottom: 12px;">${block.replace(/^##\s*/, '')}</h3>`;
+        }
+        if (block.startsWith('#') || block.startsWith('# ')) {
+            return `<h2 style="font-size: 22px; font-weight: 800; color: var(--brand-orange); margin-top: 28px; margin-bottom: 14px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">${block.replace(/^#\s*/, '')}</h2>`;
+        }
+
+        // Bullet lists starting with - or *
+        if (block.startsWith('- ') || block.startsWith('* ')) {
+            const items = block.split(/\n\s*[-*]\s*/);
+            return `<ul style="margin-left: 20px; margin-bottom: 16px; list-style-type: disc;">` +
+                items.map(item => `<li style="margin-bottom: 6px; line-height: 1.7;">${item.replace(/^[-*]\s*/, '')}</li>`).join('') +
+                `</ul>`;
+        }
+
+        // Numbered lists starting with digits
+        if (/^\d+\.\s*/.test(block)) {
+            const items = block.split(/\n\s*\d+\.\s*/);
+            return `<ol style="margin-left: 20px; margin-bottom: 16px; list-style-type: decimal;">` +
+                items.map(item => `<li style="margin-bottom: 6px; line-height: 1.7;">${item.replace(/^\d+\.\s*/, '')}</li>`).join('') +
+                `</ol>`;
+        }
+
+        // Standard Paragraph
+        return `<p style="margin-bottom: 16px; line-height: 1.8;">${block.replace(/\n/g, '<br>')}</p>`;
+    }).join('');
+}
+
 function openBlogModal(articleId) {
     const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
     const mergedArticles = { ...blogArticles };
@@ -2497,7 +2547,7 @@ function openBlogModal(articleId) {
     document.getElementById('blogModalBanner').src = article.banner;
     document.getElementById('blogModalCategory').textContent = article.category;
     document.getElementById('blogModalTitle').textContent = article.title;
-    document.getElementById('blogModalBody').innerHTML = article.content;
+    document.getElementById('blogModalBody').innerHTML = formatArticleContent(article.content);
     
     document.getElementById('blogModal').classList.add('open');
     document.body.style.overflow = 'hidden';
