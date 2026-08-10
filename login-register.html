@@ -430,6 +430,8 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const isAdminPortal = urlParams.get('access') === 'admin';
         
         // Auth internationalization translations
         const authTranslations = {
