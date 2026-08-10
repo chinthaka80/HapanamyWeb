@@ -371,6 +371,11 @@
                             <input type="tel" id="regPhone" required placeholder=" ">
                             <label for="regPhone">දුරකථන අංකය (Phone Number)</label>
                         </div>
+                        
+                        <div class="form-group">
+                            <input type="text" id="regAddress" required placeholder=" ">
+                            <label for="regAddress">ලිපිනය / නගරය (Address / City)</label>
+                        </div>
 
                         <div class="form-group" style="margin-bottom: 12px;">
                             <input type="password" id="regPassword" required placeholder=" " oninput="checkPasswordStrength(this.value)">
@@ -614,6 +619,33 @@
                     return;
                 }
                 
+                // Check if user is registered inside local storage
+                const registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.name.toLowerCase() === email.toLowerCase());
+                
+                if (matchedUser) {
+                    if (matchedUser.password === password) {
+                        localStorage.setItem('active_user', JSON.stringify({ email: matchedUser.email, role: matchedUser.role }));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                            name: matchedUser.name,
+                            email: matchedUser.email,
+                            phone: matchedUser.phone,
+                            address: matchedUser.address,
+                            bankName: matchedUser.bank.split(' ')[0] || 'Bank',
+                            branch: 'Branch',
+                            accNumber: matchedUser.bank.split(' ').slice(1).join(' ') || 'Account'
+                        }));
+                        
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.name}!`);
+                        setTimeout(() => {
+                            window.location.href = 'my-account.html';
+                        }, 1500);
+                    } else {
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
+                    }
+                    return;
+                }
+                
                 // If logging in with an affiliate/partner email
                 if (email.includes('affiliate') || email.includes('partner')) {
                     localStorage.setItem('active_user', JSON.stringify({ email, role: 'affiliate' }));
@@ -632,11 +664,45 @@
                     window.location.href = 'my-account.html';
                 }, 1500);
             } else {
-                const name = document.getElementById('regName').value;
-                const email = document.getElementById('regEmail').value;
+                const name = document.getElementById('regName').value.trim();
+                const email = document.getElementById('regEmail').value.trim();
+                const phone = document.getElementById('regPhone').value.trim();
+                const address = document.getElementById('regAddress').value.trim();
+                const password = document.getElementById('regPassword').value;
+                const bankInfo = document.getElementById('regBank').value.trim() || 'HNB Bank';
                 const roleText = selectedRole === 'affiliate' ? 'අනුබද්ධිත (Affiliate Partner)' : 'ශිෂ්‍යයෙක් (Student)';
                 
+                // Check if user already exists
+                let registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+                if (userExists) {
+                    showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
+                    return;
+                }
+                
+                const newUser = {
+                    name,
+                    email,
+                    phone,
+                    address,
+                    password,
+                    role: selectedRole,
+                    bank: bankInfo
+                };
+                registeredUsers.push(newUser);
+                localStorage.setItem('hapanamy_registered_users', JSON.stringify(registeredUsers));
+
+                // Save active user and profile
                 localStorage.setItem('active_user', JSON.stringify({ email, role: selectedRole }));
+                localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                    name: name,
+                    email: email,
+                    phone: phone,
+                    address: address,
+                    bankName: bankInfo.split(' ')[0] || 'Bank',
+                    branch: 'Branch',
+                    accNumber: bankInfo.split(' ').slice(1).join(' ') || 'Account'
+                }));
                 
                 // Record under referrer's downlines in local storage
                 const refCode = localStorage.getItem('hapanamy_referrer') || 'kasun_t';
@@ -684,6 +750,17 @@
         // Set initial selected style on load
         document.addEventListener('DOMContentLoaded', () => {
             selectRole('student');
+            
+            // Auto switch to Register tab and prefill if referrer ref is present in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            if (refParam) {
+                switchTab('register');
+                const refInput = document.getElementById('regReferral');
+                if (refInput) {
+                    refInput.value = refParam;
+                }
+            }
         });
 
         // Live Password Strength Check

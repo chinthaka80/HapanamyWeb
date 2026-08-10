@@ -2648,12 +2648,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render dynamic articles
     renderBlogArticles();
     
-    // Capture referral query parameter
+    // Capture referral query parameter and redirect to registration page
     const urlParams = new URLSearchParams(window.location.search);
     const refCode = urlParams.get('ref');
     if (refCode) {
         localStorage.setItem('hapanamy_referrer', refCode);
-        console.log('Captured referrer code:', refCode);
+        console.log('Captured referrer code and redirecting to registration page:', refCode);
+        window.location.href = 'login-register.html?ref=' + refCode;
     }
 });
 
