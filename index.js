@@ -2485,8 +2485,15 @@ const blogArticles = {
 };
 
 function openBlogModal(articleId) {
-    const article = blogArticles[articleId];
+    const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+    const mergedArticles = { ...blogArticles };
+    customArticles.forEach(art => {
+        mergedArticles[art.id] = art;
+    });
+
+    const article = mergedArticles[articleId];
     if (!article) return;
+    
     document.getElementById('blogModalBanner').src = article.banner;
     document.getElementById('blogModalCategory').textContent = article.category;
     document.getElementById('blogModalTitle').textContent = article.title;
@@ -2499,6 +2506,75 @@ function openBlogModal(articleId) {
 function closeBlogModal() {
     document.getElementById('blogModal').classList.remove('open');
     document.body.style.overflow = '';
+}
+
+function renderBlogArticles() {
+    const grid = document.getElementById('blogArticlesGrid');
+    if (!grid) return;
+    
+    grid.innerHTML = '';
+    
+    // Default static articles
+    const defaultArticles = [
+        {
+            id: 'prompt-guide',
+            title: 'ChatGPT හරහා නිවැරදිව Prompt ලියන ආකාරය (Prompt Engineering)',
+            category: 'AI & Tech',
+            banner: 'assets/ai_prompts_ebook_banner.jpg',
+            readTime: '5',
+            date: '2026-08-07',
+            intro: 'AI සමඟ වැඩ කරන විට නිවැරදි ප්‍රතිඵල ලබාගැනීමට නම් අප ලබාදෙන උපදෙස් (Prompts) නිවැරදි විය යුතුය. මෙන්න ඒ සඳහා සරල පියවර කිහිපයක්...'
+        },
+        {
+            id: 'trading-mistakes',
+            title: 'Trading වලදී සිදුවන ප්‍රධාන වැරදි 5ක් සහ ඒවායෙන් බේරෙන ක්‍රම',
+            category: 'Trading',
+            banner: 'assets/advanced_trading_banner.jpg',
+            readTime: '6',
+            date: '2026-08-06',
+            intro: 'නවක මෙන්ම අත්දැකීම් බහුල Traders ලා පවා නිතර සිදුකරන, ඔවුන්ගේ ගිණුම් අහිමි වීමට (Account Blowout) බලපාන ප්‍රධාන වැරදි 5ක් සහ ඒවා මඟහරවා ගන්නා ආකාරය...'
+        },
+        {
+            id: 'faceless-yt',
+            title: '2026 වසරේ Faceless YouTube Channel එකක් සාර්ථකව කරන හැටි',
+            category: 'Social Media',
+            banner: 'assets/youtube_course_banner.jpg',
+            readTime: '7',
+            date: '2026-08-05',
+            intro: 'මුහුණ නොපෙන්වා සහ තමන්ගේම හඬ භාවිතා නොකර AI සහ විවිධ මෙවලම් ආධාරයෙන් YouTube හරහා ඩොලර් උපයන වීඩියෝ නිර්මාණය කරන සම්පූර්ණ මාර්ගෝපදේශය...'
+        }
+    ];
+    
+    // Custom articles from admin
+    const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+    
+    const allArticles = [...defaultArticles, ...customArticles];
+    
+    allArticles.forEach(article => {
+        const card = document.createElement('div');
+        card.className = 'course-card';
+        card.style.borderRadius = '24px';
+        
+        let badgeColor = 'var(--brand-orange)';
+        if (article.category === 'AI & Tech') badgeColor = 'var(--brand-gold)';
+        else if (article.category === 'Social Media') badgeColor = 'var(--brand-red)';
+        
+        card.innerHTML = `
+             <div class="card-image-box">
+                 <img src="${article.banner}" alt="${article.title}" class="card-img">
+                 <span class="badge-category" style="background-color: ${badgeColor};">${article.category}</span>
+             </div>
+             <div class="card-content" style="padding: 24px;">
+                 <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 10px; font-weight: 600;">📅 ${article.date} • ⏱️ විනාඩි ${article.readTime}ක කියවීමක්</div>
+                 <h3 class="card-title" style="font-size: 18px; margin-bottom: 12px; line-height: 1.4;">${article.title}</h3>
+                 <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">${article.intro}</p>
+             </div>
+             <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
+                 <button class="btn btn-primary" onclick="openBlogModal('${article.id}')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+             </div>
+        `;
+        grid.appendChild(card);
+    });
 }
 
 // Hook Blog Close buttons
@@ -2518,6 +2594,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    
+    // Render dynamic articles
+    renderBlogArticles();
 });
 
 
