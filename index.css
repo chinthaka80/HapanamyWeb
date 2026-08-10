@@ -2285,3 +2285,64 @@ a {
         border-radius: 12px !important;
     }
 }
+
+/* ==================== BLOG SLIDER SYSTEM ==================== */
+.blog-articles-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 30px;
+    padding: 15px 5px 30px 5px;
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+/* Custom Sleek Scrollbar */
+.blog-articles-slider::-webkit-scrollbar {
+    height: 8px;
+}
+
+.blog-articles-slider::-webkit-scrollbar-track {
+    background: rgba(255, 245, 228, 0.05);
+    border-radius: 10px;
+}
+
+.blog-articles-slider::-webkit-scrollbar-thumb {
+    background: linear-gradient(90deg, var(--brand-orange), var(--brand-gold));
+    border-radius: 10px;
+}
+
+.blog-articles-slider .course-card {
+    flex: 0 0 calc(33.333% - 20px) !important;
+    min-width: 320px !important;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s;
+}
+
+.blog-articles-slider .course-card:hover {
+    transform: translateY(-8px) !important;
+    box-shadow: 0 15px 35px rgba(244, 123, 32, 0.18) !important;
+}
+
+/* Responsive constraints for Slider */
+@media (max-width: 1024px) {
+    .blog-articles-slider .course-card {
+        flex: 0 0 calc(50% - 15px) !important;
+        min-width: 300px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .blog-articles-slider {
+        gap: 20px;
+        padding-bottom: 20px;
+    }
+    .blog-articles-slider .course-card {
+        flex: 0 0 100% !important;
+        min-width: 280px !important;
+    }
+}
