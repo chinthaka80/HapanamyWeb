@@ -2647,6 +2647,14 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Render dynamic articles
     renderBlogArticles();
+    
+    // Capture referral query parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const refCode = urlParams.get('ref');
+    if (refCode) {
+        localStorage.setItem('hapanamy_referrer', refCode);
+        console.log('Captured referrer code:', refCode);
+    }
 });
 
 

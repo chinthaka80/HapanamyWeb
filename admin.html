@@ -1496,9 +1496,7 @@
             // 1. Calculate unilevel commissions (Total MLM Payout = 39%)
             const commDirect = amount * 0.15; // 15% Direct sale commission
             
-            // Sync MLM payout ledger for the referrer
-            let currentBalance = parseFloat(localStorage.getItem('affiliate_balance') || '23790');
-            localStorage.setItem('affiliate_balance', (currentBalance + commDirect).toString());
+            let referrerCode = 'kasun_t';
 
             // 2. Save approved status to queue and unlock course for student
             if (queueIndex !== -1) {
@@ -1506,6 +1504,7 @@
                 const item = slipsQueue[queueIndex];
                 if (item) {
                     item.status = 'Approved & Activated';
+                    referrerCode = item.referrer || 'kasun_t';
                     
                     // Unlock the specific courses/ebooks dynamically for the buyer
                     const userEmail = item.email || 'student@hapanamy.lk';
@@ -1518,6 +1517,13 @@
                 }
                 localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
             }
+
+            // Sync MLM payout ledger for the specific referrer
+            let currentBalance = parseFloat(localStorage.getItem('affiliate_balance_' + referrerCode) || '0');
+            if (referrerCode === 'kasun_t' && localStorage.getItem('affiliate_balance_kasun_t') === null) {
+                currentBalance = 23790; // Seed default balance for admin's mock partner
+            }
+            localStorage.setItem('affiliate_balance_' + referrerCode, (currentBalance + commDirect).toString());
 
             // 3. Update table UI row
             const tr = btn.closest('tr');

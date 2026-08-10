@@ -1130,10 +1130,17 @@
 
         // Load Payouts queue
         function getAffiliateBalance() {
-            let balance = localStorage.getItem('affiliate_balance');
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+            
+            let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
-                balance = '23790';
-                localStorage.setItem('affiliate_balance', balance);
+                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
+                    balance = '23790';
+                } else {
+                    balance = '0';
+                }
+                localStorage.setItem('affiliate_balance_' + userSlug, balance);
             }
             return parseFloat(balance);
         }
@@ -1234,7 +1241,9 @@
                 
                 const balance = getAffiliateBalance();
                 const newBalance = balance - tempPayoutAmount;
-                localStorage.setItem('affiliate_balance', newBalance.toString());
+                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+                const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+                localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
 
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
                 const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
@@ -1307,6 +1316,14 @@
             renderStudentPurchasedCourses();
             loadUserProfile();
             loadPayoutHistory();
+            
+            // Prefill dynamic user-specific referral link
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const refInput = document.getElementById('mainReferralLinkVal');
+            if (refInput) {
+                refInput.value = window.location.origin + '/?ref=' + userSlug;
+            }
         });
     </script>
 </body>
