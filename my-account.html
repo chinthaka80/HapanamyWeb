@@ -618,33 +618,33 @@
                         <h4 style="margin-bottom: 20px; color: var(--text-primary); font-size: 15px;">පසුගිය මාස 6 කොමිස් ලැබීමේ ප්‍රස්ථාරය (Last 6 Months Earnings Trend)</h4>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 160px; padding: 10px 20px; border-left: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color); max-width: 600px; margin: 0 auto;">
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 4.2K</span>
-                                <div style="width: 20px; height: 35px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Feb">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Feb"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Feb</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 8.5K</span>
-                                <div style="width: 20px; height: 60px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Mar">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Mar"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Mar</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 12.0K</span>
-                                <div style="width: 20px; height: 90px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Apr">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Apr"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Apr</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 9.8K</span>
-                                <div style="width: 20px; height: 75px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-May">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-May"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">May</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 16.5K</span>
-                                <div style="width: 20px; height: 120px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Jun">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Jun"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Jun</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-gold);">රු. 23.7K</span>
-                                <div style="width: 20px; height: 145px; background: var(--brand-gold); border-radius: 4px 4px 0 0;"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-gold);" id="trend-text-Jul">රු. 0.0</span>
+                                <div style="width: 20px; height: 2px; background: var(--brand-gold); border-radius: 4px 4px 0 0;" id="trend-bar-Jul"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted); font-weight: 700;">Jul</span>
                             </div>
                         </div>
@@ -1310,6 +1310,71 @@
             showToast('🔄 Switching language between English & Sinhala...');
         }
 
+        // Get or initialize user-specific affiliate statistics
+        function getAffiliateStats() {
+            const userSlug = getActiveUserSlug();
+            let stats = JSON.parse(localStorage.getItem('affiliate_stats_' + userSlug));
+            if (!stats) {
+                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
+                    stats = {
+                        clicks: 1248,
+                        sales: 12,
+                        total_earnings: 23790,
+                        trend: { Feb: 4200, Mar: 8500, Apr: 12000, May: 9800, Jun: 16500, Jul: 23790 }
+                    };
+                } else {
+                    stats = {
+                        clicks: 0,
+                        sales: 0,
+                        total_earnings: 0,
+                        trend: { Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0, Jul: 0 }
+                    };
+                }
+                localStorage.setItem('affiliate_stats_' + userSlug, JSON.stringify(stats));
+            }
+            return stats;
+        }
+
+        // Dynamically load stats and trend chart on dashboard
+        function loadDashboardStats() {
+            const stats = getAffiliateStats();
+            
+            // 1. Total Earnings
+            const totalEarnElement = document.getElementById('dashTotalEarningsVal');
+            if (totalEarnElement) {
+                totalEarnElement.textContent = 'රු. ' + stats.total_earnings.toLocaleString(undefined, {minimumFractionDigits: 2});
+            }
+            
+            // 2. Link Clicks
+            const clicksElement = document.getElementById('dashLinkClicksVal');
+            if (clicksElement) {
+                clicksElement.textContent = stats.clicks.toLocaleString() + ' Clicks';
+            }
+            
+            // 3. Direct Referrals
+            const salesElement = document.getElementById('dashTotalSalesVal');
+            if (salesElement) {
+                salesElement.textContent = stats.sales.toLocaleString() + ' Sales';
+            }
+            
+            // 4. Update Trend Chart Heights
+            const months = ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
+            const maxVal = Math.max(...Object.values(stats.trend), 1000);
+            months.forEach(month => {
+                const val = stats.trend[month] || 0;
+                const textElem = document.getElementById('trend-text-' + month);
+                const barElem = document.getElementById('trend-bar-' + month);
+                
+                if (textElem) {
+                    textElem.textContent = val > 0 ? 'රු. ' + (val / 1000).toFixed(1) + 'K' : 'රු. 0.0';
+                }
+                if (barElem) {
+                    const height = val > 0 ? Math.max(5, Math.round((val / maxVal) * 140)) : 2;
+                    barElem.style.height = height + 'px';
+                }
+            });
+        }
+
         // Helper to get safe user slug from active session email
         function getActiveUserSlug() {
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
@@ -1407,6 +1472,7 @@
             renderStudentPurchasedCourses();
             loadUserProfile();
             loadPayoutHistory();
+            loadDashboardStats();
             
             // Prefill dynamic user-specific referral link
             const userSlug = getActiveUserSlug();
