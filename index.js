@@ -1,4 +1,71 @@
 const courseData = {
+    'social-media-growth': {
+        title: '🚀 Hapanamy Social Media Growth & Management',
+        category: 'Social Media Service',
+        originalPrice: '',
+        currentPrice: '💰 ඔබේ අවශ්‍යතාවය අනුව වෙනස් වේ',
+        discount: 'Custom Package',
+        commission: 'N/A',
+        isCustomService: true,
+        banner: 'assets/social_media_growth_banner.jpg',
+        desc: `
+            <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
+            </div>
+            
+            <p style="font-size: 14px; color: var(--text-primary); line-height: 1.6; font-weight: 700; margin-bottom: 15px; text-align: center;">
+                ඔබේ ව්‍යාපාරය ඔබ කරගෙන යන්න. Social Media අපි බලාගන්නම්!
+            </p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px;">
+                ඔබේ ව්‍යාපාරයේ Facebook • Instagram • YouTube • TikTok platforms smartly කළමනාකරණය කරමින්, ඔබට වැදගත්ම දේ වන Sales, Brand Growth සහ Customer Base එක වර්ධනය කරගැනීමට අපි සහාය වෙමු.
+            </p>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">👨‍💼 කාර්යබහුල ඔබට...</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11.5px; color: var(--text-primary);">
+                    <div>📱 Facebook Page Management</div>
+                    <div>📸 Instagram Content Management</div>
+                    <div>🎬 YouTube Content & Channel</div>
+                    <div>🎵 TikTok Content Management</div>
+                    <div>✍️ Content Ideas & Captions</div>
+                    <div>🎨 Creative Reel Concepts</div>
+                    <div>📅 Daily & Weekly Planning</div>
+                    <div>📊 Performance Monitoring</div>
+                    <div>📈 Audience Growth Strategies</div>
+                    <div>💬 Customer Engagement</div>
+                    <div>🔥 Trending Opportunities</div>
+                    <div>📢 Target Audience Research</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">🔄 දිනපතා Update වෙන Social Media Strategy</h4>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                    What's Trending? → What's Working? → What Your Customers Want? → What Can Generate Sales? ඒ අනුව ඔබේ Social Media Content Strategy එක නිරන්තරයෙන් update කරමු.
+                </p>
+            </div>
+
+            <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">🎯 කාටද මේ සේවාව?</h4>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                    Business Owners, Shops, Restaurants, Hotels, Education Institutes, Service Providers, Online Businesses, Personal Brands, Startups සහ Content Creators.
+                </p>
+            </div>
+            
+            <div style="margin-top: 25px; background: rgba(240, 179, 35, 0.05); border: 1px dashed var(--brand-gold); padding: 15px; border-radius: 8px; font-size: 12px; color: var(--text-primary);">
+                <strong>💰 සේවා ගාස්තුව:</strong> ඔබගේ ව්‍යාපාරයේ අවශ්‍යතාවය, Social Media Platforms ගණන, Content ප්‍රමාණය සහ කළමනාකරණ අවශ්‍යතා අනුව සේවා ගාස්තුව වෙනස් වේ. ඔබගේ අවශ්‍යතාවයට ගැළපෙන Custom Package එකක් ලබාගන්න.
+                <div style="margin-top: 10px; font-weight: 700; color: var(--brand-orange);">📞 අදම විමසන්න: 071 922 6600 (WhatsApp / Normal Call)</div>
+            </div>
+        `,
+        syllabus: [
+            'Facebook Smart Management',
+            'Instagram Reels & Grid Branding',
+            'YouTube Channel SEO & Growth',
+            'TikTok Audience & Reach Optimization',
+            'Creative Content Calendars & Analytics'
+        ]
+    },
     'facebook-course': {
         title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
         category: 'Social Media',
@@ -1888,10 +1955,46 @@ function openCourseModal(courseId) {
     document.getElementById('modalCategory').textContent = course.category;
     document.getElementById('modalTitle').textContent = course.title;
     document.getElementById('modalDesc').innerHTML = course.desc;
-    document.getElementById('modalOriginalPrice').textContent = course.originalPrice;
-    document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
-    document.getElementById('modalDiscount').textContent = course.discount;
-    document.getElementById('modalCommission').textContent = course.commission;
+
+    // Grab elements to toggle for custom service
+    const origPriceEl = document.getElementById('modalOriginalPrice');
+    const discountEl = document.getElementById('modalDiscount');
+    const commBox = document.querySelector('.sidebar-affiliate-box');
+    const buyBtn = document.getElementById('modalBuyBtn');
+
+    if (course.isCustomService) {
+        if (origPriceEl) origPriceEl.style.display = 'none';
+        if (discountEl) discountEl.style.display = 'none';
+        if (commBox) commBox.style.display = 'none';
+        
+        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        if (buyBtn) {
+            buyBtn.textContent = '📞 සේවාව ගැන විමසන්න →';
+            buyBtn.style.background = 'var(--brand-orange)';
+            buyBtn.onclick = () => {
+                window.open("https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20the%20Social%20Media%20Growth%20service%20for%20my%20business.", "_blank");
+            };
+        }
+    } else {
+        if (origPriceEl) origPriceEl.style.display = 'block';
+        if (discountEl) discountEl.style.display = 'block';
+        if (commBox) commBox.style.display = 'block';
+        
+        if (origPriceEl) origPriceEl.textContent = course.originalPrice;
+        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        if (discountEl) discountEl.textContent = course.discount;
+        document.getElementById('modalCommission').textContent = course.commission;
+        
+        if (buyBtn) {
+            buyBtn.textContent = 'Enroll / Buy Course';
+            buyBtn.style.background = 'var(--brand-gold)';
+            buyBtn.onclick = () => {
+                closeModal();
+                const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
+                addToCart(courseId, course.title, numericPrice);
+            };
+        }
+    }
 
     // Hook social buttons & WhatsApp support
     const socialContainer = document.getElementById('modalSocialLinksContainer');
