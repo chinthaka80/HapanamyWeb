@@ -2461,8 +2461,32 @@ function syncHeaderUserState() {
 // Sync Course Catalog with Admin Panel customizations (localStorage)
 function syncCourseCatalogDOM() {
     syncHeaderUserState();
-    const adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
-    if (!adminCourses) return;
+    let adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
+    if (!adminCourses) {
+        adminCourses = [
+            { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' },
+            { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
+            { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
+            { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
+            { id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' },
+            { id: 'forex-course', category: 'Trading Course', title: '🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/forex_course_banner.jpg', status: 'Active' },
+            { id: 'crypto-course', category: 'Trading Course', title: '🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/crypto_course_banner.jpg', status: 'Active' },
+            { id: 'options-course', category: 'Trading Course', title: '🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/options_course_banner.jpg', status: 'Active' },
+            { id: 'titan-elite', category: 'Trading Course', title: '🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)', price: 24900, discount: 19900, image: 'assets/advanced_trading_banner.jpg', status: 'Active' },
+            { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', price: 6500, discount: 5200, image: 'assets/ai_video_course_banner.jpg', status: 'Active' },
+            { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', price: 18750, discount: 15000, image: 'assets/ai_mastery_banner.jpg', status: 'Active' },
+            { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', price: 9000, discount: 7200, image: 'assets/coding_course_banner.jpg', status: 'Active' },
+            { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', price: 4990, discount: 3992, image: 'assets/ebooks_banner.jpg', status: 'Active' },
+            { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', price: 6990, discount: 5592, image: 'assets/motivation_ebook_banner.jpg', status: 'Active' },
+            { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
+        ];
+        localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+    } else if (!adminCourses.find(c => c.id === 'social-media-growth')) {
+        adminCourses.push({ id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' });
+        localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+    }
+    
+    // Process list normally
 
     adminCourses.forEach(c => {
         // 1. Update in-memory courseData object so that details modals render the new details
@@ -2481,7 +2505,9 @@ function syncCourseCatalogDOM() {
             'Social Media': 'social-media',
             'Trading Course': 'trading',
             'AI & Tech': 'ai-tech',
-            'E-Book': 'ebooks'
+            'E-Book': 'ebooks',
+            'Services': 'services',
+            'Social Media Service': 'services'
         };
 
         const cards = document.querySelectorAll('.course-card');
