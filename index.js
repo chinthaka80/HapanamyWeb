@@ -1950,6 +1950,8 @@ function openCourseModal(courseId) {
     const course = courseData[courseId];
     if (!course) return;
 
+    window.currentActiveModalCourseId = courseId; // Save active modal course ID
+
     // Load data into elements
     document.getElementById('modalBanner').src = course.banner;
     document.getElementById('modalCategory').textContent = course.category;
@@ -1962,7 +1964,19 @@ function openCourseModal(courseId) {
     const commBox = document.querySelector('.sidebar-affiliate-box');
     const buyBtn = document.getElementById('modalBuyBtn');
 
+    // Dynamic headers based on course type and language
+    const overviewTitleEl = document.getElementById('modalOverviewTitle');
+    const syllabusTitleEl = document.getElementById('modalSyllabusTitle');
+    const lang = localStorage.getItem('language') || 'si';
+
     if (course.isCustomService) {
+        if (overviewTitleEl) {
+            overviewTitleEl.textContent = lang === 'si' ? '💡 සේවාව ගැන විස්තර (Service Overview)' : '💡 Service Overview';
+        }
+        if (syllabusTitleEl) {
+            syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
+        }
+
         if (origPriceEl) origPriceEl.style.display = 'none';
         if (discountEl) discountEl.style.display = 'none';
         if (commBox) commBox.style.display = 'none';
@@ -1976,6 +1990,13 @@ function openCourseModal(courseId) {
             };
         }
     } else {
+        if (overviewTitleEl) {
+            overviewTitleEl.textContent = lang === 'si' ? '💡 පාඨමාලාව ගැන (Course Overview)' : '💡 Course Overview';
+        }
+        if (syllabusTitleEl) {
+            syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
+        }
+
         if (origPriceEl) origPriceEl.style.display = 'block';
         if (discountEl) discountEl.style.display = 'block';
         if (commBox) commBox.style.display = 'block';
@@ -2045,6 +2066,7 @@ function openCourseModal(courseId) {
 }
 
 function closeModal() {
+    window.currentActiveModalCourseId = null;
     if (modalOverlay) modalOverlay.classList.remove('open');
     document.body.style.overflow = ''; // Restore page scrolling
 }
@@ -2205,6 +2227,31 @@ function applyLanguage(lang) {
     const langToggle = document.getElementById('langToggleBtn');
     if (langToggle) {
         langToggle.textContent = lang === 'si' ? 'EN' : 'SIN';
+    }
+
+    // Dynamic translation for active details modal if open
+    const activeCourseId = window.currentActiveModalCourseId;
+    if (activeCourseId) {
+        const course = courseData[activeCourseId];
+        if (course) {
+            const overviewTitleEl = document.getElementById('modalOverviewTitle');
+            const syllabusTitleEl = document.getElementById('modalSyllabusTitle');
+            if (course.isCustomService) {
+                if (overviewTitleEl) {
+                    overviewTitleEl.textContent = lang === 'si' ? '💡 සේවාව ගැන විස්තර (Service Overview)' : '💡 Service Overview';
+                }
+                if (syllabusTitleEl) {
+                    syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
+                }
+            } else {
+                if (overviewTitleEl) {
+                    overviewTitleEl.textContent = lang === 'si' ? '💡 පාඨමාලාව ගැන (Course Overview)' : '💡 Course Overview';
+                }
+                if (syllabusTitleEl) {
+                    syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
+                }
+            }
+        }
     }
 }
 
