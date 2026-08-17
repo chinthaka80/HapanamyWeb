@@ -10,7 +10,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(24,119,242,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #1877F2; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -116,7 +116,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(254,44,85,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #FE2C55; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📱 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -191,7 +191,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #FF0000; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎥 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -297,7 +297,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -427,7 +427,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #25D366; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💵 FOREX TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -531,7 +531,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(240,179,35,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🪙 CRYPTOCURRENCY TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -634,7 +634,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(0,242,234,0.1), rgba(175,135,255,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📈 OPTIONS & SYNTHETIC INDICES TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -736,7 +736,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(229,62,62,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-red); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🏆 INSTITUTIONAL TRADING MASTERCLASS</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -838,7 +838,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(175,135,255,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #AF87FF; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎬 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -954,7 +954,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1107,7 +1107,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(244,123,32,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💻 WEB DEVELOPMENT ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1246,7 +1246,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📊 FINANCIAL MARKETS SERIES</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1362,7 +1362,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(244,123,32,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🌟 SELF DEVELOPMENT SERIES</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1477,7 +1477,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(0,242,234,0.1), rgba(175,135,255,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🤖 AI PROMPTS DIRECTORY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">

@@ -263,6 +263,10 @@
             }
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
 
@@ -569,7 +573,7 @@
         }
 
         // Form Submit Actions
-        function handleAuthSubmit(event, type) {
+        async function handleAuthSubmit(event, type) {
             event.preventDefault();
 
             if (type === 'login') {
@@ -620,7 +624,7 @@
                 }
                 
                 // Check if user is registered inside local storage
-                const registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const registeredUsers = await dbGetUsers();
                 const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.name.toLowerCase() === email.toLowerCase());
                 
                 if (matchedUser) {
@@ -673,7 +677,7 @@
                 const roleText = selectedRole === 'affiliate' ? 'අනුබද්ධිත (Affiliate Partner)' : 'ශිෂ්‍යයෙක් (Student)';
                 
                 // Check if user already exists
-                let registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                let registeredUsers = await dbGetUsers();
                 const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
                 if (userExists) {
                     showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
@@ -689,8 +693,7 @@
                     role: selectedRole,
                     bank: bankInfo
                 };
-                registeredUsers.push(newUser);
-                localStorage.setItem('hapanamy_registered_users', JSON.stringify(registeredUsers));
+                await dbAddUser(newUser);
 
                 // Save active user and profile
                 localStorage.setItem('active_user', JSON.stringify({ email, role: selectedRole }));
