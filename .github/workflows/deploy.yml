@@ -13,13 +13,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Deploy to Hetzner via SFTP
-        uses: wlixcc/SFTP-Deploy-Action@v1.2.6
-        with:
-          server: ${{ secrets.SFTP_HOST }}
-          username: ${{ secrets.SFTP_USERNAME }}
-          ssh_private_key: ${{ secrets.SFTP_PRIVATE_KEY }}
-          local_path: "./"
-          remote_path: "/public_html"
-          sftp_only: true
-          # Hapanamy deployment test run #4
+      - name: Install SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SFTP_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          # Strip Windows CRLF (\r) characters to prevent OpenSSH parsing failures
+          sed -i 's/\r$//' ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SFTP_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Hetzner via SFTP (lftp)
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -c "
+            set sftp:connect-program 'ssh -a -x -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no';
+            connect sftp://${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }};
+            mirror -R -v --delete --ignore-time --exclude .git/ --exclude .github/ --exclude node_modules/ ./ /public_html
+          "
+          # Hapanamy deployment test run #5
