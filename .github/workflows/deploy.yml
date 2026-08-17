@@ -22,4 +22,4 @@ jobs:
           local_path: "./"
           remote_path: "/public_html"
           sftp_only: true
-          # Hapanamy deployment test run #3
+          # Hapanamy deployment test run #4
