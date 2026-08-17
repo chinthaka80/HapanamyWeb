@@ -1,0 +1,1751 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy Knowledge Hub | දැනුම නොමිලේ. හැකියාව ඔබේ අතේ.</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="AI, Technology, Digital Skills, Career සහ Online Business පිළිබඳ වටිනා දැනුම සරල සිංහලෙන්. Hapanamy Knowledge Hub - ශ්‍රී ලංකාවේ ප්‍රමුඛතම තාක්ෂණික සඟරාව.">
+    <meta name="keywords" content="Hapanamy Blog, Knowledge Hub, AI Sri Lanka, Learn Trading, Freelancing Sri Lanka, Digital Skills, Web Development Sinhala">
+    <meta name="author" content="HAPANAMY.lk">
+    
+    <!-- Open Graph for Social Media -->
+    <meta property="og:title" content="Hapanamy Knowledge Hub | දැනුම නොමිලේ. හැකියාව ඔබේ අතේ.">
+    <meta property="og:description" content="AI, Technology, Digital Skills, Career සහ Online Business පිළිබඳ වටිනා දැනුම සරල සිංහලෙන්.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/blog.html">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+Sinhala:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- External stylesheet for global variables -->
+    <link rel="stylesheet" href="index.css">
+    
+    <!-- Scoped Blog Styles override (Light Warm Editorial Theme) -->
+    <style>
+        :root {
+            --blog-bg: #FCFAF6;
+            --blog-surface: #FFFFFF;
+            --blog-card-bg: rgba(255, 255, 255, 0.85);
+            --blog-border: rgba(240, 179, 35, 0.15);
+            --blog-text-main: #2D3748;
+            --blog-text-muted: #718096;
+            --blog-gold-grad: linear-gradient(135deg, #F0B323, #F47B20);
+            --blog-green-grad: linear-gradient(135deg, #B9E769, #8ECA45);
+            --blog-shadow: 0 10px 30px rgba(93, 64, 55, 0.05);
+            --blog-shadow-hover: 0 15px 35px rgba(244, 123, 32, 0.1);
+        }
+
+        body {
+            background-color: var(--blog-bg) !important;
+            color: var(--blog-text-main) !important;
+            font-family: 'Inter', 'Noto Sans Sinhala', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        /* Container utility overrides */
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Premium Sticky Header */
+        .blog-header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(252, 250, 246, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 2px solid rgba(240, 179, 35, 0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+            padding: 12px 0;
+            transition: all 0.3s ease;
+        }
+
+        .header-wrap {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-img {
+            height: 38px;
+            border-radius: 8px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .logo-title-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-text {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 900;
+            font-size: 20px;
+            color: #1A202C !important;
+            line-height: 1.1;
+        }
+
+        .logo-text span {
+            color: var(--brand-orange) !important;
+        }
+
+        .hub-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--brand-gold) !important;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .blog-nav {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scrollbar-width: none; /* Hide scrollbar Firefox */
+            padding: 5px 0;
+        }
+
+        .blog-nav::-webkit-scrollbar {
+            display: none; /* Hide scrollbar Chrome/Safari */
+        }
+
+        .blog-nav-link {
+            text-decoration: none;
+            color: var(--blog-text-muted) !important;
+            font-size: 13.5px;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 20px;
+        }
+
+        .blog-nav-link:hover, .blog-nav-link.active {
+            color: var(--brand-orange) !important;
+            background: rgba(244, 123, 32, 0.08);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .search-trigger {
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 20px;
+            padding: 6px 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .search-trigger:hover {
+            border-color: var(--brand-orange);
+        }
+
+        .search-trigger input {
+            border: none;
+            outline: none;
+            background: transparent;
+            font-size: 13px;
+            color: var(--blog-text-main);
+            width: 150px;
+        }
+
+        .btn-back-home {
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--brand-orange) !important;
+            border: 1px solid var(--brand-orange);
+            padding: 8px 16px;
+            border-radius: 20px;
+            background: transparent;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .btn-back-home:hover {
+            background: var(--brand-orange) !important;
+            color: white !important;
+        }
+
+        /* Hero Section */
+        .blog-hero {
+            padding: 60px 0;
+            background: radial-gradient(circle at 80% 20%, rgba(240, 179, 35, 0.08) 0%, transparent 60%);
+            border-bottom: 1px solid rgba(0,0,0,0.03);
+            margin-bottom: 40px;
+        }
+
+        .hero-wrap {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        .hero-info h1 {
+            font-size: 46px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0 0 20px 0;
+            color: #1A202C;
+        }
+
+        .hero-info h1 span {
+            background: var(--blog-gold-grad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-desc {
+            font-size: 16px;
+            color: var(--blog-text-muted);
+            margin-bottom: 30px;
+            max-width: 540px;
+        }
+
+        .hero-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .hero-tag {
+            background: rgba(240, 179, 35, 0.06);
+            border: 1px solid rgba(240, 179, 35, 0.15);
+            color: #B7791F !important;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+
+        /* Mockup Graphic */
+        .hero-mockup {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .mockup-wrap {
+            position: relative;
+            width: 100%;
+            max-width: 380px;
+            height: 300px;
+            background: var(--blog-card-bg);
+            border: 1px solid var(--blog-border);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(93, 64, 55, 0.08);
+            backdrop-filter: blur(10px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+        }
+
+        .mockup-item {
+            position: absolute;
+            background: white;
+            border: 1px solid rgba(240, 179, 35, 0.2);
+            border-radius: 16px;
+            padding: 12px 18px;
+            box-shadow: var(--blog-shadow);
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--blog-text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: floatAnim 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatAnim {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-12px); }
+        }
+
+        /* Featured Article Card */
+        .section-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #1A202C;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .featured-card {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 40px;
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: var(--blog-shadow);
+            margin-bottom: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .featured-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--blog-shadow-hover);
+        }
+
+        .featured-img-box {
+            position: relative;
+            min-height: 320px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .featured-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .badge-cat {
+            background: rgba(244, 123, 32, 0.08);
+            color: var(--brand-orange) !important;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 5px 12px;
+            border-radius: 20px;
+            width: fit-content;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .featured-title {
+            font-size: 24px;
+            font-weight: 800;
+            line-height: 1.4;
+            color: #1A202C;
+            margin: 0 0 15px 0;
+        }
+
+        .featured-intro {
+            font-size: 14.5px;
+            color: var(--blog-text-muted);
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .meta-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 12.5px;
+            color: var(--blog-text-muted);
+            margin-bottom: 20px;
+        }
+
+        .meta-author {
+            font-weight: 700;
+            color: var(--blog-text-main);
+        }
+
+        .btn-read {
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 800;
+            color: white !important;
+            background: var(--blog-gold-grad);
+            padding: 10px 24px;
+            border-radius: 20px;
+            width: fit-content;
+            box-shadow: 0 4px 15px rgba(244,123,32,0.2);
+            transition: all 0.2s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-read:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(244,123,32,0.3);
+        }
+
+        /* Two Column Layout (Feed + Sidebar) */
+        .blog-body-grid {
+            display: grid;
+            grid-template-columns: 2.2fr 1fr;
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        /* Article Cards Grid */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .article-card {
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: var(--blog-shadow);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .article-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--blog-shadow-hover);
+        }
+
+        .card-img-box {
+            position: relative;
+            height: 180px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1A202C;
+            line-height: 1.4;
+            margin: 0 0 10px 0;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-intro {
+            font-size: 13px;
+            color: var(--blog-text-muted);
+            line-height: 1.5;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: var(--blog-text-muted);
+            margin-top: auto;
+            border-top: 1px solid rgba(0,0,0,0.04);
+            padding-top: 12px;
+        }
+
+        .btn-card-read {
+            text-decoration: none;
+            color: var(--brand-orange) !important;
+            font-weight: 800;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-card-read:hover {
+            color: var(--brand-gold) !important;
+        }
+
+        /* Sidebar Elements */
+        .sidebar-box {
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: var(--blog-shadow);
+            margin-bottom: 30px;
+        }
+
+        .sidebar-box h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #1A202C;
+            margin: 0 0 20px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(240,179,35,0.2);
+            padding-bottom: 10px;
+        }
+
+        /* Trending list */
+        .trending-item {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 18px;
+            text-decoration: none;
+        }
+
+        .trending-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .trending-num {
+            font-family: 'Outfit', sans-serif;
+            font-size: 28px;
+            font-weight: 800;
+            color: rgba(240, 179, 35, 0.4);
+            line-height: 1;
+        }
+
+        .trending-item:hover .trending-num {
+            color: var(--brand-orange);
+        }
+
+        .trending-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .trending-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--blog-text-main);
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .trending-item:hover .trending-title {
+            color: var(--brand-orange);
+        }
+
+        .trending-meta {
+            font-size: 10px;
+            color: var(--blog-text-muted);
+        }
+
+        /* Categories List */
+        .cat-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .cat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: 12px;
+            background: rgba(0,0,0,0.02);
+            text-decoration: none;
+            color: var(--blog-text-main);
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .cat-item:hover {
+            background: rgba(244, 123, 32, 0.08);
+            color: var(--brand-orange) !important;
+            transform: translateX(4px);
+        }
+
+        .cat-count {
+            background: white;
+            border: 1px solid var(--blog-border);
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--blog-text-main);
+        }
+
+        /* AdSense slots styling */
+        .ad-slot {
+            background: rgba(240, 179, 35, 0.02);
+            border: 1px dashed rgba(240,179,35,0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: var(--blog-text-muted);
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-bottom: 35px;
+            text-transform: uppercase;
+        }
+
+        /* Premium Article Detail page view */
+        .article-view-wrap {
+            display: none;
+            animation: fadeUp 0.4s ease-in-out;
+        }
+
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-back-feed {
+            background: none;
+            border: none;
+            color: var(--brand-orange) !important;
+            font-weight: 800;
+            font-size: 14px;
+            cursor: pointer;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+            transition: transform 0.2s ease;
+        }
+
+        .btn-back-feed:hover {
+            transform: translateX(-4px);
+        }
+
+        .article-content-box {
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: var(--blog-shadow);
+            margin-bottom: 50px;
+        }
+
+        .article-breadcrumb {
+            font-size: 12px;
+            color: var(--blog-text-muted);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .article-breadcrumb a {
+            text-decoration: none;
+            color: var(--blog-text-muted);
+        }
+
+        .article-breadcrumb a:hover {
+            color: var(--brand-orange);
+        }
+
+        .article-header h1 {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1.35;
+            color: #1A202C;
+            margin: 0 0 20px 0;
+        }
+
+        .article-header-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            font-size: 13px;
+            color: var(--blog-text-muted);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        .article-hero-img {
+            width: 100%;
+            height: auto;
+            max-height: 420px;
+            object-fit: cover;
+            border-radius: 20px;
+            margin-bottom: 35px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .article-body-layout {
+            display: grid;
+            grid-template-columns: 2.5fr 1fr;
+            gap: 40px;
+        }
+
+        .article-body-text {
+            font-size: 15px;
+            color: #2D3748;
+            line-height: 1.85;
+        }
+
+        .article-body-text p {
+            margin-bottom: 22px;
+        }
+
+        .article-body-text h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1A202C;
+            margin-top: 35px;
+            margin-bottom: 18px;
+            border-left: 4px solid var(--brand-orange);
+            padding-left: 14px;
+        }
+
+        .article-body-text h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--brand-gold);
+            margin-top: 25px;
+            margin-bottom: 12px;
+        }
+
+        /* TOC inside article */
+        .toc-box {
+            background: #FDFDFD;
+            border: 1px solid var(--blog-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: sticky;
+            top: 100px;
+        }
+
+        .toc-box h4 {
+            font-size: 14px;
+            font-weight: 800;
+            color: #1A202C;
+            margin: 0 0 12px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding-bottom: 8px;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .toc-link {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--blog-text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .toc-link:hover {
+            color: var(--brand-orange);
+            padding-left: 4px;
+        }
+
+        /* Special Callout Boxes */
+        .callout {
+            border-radius: 12px;
+            padding: 20px;
+            margin: 25px 0;
+            display: flex;
+            gap: 15px;
+            align-items: flex-start;
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .callout-icon {
+            font-size: 20px;
+        }
+
+        .callout.tip {
+            background: rgba(240, 179, 35, 0.05);
+            border-left: 4px solid var(--brand-gold);
+            color: #744210;
+        }
+
+        .callout.important {
+            background: rgba(229, 62, 62, 0.04);
+            border-left: 4px solid var(--ph-red);
+            color: #742A2A;
+        }
+
+        .callout.remember {
+            background: rgba(244, 123, 32, 0.05);
+            border-left: 4px solid var(--brand-orange);
+            color: #7B341E;
+        }
+
+        .callout.try {
+            background: rgba(185, 231, 105, 0.08);
+            border-left: 4px solid #8ECA45;
+            color: #276749;
+        }
+
+        /* Course CTA Box */
+        .course-cta-box {
+            background: linear-gradient(135deg, rgba(244, 123, 32, 0.05), rgba(240, 179, 35, 0.03));
+            border: 1px solid var(--blog-border);
+            border-radius: 20px;
+            padding: 30px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .course-cta-box h4 {
+            font-size: 18px;
+            font-weight: 800;
+            color: #1A202C;
+            margin: 0 0 10px 0;
+        }
+
+        .course-cta-box p {
+            font-size: 13.5px;
+            color: var(--blog-text-muted);
+            margin-bottom: 20px;
+        }
+
+        .btn-cta {
+            display: inline-block;
+            text-decoration: none;
+            background: var(--blog-gold-grad);
+            color: white !important;
+            font-weight: 800;
+            font-size: 13.5px;
+            padding: 10px 24px;
+            border-radius: 20px;
+            box-shadow: 0 4px 15px rgba(244,123,32,0.2);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta:hover {
+            transform: scale(1.03);
+            box-shadow: 0 6px 20px rgba(244,123,32,0.3);
+        }
+
+        /* Related articles section */
+        .related-title {
+            font-size: 20px;
+            font-weight: 800;
+            color: #1A202C;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+            padding-bottom: 10px;
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .related-card {
+            background: var(--blog-surface);
+            border: 1px solid var(--blog-border);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: var(--blog-shadow);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .related-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--blog-shadow-hover);
+        }
+
+        .related-card img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .related-card-body {
+            padding: 15px;
+        }
+
+        .related-card-title {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--blog-text-main);
+            margin: 0 0 6px 0;
+            line-height: 1.35;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .related-card-meta {
+            font-size: 10px;
+            color: var(--blog-text-muted);
+        }
+
+        /* Premium Footer */
+        .blog-footer {
+            background: #1B1E22;
+            color: #A0AEC0;
+            padding: 60px 0 30px 0;
+            font-size: 13px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 45px;
+        }
+
+        .footer-col h3 {
+            font-size: 15px;
+            font-weight: 800;
+            color: white;
+            margin: 0 0 20px 0;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-col ul a {
+            text-decoration: none;
+            color: #A0AEC0;
+            transition: all 0.2s ease;
+        }
+
+        .footer-col ul a:hover {
+            color: var(--brand-orange) !important;
+            padding-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.06);
+            padding-top: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero-wrap {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 30px;
+            }
+            .hero-desc {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-tags {
+                justify-content: center;
+            }
+            .featured-card {
+                grid-template-columns: 1fr;
+            }
+            .featured-img-box {
+                min-height: 240px;
+            }
+            .blog-body-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .articles-grid {
+                grid-template-columns: 1fr;
+            }
+            .article-body-layout {
+                grid-template-columns: 1fr;
+            }
+            .toc-box {
+                position: relative;
+                top: 0;
+            }
+            .related-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+            .footer-bottom {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Premium Sticky Header -->
+    <header class="blog-header">
+        <div class="blog-container header-wrap">
+            <div class="header-left">
+                <a href="index.html" class="logo-box">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div class="logo-title-box">
+                        <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                        <span class="hub-title">Knowledge Hub</span>
+                    </div>
+                </a>
+            </div>
+            
+            <nav class="blog-nav">
+                <span class="blog-nav-link active" onclick="filterCategory('all')">Home</span>
+                <span class="blog-nav-link" onclick="filterCategory('AI & Tech')">AI & Technology</span>
+                <span class="blog-nav-link" onclick="filterCategory('Digital Skills')">Digital Skills</span>
+                <span class="blog-nav-link" onclick="filterCategory('Social Media')">Social Media</span>
+                <span class="blog-nav-link" onclick="filterCategory('Career')">Career</span>
+                <span class="blog-nav-link" onclick="filterCategory('Business')">Business</span>
+                <span class="blog-nav-link" onclick="filterCategory('Freelancing')">Freelancing</span>
+                <span class="blog-nav-link" onclick="filterCategory('Trading')">Trading</span>
+                <span class="blog-nav-link" onclick="filterCategory('Education')">Education</span>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-trigger">
+                    <span>🔍</span>
+                    <input type="text" id="blogSearchInput" placeholder="ලිපි සොයන්න..." oninput="handleSearch(this.value)">
+                </div>
+                <a href="index.html" class="btn-back-home">Back to Main Site</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Feed Container -->
+    <div id="blogFeedContainer">
+        <!-- Hero Section -->
+        <section class="blog-hero">
+            <div class="blog-container hero-wrap">
+                <div class="hero-info">
+                    <h1>දැනුම නොමිලේ.<br><span>හැකියාව ඔබේ අතේ.</span></h1>
+                    <p class="hero-desc">AI, Technology, Digital Skills, Career සහ Online Business පිළිබඳ ප්‍රයෝජනවත් දැනුම සරල සිංහලෙන්.</p>
+                    <div class="hero-tags">
+                        <span class="hero-tag">🤖 AI & Tech</span>
+                        <span class="hero-tag">💻 Digital Skills</span>
+                        <span class="hero-tag">📱 Social Media</span>
+                        <span class="hero-tag">💼 Career Development</span>
+                    </div>
+                </div>
+                
+                <div class="hero-mockup">
+                    <div class="mockup-wrap">
+                        <span style="font-size: 70px; margin-bottom: 10px;">📚</span>
+                        <span style="font-weight: 800; font-size: 15px; color: var(--brand-orange);">Hapanamy Digital Magazine</span>
+                        <span style="font-size: 11px; color: var(--blog-text-muted); margin-top: 5px;">Sri Lanka's Premium Tech Hub</span>
+                        
+                        <!-- Floating graphic badges -->
+                        <div class="mockup-item" style="top: 20px; left: -20px; animation-delay: 0.2s;">
+                            🤖 AI Hologram Active
+                        </div>
+                        <div class="mockup-item" style="bottom: 30px; right: -30px; animation-delay: 0.8s;">
+                            📈 Skill Up 100%
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content Area -->
+        <div class="blog-container blog-body-grid">
+            
+            <!-- Left Column: Article Feeds -->
+            <main>
+                <!-- Featured Article -->
+                <div id="featuredArticleContainer">
+                    <!-- Injected dynamically by JS -->
+                </div>
+
+                <div class="ad-slot">Advertisement Space (AdSense-ready)</div>
+
+                <!-- Latest Articles Grid -->
+                <section>
+                    <h2 class="section-title">📰 නවතම ලිපි (Latest Articles)</h2>
+                    <div class="articles-grid" id="latestArticlesGrid">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </section>
+                
+                <!-- Category Section: AI & Technology -->
+                <section style="margin-top: 40px;">
+                    <h2 class="section-title">🤖 AI & Technology</h2>
+                    <div id="aiSectionContainer" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 25px; margin-bottom: 40px;">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </section>
+                
+                <!-- Category Section: Social Media -->
+                <section style="margin-top: 40px;">
+                    <h2 class="section-title">📱 Social Media</h2>
+                    <div class="articles-grid" id="socialSectionGrid">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </section>
+            </main>
+
+            <!-- Right Column: Sidebar -->
+            <aside>
+                <!-- Trending Section -->
+                <div class="sidebar-box">
+                    <h3>🔥 Trending Now</h3>
+                    <div id="trendingListContainer">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </div>
+
+                <div class="ad-slot" style="min-height: 250px;">Desktop Ads Space</div>
+
+                <!-- Categories widget -->
+                <div class="sidebar-box">
+                    <h3>📁 Categories</h3>
+                    <div class="cat-list" id="categoriesCountContainer">
+                        <!-- Injected dynamically by JS -->
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- Article Detail View (Comfortable reading width) -->
+    <div id="blogArticleViewContainer" class="blog-container article-view-wrap" style="padding-top: 40px; padding-bottom: 60px;">
+        <button class="btn-back-feed" onclick="closeArticleView()">← ආපසු බ්ලොග් පිටුවට (Back to Blog)</button>
+        
+        <article class="article-content-box">
+            <!-- Breadcrumbs -->
+            <div class="article-breadcrumb" id="artBreadcrumb">
+                <!-- Home > AI & Tech > Article Title -->
+            </div>
+            
+            <header class="article-header">
+                <span class="badge-cat" id="artCategory">Category</span>
+                <h1 id="artTitle">Article Title</h1>
+                
+                <div class="article-header-meta">
+                    <span>✍️ Author: <strong class="meta-author" id="artAuthor">Hapanamy Editorial Team</strong></span>
+                    <span class="bar">•</span>
+                    <span>📅 Published: <span id="artDate">Date</span></span>
+                    <span class="bar">•</span>
+                    <span>⏳ Read Time: <span id="artReadTime">5</span> min read</span>
+                </div>
+            </header>
+
+            <img src="" alt="Featured Banner" class="article-hero-img" id="artBanner">
+            
+            <div class="article-body-layout">
+                <!-- Left: Core article content -->
+                <div class="article-body-text" id="artBody">
+                    <!-- HTML body text injected dynamically -->
+                </div>
+                
+                <!-- Right: Table of Contents & Side widgets -->
+                <div>
+                    <div class="toc-box">
+                        <h4>📌 පටුන (Table of Contents)</h4>
+                        <ul class="toc-list" id="artTOC">
+                            <!-- Injected dynamically -->
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- AdSense slot inside article -->
+            <div class="ad-slot" style="margin-top: 30px;">Inside Article AdSense Slot</div>
+
+            <!-- Course CTA card dynamically populated -->
+            <div class="course-cta-box" id="artCourseCTA">
+                <!-- Injected dynamically -->
+            </div>
+        </article>
+
+        <!-- Related articles list -->
+        <section>
+            <h3 class="related-title">📚 තවත් කියවන්න (Related Articles)</h3>
+            <div class="related-grid" id="relatedArticlesContainer">
+                <!-- 3 dynamic cards -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Premium Footer -->
+    <footer class="blog-footer">
+        <div class="blog-container footer-grid">
+            <div class="footer-col">
+                <a href="index.html" class="logo-box" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <span class="logo-text" style="color: white !important;">HAPANAමයි<span>.lk</span></span>
+                </a>
+                <p style="color: #718096; font-size: 12.5px;">"දැනුම නොමිලේ. හැකියාව ඔබේ අතේ."</p>
+                <p style="color: #718096; font-size: 11px; margin-top: 10px;">ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනය සහ Affiliate අලෙවිකරණයේ පෙරළියක්.</p>
+            </div>
+            
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul style="font-size: 12.5px;">
+                    <li><a href="index.html">Main Website Home</a></li>
+                    <li><a href="index.html#courses">Courses (පාඨමාලා)</a></li>
+                    <li><a href="login-register.html">Affiliate Portal</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Legal & Info</h3>
+                <ul style="font-size: 12.5px;">
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h3>Categories</h3>
+                <ul style="font-size: 12.5px;">
+                    <li><a href="#" onclick="filterCategory('AI & Tech')">AI & Technology</a></li>
+                    <li><a href="#" onclick="filterCategory('Digital Skills')">Digital Skills</a></li>
+                    <li><a href="#" onclick="filterCategory('Social Media')">Social Media</a></li>
+                    <li><a href="#" onclick="filterCategory('Trading')">Trading</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="blog-container footer-bottom">
+            <p>&copy; 2026 Hapanamy.lk. All Rights Reserved.</p>
+            <p style="font-weight: 800; color: white; letter-spacing: 1px; font-size: 11px;">CONNECT • LEARN • GROW • EARN</p>
+        </div>
+    </footer>
+
+    <!-- Database config hooks dependencies -->
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    
+    <!-- Core Database integration scripts -->
+    <script>
+        // Default Embedded Article Pool
+        const DEFAULT_ARTICLES = [
+            {
+                id: 'ai-future-prep',
+                title: '🤖 කෘත්‍රිම බුද්ධිය (AI) — ඔබේ ජීවිතය, රැකියාව සහ අනාගතය වෙනස් කරන තාක්ෂණය',
+                category: 'AI & Tech',
+                banner: 'assets/ai_future_prep.jpg',
+                readTime: '8',
+                date: '2026-08-10',
+                author: 'Hapanamy Editorial Team',
+                intro: 'කෘත්‍රිම බුද්ධිය (AI) යනු වර්තමානයේ ලෝකය පුරා වේගයෙන්ම ව්‍යාප්ත වන තාක්ෂණයයි. එය අපගේ රැකියා, අධ්‍යාපනය සහ එදිනෙදා ජීවිතය කෙරෙහි බලපාන්නේ කෙසේද සහ ඊට සූදානම් වන්නේ කෙසේද කියා සොයා බලමු.',
+                content: `<h2>කෘත්‍රිම බුද්ධිය (AI) සමඟ අනාගතයට සූදානම් වෙමු</h2>
+<p>තාක්ෂණික ලෝකයේ සිදුවන වේගවත්ම විප්ලවය වන්නේ කෘත්‍රිම බුද්ධිය (AI) යි. මෙය හුදෙක් පරිගණක වැඩසටහනක් නොව, මිනිස් බුද්ධියට සමානව සිතීමට, තීරණ ගැනීමට සහ නිර්මාණකරණයේ යෙදීමට හැකි තාක්ෂණයකි.</p>
+
+<h2>AI මඟින් සිදුවන ප්‍රධාන වෙනස්කම් 3ක්:</h2>
+
+<h3>1. රැකියා ක්ෂේත්‍රයේ වෙනස්වීම් (Impact on Jobs):</h3>
+<p>සාම්ප්‍රදායික දත්ත ඇතුළත් කිරීම්, ගණකාධිකරණ සහ ලේඛන කටයුතු වැනි බොහෝ රැකියා AI මඟින් ස්වයංක්‍රීය කෙරේ. නමුත් ඒ සමඟම AI Prompt Engineers, Data Analysts සහ AI Developers වැනි ලක්ෂ සංඛ්‍යාත නව රැකියා අවස්ථා නිර්මාණය වේ.</p>
+
+<h3>2. අධ්‍යාපනය සහ ඉගෙනුම (Impact on Education):</h3>
+<p>පොත්පත් කියවීමෙන් ඔබ්බට ගොස් පුද්ගලීකරණය කළ ගුරුවරයෙකු ලෙස AI ක්‍රියා කරයි. ඕනෑම විෂය කරුණක් තත්පර කිහිපයකින් සරලව තේරුම් ගැනීමට සිසුන්ට AI මෙවලම් උපකාරී වේ.</p>
+
+<h3>3. ව්‍යාපාර හා නව අවස්ථා (Business Opportunities):</h3>
+<p>අඩු පිරිවැයකින් සහ ඉහළ කාර්යක්ෂමතාවයකින් යුතුව ව්‍යාපාරික කටයුතු, පාරිභෝගික සේවා (Chatbots) සහ අලෙවිකරණ (Marketing Campaigns) සැලසුම් කිරීමට AI සහාය ලබාගත හැක.</p>
+
+<h2>AI සමඟ අනාගතයට සූදානම් වන්නේ කෙසේද?</h2>
+<ul>
+    <li><strong>තාක්ෂණික දැනුම වර්ධනය කරගන්න</strong>: ChatGPT, Midjourney, CapCut AI වැනි මූලික AI මෙවලම් ක්‍රියාත්මක කරන ආකාරය ඉගෙන ගන්න.</li>
+    <li><strong>නිර්මාණශීලීත්වය (Creativity) වැඩි දියුණු කරන්න</strong>: AI වලට කළ නොහැකි මිනිස් සිතීමේ ශක්තිය සහ සන්නිවේදන කුසලතා (Soft Skills) වර්ධනය කරගන්න.</li>
+    <li><strong>නිරන්තරයෙන් අලුත් වන්න (Up-to-date)</strong>: දිනෙන් දින අලුත් වන AI මෙවලම් සහ ඒවායේ භාවිතයන් පිළිබඳව නිරන්තරයෙන් අවධානයෙන් සිටින්න.</li>
+</ul>
+
+<div class="callout tip">
+    <span class="callout-icon">💡</span>
+    <div>
+        <strong>Tip:</strong> අනාගතයේදී මිනිසුන්ව AI මඟින් ප්‍රතිස්ථාපනය නොකරනු ඇත. නමුත් AI භාවිතා කරන මිනිසුන් විසින් AI භාවිතා නොකරන මිනිසුන්ව ප්‍රතිස්ථාපනය කරනු ඇත.
+    </div>
+</div>`
+            },
+            {
+                id: 'prompt-guide',
+                title: '💬 ChatGPT හරහා නිවැරදිව Prompt ලියන ආකාරය (Prompt Engineering)',
+                category: 'AI & Tech',
+                banner: 'assets/ai_prompts_ebook_banner.jpg',
+                readTime: '5',
+                date: '2026-08-07',
+                author: 'Hapanamy Editorial Team',
+                intro: 'AI සමඟ වැඩ කරන විට නිවැරදි ප්‍රතිඵල ලබාගැනීමට නම් අප ලබාදෙන උපදෙස් (Prompts) නිවැරදි විය යුතුය. මෙන්න ඒ සඳහා සරල පියවර කිහිපයක්...',
+                content: `<h2>Prompt Engineering යනු කුමක්ද?</h2>
+<p>කෘත්‍රිම බුද්ධිය (Artificial Intelligence) සමඟ සාර්ථකව වැඩ කිරීමේදී අප සතු විය යුතු වැදගත්ම කුසලතාවක් වන්නේ <strong>Prompt Engineering</strong> හෙවත් AI එකට නිවැරදි උපදෙස් ලබාදීමේ කලාවයි.</p>
+
+<h2>සාර්ථක Prompt එකක් ලිවීම සඳහා වන මූලධර්ම 4:</h2>
+<ol>
+    <li><strong>Role (කාර්යභාරය):</strong> AI එක කවුද යන්න මුලින්ම තීරණය කරන්න. (උදා: "ඔබ පළපුරුදු Copywriter කෙනෙක් ලෙස සිතන්න.")</li>
+    <li><strong>Context (පසුබිම):</strong> ලිපිය හෝ කාර්යය කුමක් සඳහාද යන්න පැහැදිලි කරන්න. (උදා: "මම මගේ නව AI පාඨමාලාව ප්‍රවර්ධනය කිරීමට සූදානම් වෙනවා.")</li>
+    <li><strong>Task (කළ යුතු කාර්යය):</strong> පැහැදිලිව කළ යුතු දෙය සඳහන් කරන්න. (උදා: "මෙය සඳහා ආකර්ශනීය Facebook post 3ක් ලියා දෙන්න.")</li>
+    <li><strong>Format (ආකෘතිය):</strong> ප්‍රතිඵලය අවශ්‍ය ආකාරය දක්වන්න. (උදා: "එක් පෝස්ට් එකක් වචන 100කට නොවැඩි විය යුතු අතර, Emojis සහ Bullet points ඇතුළත් කරන්න.")</li>
+</ol>
+
+<h2>✍️ ප්‍රායෝගික උදාහරණයක්:</h2>
+<p><em>"ඔබ ජ්‍යෙෂ්ඨ අලෙවිකරණ විශේෂඥයෙක් (Marketing Specialist) ලෙස ක්‍රියා කරන්න. මාගේ 'Trading E-Book' එක විකිණීම සඳහා ආකර්ශනීය සහ කියවන්නා පෙළඹෙන සුළු කෙටි විද්‍යුත් තැපෑලක් (Sales Email) ලියා දෙන්න. එහි E-Book එකෙහි ඇති වාසි සහ 20% සීමිත වට්ටම ඉස්මතු කරන්න."</em></p>
+
+<div class="callout try">
+    <span class="callout-icon">🚀</span>
+    <div>
+        <strong>Try This:</strong> දැන්ම ChatGPT වෙත ගොස් ඉහත Prompt එක අත්හදා බලන්න. ලැබෙන ප්‍රතිඵලය වෙනස් කිරීමට උපදෙස් වෙනස් කර නැවත උත්සාහ කරන්න!
+    </div>
+</div>`
+            },
+            {
+                id: 'trading-mistakes',
+                title: '📈 Trading වලදී සිදුවන ප්‍රධාන වැරදි 5ක් සහ ඒවායෙන් බේරෙන ක්‍රම',
+                category: 'Trading',
+                banner: 'assets/advanced_trading_banner.jpg',
+                readTime: '6',
+                date: '2026-08-06',
+                author: 'Hapanamy Editorial Team',
+                intro: 'නවක මෙන්ම අත්දැකීම් බහුල Traders ලා පවා නිතර සිදුකරන, ඔවුන්ගේ ගිණුම් අහිමි වීමට (Account Blowout) බලපාන ප්‍රධාන වැරදි 5ක් සහ ඒවා මඟහරවා ගන්නා ආකාරය...',
+                content: `<h2>Trading වලදී සිදුවන ප්‍රධාන වැරදි 5ක්</h2>
+<p>Forex හෝ Cryptocurrency වෙළඳපොළ තුළ බහුතරයක් නවකයන් තමන්ගේ මුදල් අහිමි කරගන්නේ දැනුම නොමැතිකම නිසාම නොවේ. ඔවුන් සිදුකරන පොදු වැරදි 5ක් සහ ඒවා මඟහරවා ගන්නා ආකාරය මෙන්න:</p>
+
+<h3>❌ 1. Risk Management (අවදානම් පාලනය) නොමැතිකම:</h3>
+<p>කිසිම විටෙක එක් Trade එකක් සඳහා ඔබේ මුළු ප්‍රාග්ධනයෙන් (Capital) 1% - 2% කට වඩා අවදානමට ලක් නොකරන්න. Stop Loss යෙදීම අනිවාර්ය වේ.</p>
+
+<h3>❌ 2. Over-trading (අධික ලෙස Trade කිරීම):</h3>
+<p>දිනකට ලොකු Trade ප්‍රමාණයක් කිරීමෙන් සාර්ථක විය නොහැක. වඩාත්ම සුදුසු Setup එකක් ලැබෙන තෙක් ඉවසිලිවන්තව බලා සිටින්න.</p>
+
+<h3>❌ 3. Revenge Trading (පළිගැනීමේ ආශාව):</h3>
+<p>Trade එකක් පාඩු (Loss) වූ විට, එය පියවා ගැනීමට එසැනින් තව Trade දැමීමෙන් වළකින්න. එයින් සිදුවන්නේ පාඩුව තවත් වැඩි වීමයි.</p>
+
+<h3>❌ 4. FOMO (Fear Of Missing Out):</h3>
+<p>වෙළඳපොළ වන විට, අතරමඟදී එක්වීමට උත්සාහ නොකරන්න. Pullback (නැවත පහළ බැසීමක්) වන තෙක් රැඳී සිටින්න.</p>
+
+<h3>❌ 5. Trading සැලැස්මක් නොමැතිකම:</h3>
+<p>ඔබ ඇතුල් වන්නේ ඇයිද, පිටවන්නේ කොතැනින්ද යන්න කලින්ම ලියා තබාගත් සැලැස්මකට අනුව පමණක් Trade කරන්න.</p>
+
+<div class="callout important">
+    <span class="callout-icon">⚠️</span>
+    <div>
+        <strong>Important:</strong> Trading යනු ලොතරැයියක් නොවේ. එය නිවැරදි සැලසුම් හා සංඛ්‍යාලේඛන මත ක්‍රියාත්මක වන වෘත්තීයමය ව්‍යාපාරයකි.
+    </div>
+</div>`
+            },
+            {
+                id: 'faceless-yt',
+                title: '🎥 2026 වසරේ Faceless YouTube Channel එකක් සාර්ථකව කරන හැටි',
+                category: 'Social Media',
+                banner: 'assets/youtube_course_banner.jpg',
+                readTime: '7',
+                date: '2026-08-05',
+                author: 'Hapanamy Editorial Team',
+                intro: 'මුහුණ නොපෙන්වා සහ තමන්ගේම හඬ භාවිතා නොකර AI සහ විවිධ මෙවලම් ආධාරයෙන් YouTube හරහා ඩොලර් උපයන වීඩියෝ නිර්මාණය කරන සම්පූර්ණ මාර්ගෝපදේශය...',
+                content: `<h2>Faceless YouTube Channel එකකින් ඩොලර් උපයමු</h2>
+<p>ඔබේ මුහුණ පෙන්වීමට අකමැති වුවත්, YouTube හරහා සාර්ථකව ඩොලර් ආදායම් ලැබිය හැක. AI මෙවලම් සහ පහසු මෘදුකාංග භාවිතයෙන් වීඩියෝ සාදන පියවර 4 මෙන්න:</p>
+
+<h3>📌 පියවර 01: Niche (ක්ෂේත්‍රය) තෝරාගැනීම:</h3>
+<p>වැඩි නරඹන්නන් පිරිසක් සිටින මෙන්ම ඉහළ RPM එකක් (මුදල් ගෙවන අනුපාතය) ලැබෙන ක්ෂේත්‍රයක් තෝරන්න. (උදා: Finance, Life Hacks, AI News, Space, Travel Guides).</p>
+
+<h3>📌 පියවර 02: AI Script & Voiceover:</h3>
+<p>ChatGPT හෝ Claude භාවිතයෙන් වීඩියෝ පිටපත (Script) ලියාගන්න. ElevenLabs වැනි උසස් මෘදුකාංග මඟින් ස්වභාවික මිනිස් හඬක් (Realistic Voice) සාදාගන්න.</p>
+
+<h3>📌 පියවර 03: Video Editing:</h3>
+<p>CapCut හෝ Premiere Pro භාවිතයෙන්, නොමිලේ ලබාගත හැකි stock videos (Pexels, Pixabay) සහ අදාළ Images එකතු කර වීඩියෝව සංස්කරණය කරන්න. AI Captions (උපසිරැසි) යෙදීම නරඹන්නන් රඳවා ගැනීමට උපකාරී වේ.</p>
+
+<h3>📌 පියවර 04: SEO & Thumbnails:</h3>
+<p>ආකර්ශනීය Thumbnail එකක් සාදන්න. වීඩියෝවේ Title සහ Description නිවැරදිව Keywords යොදා (SEO) සකසන්න.</p>
+
+<div class="callout remember">
+    <span class="callout-icon">📌</span>
+    <div>
+        <strong>Remember:</strong> YouTube හි සාර්ථකත්වයේ එකම රහස Consistency හෙවත් අඛණ්ඩව වීඩියෝ උඩුගත (Upload) කිරීමයි.
+    </div>
+</div>`
+            }
+        ];
+
+        let activeCategory = 'all';
+        let searchQuery = '';
+        let allArticles = [];
+
+        // Load and Merge Articles from Supabase + LocalStorage Fallback + Embeds
+        async function initBlog() {
+            let customDbArticles = [];
+            try {
+                if (typeof dbGetBlogs === 'function') {
+                    customDbArticles = await dbGetBlogs();
+                }
+            } catch (e) {
+                console.error('Database connection failed, falling back to LocalStorage', e);
+            }
+            
+            // Format custom articles database content to match template structure
+            const formattedCustom = customDbArticles.map(art => ({
+                id: art.id,
+                title: art.title,
+                category: art.category === 'AI & Tech' ? 'AI & Tech' : (art.category || 'Digital Skills'),
+                banner: art.banner || 'assets/ai_prompts_ebook_banner.jpg',
+                readTime: art.readTime || '5',
+                date: art.date || new Date().toLocaleDateString(),
+                author: art.author || 'Hapanamy Editorial Team',
+                intro: art.intro || 'නවතම ඩිජිටල් තොරතුරු සහ වෘත්තීය කුසලතා පිළිබඳ ප්‍රයෝජනවත් ලිපියක්.',
+                content: art.content || ''
+            }));
+
+            // Merge default embedded articles with database ones
+            allArticles = [...DEFAULT_ARTICLES, ...formattedCustom];
+            
+            // Sync URL routing state
+            const params = new URLSearchParams(window.location.search);
+            const articleId = params.get('id');
+            if (articleId) {
+                showArticleView(articleId);
+            } else {
+                renderBlogFeed();
+            }
+        }
+
+        function renderBlogFeed() {
+            document.getElementById('blogFeedContainer').style.display = 'block';
+            document.getElementById('blogArticleViewContainer').style.display = 'none';
+
+            // Filter logic
+            let filtered = allArticles;
+            if (activeCategory !== 'all') {
+                filtered = allArticles.filter(art => art.category.toLowerCase().includes(activeCategory.toLowerCase()));
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(art => 
+                    art.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                    art.intro.toLowerCase().includes(searchQuery.toLowerCase())
+                );
+            }
+
+            // Render Featured Article (the first matching article)
+            const featuredContainer = document.getElementById('featuredArticleContainer');
+            const featuredArticle = filtered[0];
+            if (featuredArticle) {
+                featuredContainer.style.display = 'block';
+                featuredContainer.innerHTML = `
+                    <h2 class="section-title">⭐ Featured Article (විශේෂිත ලිපිය)</h2>
+                    <div class="featured-card">
+                        <div class="featured-img-box" style="background-image: url('${featuredArticle.banner}');"></div>
+                        <div class="featured-content">
+                            <span class="badge-cat">${featuredArticle.category}</span>
+                            <h3 class="featured-title">${featuredArticle.title}</h3>
+                            <p class="featured-intro">${featuredArticle.intro}</p>
+                            <div class="meta-row">
+                                <span class="meta-author">${featuredArticle.author}</span>
+                                <span>•</span>
+                                <span>${featuredArticle.date}</span>
+                                <span>•</span>
+                                <span>⏳ ${featuredArticle.readTime} min read</span>
+                            </div>
+                            <button class="btn-read" onclick="openArticle('${featuredArticle.id}')">ලිපිය කියවන්න →</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                featuredContainer.style.display = 'none';
+            }
+
+            // Render Latest Articles Grid
+            const latestGrid = document.getElementById('latestArticlesGrid');
+            latestGrid.innerHTML = '';
+            
+            const latestList = filtered.slice(1);
+            if (latestList.length > 0) {
+                latestList.forEach(art => {
+                    latestGrid.innerHTML += `
+                        <div class="article-card">
+                            <div class="card-img-box" style="background-image: url('${art.banner}');"></div>
+                            <div class="card-body">
+                                <span class="badge-cat" style="font-size:10px; margin-bottom:10px;">${art.category}</span>
+                                <h3 class="card-title">${art.title}</h3>
+                                <p class="card-intro">${art.intro}</p>
+                                <div class="card-meta">
+                                    <span>📅 ${art.date}</span>
+                                    <a class="btn-card-read" href="#" onclick="openArticle('${art.id}'); event.preventDefault();">කියවන්න →</a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else if (!featuredArticle) {
+                latestGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding: 40px; color: var(--blog-text-muted);">
+                    ලිපි කිසිවක් සොයාගත නොහැකි විය. (No articles found matching filters)
+                </div>`;
+            }
+
+            // Render AI & Technology Section
+            const aiContainer = document.getElementById('aiSectionContainer');
+            const aiArticles = allArticles.filter(art => art.category.toLowerCase().includes('ai'));
+            if (aiArticles.length > 0) {
+                let aiHtml = '';
+                const mainAi = aiArticles[0];
+                aiHtml += `
+                    <div class="article-card">
+                        <div class="card-img-box" style="background-image: url('${mainAi.banner}'); height:240px;"></div>
+                        <div class="card-body">
+                            <span class="badge-cat" style="font-size:10px; margin-bottom:10px;">${mainAi.category}</span>
+                            <h3 class="card-title">${mainAi.title}</h3>
+                            <p class="card-intro">${mainAi.intro}</p>
+                            <div class="card-meta">
+                                <span>📅 ${mainAi.date}</span>
+                                <a class="btn-card-read" href="#" onclick="openArticle('${mainAi.id}'); event.preventDefault();">කියවන්න →</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                let listHtml = '<div style="display:flex; flex-direction:column; gap:15px;">';
+                aiArticles.slice(1, 5).forEach(art => {
+                    listHtml += `
+                        <a href="#" onclick="openArticle('${art.id}'); event.preventDefault();" style="text-decoration:none; display:flex; gap:12px; align-items:center;">
+                            <img src="${art.banner}" style="width:70px; height:50px; object-fit:cover; border-radius:8px;">
+                            <div>
+                                <h4 style="font-size:12.5px; font-weight:700; color:var(--blog-text-main); margin:0 0 4px 0; line-height:1.3;">${art.title}</h4>
+                                <span style="font-size:10px; color:var(--blog-text-muted);">${art.date}</span>
+                            </div>
+                        </a>
+                    `;
+                });
+                if (aiArticles.length === 1) {
+                    listHtml += `<div style="font-size:12px; color:var(--blog-text-muted); font-style:italic; padding:10px;">වැඩිදුර ලිපි නොමැත.</div>`;
+                }
+                listHtml += '</div>';
+                
+                aiContainer.innerHTML = aiHtml + listHtml;
+            }
+
+            // Render Social Media Section
+            const socialGrid = document.getElementById('socialSectionGrid');
+            socialGrid.innerHTML = '';
+            const socialArticles = allArticles.filter(art => art.category.toLowerCase().includes('social') || art.category.toLowerCase().includes('media'));
+            socialArticles.slice(0, 3).forEach(art => {
+                socialGrid.innerHTML += `
+                    <div class="article-card">
+                        <div class="card-img-box" style="background-image: url('${art.banner}');"></div>
+                        <div class="card-body">
+                            <span class="badge-cat" style="font-size:10px; margin-bottom:10px;">${art.category}</span>
+                            <h3 class="card-title">${art.title}</h3>
+                            <p class="card-intro">${art.intro}</p>
+                            <div class="card-meta">
+                                <span>📅 ${art.date}</span>
+                                <a class="btn-card-read" href="#" onclick="openArticle('${art.id}'); event.preventDefault();">කියවන්න →</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            if (socialArticles.length === 0) {
+                socialGrid.innerHTML = `<div style="grid-column:span 2; text-align:center; padding: 20px; color: var(--blog-text-muted);">ලිපි නොමැත.</div>`;
+            }
+
+            // Render Trending widget
+            const trendingContainer = document.getElementById('trendingListContainer');
+            trendingContainer.innerHTML = '';
+            const trendingList = [...allArticles].sort((a,b) => b.readTime - a.readTime).slice(0, 5);
+            trendingList.forEach((art, index) => {
+                trendingContainer.innerHTML += `
+                    <a class="trending-item" href="#" onclick="openArticle('${art.id}'); event.preventDefault();">
+                        <div class="trending-num">0${index + 1}</div>
+                        <div class="trending-info">
+                            <div class="trending-title">${art.title}</div>
+                            <div class="trending-meta">${art.category} • ⏳ ${art.readTime} min read</div>
+                        </div>
+                    </a>
+                `;
+            });
+
+            // Render Categories Widget with dynamic counts
+            const catCountContainer = document.getElementById('categoriesCountContainer');
+            catCountContainer.innerHTML = '';
+            const categories = [
+                { name: 'AI & Tech', icon: '🤖', desc: 'Artificial Intelligence & Tech Tools' },
+                { name: 'Digital Skills', icon: '💻', desc: 'In-demand Digital Job Skills' },
+                { name: 'Social Media', icon: '📱', desc: 'YouTube, Facebook & TikTok Monetization' },
+                { name: 'Freelancing', icon: '💼', desc: 'Upwork, Fiverr & Remote Jobs' },
+                { name: 'Trading', icon: '📈', desc: 'Forex, Stocks & Crypto Education' },
+                { name: 'Career', icon: '🎓', desc: 'Digital Education Paths' }
+            ];
+            categories.forEach(cat => {
+                const count = allArticles.filter(art => art.category.toLowerCase().includes(cat.name.split(' ')[0].toLowerCase())).length;
+                catCountContainer.innerHTML += `
+                    <a class="cat-item" href="#" onclick="filterCategory('${cat.name}'); event.preventDefault();">
+                        <span>${cat.icon} ${cat.name}</span>
+                        <span class="cat-count">${count}</span>
+                    </a>
+                `;
+            });
+        }
+
+        // Show Single Article Page View
+        function showArticleView(articleId) {
+            document.getElementById('blogFeedContainer').style.display = 'none';
+            document.getElementById('blogArticleViewContainer').style.display = 'block';
+            
+            const article = allArticles.find(art => art.id === articleId);
+            if (!article) return;
+
+            // Update Breadcrumb & Header
+            document.getElementById('artBreadcrumb').innerHTML = `
+                <a href="#" onclick="closeArticleView(); event.preventDefault();">Home</a> &gt; 
+                <a href="#" onclick="filterCategory('${article.category}'); closeArticleView(); event.preventDefault();">${article.category}</a> &gt; 
+                <span>${article.title}</span>
+            `;
+            document.getElementById('artCategory').textContent = article.category;
+            document.getElementById('artTitle').textContent = article.title;
+            document.getElementById('artAuthor').textContent = article.author || 'Hapanamy Editorial Team';
+            document.getElementById('artDate').textContent = article.date;
+            document.getElementById('artReadTime').textContent = article.readTime;
+            document.getElementById('artBanner').src = article.banner;
+            
+            // Format body content
+            const bodyDiv = document.getElementById('artBody');
+            bodyDiv.innerHTML = article.content || `<p>${article.intro}</p><p>මෙම ලිපියේ අන්තර්ගතය සකස් වෙමින් පවතී.</p>`;
+
+            // Generate Table of Contents (TOC) based on H2 tags
+            const tocList = document.getElementById('artTOC');
+            tocList.innerHTML = '';
+            const headers = bodyDiv.querySelectorAll('h2');
+            if (headers.length > 0) {
+                headers.forEach((h, index) => {
+                    const id = 'heading-' + index;
+                    h.id = id;
+                    tocList.innerHTML += `
+                        <li><a class="toc-link" href="#${id}">${h.textContent}</a></li>
+                    `;
+                });
+            } else {
+                tocList.innerHTML = `<li><span style="color:var(--blog-text-muted); font-size:12px;">පටුන හිස්ය (No headings found)</span></li>`;
+            }
+
+            // Generate Related Articles (3 from same category or random if not enough)
+            const relatedContainer = document.getElementById('relatedArticlesContainer');
+            relatedContainer.innerHTML = '';
+            let related = allArticles.filter(art => art.category === article.category && art.id !== articleId).slice(0, 3);
+            if (related.length < 3) {
+                const diff = 3 - related.length;
+                const pool = allArticles.filter(art => art.id !== articleId && !related.includes(art));
+                related = [...related, ...pool.slice(0, diff)];
+            }
+            related.forEach(art => {
+                relatedContainer.innerHTML += `
+                    <a class="related-card" href="#" onclick="openArticle('${art.id}'); event.preventDefault();">
+                        <img src="${art.banner}" alt="${art.title}">
+                        <div class="related-card-body">
+                            <h4 class="related-card-title">${art.title}</h4>
+                            <div class="related-card-meta">${art.category} • ⏳ ${art.readTime} min read</div>
+                        </div>
+                    </a>
+                `;
+            });
+
+            // Dynamically serve relevant Course CTA based on article category
+            const ctaBox = document.getElementById('artCourseCTA');
+            let ctaTitle = '🎓 HAPANAMY ACADEMY සමඟ සම්බන්ධ වෙමු!';
+            let ctaDesc = 'ඩිජිටල් තාක්ෂණය සහ කුසලතා පිළිබඳ structured learning සඳහා Hapanamy.lk ප්‍රධාන පාඨමාලා බලන්න.';
+            let ctaBtn = 'සියලුම පාඨමාලා බලන්න →';
+            let ctaLink = 'index.html#courses';
+
+            if (article.category.toLowerCase().includes('ai')) {
+                ctaTitle = '🤖 Hapanamy AI Mastery Course එක සමඟ සම්බන්ධ වෙන්න!';
+                ctaDesc = 'ChatGPT, midjourney, AI video automation සහ freelancing මුල සිට සරලව සිංහලෙන් ඉගෙනගෙන ඩොලර් ආදායම් උපයන්න.';
+                ctaBtn = 'AI Mastery Program බලන්න →';
+                ctaLink = 'index.html?course=ai-mastery-course#courses';
+            } else if (article.category.toLowerCase().includes('social') || article.category.toLowerCase().includes('media')) {
+                ctaTitle = '📱 Facebook & YouTube Monetization ප්‍රායෝගික පාඨමාලාව!';
+                ctaDesc = 'Facebook, YouTube, TikTok Monetization සහ content creation හරහා Dollar income උපයා ගැනීමට අවශ්‍ය සම්පූර්ණ ප්‍රායෝගික පුහුණුව.';
+                ctaBtn = 'පාඨමාලාව බලන්න →';
+                ctaLink = 'index.html?course=facebook-course#courses';
+            } else if (article.category.toLowerCase().includes('trading')) {
+                ctaTitle = '📈 Forex & Crypto Professional Trading පාඨමාලාව!';
+                ctaDesc = 'Trading මූලධර්ම, තාක්ෂණික විශ්ලේෂණ (Technical analysis) සහ risk management නිසි පරිදි සරලව ඉගෙන ගන්න.';
+                ctaBtn = 'Trading Course බලන්න →';
+                ctaLink = 'index.html?course=forex-course#courses';
+            }
+
+            ctaBox.innerHTML = `
+                <h4>${ctaTitle}</h4>
+                <p>${ctaDesc}</p>
+                <a class="btn-cta" href="${ctaLink}" target="_blank">${ctaBtn}</a>
+            `;
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function openArticle(articleId) {
+            // Update URL query parameter without reloading
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?id=' + articleId;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            showArticleView(articleId);
+        }
+
+        function closeArticleView() {
+            // Clear parameter
+            const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+            window.history.pushState({ path: newUrl }, '', newUrl);
+            renderBlogFeed();
+        }
+
+        function filterCategory(cat) {
+            activeCategory = cat;
+            
+            // Handle nav items active state
+            document.querySelectorAll('.blog-nav-link').forEach(link => {
+                if (link.textContent.toLowerCase() === cat.toLowerCase() || (cat === 'all' && link.textContent === 'Home') || (cat === 'AI & Tech' && link.textContent.includes('Tech'))) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+
+            renderBlogFeed();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.trim();
+            renderBlogFeed();
+        }
+
+        // Initialize Blog platform on load
+        window.addEventListener('DOMContentLoaded', () => {
+            initBlog();
+        });
+    </script>
+</body>
+</html>

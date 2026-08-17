@@ -2651,7 +2651,7 @@ function renderBlogArticles() {
                  <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">${article.intro}</p>
              </div>
              <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
-                 <button class="btn btn-primary" onclick="openBlogModal('${article.id}')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+                 <button class="btn btn-primary" onclick="window.open('blog.html?id=${article.id}', '_blank')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
              </div>
         `;
         grid.appendChild(card);
