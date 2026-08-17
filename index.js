@@ -2031,7 +2031,6 @@ function openCourseModal(courseId) {
     });
 
     // Hook buy button action
-    const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
             closeModal();
