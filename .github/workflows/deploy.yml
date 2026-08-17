@@ -26,8 +26,9 @@ jobs:
         run: |
           sudo apt-get update && sudo apt-get install -y lftp
           lftp -c "
-            set sftp:connect-program 'ssh -a -x -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no';
-            connect sftp://${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }};
+            set sftp:private-key ~/.ssh/id_rsa;
+            set sftp:connect-program 'ssh -a -x -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes';
+            connect sftp://${{ secrets.SFTP_USERNAME }}:@${{ secrets.SFTP_HOST }};
             mirror -R -v --delete --ignore-time --exclude .git/ --exclude .github/ --exclude node_modules/ ./ /public_html
           "
-          # Hapanamy deployment test run #5
+          # Hapanamy deployment test run #6
