@@ -751,6 +751,30 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <!-- Registered Users Directory Box -->
+                    <div class="admin-table-box" style="margin-top: 30px;">
+                        <div class="admin-table-title">
+                            <span>ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Users & Students)</span>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>සාමාජිකයා (Name)</th>
+                                    <th>ඊමේල් (Email)</th>
+                                    <th>කාර්යභාරය (Role)</th>
+                                    <th>දුරකථනය (Phone)</th>
+                                    <th>ලියාපදිංචි වූ දිනය (Date Registered)</th>
+                                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registeredUsersTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
 
                 <!-- TAB 4: PAYOUTS MANAGER -->
@@ -1736,6 +1760,9 @@
             if (tabId === 'blog') {
                 renderAdminBlogArticles();
             }
+            if (tabId === 'affiliates') {
+                renderRegisteredUsers();
+            }
 
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
@@ -2078,10 +2105,73 @@
             }
         }
 
+        // Render Registered Users Directory
+        async function renderRegisteredUsers() {
+            const tableBody = document.getElementById('registeredUsersTableBody');
+            if (!tableBody) return;
+            
+            try {
+                const users = await dbGetUsers();
+                if (users.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tableBody.innerHTML = '';
+                // Sort users: newest first
+                const sortedUsers = [...users].reverse();
+                
+                sortedUsers.forEach(user => {
+                    const tr = document.createElement('tr');
+                    
+                    const name = user.name || 'N/A';
+                    const email = user.email || 'N/A';
+                    const role = user.role || 'student';
+                    const phone = user.phone || 'N/A';
+                    const date = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
+                    
+                    const roleBadge = role === 'admin' 
+                        ? '<span class="badge-status" style="background-color: rgba(240, 179, 35, 0.15); color: var(--brand-gold);">Admin</span>' 
+                        : (role === 'affiliate' 
+                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate</span>' 
+                            : '<span class="badge-status" style="background: rgba(40, 167, 69, 0.15) !important; color: #28a745 !important; border-color: #28a745 !important;">Student</span>');
+                    
+                    tr.innerHTML = `
+                        <td><strong>${name}</strong></td>
+                        <td><code>${email}</code></td>
+                        <td>${roleBadge}</td>
+                        <td>${phone}</td>
+                        <td>${date}</td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Error rendering registered users:', err);
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function resetUserPasswordPrompt(userName, email) {
+            const displayEmail = email ? ` (${email})` : '';
+            alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
+        }
+
         // Run load on start
         document.addEventListener('DOMContentLoaded', () => {
             initCoursesList();
             loadBankReceiptsTable();
+            renderRegisteredUsers(); // Initial load of registered users
             setTimeout(loadSystemSettings, 300);
         });
     </script>
