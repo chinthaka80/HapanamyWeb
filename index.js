@@ -2491,7 +2491,7 @@ function syncHeaderUserState() {
         const ctaBtns = document.querySelectorAll('#headerCtaBtn, a[href="login-register.html"]');
         ctaBtns.forEach(btn => {
             // Hide the button or point to my-account.html, never admin.html for public safety
-            btn.href = activeUser.role === 'admin' ? 'admin.html' : 'my-account.html';
+            btn.href = activeUser.role === 'admin' ? 'hapanamy-admin-portal-9226.html' : 'my-account.html';
             const span = btn.querySelector('span');
             
             // If admin is logged in, show "My Account" instead of "Admin Panel" to hide admin presence from guests
