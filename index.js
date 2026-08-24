@@ -3267,9 +3267,13 @@ function renderHeroSlide(slideIdx) {
                     ${highlightsHTML}
                 </div>
 
-                <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
+                 <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
                     <a href="#courses" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${btnPrimaryText}</a>
                     <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${btnSecondaryText}</a>
+                    <a href="https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20want%20to%20know%20more%20details%20about%20your%20services." target="_blank" class="btn btn-whatsapp-hero" style="display:flex; align-items:center; gap:8px; padding:12px 28px; border-radius:30px; font-weight:800; font-size:14.5px; background:#25D366; color:white; border:none; text-decoration:none; box-shadow:0 8px 20px rgba(37,211,102,0.25); z-index:11;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.49-3.218c1.652.98 3.23 1.493 4.883 1.495 5.518 0 10.011-4.49 10.014-10.01.002-2.653-1.03-5.148-2.908-7.028-1.879-1.881-4.38-2.916-7.037-2.917-5.522 0-10.014 4.493-10.017 10.017-.001 1.745.485 3.326 1.478 4.902L1.082 22.07l4.475-1.173c-.01 0-.01 0 0 0zm12.5-5.32c-.27-.137-1.602-.79-1.85-.88-.248-.09-.43-.137-.61.137-.18.275-.698.88-.856 1.06-.157.18-.315.203-.585.067-.27-.137-1.14-.42-2.17-1.34-.8-.713-1.34-1.595-1.5-1.87-.156-.276-.017-.425.12-.562.124-.123.27-.315.406-.473.136-.158.18-.27.27-.45.09-.18.046-.338-.022-.475-.069-.137-.61-1.472-.836-2.016-.22-.53-.44-.458-.61-.466-.157-.008-.339-.01-.52-.01-.18 0-.476.067-.725.339-.25.275-.953.93-.953 2.27 0 1.34.975 2.637 1.11 2.822.137.184 1.92 2.93 4.65 4.11.65.28 1.157.446 1.55.57.653.208 1.248.178 1.717.108.524-.078 1.602-.656 1.83-.1.228-.61.228-1.13.16-.123-.069-.137-.248-.275-.518zm0 0"/></svg>
+                        <span>${lang === 'si' ? 'අපව සම්බන්ධ කරගන්න' : 'Contact Us'}</span>
+                    </a>
                 </div>
             </div>
         `;
