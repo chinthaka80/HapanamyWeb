@@ -211,7 +211,7 @@
 
         // Submit bank slip directly to Admin Queue in localStorage
         async function submitBankSlip() {
-            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0719226600' };
+            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0726090050' };
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
             
             const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
@@ -293,7 +293,7 @@
             if (uploader) uploader.style.display = 'block';
             if (waReceipt) {
                 waReceipt.style.display = 'flex';
-                waReceipt.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
+                waReceipt.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
             }
             const statusEl = document.getElementById('metaPayStatus');
             if (statusEl) {
