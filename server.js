@@ -10,6 +10,7 @@ const ReportService = require('./services/report-service');
 const RefundService = require('./services/refund-service');
 const CommissionCore = require('./services/commission-core');
 const VolumeLedger = require('./services/volume-ledger');
+const SecurityCore = require('./services/security-core');
 
 const PORT = 3000;
 
@@ -28,7 +29,7 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4/5/8/11/12
+// Mock Databases for Phase 3/4/5/8/11/12/13
 const mockKycDocs = [];
 const mockBankAccounts = [];
 const mockAuditLogs = [];
@@ -57,6 +58,7 @@ const mockWithdrawalRequests = [];
 const mockRefundRequests = [];
 const mockVolumeLedger = [];
 const mockBinaryNodes = [];
+const mockFraudAlerts = [];
 
 function parseRequestBody(req) {
     return new Promise((resolve) => {
@@ -87,11 +89,23 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const pathname = url.pathname;
 
+    // Enforce Rate Limiter on all incoming requests (API Abuse, Brute force prevention)
+    const clientIp = req.socket.remoteAddress || '127.0.0.1';
+    if (SecurityCore.isRateLimited(clientIp, 150)) { // Set threshold slightly higher for dev
+        sendJSON(res, 429, { error: 'Too many requests. Please try again later.' });
+        return;
+    }
+
     // API Route: Image Upload (Original functionality preserved)
     if (req.method === 'POST' && pathname === '/api/upload') {
         const filename = url.searchParams.get('filename');
         if (!filename) {
             sendJSON(res, 400, { error: 'Missing filename parameter' });
+            return;
+        }
+
+        if (!SecurityCore.isSafeFilename(filename)) {
+            sendJSON(res, 400, { error: 'Invalid or unsafe file name format.' });
             return;
         }
 
@@ -130,17 +144,21 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        if (username === 'admin' || username === 'sponsor1') {
+        // Sanitize Username & Email to prevent XSS injection
+        const cleanUsername = SecurityCore.sanitizeInput(username);
+        const cleanEmail = SecurityCore.sanitizeInput(email);
+
+        if (cleanUsername === 'admin' || cleanUsername === 'sponsor1') {
             sendJSON(res, 400, { error: 'Username is already taken.' });
             return;
         }
 
-        if (email === 'admin@hapanamy.lk') {
+        if (cleanEmail === 'admin@hapanamy.lk') {
             sendJSON(res, 400, { error: 'Email address is already registered.' });
             return;
         }
 
-        if (sponsorCode === username) {
+        if (sponsorCode === cleanUsername) {
             sendJSON(res, 400, { error: 'Self-referral is strictly prohibited.' });
             return;
         }
@@ -157,7 +175,7 @@ const server = http.createServer(async (req, res) => {
         sendJSON(res, 201, {
             success: true,
             message: 'Registration successful! Verification notification sent.',
-            user: { id: userId, username, email, role: 'member' }
+            user: { id: userId, username: cleanUsername, email: cleanEmail, role: 'member' }
         });
         return;
     }
@@ -222,6 +240,17 @@ const server = http.createServer(async (req, res) => {
         if (!KycService.isValidSubmission(body)) {
             sendJSON(res, 400, { error: 'All KYC fields and Bank Account details are required.' });
             return;
+        }
+
+        // Check for Suspicious duplication fraud indicators
+        const alerts = SecurityCore.detectFraudAlerts(
+            { nicPassport: body.nicPassport, accountNumber: body.accountNumber },
+            mockKycDocs,
+            mockBankAccounts
+        );
+        if (alerts.length > 0) {
+            mockFraudAlerts.push(...alerts);
+            KycService.logAction(mockAuditLogs, authUser.id, 'FRAUD_ALERT_TRIGGERED', 'kyc_documents', null, null, alerts[0]);
         }
 
         const docId = 'kyc-doc-' + Math.random().toString(36).substr(2, 9);
@@ -377,6 +406,11 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        if (!SecurityCore.isSafeFilename(filename)) {
+            sendJSON(res, 400, { error: 'Unsafe filename format.' });
+            return;
+        }
+
         const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
         const securePath = path.join(__dirname, 'storage', 'private', 'kyc', safeFilename);
 
@@ -407,6 +441,11 @@ const server = http.createServer(async (req, res) => {
         const filename = url.searchParams.get('filename');
         if (!filename) {
             sendJSON(res, 400, { error: 'Missing filename.' });
+            return;
+        }
+
+        if (!SecurityCore.isSafeFilename(filename)) {
+            sendJSON(res, 400, { error: 'Unsafe file format.' });
             return;
         }
 
@@ -461,8 +500,8 @@ const server = http.createServer(async (req, res) => {
         const prodId = 'prod-' + Math.random().toString(36).substr(2, 9);
         const product = {
             id: prodId,
-            name,
-            code,
+            name: SecurityCore.sanitizeInput(name),
+            code: SecurityCore.sanitizeInput(code),
             price: parseFloat(price),
             binary_volume: parseFloat(binaryVolume),
             direct_commission_percent: parseFloat(directCommission || 8),
@@ -514,10 +553,10 @@ const server = http.createServer(async (req, res) => {
             id: depositId,
             purchase_id: purchaseId,
             user_id: authUser.id,
-            bank_reference: bankReference,
+            bank_reference: SecurityCore.sanitizeInput(bankReference),
             slip_url: slipUrl,
             status: 'PENDING',
-            notes: notes || '',
+            notes: SecurityCore.sanitizeInput(notes || ''),
             created_at: new Date().toISOString()
         };
 

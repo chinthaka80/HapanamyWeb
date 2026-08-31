@@ -11,6 +11,7 @@ require('./binary.test');
 require('./wallet.test');
 require('./report.test');
 require('./refund.test');
+require('./security.test');
 
 // Run
 runTests();
