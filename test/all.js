@@ -13,6 +13,7 @@ require('./report.test');
 require('./refund.test');
 require('./security.test');
 require('./integration.test');
+require('./database-economics.test');
 
 // Run
 runTests();
