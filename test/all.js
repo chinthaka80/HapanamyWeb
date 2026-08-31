@@ -12,6 +12,7 @@ require('./wallet.test');
 require('./report.test');
 require('./refund.test');
 require('./security.test');
+require('./integration.test');
 
 // Run
 runTests();
