@@ -5,6 +5,7 @@ require('./test-runner');
 require('./commission.test');
 require('./database.test');
 require('./auth.test');
+require('./kyc.test');
 
 // Run
 runTests();

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Update Bank Details</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
+        }
+        .container-box {
+            width: 100%;
+            max-width: 500px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; color: var(--text-secondary); }
+        .form-control { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container-box">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">බැංකු ගිණුම (Bank Details)</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px; margin-bottom: 30px;">කොමිස් මුදල් ලබාගැනීම සඳහා ඔබගේ බැංකු ගිණුම් විස්තර මෙහි යාවත්කාලීන කරන්න.</p>
+
+        <form id="bankForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>බැංකුවේ නම (Bank Name)</label>
+                    <input type="text" id="bankName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>ශාඛාව (Branch Name)</label>
+                    <input type="text" id="branchName" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ගිණුම් හිමියාගේ නම (Account Holder's Name)</label>
+                <input type="text" id="accountHolderName" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label>ගිණුම් අංකය (Account Number)</label>
+                <input type="text" id="accountNumber" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn-register" style="margin-top: 10px; width: 100%; padding: 14px; border-radius: 30px; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: white; border: none; font-weight: 800; font-size: 15px; cursor: pointer;">යාවත්කාලීන කරන්න (Update)</button>
+        </form>
+
+        <p style="margin-top: 25px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            <a href="dashboard.html" style="color: var(--brand-orange); text-decoration: none;">← ආපසු Dashboard එකට</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function fetchBankDetails() {
+            try {
+                const response = await fetch('/api/kyc/status', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                
+                if (data.bankDetails) {
+                    document.getElementById('bankName').value = data.bankDetails.bank_name;
+                    document.getElementById('branchName').value = data.bankDetails.branch_name;
+                    document.getElementById('accountHolderName').value = data.bankDetails.account_holder_name;
+                    document.getElementById('accountNumber').value = data.bankDetails.account_number;
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.getElementById('bankForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const payload = {
+                bankName: document.getElementById('bankName').value,
+                branchName: document.getElementById('branchName').value,
+                accountHolderName: document.getElementById('accountHolderName').value,
+                accountNumber: document.getElementById('accountNumber').value
+            };
+
+            try {
+                const response = await fetch('/api/bank/update', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('🎉 බැංකු ගිණුම් විස්තර සාර්ථකව යාවත්කාලීන කරන ලදී! (Bank Account Updated)');
+                    fetchBankDetails();
+                } else {
+                    const data = await response.json();
+                    alert('❌ Update failed: ' + data.error);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        });
+
+        fetchBankDetails();
+    </script>
+</body>
+</html>

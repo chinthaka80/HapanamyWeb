@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Member KYC Verification</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
+        }
+        .container-box {
+            width: 100%;
+            max-width: 650px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 13px;
+            text-transform: uppercase;
+            margin-bottom: 25px;
+        }
+        .status-pending { background: rgba(240, 179, 35, 0.15); color: var(--brand-gold); }
+        .status-verified { background: rgba(40, 167, 69, 0.15); color: #28a745; }
+        .status-rejected { background: rgba(220, 53, 69, 0.15); color: #dc3545; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-size: 13.5px; font-weight: 700; color: var(--text-secondary); }
+        .form-control { width: 100%; padding: 12px 16px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-size: 14px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container-box">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">KYC තහවුරු කිරීම | Verification</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px; margin-bottom: 20px;">මුදල් ලබාගැනීමට (Withdrawal) පෙර ඔබගේ අනන්‍යතාවය තහවුරු කළ යුතුය.</p>
+
+        <div id="statusArea" class="status-badge status-pending" style="display: none;">PENDING</div>
+
+        <div id="kycFormSection">
+            <form id="kycForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>සම්පූර්ණ නම (Full Name)</label>
+                        <input type="text" id="fullName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>NIC / Passport අංකය</label>
+                        <input type="text" id="nicPassport" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>උපන් දිනය (DOB)</label>
+                        <input type="date" id="dob" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>අනන්‍යතා ලේඛනය (Select ID Document PDF/Image)</label>
+                        <input type="file" id="idDoc" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ලිපිනය (Address)</label>
+                    <textarea id="address" class="form-control" style="height: 60px;" required></textarea>
+                </div>
+
+                <h3 style="font-size: 18px; font-weight: 900; margin-top: 30px; margin-bottom: 15px; color: var(--brand-gold);">බැංකු ගිණුම් විස්තර (Bank Details)</h3>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>බැංකුවේ නම (Bank Name)</label>
+                        <input type="text" id="bankName" class="form-control" required placeholder="BOC, Sampath, Commercial">
+                    </div>
+                    <div class="form-group">
+                        <label>ශාඛාව (Branch Name)</label>
+                        <input type="text" id="branchName" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ගිණුම් හිමියාගේ නම (Account Holder's Name)</label>
+                        <input type="text" id="accountHolderName" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label>ගිණුම් අංකය (Account Number)</label>
+                        <input type="text" id="accountNumber" class="form-control" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register" style="margin-top: 20px; width: 100%; padding: 14px; border-radius: 30px; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: white; border: none; font-weight: 800; font-size: 15px; cursor: pointer;">KYC තහවුරු කිරීම සඳහා ඉදිරිපත් කරන්න</button>
+            </form>
+        </div>
+
+        <div id="verifiedSection" style="display: none; padding: 20px; border: 1px dashed #28a745; border-radius: 12px; text-align: center; background: rgba(40,167,69,0.02);">
+            <p style="color: #28a745; font-weight: 800; font-size: 16px;">🎉 ඔබගේ KYC විස්තර සාර්ථකව තහවුරු කර ඇත (Verified)!</p>
+            <p style="color: var(--text-secondary); font-size: 13px; margin-top: 8px;">දැන් ඔබට කිසිදු බාධාවකින් තොරව මුදල් ලබාගැනීම් (Withdrawals) සිදු කළ හැක.</p>
+        </div>
+
+        <p style="margin-top: 25px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            <a href="dashboard.html" style="color: var(--brand-orange); text-decoration: none;">← ආපසු Dashboard එකට</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function checkKycStatus() {
+            try {
+                const response = await fetch('/api/kyc/status', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                
+                if (data.kycStatus === 'VERIFIED') {
+                    document.getElementById('kycFormSection').style.display = 'none';
+                    document.getElementById('statusArea').style.display = 'inline-block';
+                    document.getElementById('statusArea').className = 'status-badge status-verified';
+                    document.getElementById('statusArea').textContent = 'VERIFIED';
+                    document.getElementById('verifiedSection').style.display = 'block';
+                } else if (data.kycStatus === 'PENDING') {
+                    document.getElementById('kycFormSection').style.display = 'none';
+                    document.getElementById('statusArea').style.display = 'inline-block';
+                    document.getElementById('statusArea').className = 'status-badge status-pending';
+                    document.getElementById('statusArea').textContent = 'PENDING';
+                } else if (data.kycStatus === 'REJECTED') {
+                    document.getElementById('statusArea').style.display = 'inline-block';
+                    document.getElementById('statusArea').className = 'status-badge status-rejected';
+                    document.getElementById('statusArea').textContent = 'REJECTED: ' + (data.kycDetails.review_notes || 'Blurred documents');
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.getElementById('kycForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const fileInput = document.getElementById('idDoc');
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            // Step 1: Securely upload document to private storage route
+            try {
+                const uploadResponse = await fetch('/api/kyc/upload?filename=' + encodeURIComponent(file.name), {
+                    method: 'POST',
+                    headers: { 'Authorization': 'Bearer ' + token },
+                    body: file
+                });
+                const uploadData = await uploadResponse.json();
+
+                if (!uploadResponse.ok) {
+                    alert('❌ Upload failed: ' + uploadData.error);
+                    return;
+                }
+
+                // Step 2: Submit KYC request
+                const payload = {
+                    fullName: document.getElementById('fullName').value,
+                    nicPassport: document.getElementById('nicPassport').value,
+                    dob: document.getElementById('dob').value,
+                    address: document.getElementById('address').value,
+                    documentUrl: uploadData.filePath,
+                    bankName: document.getElementById('bankName').value,
+                    branchName: document.getElementById('branchName').value,
+                    accountHolderName: document.getElementById('accountHolderName').value,
+                    accountNumber: document.getElementById('accountNumber').value
+                };
+
+                const response = await fetch('/api/kyc/submit', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert('🎉 KYC විස්තර සාර්ථකව යොමු කරන ලදී!');
+                    checkKycStatus();
+                } else {
+                    const errorData = await response.json();
+                    alert('❌ Submit error: ' + errorData.error);
+                }
+
+            } catch (err) {
+                alert('❌ Connection failed: ' + err.message);
+            }
+        });
+
+        checkKycStatus();
+    </script>
+</body>
+</html>

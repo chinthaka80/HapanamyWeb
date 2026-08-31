@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const AuthService = require('./services/auth-service');
 const PlacementEngine = require('./services/placement-engine');
+const KycService = require('./services/kyc-service');
 
 const PORT = 3000;
 
@@ -21,6 +22,11 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
+// Mock Databases for Phase 3/4
+const mockKycDocs = [];
+const mockBankAccounts = [];
+const mockAuditLogs = [];
+
 function parseRequestBody(req) {
     return new Promise((resolve) => {
         let body = '';
@@ -38,6 +44,12 @@ function parseRequestBody(req) {
 function sendJSON(res, status, data) {
     res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
     res.end(JSON.stringify(data));
+}
+
+function getAuthenticatedUser(req) {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
+    return activeSessions.get(token) || null;
 }
 
 const server = http.createServer(async (req, res) => {
@@ -77,7 +89,6 @@ const server = http.createServer(async (req, res) => {
         const body = await parseRequestBody(req);
         const { fullName, username, email, mobile, password, dob, address, nicPassport, sponsorCode, position } = body;
 
-        // Validations
         if (!fullName || !username || !email || !mobile || !password || !dob || !address || !nicPassport || !sponsorCode || !position) {
             sendJSON(res, 400, { error: 'All registration fields are required.' });
             return;
@@ -88,8 +99,6 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Simulate Database Transactions/Checks
-        // (In Phase 4/Supabase integrations these query PostgreSQL tables)
         if (username === 'admin' || username === 'sponsor1') {
             sendJSON(res, 400, { error: 'Username is already taken.' });
             return;
@@ -105,14 +114,12 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Mock Sponsor Lookups
         const validSponsors = ['admin', 'sponsor1'];
         if (!validSponsors.includes(sponsorCode)) {
             sendJSON(res, 400, { error: 'Invalid or non-existent sponsor referral code.' });
             return;
         }
 
-        // Successful registration response
         const userId = 'user-uuid-' + Math.random().toString(36).substr(2, 9);
         const passwordHash = AuthService.hashPassword(password);
 
@@ -134,14 +141,19 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Simple validation checks for Mock database (Admin credentials default check)
         const adminEmail = 'admin@hapanamy.lk';
-        const adminHash = '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgpVM9ku71yqS8vW1g8Yt4a7X9.'; // hash of Araliya321#
-
         if (email === adminEmail && password === 'Araliya321#') {
             const token = AuthService.generateToken();
-            activeSessions.set(token, { email, role: 'admin' });
+            activeSessions.set(token, { email, role: 'admin', id: 'admin-uuid-123' });
             sendJSON(res, 200, { success: true, token, user: { email, role: 'admin' } });
+            return;
+        }
+
+        // Student Mock Login
+        if (email === 'member@hapanamy.lk' && password === 'Araliya321#') {
+            const token = AuthService.generateToken();
+            activeSessions.set(token, { email, role: 'member', id: 'member-uuid-100' });
+            sendJSON(res, 200, { success: true, token, user: { email, role: 'member' } });
             return;
         }
 
@@ -194,12 +206,245 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
+    // KYC & BANK ACCOUNT SYSTEM REST ENDPOINTS (PHASE 4)
+    // ========================================================
+
+    // POST /api/kyc/submit
+    if (req.method === 'POST' && pathname === '/api/kyc/submit') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        if (!KycService.isValidSubmission(body)) {
+            sendJSON(res, 400, { error: 'All KYC fields and Bank Account details are required.' });
+            return;
+        }
+
+        const docId = 'kyc-doc-' + Math.random().toString(36).substr(2, 9);
+        const docEntry = {
+            id: docId,
+            user_id: authUser.id,
+            nic_passport: body.nicPassport,
+            document_url: body.documentUrl, // References safe private location
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        const bankId = 'bank-ac-' + Math.random().toString(36).substr(2, 9);
+        const bankEntry = {
+            id: bankId,
+            user_id: authUser.id,
+            bank_name: body.bankName,
+            branch_name: body.branchName,
+            account_holder_name: body.accountHolderName,
+            account_number: body.accountNumber,
+            is_active: true
+        };
+
+        mockKycDocs.push(docEntry);
+        mockBankAccounts.push(bankEntry);
+
+        // Audit Logs
+        KycService.logAction(mockAuditLogs, authUser.id, 'KYC_SUBMITTED', 'kyc_documents', docId, null, { status: 'PENDING' });
+        KycService.logAction(mockAuditLogs, authUser.id, 'BANK_ADDED', 'bank_accounts', bankId, null, { accountNumber: body.accountNumber });
+
+        sendJSON(res, 201, { success: true, message: 'KYC submitted successfully and bank details updated.' });
+        return;
+    }
+
+    // GET /api/kyc/status
+    if (req.method === 'GET' && pathname === '/api/kyc/status') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const doc = mockKycDocs.find(d => d.user_id === authUser.id);
+        const bank = mockBankAccounts.find(b => b.user_id === authUser.id && b.is_active);
+        sendJSON(res, 200, {
+            kycStatus: doc ? doc.status : 'NOT_SUBMITTED',
+            kycDetails: doc || null,
+            bankDetails: bank || null
+        });
+        return;
+    }
+
+    // GET /api/admin/kyc/pending
+    if (req.method === 'GET' && pathname === '/api/admin/kyc/pending') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const pending = mockKycDocs.filter(d => d.status === 'PENDING');
+        sendJSON(res, 200, { pending });
+        return;
+    }
+
+    // POST /api/admin/kyc/review
+    if (req.method === 'POST' && pathname === '/api/admin/kyc/review') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { kycId, action, notes } = body; // action is 'VERIFIED' or 'REJECTED'
+
+        if (!kycId || !action || !['VERIFIED', 'REJECTED'].includes(action)) {
+            sendJSON(res, 400, { error: 'KycId and action (VERIFIED/REJECTED) are required.' });
+            return;
+        }
+
+        const docIdx = mockKycDocs.findIndex(d => d.id === kycId);
+        if (docIdx === -1) {
+            sendJSON(res, 404, { error: 'KYC Document not found.' });
+            return;
+        }
+
+        const oldStatus = mockKycDocs[docIdx].status;
+        mockKycDocs[docIdx].status = action;
+        mockKycDocs[docIdx].reviewer_id = authUser.id;
+        mockKycDocs[docIdx].review_notes = notes || '';
+        mockKycDocs[docIdx].reviewed_at = new Date().toISOString();
+
+        // Audit Logs
+        const auditAction = action === 'VERIFIED' ? 'KYC_APPROVED' : 'KYC_REJECTED';
+        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'kyc_documents', kycId, { status: oldStatus }, { status: action, notes });
+
+        sendJSON(res, 200, { success: true, message: `KYC request status has been updated to ${action}.` });
+        return;
+    }
+
+    // POST /api/bank/update
+    if (req.method === 'POST' && pathname === '/api/bank/update') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { bankName, branchName, accountHolderName, accountNumber } = body;
+
+        if (!bankName || !branchName || !accountHolderName || !accountNumber) {
+            sendJSON(res, 400, { error: 'All Bank details are required.' });
+            return;
+        }
+
+        const oldBankIdx = mockBankAccounts.findIndex(b => b.user_id === authUser.id && b.is_active);
+        let oldBank = null;
+        if (oldBankIdx !== -1) {
+            oldBank = { ...mockBankAccounts[oldBankIdx] };
+            mockBankAccounts[oldBankIdx].is_active = false;
+        }
+
+        const newBankId = 'bank-ac-' + Math.random().toString(36).substr(2, 9);
+        const newBank = {
+            id: newBankId,
+            user_id: authUser.id,
+            bank_name: bankName,
+            branch_name: branchName,
+            account_holder_name: accountHolderName,
+            account_number: accountNumber,
+            is_active: true
+        };
+        mockBankAccounts.push(newBank);
+
+        // Audit Logs
+        const actionType = oldBank ? 'BANK_CHANGED' : 'BANK_ADDED';
+        KycService.logAction(mockAuditLogs, authUser.id, actionType, 'bank_accounts', newBankId, oldBank, newBank);
+
+        sendJSON(res, 200, { success: true, message: 'Bank account updated successfully.' });
+        return;
+    }
+
+    // GET /api/kyc/document (Private Storage Streaming Gate)
+    if (req.method === 'GET' && pathname === '/api/kyc/document') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized to view secure document.' });
+            return;
+        }
+
+        const filename = url.searchParams.get('filename');
+        if (!filename) {
+            sendJSON(res, 400, { error: 'Missing filename.' });
+            return;
+        }
+
+        // Safe private storage mapping (Outside the public served dir!)
+        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const securePath = path.join(__dirname, 'storage', 'private', 'kyc', safeFilename);
+
+        if (!fs.existsSync(securePath)) {
+            sendJSON(res, 404, { error: 'Document not found or access denied.' });
+            return;
+        }
+
+        // Verify ownership check: User owns this doc or is admin
+        const ownsDoc = mockKycDocs.some(d => d.user_id === authUser.id && d.document_url.includes(safeFilename));
+        if (!ownsDoc && authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied: You do not have permissions to view this file.' });
+            return;
+        }
+
+        // Stream file safely
+        res.writeHead(200, { 'Content-Type': 'application/pdf' }); // Assuming standard KYC format
+        fs.createReadStream(securePath).pipe(res);
+        return;
+    }
+
+    // Private Upload Endpoint for KYC
+    if (req.method === 'POST' && pathname === '/api/kyc/upload') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const filename = url.searchParams.get('filename');
+        if (!filename) {
+            sendJSON(res, 400, { error: 'Missing filename.' });
+            return;
+        }
+
+        // Create secure directories recursively if they don't exist
+        const kycDir = path.join(__dirname, 'storage', 'private', 'kyc');
+        if (!fs.existsSync(kycDir)) {
+            fs.mkdirSync(kycDir, { recursive: true });
+        }
+
+        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const uploadPath = path.join(kycDir, safeFilename);
+
+        const writeStream = fs.createWriteStream(uploadPath);
+        req.pipe(writeStream);
+
+        writeStream.on('finish', () => {
+            sendJSON(res, 200, { success: true, filePath: 'storage/private/kyc/' + safeFilename });
+        });
+
+        writeStream.on('error', (err) => {
+            sendJSON(res, 500, { success: false, error: err.message });
+        });
+        return;
+    }
+
+    // ========================================================
     // STATIC ASSET SERVING
     // ========================================================
     let safeUrl = pathname;
     let filePath = path.join(__dirname, safeUrl === '/' ? 'index.html' : safeUrl);
     
-    if (!filePath.startsWith(__dirname)) {
+    // Explicitly block public HTTP access to the private storage folder!
+    if (safeUrl.startsWith('/storage/private/') || !filePath.startsWith(__dirname)) {
         res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
         res.end('Forbidden');
         return;
