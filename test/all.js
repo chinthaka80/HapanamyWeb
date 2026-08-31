@@ -14,6 +14,7 @@ require('./refund.test');
 require('./security.test');
 require('./integration.test');
 require('./database-economics.test');
+require('./product-economics.test');
 
 // Run
 runTests();
