@@ -10,6 +10,7 @@ require('./products.test');
 require('./binary.test');
 require('./wallet.test');
 require('./report.test');
+require('./refund.test');
 
 // Run
 runTests();

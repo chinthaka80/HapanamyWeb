@@ -7,6 +7,9 @@ const KycService = require('./services/kyc-service');
 const ProductService = require('./services/product-service');
 const WalletService = require('./services/wallet-service');
 const ReportService = require('./services/report-service');
+const RefundService = require('./services/refund-service');
+const CommissionCore = require('./services/commission-core');
+const VolumeLedger = require('./services/volume-ledger');
 
 const PORT = 3000;
 
@@ -25,7 +28,7 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4/5/8/11
+// Mock Databases for Phase 3/4/5/8/11/12
 const mockKycDocs = [];
 const mockBankAccounts = [];
 const mockAuditLogs = [];
@@ -51,6 +54,9 @@ const mockPaymentDeposits = [];
 
 const mockWalletLedger = [];
 const mockWithdrawalRequests = [];
+const mockRefundRequests = [];
+const mockVolumeLedger = [];
+const mockBinaryNodes = [];
 
 function parseRequestBody(req) {
     return new Promise((resolve) => {
@@ -579,6 +585,7 @@ const server = http.createServer(async (req, res) => {
                 mockWalletLedger.push({
                     id: 'tx-' + Math.random().toString(36).substr(2, 9),
                     user_id: 'sponsor-uuid-99',
+                    source_purchase_id: deposit.purchase_id, // Store source purchase reference for reversal
                     type: 'DIRECT_COMMISSION',
                     amount: sponsorCommission,
                     created_at: new Date().toISOString()
@@ -843,6 +850,110 @@ const server = http.createServer(async (req, res) => {
             'Content-Disposition': `attachment; filename="hapanamy_${type}_report.csv"`
         });
         res.end(csvString);
+        return;
+    }
+
+    // ========================================================
+    // REFUND & REVERSAL SYSTEM REST ENDPOINTS (PHASE 12)
+    // ========================================================
+
+    // POST /api/refund/request
+    if (req.method === 'POST' && pathname === '/api/refund/request') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { purchaseId } = body;
+
+        if (!purchaseId) {
+            sendJSON(res, 400, { error: 'PurchaseId is required.' });
+            return;
+        }
+
+        const purchase = mockProductPurchases.find(p => p.id === purchaseId && p.user_id === authUser.id);
+        const check = RefundService.checkEligibility(purchase);
+        if (!check.eligible) {
+            sendJSON(res, 400, { error: check.error });
+            return;
+        }
+
+        const refId = 'refund-' + Math.random().toString(36).substr(2, 9);
+        const refundRequest = {
+            id: refId,
+            purchase_id: purchaseId,
+            user_id: authUser.id,
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        mockRefundRequests.push(refundRequest);
+        KycService.logAction(mockAuditLogs, authUser.id, 'REFUND_REQUESTED', 'refund_requests', refId);
+
+        sendJSON(res, 201, { success: true, refundRequest });
+        return;
+    }
+
+    // GET /api/admin/refunds/pending (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/refunds/pending') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const pending = mockRefundRequests.filter(r => r.status === 'PENDING');
+        sendJSON(res, 200, { pending });
+        return;
+    }
+
+    // POST /api/admin/refunds/review (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/refunds/review') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { refundId, action } = body; // action is 'APPROVED' or 'REJECTED'
+
+        if (!refundId || !action || !['APPROVED', 'REJECTED'].includes(action)) {
+            sendJSON(res, 400, { error: 'RefundId and action are required.' });
+            return;
+        }
+
+        const refIdx = mockRefundRequests.findIndex(r => r.id === refundId);
+        if (refIdx === -1) {
+            sendJSON(res, 404, { error: 'Refund request not found.' });
+            return;
+        }
+
+        const refObj = mockRefundRequests[refIdx];
+        mockRefundRequests[refIdx].status = action === 'APPROVED' ? 'COMPLETED' : 'REJECTED';
+
+        if (action === 'APPROVED') {
+            const purchIdx = mockProductPurchases.findIndex(p => p.id === refObj.purchase_id);
+            if (purchIdx !== -1) {
+                mockProductPurchases[purchIdx].status = 'REFUNDED';
+                mockProductPurchases[purchIdx].refunded_at = new Date().toISOString();
+
+                // Reverse commissions referencing original purchase
+                CommissionCore.reverseCommission(refObj.purchase_id, mockWalletLedger);
+
+                // Reverse volume referencing original purchase
+                VolumeLedger.reverseVolume(refObj.purchase_id, mockBinaryNodes, mockVolumeLedger);
+
+                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_REFUNDED', 'product_purchases', refObj.purchase_id);
+            }
+        }
+
+        const auditAction = action === 'APPROVED' ? 'REFUND_APPROVED' : 'REFUND_REJECTED';
+        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'refund_requests', refundId);
+
+        sendJSON(res, 200, { success: true, message: `Refund request updated to ${action}.` });
         return;
     }
 
