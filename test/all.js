@@ -15,6 +15,7 @@ require('./security.test');
 require('./integration.test');
 require('./database-economics.test');
 require('./product-economics.test');
+require('./product-validator.test');
 
 // Run
 runTests();
