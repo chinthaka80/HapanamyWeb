@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USER=${DB_USER:-hapanamy_admin}
+      - DB_PASSWORD=${DB_PASSWORD:-secure_db_pass_9291}
+      - DB_NAME=${DB_NAME:-hapanamy_mlm}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - JWT_SECRET=${JWT_SECRET:-secure_jwt_token_sign_key}
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - app_storage:/app/storage
+
+  postgres:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER:-hapanamy_admin}
+      - POSTGRES_PASSWORD=${DB_PASSWORD:-secure_db_pass_9291}
+      - POSTGRES_DB=${DB_NAME:-hapanamy_mlm}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    volumes:
+      - redis_data:/data
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.prod.conf:/etc/nginx/nginx.conf:ro
+      - ./certs:/etc/nginx/certs:ro
+    depends_on:
+      - app
+
+volumes:
+  app_storage:
+  postgres_data:
+  redis_data:
