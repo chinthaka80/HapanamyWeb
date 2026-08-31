@@ -573,44 +573,8 @@
                         </div>
                     </div>
 
-                    <!-- Pending Actions logs -->
-                    <div class="admin-table-box">
-                        <div class="admin-table-title">
-                            <span>නව ලියාපදිංචි වීමේ අයදුම්පත් (Pending Registrations)</span>
-                            <span style="font-size: 12px; color: var(--brand-orange); font-weight: 600;">සත්‍යාපනය සඳහා</span>
-                        </div>
-                        <table class="admin-table" id="pendingRegTable">
-                            <thead>
-                                <tr>
-                                    <th>අයදුම්කරුගේ නම (Name)</th>
-                                    <th>විද්‍යුත් තැපෑල (Email)</th>
-                                    <th>දුරකථන අංකය (Phone)</th>
-                                    <th>ගිණුම් වර්ගය (Role)</th>
-                                    <th>ක්‍රියාමාර්ග (Action)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr id="reg-row-1">
-                                    <td>මලිත් පෙරේරා</td>
-                                    <td>malith@gmail.com</td>
-                                    <td>+94 71 456 7890</td>
-                                    <td>Affiliate Partner</td>
-                                    <td>
-                                        <button class="btn-table-action approve" onclick="approveAffiliate('reg-row-1', 'මලිත් පෙරේරා')">Approve Partner</button>
-                                    </td>
-                                </tr>
-                                <tr id="reg-row-2">
-                                    <td>ඉෂාරා සෙනෙවිරත්න</td>
-                                    <td>ishara.s@outlook.com</td>
-                                    <td>+94 77 987 6543</td>
-                                    <td>Affiliate Partner</td>
-                                    <td>
-                                        <button class="btn-table-action approve" onclick="approveAffiliate('reg-row-2', 'ඉෂාරා සෙනෙවිරත්න')">Approve Partner</button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <!-- Pending KYC Actions -->
+                    <iframe src="admin-kyc.html" style="width: 100%; height: 500px; border: none; border-radius: 12px; margin-top: 20px;"></iframe>
                 </div>
 
                 <!-- TAB 2: COURSE PRODUCTS MANAGER -->
@@ -671,6 +635,21 @@
                             <div class="form-group" style="margin-bottom: 15px;">
                                 <input type="number" id="crudProductDiscount" required placeholder=" ">
                                 <label for="crudProductDiscount">වට්ටම් මිල (Discount Price LKR)</label>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <input type="number" id="crudProductBinaryVolume" required placeholder=" " value="7450">
+                                <label for="crudProductBinaryVolume">Binary Volume (LKR BV)</label>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <input type="number" id="crudProductDirectPercent" required placeholder=" " value="8" step="0.1">
+                                <label for="crudProductDirectPercent">Direct Commission (%)</label>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 15px;">
+                                <input type="number" id="crudProductBinaryPercent" required placeholder=" " value="7" step="0.1">
+                                <label for="crudProductBinaryPercent">Binary Commission (%)</label>
                             </div>
 
                             <div class="form-group" style="margin-bottom: 15px;">
@@ -779,52 +758,7 @@
 
                 <!-- TAB 4: PAYOUTS MANAGER -->
                 <div class="admin-panel" id="panel-payouts">
-                    <div class="admin-table-box">
-                        <div class="admin-table-title">
-                            <span>කොමිස් මුදල් ගෙවීමේ ඉල්ලීම් (Pending Commission Payouts)</span>
-                        </div>
-                        <table class="admin-table" id="payoutsTable">
-                            <thead>
-                                <tr>
-                                    <th>සාමාජිකයා (Affiliate)</th>
-                                    <th>බැංකු ගිණුම (Bank Account Details)</th>
-                                    <th>ඉල්ලූ මුදල (Payout Request LKR)</th>
-                                    <th>තත්ත්වය (Status)</th>
-                                    <th>ක්‍රියාමාර්ග (Actions)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="payoutsTableBody">
-                                <tr id="payout-row-1">
-                                    <td>නිපුන් රණසිංහ</td>
-                                    <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">TXN-WD-8291-K4A7</td>
-                                    <td>Nipun Ranasinha, HNB Bank, Acc: 003410294819</td>
-                                    <td style="font-weight: 700; color: var(--brand-orange);">රු. 18,340.00</td>
-                                    <td><span class="badge-status pending" id="status-1">Pending approval</span></td>
-                                    <td>
-                                        <div style="display: flex; gap: 5px;">
-                                            <button class="btn btn-primary" onclick="managePayout('payout-row-1', 'status-1', 18340, 'නිපුන් රණසිංහ', 'released')" style="background-color: var(--brand-green-light); color: #102A43; border: none; padding: 4px 8px; font-size: 11px; cursor:pointer;">Release 🟢</button>
-                                            <button class="btn btn-secondary" onclick="managePayout('payout-row-1', 'status-1', 18340, 'නිපුන් රණසිංහ', 'rejected')" style="color: var(--ph-red); border-color: var(--ph-red); padding: 4px 8px; font-size: 11px; cursor:pointer; border-width: 1px;">Reject 🔴</button>
-                                            <button class="btn btn-secondary" onclick="managePayout('payout-row-1', 'status-1', 18340, 'නිපුන් රණසිංහ', 'hold')" style="color: var(--brand-gold); border-color: var(--brand-gold); padding: 4px 8px; font-size: 11px; cursor:pointer; border-width: 1px;">Hold 🟡</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr id="payout-row-2">
-                                    <td>කසුන් තාරක</td>
-                                    <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">TXN-WD-5542-G9E2</td>
-                                    <td>Kasun Tharaka, Commercial Bank, Acc: 8010294851</td>
-                                    <td style="font-weight: 700; color: var(--brand-orange);">රු. 45,000.00</td>
-                                    <td><span class="badge-status pending" id="status-2">Pending approval</span></td>
-                                    <td>
-                                        <div style="display: flex; gap: 5px;">
-                                            <button class="btn btn-primary" onclick="managePayout('payout-row-2', 'status-2', 45000, 'කසුන් තාරක', 'released')" style="background-color: var(--brand-green-light); color: #102A43; border: none; padding: 4px 8px; font-size: 11px; cursor:pointer;">Release 🟢</button>
-                                            <button class="btn btn-secondary" onclick="managePayout('payout-row-2', 'status-2', 45000, 'කසුන් තාරක', 'rejected')" style="color: var(--ph-red); border-color: var(--ph-red); padding: 4px 8px; font-size: 11px; cursor:pointer; border-width: 1px;">Reject 🔴</button>
-                                            <button class="btn btn-secondary" onclick="managePayout('payout-row-2', 'status-2', 45000, 'කසුන් තාරක', 'hold')" style="color: var(--brand-gold); border-color: var(--brand-gold); padding: 4px 8px; font-size: 11px; cursor:pointer; border-width: 1px;">Hold 🟡</button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                    <iframe src="admin-withdrawals.html" style="width: 100%; height: 750px; border: none; border-radius: 12px;"></iframe>
                 </div>
 
                 <!-- TAB 4.5: BANK RECEIPTS APPROVALS -->
