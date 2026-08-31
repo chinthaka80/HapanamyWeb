@@ -1,0 +1,2 @@
+-- Hapanamy.lk Database Schema
+-- Phase 2 Migrations will specify full schemas here.
