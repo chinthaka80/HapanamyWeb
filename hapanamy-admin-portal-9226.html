@@ -605,71 +605,251 @@
 
                 <!-- ADD/EDIT PRODUCT MODAL OVERLAY -->
                 <div class="modal-overlay" id="productCrudModal" style="z-index: 2100; display: none;">
-                    <div class="modal-box" style="max-width: 500px; padding: 30px;">
+                    <div class="modal-box" style="max-width: 900px; padding: 25px; width: 90%; max-height: 90vh; overflow-y: auto;">
                         <h3 id="productModalTitle" style="font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color:var(--text-primary);">📝 Add New Course Product</h3>
                         
                         <form id="productCrudForm" onsubmit="saveProductForm(event)">
                             <input type="hidden" id="crudProductId">
                             
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <select id="crudProductCategory" required style="width:100%; padding:14px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
-                                    <option value="Trading Course">Trading Course</option>
-                                    <option value="AI & Tech">AI & Tech</option>
-                                    <option value="Social Media">Social Media</option>
-                                    <option value="E-Book">E-Book</option>
-                                    <option value="Astrology">Astrology</option>
-                                    <option value="Services">Services</option>
-                                </select>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                                <!-- Column 1: Core Details & Pricing -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">1. Product Details & Cost</h4>
+                                    
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <select id="crudProductCategory" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="Trading Course">Trading Course</option>
+                                            <option value="AI & Tech">AI & Tech</option>
+                                            <option value="Social Media">Social Media</option>
+                                            <option value="E-Book">E-Book</option>
+                                            <option value="Astrology">Astrology</option>
+                                            <option value="Services">Services</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="text" id="crudProductTitle" required placeholder=" ">
+                                        <label for="crudProductTitle">නිෂ්පාදන නම (Course Title)</label>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="number" id="crudProductMarketPrice" oninput="recalcProductEconomicsFrontend()" value="10000" placeholder=" ">
+                                            <label for="crudProductMarketPrice">Market Price (LKR)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <select id="crudProductPricingMode" onchange="togglePricingFields(); recalcProductEconomicsFrontend();" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="FIXED">FIXED</option>
+                                                <option value="DISCOUNTED">DISCOUNTED</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="discountFieldsGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <select id="crudProductDiscountType" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="NONE">NONE</option>
+                                                <option value="FIXED">FIXED AMOUNT</option>
+                                                <option value="PERCENTAGE">PERCENTAGE</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="number" id="crudProductDiscountValue" oninput="recalcProductEconomicsFrontend()" value="0" placeholder=" ">
+                                            <label for="crudProductDiscountValue">Discount Value</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="number" id="crudProductPrice" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
+                                        <label for="crudProductPrice">Final Selling Price (LKR)</label>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="number" id="crudProductCost" required oninput="recalcProductEconomicsFrontend()" value="2000" placeholder=" ">
+                                        <label for="crudProductCost">නිෂ්පාදන පිරිවැය (Product Cost LKR)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                            <span>Gross Profit:</span>
+                                            <strong id="previewGrossProfit">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Gross Margin %:</span>
+                                            <strong id="previewGrossMargin">0.00%</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="text" id="crudProductImg" required placeholder=" " value="assets/trading_banner.jpg">
+                                        <label for="crudProductImg">පින්තූර ලිපිනය (Product Banner Image Path)</label>
+                                    </div>
+                                    
+                                    <div style="margin-bottom: 15px; text-align: left;">
+                                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විස්තරය (Description)</label>
+                                        <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 50px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Column 2: Reserves & Commission Details -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">2. Company Profit Reserves</h4>
+                                    
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductMinProfit" oninput="recalcProductEconomicsFrontend()" value="1000" placeholder=" ">
+                                            <label for="crudProductMinProfit">Min Profit (LKR)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductOpReserve" oninput="recalcProductEconomicsFrontend()" value="500" placeholder=" ">
+                                            <label for="crudProductOpReserve">Op Cost Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductProcessingReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder=" ">
+                                            <label for="crudProductProcessingReserve">Pay Processing Reserve</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductRefundReserve" oninput="recalcProductEconomicsFrontend()" value="200" placeholder=" ">
+                                            <label for="crudProductRefundReserve">Refund Risk Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductTaxReserve" oninput="recalcProductEconomicsFrontend()" value="300" placeholder=" ">
+                                            <label for="crudProductTaxReserve">Tax Reserve</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductOtherReserve" oninput="recalcProductEconomicsFrontend()" value="100" placeholder=" ">
+                                            <label for="crudProductOtherReserve">Other Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom:15px;">
+                                        <input type="number" id="crudProductSafetyBuffer" oninput="recalcProductEconomicsFrontend()" value="500" placeholder=" ">
+                                        <label for="crudProductSafetyBuffer">Commission Safety Buffer (LKR)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Protected Company Amount:</span>
+                                            <strong id="previewProtectedAmount">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Net Commission Budget:</span>
+                                            <strong id="previewNetBudget">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Effective Commission Budget:</span>
+                                            <strong id="previewEffectiveBudget">LKR 0.00</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Column 3: MLM Settings & Safety Card -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">3. MLM settings</h4>
+                                    
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductDirectPercent" required oninput="recalcProductEconomicsFrontend()" value="8" step="0.1" placeholder=" ">
+                                            <label for="crudProductDirectPercent">Direct Comm (%)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductBinaryVolume" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
+                                            <label for="crudProductBinaryVolume">Binary Volume (BV)</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductMaxLevels" required oninput="recalcProductEconomicsFrontend()" value="7" placeholder=" ">
+                                            <label for="crudProductMaxLevels">Max Binary Tiers</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <select id="crudProductCommissionMode" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="MANUAL">MANUAL</option>
+                                                <option value="AUTO_SAFE">AUTO_SAFE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom:15px;">
+                                        <input type="number" id="crudProductBinaryPercent" required oninput="recalcProductEconomicsFrontend()" value="7" step="0.1" placeholder=" ">
+                                        <label for="crudProductBinaryPercent">Binary Commission (%)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Direct Comm Amount:</span>
+                                            <strong id="previewDirectCommAmount">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Binary Comm/Level:</span>
+                                            <strong id="previewBinaryCommPerRecipient">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Max Binary Exposure:</span>
+                                            <strong id="previewMaxBinaryExposure">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Max Total Exposure:</span>
+                                            <strong id="previewMaxTotalExposure">LKR 0.00</strong>
+                                        </div>
+                                    </div>
+
+                                    <!-- SAFETY CARD PREVIEW -->
+                                    <div id="safetyCardBox" class="safety-card safe" style="padding:15px; border-radius:10px; margin-bottom:15px; border-left:5px solid; font-size:12px;">
+                                        <style>
+                                            .safety-card.safe { background: rgba(185, 231, 105, 0.1); border-left-color: var(--brand-green-light); color: var(--brand-green-light); }
+                                            .safety-card.warning { background: rgba(244, 123, 32, 0.1); border-left-color: var(--brand-orange); color: var(--brand-orange); }
+                                            .safety-card.blocked { background: rgba(229, 62, 62, 0.1); border-left-color: var(--ph-red); color: var(--ph-red); }
+                                        </style>
+                                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:8px;">
+                                            <span>ECONOMICS:</span>
+                                            <span id="safetyCardStatus">SAFE</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Effective Budget:</span>
+                                            <span id="cardEffectiveBudget" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Max Exposure:</span>
+                                            <span id="cardMaxTotalExposure" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Remaining Margin:</span>
+                                            <span id="cardRemainingMargin" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; color:var(--text-muted);">
+                                            <span>Max Safe Binary Rate:</span>
+                                            <span id="cardMaxSafeRate" style="color:var(--text-primary); font-weight:700;">0.00%</span>
+                                        </div>
+
+                                        <div id="safetyCardReasonBox" style="display:none; margin-top:10px; padding-top:10px; border-top:1px solid rgba(229,62,62,0.2); font-size:11px; font-weight:700;">
+                                            ⚠️ Reason: <span id="safetyCardReasonText"></span>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="text" id="crudProductTitle" required placeholder=" ">
-                                <label for="crudProductTitle">නිෂ්පාදන නම (Course Title)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="number" id="crudProductPrice" required placeholder=" ">
-                                <label for="crudProductPrice">සාමාන්‍ය මිල (Normal Price LKR)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="number" id="crudProductDiscount" required placeholder=" ">
-                                <label for="crudProductDiscount">වට්ටම් මිල (Discount Price LKR)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="number" id="crudProductBinaryVolume" required placeholder=" " value="7450">
-                                <label for="crudProductBinaryVolume">Binary Volume (LKR BV)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="number" id="crudProductDirectPercent" required placeholder=" " value="8" step="0.1">
-                                <label for="crudProductDirectPercent">Direct Commission (%)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="number" id="crudProductBinaryPercent" required placeholder=" " value="7" step="0.1">
-                                <label for="crudProductBinaryPercent">Binary Commission (%)</label>
-                            </div>
-
-                            <div class="form-group" style="margin-bottom: 15px;">
-                                <input type="text" id="crudProductImg" required placeholder=" " value="assets/trading_banner.jpg">
-                                <label for="crudProductImg">පින්තූර ලිපිනය (Product Banner Image Path)</label>
-                            </div>
-
-                            <div style="margin-bottom: 15px; text-align: left;">
-                                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px;">පාඨමාලා විස්තරය (Course Description)</label>
-                                <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 80px; padding: 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13px; outline: none; resize: vertical;"></textarea>
-                            </div>
-
-                            <div style="margin-bottom: 20px; text-align: left;">
-                                <label style="font-size: 12px; color: var(--text-muted); display: block; margin-bottom: 5px;">විෂය නිර්දේශය (Course Syllabus - New line per topic)</label>
-                                <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 100px; padding: 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13px; outline: none; resize: vertical;"></textarea>
-                            </div>
-
-                            <div style="display: flex; gap: 10px;">
-                                <button type="submit" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer;">Save Product</button>
-                                <button type="button" class="btn btn-secondary" style="padding: 12px; cursor: pointer; border-width:1px;" onclick="closeProductModal()">Cancel</button>
+                            <div style="margin-bottom: 20px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                                <div>
+                                    <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විෂය නිර්දේශය (Syllabus - line per topic)</label>
+                                    <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 60px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                                </div>
+                                <div style="display:flex; flex-direction:column; justify-content:flex-end;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                                        <span style="font-size:12px; color:var(--text-muted);">Max Safe Binary Rate: <strong id="previewMaxSafeRate" style="color:var(--text-primary);">0.00%</strong></span>
+                                    </div>
+                                    <div style="display: flex; gap: 10px;">
+                                        <button type="submit" id="saveProductSubmitBtn" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight:700;">Save Product</button>
+                                        <button type="button" class="btn btn-secondary" style="padding: 12px; cursor: pointer; border-width:1px;" onclick="closeProductModal()">Cancel</button>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -1603,6 +1783,158 @@
             }
         }
 
+        function togglePricingFields() {
+            const mode = document.getElementById('crudProductPricingMode').value;
+            const discountGroup = document.getElementById('discountFieldsGroup');
+            if (mode === 'DISCOUNTED') {
+                discountGroup.style.display = 'grid';
+            } else {
+                discountGroup.style.display = 'none';
+            }
+        }
+
+        function recalcProductEconomicsFrontend() {
+            const marketPrice = parseFloat(document.getElementById('crudProductMarketPrice').value || 0);
+            const pricingMode = document.getElementById('crudProductPricingMode').value;
+            const discountType = document.getElementById('crudProductDiscountType').value;
+            const discountValue = parseFloat(document.getElementById('crudProductDiscountValue').value || 0);
+            const configuredSellingPrice = parseFloat(document.getElementById('crudProductPrice').value || 0);
+            const productCost = parseFloat(document.getElementById('crudProductCost').value || 0);
+
+            const minProfit = parseFloat(document.getElementById('crudProductMinProfit').value || 0);
+            const opReserve = parseFloat(document.getElementById('crudProductOpReserve').value || 0);
+            const procReserve = parseFloat(document.getElementById('crudProductProcessingReserve').value || 0);
+            const refReserve = parseFloat(document.getElementById('crudProductRefundReserve').value || 0);
+            const taxReserve = parseFloat(document.getElementById('crudProductTaxReserve').value || 0);
+            const otherReserve = parseFloat(document.getElementById('crudProductOtherReserve').value || 0);
+            const safetyBuffer = parseFloat(document.getElementById('crudProductSafetyBuffer').value || 0);
+
+            const directPercent = parseFloat(document.getElementById('crudProductDirectPercent').value || 0);
+            const binaryVolume = parseFloat(document.getElementById('crudProductBinaryVolume').value || 0);
+            const maxLevels = parseInt(document.getElementById('crudProductMaxLevels').value || 7);
+            const commissionMode = document.getElementById('crudProductCommissionMode').value;
+            let binaryPercent = parseFloat(document.getElementById('crudProductBinaryPercent').value || 0);
+
+            // 1. Calculate Final Selling Price
+            let sellingPrice = 0;
+            if (pricingMode === 'FIXED') {
+                sellingPrice = configuredSellingPrice;
+                document.getElementById('crudProductPrice').disabled = false;
+            } else {
+                if (discountType === 'FIXED') {
+                    sellingPrice = Math.max(0, marketPrice - discountValue);
+                } else if (discountType === 'PERCENTAGE') {
+                    sellingPrice = Math.max(0, marketPrice - (marketPrice * (discountValue / 100)));
+                } else {
+                    sellingPrice = marketPrice;
+                }
+                document.getElementById('crudProductPrice').value = sellingPrice.toFixed(2);
+                document.getElementById('crudProductPrice').disabled = true;
+            }
+
+            // 2. Gross Profit & Margin
+            const grossProfit = sellingPrice - productCost;
+            const grossMargin = sellingPrice > 0 ? (grossProfit / sellingPrice) * 100 : 0;
+            document.getElementById('previewGrossProfit').textContent = 'රු. ' + grossProfit.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewGrossMargin').textContent = grossMargin.toFixed(2) + '%';
+
+            // 3. Protected Company Amount
+            const protectedAmount = minProfit + opReserve + procReserve + refReserve + taxReserve + otherReserve;
+            document.getElementById('previewProtectedAmount').textContent = 'රු. ' + protectedAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 4. Net Commission Budget
+            const netBudget = grossProfit - protectedAmount;
+            document.getElementById('previewNetBudget').textContent = 'රු. ' + netBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 5. Effective Commission Budget
+            const effectiveBudget = netBudget - safetyBuffer;
+            document.getElementById('previewEffectiveBudget').textContent = 'රු. ' + effectiveBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardEffectiveBudget').textContent = 'රු. ' + effectiveBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 6. Direct Commission Amount
+            const directCommAmount = sellingPrice * (directPercent / 100);
+            document.getElementById('previewDirectCommAmount').textContent = 'රු. ' + directCommAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 7. Calculate Max Safe Rate
+            const remainingBinaryBudget = effectiveBudget - directCommAmount;
+            let maxSafeRate = 0;
+            if (remainingBinaryBudget > 0 && binaryVolume > 0 && maxLevels > 0) {
+                const maxBinaryPerLevel = remainingBinaryBudget / maxLevels;
+                maxSafeRate = Math.floor((maxBinaryPerLevel / binaryVolume) * 100 * 100) / 100;
+                if (maxSafeRate < 0) maxSafeRate = 0;
+            }
+            document.getElementById('cardMaxSafeRate').textContent = maxSafeRate.toFixed(2) + '%';
+            document.getElementById('previewMaxSafeRate').textContent = maxSafeRate.toFixed(2) + '%';
+
+            // 8. Apply Auto Safe Mode
+            if (commissionMode === 'AUTO_SAFE') {
+                binaryPercent = maxSafeRate;
+                document.getElementById('crudProductBinaryPercent').value = binaryPercent.toFixed(2);
+                document.getElementById('crudProductBinaryPercent').disabled = true;
+            } else {
+                document.getElementById('crudProductBinaryPercent').disabled = false;
+            }
+
+            // 9. Binary Exposure calculations
+            const binaryCommPerRecipient = binaryVolume * (binaryPercent / 100);
+            const maxBinaryExposure = binaryCommPerRecipient * maxLevels;
+            const maxTotalExposure = directCommAmount + maxBinaryExposure;
+            const remainingMargin = effectiveBudget - maxTotalExposure;
+
+            document.getElementById('previewBinaryCommPerRecipient').textContent = 'රු. ' + binaryCommPerRecipient.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewMaxBinaryExposure').textContent = 'රු. ' + maxBinaryExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewMaxTotalExposure').textContent = 'රු. ' + maxTotalExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardMaxTotalExposure').textContent = 'රු. ' + maxTotalExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardRemainingMargin').textContent = 'රු. ' + remainingMargin.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 10. Update Safety Card Status
+            const statusCard = document.getElementById('safetyCardBox');
+            const statusLabel = document.getElementById('safetyCardStatus');
+            const saveBtn = document.getElementById('saveProductSubmitBtn');
+            const reasonBox = document.getElementById('safetyCardReasonBox');
+            const reasonText = document.getElementById('safetyCardReasonText');
+
+            let status = 'SAFE';
+            let blockedReason = null;
+
+            if (productCost > sellingPrice) {
+                status = 'BLOCKED';
+                blockedReason = 'Product cost exceeds selling price.';
+            } else if (grossProfit <= 0) {
+                status = 'BLOCKED';
+                blockedReason = 'Gross profit is zero or negative.';
+            } else if (effectiveBudget <= 0) {
+                status = 'BLOCKED';
+                blockedReason = 'Effective commission budget is zero or negative after accounting for reserves.';
+            } else if (directCommAmount > effectiveBudget) {
+                status = 'BLOCKED';
+                blockedReason = 'Direct referral commission exceeds effective commission budget.';
+            } else if (maxTotalExposure > effectiveBudget) {
+                status = 'BLOCKED';
+                const exceeded = maxTotalExposure - effectiveBudget;
+                blockedReason = `Maximum total commission exposure exceeds effective commission budget by රු. ${exceeded.toLocaleString(undefined, {minimumFractionDigits: 2})}.`;
+            } else if (remainingMargin < 500.00) {
+                status = 'WARNING';
+            }
+
+            // Apply UI classes
+            statusCard.className = 'safety-card ' + status.toLowerCase();
+            statusLabel.textContent = status;
+            
+            if (status === 'BLOCKED') {
+                reasonBox.style.display = 'block';
+                reasonText.textContent = blockedReason;
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                saveBtn.style.cursor = 'not-allowed';
+            } else {
+                reasonBox.style.display = 'none';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+                saveBtn.style.cursor = 'pointer';
+            }
+        }
+
         // Open CRUD modal
         let currentCrudAction = 'add';
         function openProductModal(action, courseId = '') {
@@ -1613,22 +1945,65 @@
                 document.getElementById('productModalTitle').textContent = '➕ Add New Course Product';
                 document.getElementById('crudProductId').value = '';
                 document.getElementById('crudProductTitle').value = '';
-                document.getElementById('crudProductPrice').value = '';
-                document.getElementById('crudProductDiscount').value = '';
+                document.getElementById('crudProductCategory').value = 'Trading Course';
+                document.getElementById('crudProductMarketPrice').value = '10000';
+                document.getElementById('crudProductPricingMode').value = 'FIXED';
+                document.getElementById('crudProductDiscountType').value = 'NONE';
+                document.getElementById('crudProductDiscountValue').value = '0';
+                document.getElementById('crudProductPrice').value = '7450';
+                document.getElementById('crudProductCost').value = '2000';
+                document.getElementById('crudProductMinProfit').value = '1000';
+                document.getElementById('crudProductOpReserve').value = '500';
+                document.getElementById('crudProductProcessingReserve').value = '150';
+                document.getElementById('crudProductRefundReserve').value = '200';
+                document.getElementById('crudProductTaxReserve').value = '300';
+                document.getElementById('crudProductOtherReserve').value = '100';
+                document.getElementById('crudProductSafetyBuffer').value = '500';
+                document.getElementById('crudProductDirectPercent').value = '8';
+                document.getElementById('crudProductBinaryVolume').value = '7450';
+                document.getElementById('crudProductMaxLevels').value = '7';
+                document.getElementById('crudProductCommissionMode').value = 'MANUAL';
+                document.getElementById('crudProductBinaryPercent').value = '7';
                 document.getElementById('crudProductImg').value = 'assets/trading_banner.jpg';
+                document.getElementById('crudProductDesc').value = '';
+                document.getElementById('crudProductSyllabus').value = '';
             } else {
                 document.getElementById('productModalTitle').textContent = '✏️ Edit Course Details';
                 const courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
                 const c = courses.find(item => item.id === courseId);
                 if (c) {
+                    const price = c.price || 0;
                     document.getElementById('crudProductId').value = c.id;
-                    document.getElementById('crudProductCategory').value = c.category;
-                    document.getElementById('crudProductTitle').value = c.title;
-                    document.getElementById('crudProductPrice').value = c.price;
-                    document.getElementById('crudProductDiscount').value = c.discount;
-                    document.getElementById('crudProductImg').value = c.image;
+                    document.getElementById('crudProductCategory').value = c.category || 'Trading Course';
+                    document.getElementById('crudProductTitle').value = c.title || '';
+                    
+                    document.getElementById('crudProductMarketPrice').value = c.marketPrice !== undefined ? c.marketPrice : (c.price || 0);
+                    document.getElementById('crudProductPricingMode').value = c.pricingMode || 'FIXED';
+                    document.getElementById('crudProductDiscountType').value = c.discountType || 'NONE';
+                    document.getElementById('crudProductDiscountValue').value = c.discountValue || 0;
+                    document.getElementById('crudProductPrice').value = c.price || 0;
+                    
+                    document.getElementById('crudProductCost').value = c.productCost !== undefined ? c.productCost : Math.round(price * 0.3);
+                    document.getElementById('crudProductMinProfit').value = c.minimumCompanyProfit !== undefined ? c.minimumCompanyProfit : Math.round(price * 0.15);
+                    document.getElementById('crudProductOpReserve').value = c.operatingCostReserve !== undefined ? c.operatingCostReserve : Math.round(price * 0.05);
+                    document.getElementById('crudProductProcessingReserve').value = c.paymentProcessingReserve !== undefined ? c.paymentProcessingReserve : Math.round(price * 0.02);
+                    document.getElementById('crudProductRefundReserve').value = c.refundRiskReserve !== undefined ? c.refundRiskReserve : Math.round(price * 0.03);
+                    document.getElementById('crudProductTaxReserve').value = c.taxReserve !== undefined ? c.taxReserve : Math.round(price * 0.05);
+                    document.getElementById('crudProductOtherReserve').value = c.otherReserve !== undefined ? c.otherReserve : Math.round(price * 0.02);
+                    document.getElementById('crudProductSafetyBuffer').value = c.commissionSafetyBuffer !== undefined ? c.commissionSafetyBuffer : Math.round(price * 0.05);
+                    
+                    document.getElementById('crudProductDirectPercent').value = c.directCommissionRate !== undefined ? c.directCommissionRate : 8.0;
+                    document.getElementById('crudProductBinaryVolume').value = c.binaryVolume !== undefined ? c.binaryVolume : (c.price || 0);
+                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 7;
+                    document.getElementById('crudProductCommissionMode').value = c.commissionMode || 'MANUAL';
+                    document.getElementById('crudProductBinaryPercent').value = c.binaryCommissionRate !== undefined ? c.binaryCommissionRate : 7.0;
+                    document.getElementById('crudProductImg').value = c.image || 'assets/trading_banner.jpg';
+                    document.getElementById('crudProductDesc').value = c.description || '';
+                    document.getElementById('crudProductSyllabus').value = c.syllabus || '';
                 }
             }
+            togglePricingFields();
+            recalcProductEconomicsFrontend();
         }
 
         function closeProductModal() {
@@ -1638,12 +2013,41 @@
         // Save Form (Create & Update)
         function saveProductForm(event) {
             event.preventDefault();
+            
+            recalcProductEconomicsFrontend();
+            const submitBtn = document.getElementById('saveProductSubmitBtn');
+            if (submitBtn.disabled) {
+                showToast('❌ Cannot save product: Product Economics are BLOCKED.');
+                return;
+            }
+
             const id = document.getElementById('crudProductId').value;
             const category = document.getElementById('crudProductCategory').value;
             const title = document.getElementById('crudProductTitle').value;
-            const price = parseFloat(document.getElementById('crudProductPrice').value);
-            const discount = parseFloat(document.getElementById('crudProductDiscount').value);
+            const marketPrice = parseFloat(document.getElementById('crudProductMarketPrice').value || 0);
+            const pricingMode = document.getElementById('crudProductPricingMode').value;
+            const discountType = document.getElementById('crudProductDiscountType').value;
+            const discountValue = parseFloat(document.getElementById('crudProductDiscountValue').value || 0);
+            const price = parseFloat(document.getElementById('crudProductPrice').value || 0);
+            const productCost = parseFloat(document.getElementById('crudProductCost').value || 0);
+            
+            const minProfit = parseFloat(document.getElementById('crudProductMinProfit').value || 0);
+            const opReserve = parseFloat(document.getElementById('crudProductOpReserve').value || 0);
+            const processingReserve = parseFloat(document.getElementById('crudProductProcessingReserve').value || 0);
+            const refundReserve = parseFloat(document.getElementById('crudProductRefundReserve').value || 0);
+            const taxReserve = parseFloat(document.getElementById('crudProductTaxReserve').value || 0);
+            const otherReserve = parseFloat(document.getElementById('crudProductOtherReserve').value || 0);
+            const safetyBuffer = parseFloat(document.getElementById('crudProductSafetyBuffer').value || 0);
+            
+            const directPercent = parseFloat(document.getElementById('crudProductDirectPercent').value || 0);
+            const binaryVolume = parseFloat(document.getElementById('crudProductBinaryVolume').value || 0);
+            const maxLevels = parseInt(document.getElementById('crudProductMaxLevels').value || 7);
+            const commissionMode = document.getElementById('crudProductCommissionMode').value;
+            const binaryPercent = parseFloat(document.getElementById('crudProductBinaryPercent').value || 0);
+            
             const image = document.getElementById('crudProductImg').value;
+            const description = document.getElementById('crudProductDesc').value;
+            const syllabus = document.getElementById('crudProductSyllabus').value;
 
             let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
 
@@ -1653,8 +2057,27 @@
                     category,
                     title,
                     price,
-                    discount,
+                    discount: price,
+                    marketPrice,
+                    pricingMode,
+                    discountType,
+                    discountValue,
+                    productCost,
+                    minimumCompanyProfit: minProfit,
+                    operatingCostReserve: opReserve,
+                    paymentProcessingReserve: processingReserve,
+                    refundRiskReserve: refundReserve,
+                    taxReserve,
+                    otherReserve,
+                    commissionSafetyBuffer: safetyBuffer,
+                    directCommissionRate: directPercent,
+                    binaryVolume,
+                    maxBinaryQualifiedLevels: maxLevels,
+                    commissionMode,
+                    binaryCommissionRate: binaryPercent,
                     image,
+                    description,
+                    syllabus,
                     status: 'Active'
                 };
                 courses.push(newCourse);
@@ -1665,8 +2088,27 @@
                         c.category = category;
                         c.title = title;
                         c.price = price;
-                        c.discount = discount;
+                        c.discount = price;
+                        c.marketPrice = marketPrice;
+                        c.pricingMode = pricingMode;
+                        c.discountType = discountType;
+                        c.discountValue = discountValue;
+                        c.productCost = productCost;
+                        c.minimumCompanyProfit = minProfit;
+                        c.operatingCostReserve = opReserve;
+                        c.paymentProcessingReserve = processingReserve;
+                        c.refundRiskReserve = refundReserve;
+                        c.taxReserve = taxReserve;
+                        c.otherReserve = otherReserve;
+                        c.commissionSafetyBuffer = safetyBuffer;
+                        c.directCommissionRate = directPercent;
+                        c.binaryVolume = binaryVolume;
+                        c.maxBinaryQualifiedLevels = maxLevels;
+                        c.commissionMode = commissionMode;
+                        c.binaryCommissionRate = binaryPercent;
                         c.image = image;
+                        c.description = description;
+                        c.syllabus = syllabus;
                         showToast(`✏️ Course <strong>${title}</strong> successfully updated!`);
                     }
                     return c;
