@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Member Wallet & Withdrawals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
+        }
+        .container-box {
+            width: 100%;
+            max-width: 800px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .wallet-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .wallet-card {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+        }
+        .wallet-card h4 {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 800;
+            margin-bottom: 8px;
+        }
+        .wallet-card p {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--brand-gold);
+        }
+        .tx-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .tx-table th, .tx-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 13px;
+        }
+        .tx-table th { font-weight: 800; color: var(--text-secondary); }
+    </style>
+</head>
+<body>
+    <div class="container-box">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">💰 මගේ මුදල් පසුම්බිය | My Wallet</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px; margin-bottom: 30px;">ඔබගේ කොමිස් ලැබීම් සහ මුදල් ලබාගැනීම් (Withdrawals) මෙහි කළමනාකරණය කරන්න.</p>
+
+        <div class="wallet-grid">
+            <div class="wallet-card">
+                <h4>Available Balance</h4>
+                <p id="availBal">LKR 0.00</p>
+            </div>
+            <div class="wallet-card">
+                <h4>Pending Balance</h4>
+                <p id="pendBal" style="color: var(--brand-orange);">LKR 0.00</p>
+            </div>
+            <div class="wallet-card">
+                <h4>Total Earned</h4>
+                <p id="earnBal" style="color: #28a745;">LKR 0.00</p>
+            </div>
+            <div class="wallet-card">
+                <h4>Total Withdrawn</h4>
+                <p id="withBal" style="color: var(--text-muted);">LKR 0.00</p>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 40px;">
+            <div>
+                <h3 style="font-size: 18px; font-weight: 900; margin-bottom: 15px;">මුදල් ලබාගැනීම (Request Withdrawal)</h3>
+                <form id="withdrawForm" style="background: var(--bg-main); padding: 25px; border-radius: 16px; border: 1px solid var(--border-color);">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display:block; font-size:13px; font-weight:700; color:var(--text-secondary); margin-bottom:8px;">ලබාගැනීමට අවශ්‍ය ප්‍රමාණය (Amount LKR)</label>
+                        <input type="number" id="wAmount" class="form-control" placeholder="Min. LKR 1,000.00" required>
+                    </div>
+                    <button type="submit" class="btn-register" style="width: 100%; padding: 12px; border-radius: 20px; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: white; border: none; font-weight: 800; cursor: pointer;">Withdraw Request එකක් දමන්න</button>
+                </form>
+            </div>
+
+            <div>
+                <h3 style="font-size: 18px; font-weight: 900; margin-bottom: 15px;">මෑතකාලීන ගනුදෙනු (Recent Ledger Logs)</h3>
+                <table class="tx-table">
+                    <thead>
+                        <tr>
+                            <th>වර්ගය (Type)</th>
+                            <th>ප්‍රමාණය (Amount)</th>
+                            <th>දිනය (Date)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="txHistoryList">
+                        <tr>
+                            <td colspan="3" style="text-align: center; color: var(--text-muted);">ගනුදෙනු ඉතිහාසයක් නැත.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <p style="margin-top: 35px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            <a href="dashboard.html" style="color: var(--brand-orange); text-decoration: none;">← ආපසු Dashboard එකට</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function fetchWalletDetails() {
+            try {
+                const response = await fetch('/api/wallet/balance', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                
+                document.getElementById('availBal').textContent = 'LKR ' + data.balances.availableBalance.toFixed(2);
+                document.getElementById('pendBal').textContent = 'LKR ' + data.balances.pendingBalance.toFixed(2);
+                document.getElementById('earnBal').textContent = 'LKR ' + data.balances.totalEarned.toFixed(2);
+                document.getElementById('withBal').textContent = 'LKR ' + data.balances.totalWithdrawn.toFixed(2);
+
+                const tbody = document.getElementById('txHistoryList');
+                if (data.ledger && data.ledger.length > 0) {
+                    tbody.innerHTML = '';
+                    data.ledger.slice().reverse().forEach(tx => {
+                        const tr = document.createElement('tr');
+                        const isPos = tx.amount > 0;
+                        tr.innerHTML = `
+                            <td><strong>${tx.type}</strong></td>
+                            <td style="color: ${isPos ? '#28a745' : '#dc3545'}; font-weight: 800;">${isPos ? '+' : ''}LKR ${tx.amount.toFixed(2)}</td>
+                            <td>${new Date(tx.created_at || Date.now()).toLocaleDateString()}</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        document.getElementById('withdrawForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const amount = document.getElementById('wAmount').value;
+
+            try {
+                const response = await fetch('/api/withdrawal/request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ amount })
+                });
+
+                if (response.ok) {
+                    alert('🎉 Withdrawal request එක සාර්ථකව ඉදිරිපත් කරන ලදී!');
+                    document.getElementById('wAmount').value = '';
+                    fetchWalletDetails();
+                } else {
+                    const data = await response.json();
+                    alert('❌ Withdrawal Request error: ' + data.error);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        });
+
+        fetchWalletDetails();
+    </script>
+</body>
+</html>

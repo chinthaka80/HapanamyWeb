@@ -8,6 +8,7 @@ require('./auth.test');
 require('./kyc.test');
 require('./products.test');
 require('./binary.test');
+require('./wallet.test');
 
 // Run
 runTests();

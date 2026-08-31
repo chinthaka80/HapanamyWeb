@@ -5,6 +5,7 @@ const AuthService = require('./services/auth-service');
 const PlacementEngine = require('./services/placement-engine');
 const KycService = require('./services/kyc-service');
 const ProductService = require('./services/product-service');
+const WalletService = require('./services/wallet-service');
 
 const PORT = 3000;
 
@@ -23,7 +24,7 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4/5
+// Mock Databases for Phase 3/4/5/8
 const mockKycDocs = [];
 const mockBankAccounts = [];
 const mockAuditLogs = [];
@@ -46,6 +47,9 @@ const mockProducts = [
 ];
 const mockProductPurchases = [];
 const mockPaymentDeposits = [];
+
+const mockWalletLedger = [];
+const mockWithdrawalRequests = [];
 
 function parseRequestBody(req) {
     return new Promise((resolve) => {
@@ -195,36 +199,6 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/auth/forgot-password
-    if (req.method === 'POST' && pathname === '/api/auth/forgot-password') {
-        const body = await parseRequestBody(req);
-        const { email } = body;
-        if (!email) {
-            sendJSON(res, 400, { error: 'Email is required.' });
-            return;
-        }
-        sendJSON(res, 200, { success: true, message: 'Reset link sent if email exists.' });
-        return;
-    }
-
-    // POST /api/auth/reset-password
-    if (req.method === 'POST' && pathname === '/api/auth/reset-password') {
-        const body = await parseRequestBody(req);
-        const { token, newPassword } = body;
-        if (!token || !newPassword) {
-            sendJSON(res, 400, { error: 'Token and new password are required.' });
-            return;
-        }
-        sendJSON(res, 200, { success: true, message: 'Password has been successfully updated.' });
-        return;
-    }
-
-    // GET /api/auth/verify-email
-    if (req.method === 'GET' && pathname === '/api/auth/verify-email') {
-        sendJSON(res, 200, { success: true, message: 'Email verified successfully.' });
-        return;
-    }
-
     // ========================================================
     // KYC & BANK ACCOUNT SYSTEM REST ENDPOINTS (PHASE 4)
     // ========================================================
@@ -317,7 +291,7 @@ const server = http.createServer(async (req, res) => {
         const { kycId, action, notes } = body;
 
         if (!kycId || !action || !['VERIFIED', 'REJECTED'].includes(action)) {
-            sendJSON(res, 400, { error: 'KycId and action (VERIFIED/REJECTED) are required.' });
+            sendJSON(res, 400, { error: 'KycId and action are required.' });
             return;
         }
 
@@ -512,7 +486,6 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Prevent Duplicate Payment Reference submissions
         const duplicate = mockPaymentDeposits.some(d => d.bank_reference === bankReference);
         if (duplicate) {
             sendJSON(res, 400, { error: 'This payment reference code has already been submitted.' });
@@ -550,7 +523,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /api/admin/deposits/pending (Admin only)
+    // GET /api/admin/deposits/pending
     if (req.method === 'GET' && pathname === '/api/admin/deposits/pending') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser || authUser.role !== 'admin') {
@@ -563,7 +536,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/admin/deposits/review (Admin only)
+    // POST /api/admin/deposits/review
     if (req.method === 'POST' && pathname === '/api/admin/deposits/review') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser || authUser.role !== 'admin') {
@@ -572,7 +545,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         const body = await parseRequestBody(req);
-        const { depositId, action, notes } = body; // action is 'APPROVED' or 'REJECTED'
+        const { depositId, action, notes } = body;
 
         if (!depositId || !action || !['APPROVED', 'REJECTED'].includes(action)) {
             sendJSON(res, 400, { error: 'DepositId and action are required.' });
@@ -590,7 +563,6 @@ const server = http.createServer(async (req, res) => {
         mockPaymentDeposits[depIdx].status = action;
         mockPaymentDeposits[depIdx].reviewer_id = authUser.id;
         mockPaymentDeposits[depIdx].reviewed_at = new Date().toISOString();
-        mockPaymentDeposits[depIdx].review_notes = notes || '';
 
         const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
         if (purchIdx !== -1) {
@@ -598,9 +570,18 @@ const server = http.createServer(async (req, res) => {
                 mockProductPurchases[purchIdx].status = 'ACTIVE';
                 mockProductPurchases[purchIdx].activated_at = new Date().toISOString();
 
-                // Trigger decoupled commission engine and binary matching events
                 ProductService.triggerPurchaseActivation(mockProductPurchases[purchIdx]);
                 KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id);
+
+                // Auto Seed Direct Referral commission (8%) to sponsor for local testing
+                const sponsorCommission = ProductService.isValidDeposit(deposit) ? mockProducts[0].price * 0.08 : 596.00;
+                mockWalletLedger.push({
+                    id: 'tx-' + Math.random().toString(36).substr(2, 9),
+                    user_id: 'sponsor-uuid-99',
+                    type: 'DIRECT_COMMISSION',
+                    amount: sponsorCommission,
+                    created_at: new Date().toISOString()
+                });
             } else {
                 mockProductPurchases[purchIdx].status = 'CANCELLED';
             }
@@ -609,75 +590,191 @@ const server = http.createServer(async (req, res) => {
         const auditAction = action === 'APPROVED' ? 'DEPOSIT_APPROVED' : 'DEPOSIT_REJECTED';
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'payment_deposits', depositId, { status: oldStatus }, { status: action });
 
-        sendJSON(res, 200, { success: true, message: `Deposit reviewed successfully. Status updated to ${action}.` });
+        sendJSON(res, 200, { success: true, message: `Deposit status has been updated to ${action}.` });
         return;
     }
 
-    // GET /api/deposits/slip (Private storage streaming gate for payment slips)
-    if (req.method === 'GET' && pathname === '/api/deposits/slip') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized to view secure slip.' });
-            return;
-        }
+    // ========================================================
+    // WALLET & WITHDRAWAL SYSTEM API ROUTER (PHASE 8)
+    // ========================================================
 
-        const filename = url.searchParams.get('filename');
-        if (!filename) {
-            sendJSON(res, 400, { error: 'Missing filename.' });
-            return;
-        }
-
-        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
-        const securePath = path.join(__dirname, 'storage', 'private', 'slips', safeFilename);
-
-        if (!fs.existsSync(securePath)) {
-            sendJSON(res, 404, { error: 'Slip not found or access denied.' });
-            return;
-        }
-
-        const ownsSlip = mockPaymentDeposits.some(d => d.user_id === authUser.id && d.slip_url.includes(safeFilename));
-        if (!ownsSlip && authUser.role !== 'admin') {
-            sendJSON(res, 403, { error: 'Access Denied.' });
-            return;
-        }
-
-        res.writeHead(200, { 'Content-Type': 'image/png' }); // Assuming standard slip formats
-        fs.createReadStream(securePath).pipe(res);
-        return;
-    }
-
-    // POST /api/deposits/upload
-    if (req.method === 'POST' && pathname === '/api/deposits/upload') {
+    // GET /api/wallet/balance
+    if (req.method === 'GET' && pathname === '/api/wallet/balance') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
             sendJSON(res, 401, { error: 'Unauthorized.' });
             return;
         }
 
-        const filename = url.searchParams.get('filename');
-        if (!filename) {
-            sendJSON(res, 400, { error: 'Missing filename.' });
+        const userLedger = mockWalletLedger.filter(tx => tx.user_id === authUser.id);
+        const balances = WalletService.calculateBalances(userLedger);
+        sendJSON(res, 200, { balances, ledger: userLedger });
+        return;
+    }
+
+    // POST /api/withdrawal/request
+    if (req.method === 'POST' && pathname === '/api/withdrawal/request') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
             return;
         }
 
-        const slipsDir = path.join(__dirname, 'storage', 'private', 'slips');
-        if (!fs.existsSync(slipsDir)) {
-            fs.mkdirSync(slipsDir, { recursive: true });
+        const body = await parseRequestBody(req);
+        const amount = parseFloat(body.amount);
+
+        if (!amount || amount <= 0) {
+            sendJSON(res, 400, { error: 'A valid amount is required.' });
+            return;
         }
 
-        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
-        const uploadPath = path.join(slipsDir, safeFilename);
+        // Fetch User KYC Status & Active Bank Details
+        const kyc = mockKycDocs.find(d => d.user_id === authUser.id);
+        const kycStatus = kyc ? kyc.status : 'PENDING';
 
-        const writeStream = fs.createWriteStream(uploadPath);
-        req.pipe(writeStream);
+        const userLedger = mockWalletLedger.filter(tx => tx.user_id === authUser.id);
+        const balances = WalletService.calculateBalances(userLedger);
 
-        writeStream.on('finish', () => {
-            sendJSON(res, 200, { success: true, filePath: 'storage/private/slips/' + safeFilename });
+        const check = WalletService.validateWithdrawal(amount, balances.availableBalance, kycStatus);
+        if (!check.valid) {
+            sendJSON(res, 400, { error: check.error });
+            return;
+        }
+
+        const reqId = 'withdraw-' + Math.random().toString(36).substr(2, 9);
+        const request = {
+            id: reqId,
+            user_id: authUser.id,
+            amount: amount,
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        mockWithdrawalRequests.push(request);
+
+        // Lock funds in Wallet Ledger (Negative Entry)
+        mockWalletLedger.push({
+            id: 'tx-' + Math.random().toString(36).substr(2, 9),
+            user_id: authUser.id,
+            type: 'WITHDRAWAL_REQUEST',
+            amount: -amount,
+            reference_id: reqId,
+            reference_type: 'withdrawal_requests',
+            created_at: new Date().toISOString()
         });
 
-        writeStream.on('error', (err) => {
-            sendJSON(res, 500, { success: false, error: err.message });
+        KycService.logAction(mockAuditLogs, authUser.id, 'WITHDRAWAL_REQUESTED', 'withdrawal_requests', reqId, null, { amount });
+
+        sendJSON(res, 201, { success: true, request });
+        return;
+    }
+
+    // GET /api/admin/withdrawals/pending (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/withdrawals/pending') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const pending = mockWithdrawalRequests.filter(w => w.status === 'PENDING');
+        sendJSON(res, 200, { pending });
+        return;
+    }
+
+    // POST /api/admin/withdrawals/review (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/withdrawals/review') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { requestId, action, notes } = body; // action is 'APPROVED' or 'REJECTED'
+
+        if (!requestId || !action || !['APPROVED', 'REJECTED'].includes(action)) {
+            sendJSON(res, 400, { error: 'RequestId and action are required.' });
+            return;
+        }
+
+        const reqIdx = mockWithdrawalRequests.findIndex(w => w.id === requestId);
+        if (reqIdx === -1) {
+            sendJSON(res, 404, { error: 'Withdrawal request not found.' });
+            return;
+        }
+
+        const reqObj = mockWithdrawalRequests[reqIdx];
+        const oldStatus = reqObj.status;
+        mockWithdrawalRequests[reqIdx].status = action;
+        mockWithdrawalRequests[reqIdx].reviewer_id = authUser.id;
+        mockWithdrawalRequests[reqIdx].reviewed_at = new Date().toISOString();
+
+        if (action === 'REJECTED') {
+            // Unlock funds: credit back to wallet ledger
+            mockWalletLedger.push({
+                id: 'tx-' + Math.random().toString(36).substr(2, 9),
+                user_id: reqObj.user_id,
+                type: 'ADJUSTMENT',
+                amount: reqObj.amount, // Positive adjustment to refund back
+                reference_id: requestId,
+                reference_type: 'withdrawal_requests',
+                created_at: new Date().toISOString()
+            });
+        }
+
+        const auditAction = action === 'APPROVED' ? 'WITHDRAWAL_APPROVED' : 'WITHDRAWAL_REJECTED';
+        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'withdrawal_requests', requestId, { status: oldStatus }, { status: action, notes });
+
+        sendJSON(res, 200, { success: true, message: `Request status has been updated to ${action}.` });
+        return;
+    }
+
+    // POST /api/admin/withdrawals/pay (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/withdrawals/pay') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { requestId } = body;
+
+        if (!requestId) {
+            sendJSON(res, 400, { error: 'RequestId is required.' });
+            return;
+        }
+
+        const reqIdx = mockWithdrawalRequests.findIndex(w => w.id === requestId);
+        if (reqIdx === -1) {
+            sendJSON(res, 404, { error: 'Withdrawal request not found.' });
+            return;
+        }
+
+        const reqObj = mockWithdrawalRequests[reqIdx];
+        if (reqObj.status !== 'APPROVED') {
+            sendJSON(res, 400, { error: 'Only approved requests can be marked as paid.' });
+            return;
+        }
+
+        mockWithdrawalRequests[reqIdx].status = 'PAID';
+        mockWithdrawalRequests[reqIdx].paid_at = new Date().toISOString();
+
+        // Log paid withdrawal in wallet ledger
+        mockWalletLedger.push({
+            id: 'tx-' + Math.random().toString(36).substr(2, 9),
+            user_id: reqObj.user_id,
+            type: 'WITHDRAWAL_PAID',
+            amount: -reqObj.amount, // Lock out transaction
+            reference_id: requestId,
+            reference_type: 'withdrawal_requests',
+            created_at: new Date().toISOString()
         });
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'WITHDRAWAL_PAID', 'withdrawal_requests', requestId, { status: 'APPROVED' }, { status: 'PAID' });
+
+        sendJSON(res, 200, { success: true, message: 'Withdrawal marked as paid successfully.' });
         return;
     }
 
