@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <title>Hapanamy - Dashboard Router</title>
+</head>
+<body>
+    <p style="font-family: sans-serif; text-align: center; margin-top: 50px; font-weight: bold;">
+        Redirecting to your Dashboard...
+    </p>
+
+    <script>
+        const activeUser = JSON.parse(localStorage.getItem('active_user'));
+        if (!activeUser) {
+            window.location.href = 'login.html';
+        } else {
+            if (activeUser.role === 'admin') {
+                window.location.href = 'hapanamy-admin-portal-9226.html';
+            } else if (activeUser.role === 'affiliate') {
+                window.location.href = 'affiliate-dashboard.html';
+            } else {
+                window.location.href = 'student-dashboard.html';
+            }
+        }
+    </script>
+</body>
+</html>

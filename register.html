@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Register | ලියාපදිංචි වන්න</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .register-container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-main);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .btn-register {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            color: white;
+            border: none;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+        .btn-register:hover {
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">ලියාපදිංචි වන්න | Register</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px; margin-bottom: 30px;">Hapanamy පද්ධතියට සම්බන්ධ වී ඉගෙන ගෙන උපයන්න.</p>
+        
+        <form id="registerForm">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>සම්පූර්ණ නම (Full Name)</label>
+                    <input type="text" id="fullName" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>පරිශීලක නාමය (Username)</label>
+                    <input type="text" id="username" class="form-control" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label>ඊමේල් ලිපිනය (Email Address)</label>
+                    <input type="email" id="email" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>දුරකථන අංකය (Mobile Number)</label>
+                    <input type="text" id="mobile" class="form-control" required placeholder="0726090050">
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>මුරපදය (Password)</label>
+                    <input type="password" id="password" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>මුරපදය තහවුරු කරන්න (Confirm Password)</label>
+                    <input type="password" id="confirmPassword" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>උපන් දිනය (Date of Birth)</label>
+                    <input type="date" id="dob" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label>NIC / Passport අංකය</label>
+                    <input type="text" id="nicPassport" class="form-control" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>ලිපිනය (Address)</label>
+                <textarea id="address" class="form-control" style="height: 80px;" required></textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Sponsor Referral Code</label>
+                    <input type="text" id="sponsorCode" class="form-control" required placeholder="admin">
+                </div>
+                <div class="form-group">
+                    <label>ප්‍රියතම Binary පිහිටීම (Preferred Position)</label>
+                    <select id="position" class="form-control" required>
+                        <option value="LEFT">LEFT Leg</option>
+                        <option value="RIGHT">RIGHT Leg</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register" style="margin-top: 20px;">ගිණුම සාදන්න (Create Account)</button>
+        </form>
+
+        <p style="margin-top: 20px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            දැනටමත් ගිණුමක් තිබේද? <a href="login.html" style="color: var(--brand-orange);">ලොග් වන්න (Login)</a>
+        </p>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password !== confirmPassword) {
+                alert('⚠️ මුරපදයන් ගැලපෙන්නේ නැත (Passwords do not match).');
+                return;
+            }
+
+            const payload = {
+                fullName: document.getElementById('fullName').value,
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                mobile: document.getElementById('mobile').value,
+                password: password,
+                dob: document.getElementById('dob').value,
+                address: document.getElementById('address').value,
+                nicPassport: document.getElementById('nicPassport').value,
+                sponsorCode: document.getElementById('sponsorCode').value,
+                position: document.getElementById('position').value
+            };
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                
+                const data = await response.json();
+                if (response.ok) {
+                    alert('🎉 ලියාපදිංචි වීම සාර්ථකයි! (Registration Successful)');
+                    window.location.href = 'login.html';
+                } else {
+                    alert('❌ ' + (data.error || 'ලියාපදිංචි වීම අසාර්ථකයි.'));
+                }
+            } catch (err) {
+                alert('❌ Error connecting to server: ' + err.message);
+            }
+        });
+    </script>
+</body>
+</html>

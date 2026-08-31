@@ -1,18 +1,47 @@
 // Hapanamy.lk MLM Placement Engine
-// Service to handle binary tree calculations and placement positions
+// Service to handle network placement rules, loops prevention, and sponsor validation
 
 const PlacementEngine = {
     /**
-     * Finds the next available placement position in the binary tree under a parent.
-     * In binary, positions are either 'LEFT' or 'RIGHT'.
+     * Verifies that the sponsor exists and is active.
      */
-    findNextAvailablePosition(parentNodeId, preferredLeg) {
-        // Boilerplate placeholder for Phase 8
-        return {
-            parentId: parentNodeId,
-            leg: preferredLeg,
-            depth: 1
-        };
+    validateSponsor(sponsorId, users) {
+        const sponsor = users.find(u => u.id === sponsorId);
+        return !!sponsor && sponsor.status === 'ACTIVE';
+    },
+
+    /**
+     * Checks if sponsorId is descended from userId (circular referral check).
+     */
+    isCircularReferral(userId, sponsorId, sponsorsList) {
+        let currentSponsorId = sponsorId;
+        const visited = new Set();
+
+        while (currentSponsorId) {
+            if (currentSponsorId === userId) {
+                return true;
+            }
+            if (visited.has(currentSponsorId)) {
+                // Prevent infinite loop in case of bad database states
+                break;
+            }
+            visited.add(currentSponsorId);
+
+            const record = sponsorsList.find(s => s.user_id === currentSponsorId);
+            currentSponsorId = record ? record.sponsor_id : null;
+        }
+
+        return false;
+    },
+
+    /**
+     * Verifies if the requested binary position is already occupied under a parent.
+     */
+    isPositionOccupied(placementParentId, position, binaryNodes) {
+        return binaryNodes.some(node => 
+            node.placement_parent_id === placementParentId && 
+            node.position === position
+        );
     }
 };
 
