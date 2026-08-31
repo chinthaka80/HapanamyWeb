@@ -11,6 +11,9 @@ const RefundService = require('./services/refund-service');
 const CommissionCore = require('./services/commission-core');
 const VolumeLedger = require('./services/volume-ledger');
 const SecurityCore = require('./services/security-core');
+const ProductEconomicsCalculator = require('./services/product-economics-calculator');
+const ProductCommissionValidator = require('./services/product-commission-validator');
+const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
 
 const PORT = 3000;
 
@@ -490,11 +493,84 @@ const server = http.createServer(async (req, res) => {
         }
 
         const body = await parseRequestBody(req);
-        const { name, code, price, binaryVolume, directCommission, binaryCommission } = body;
+        const {
+            name, code, pricingMode, marketPrice, discountType, discountValue, price,
+            productCost, minimumCompanyProfit, operatingCostReserve, paymentProcessingReserve,
+            refundRiskReserve, taxReserve, otherReserve, commissionSafetyBuffer,
+            binaryVolume, directCommissionRate, binaryCommissionRate, maxBinaryQualifiedLevels,
+            commissionMode, status
+        } = body;
 
-        if (!name || !code || !price || !binaryVolume) {
-            sendJSON(res, 400, { error: 'Name, code, price and binaryVolume are required.' });
+        if (!name || !code) {
+            sendJSON(res, 400, { error: 'Name and code are required.' });
             return;
+        }
+
+        // Set defaults to preserve backward compatibility for simple payloads
+        const pricing = {
+            pricing_mode: pricingMode || 'FIXED',
+            market_price: parseFloat(marketPrice || price || 0.00),
+            discount_type: discountType || 'NONE',
+            discount_value: parseFloat(discountValue || 0.00),
+            selling_price: parseFloat(price || 0.00),
+            product_cost: parseFloat(productCost || 0.00),
+            minimum_company_profit: parseFloat(minimumCompanyProfit || 0.00),
+            operating_cost_reserve: parseFloat(operatingCostReserve || 0.00),
+            payment_processing_reserve: parseFloat(paymentProcessingReserve || 0.00),
+            refund_risk_reserve: parseFloat(refundRiskReserve || 0.00),
+            tax_reserve: parseFloat(taxReserve || 0.00),
+            other_reserve: parseFloat(otherReserve || 0.00),
+            commission_safety_buffer: parseFloat(commissionSafetyBuffer || 0.00),
+            binary_volume: parseFloat(binaryVolume || 0.00),
+            direct_commission_rate: parseFloat(directCommissionRate || body.directCommission || 8.00),
+            binary_commission_rate: parseFloat(binaryCommissionRate || body.binaryCommission || 7.00),
+            max_binary_qualified_levels: parseInt(maxBinaryQualifiedLevels || 7),
+            commission_mode: commissionMode || 'MANUAL'
+        };
+
+        // Determine maximum safe binary rate
+        const maxSafeRate = SafeBinaryCommissionRateCalculator.calculateMaxSafeRate(pricing);
+
+        if (pricing.commission_mode === 'AUTO_SAFE') {
+            pricing.binary_commission_rate = maxSafeRate;
+        }
+
+        // Run economics and validator
+        const econCalc = ProductEconomicsCalculator.calculate(pricing);
+        const validation = ProductCommissionValidator.validate(econCalc);
+
+        // Protect Product Profit Activation Firewall: BLOCKED products can never be set ACTIVE
+        const targetStatus = status || 'ACTIVE';
+        if (targetStatus === 'ACTIVE') {
+            // 1. Check basic economics block conditions first
+            if (validation.status === 'BLOCKED') {
+                sendJSON(res, 400, {
+                    status: 'BLOCKED',
+                    blocked_reason: validation.blocked_reason,
+                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    remaining_margin: econCalc.calculated.remaining_company_margin,
+                    maximum_safe_binary_rate: maxSafeRate,
+                    requested_binary_rate: pricing.binary_commission_rate
+                });
+                return;
+            }
+
+            // 2. Check manual commission limits second
+            if (pricing.commission_mode === 'MANUAL' && pricing.binary_commission_rate > maxSafeRate) {
+                sendJSON(res, 400, {
+                    status: 'BLOCKED',
+                    blocked_reason: `Manual binary commission rate ${pricing.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                    requested_binary_rate: pricing.binary_commission_rate,
+                    maximum_safe_binary_rate: maxSafeRate,
+                    difference: Math.round((pricing.binary_commission_rate - maxSafeRate) * 100) / 100,
+                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    remaining_margin: econCalc.calculated.remaining_company_margin
+                });
+                return;
+            }
         }
 
         const prodId = 'prod-' + Math.random().toString(36).substr(2, 9);
@@ -502,17 +578,156 @@ const server = http.createServer(async (req, res) => {
             id: prodId,
             name: SecurityCore.sanitizeInput(name),
             code: SecurityCore.sanitizeInput(code),
-            price: parseFloat(price),
-            binary_volume: parseFloat(binaryVolume),
-            direct_commission_percent: parseFloat(directCommission || 8),
-            binary_commission_percent: parseFloat(binaryCommission || 7),
-            status: 'ACTIVE'
+            price: econCalc.calculated.selling_price,
+            binary_volume: pricing.binary_volume,
+            direct_commission_percent: pricing.direct_commission_rate,
+            binary_commission_percent: pricing.binary_commission_rate,
+            pricing_mode: pricing.pricing_mode,
+            market_price: pricing.market_price,
+            discount_type: pricing.discount_type,
+            discount_value: pricing.discount_value,
+            product_cost: pricing.product_cost,
+            minimum_company_profit: pricing.minimum_company_profit,
+            operating_cost_reserve: pricing.operating_cost_reserve,
+            payment_processing_reserve: pricing.payment_processing_reserve,
+            refund_risk_reserve: pricing.refund_risk_reserve,
+            tax_reserve: pricing.tax_reserve,
+            other_reserve: pricing.other_reserve,
+            commission_safety_buffer: pricing.commission_safety_buffer,
+            max_binary_qualified_levels: pricing.max_binary_qualified_levels,
+            commission_mode: pricing.commission_mode,
+            economics_status: validation.status,
+            validation_status: validation.status === 'BLOCKED' ? 'FAILED' : 'VALIDATED',
+            blocked_reason: validation.blocked_reason,
+            status: targetStatus
         };
 
         mockProducts.push(product);
         KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_CREATED', 'products', prodId, null, product);
 
         sendJSON(res, 201, { success: true, product });
+        return;
+    }
+
+    // POST /api/products/edit (Admin only)
+    if (req.method === 'POST' && pathname === '/api/products/edit') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { id, name, status } = body;
+
+        if (!id) {
+            sendJSON(res, 400, { error: 'Product ID is required.' });
+            return;
+        }
+
+        const prodIdx = mockProducts.findIndex(p => p.id === id);
+        if (prodIdx === -1) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        const currentProduct = mockProducts[prodIdx];
+
+        // Merge existing values with incoming updates
+        const merged = {
+            pricing_mode: body.pricingMode || currentProduct.pricing_mode || 'FIXED',
+            market_price: parseFloat(body.marketPrice !== undefined ? body.marketPrice : (currentProduct.market_price || currentProduct.price || 0.00)),
+            discount_type: body.discountType || currentProduct.discount_type || 'NONE',
+            discount_value: parseFloat(body.discountValue !== undefined ? body.discountValue : (currentProduct.discount_value || 0.00)),
+            selling_price: parseFloat(body.price !== undefined ? body.price : (currentProduct.price || 0.00)),
+            product_cost: parseFloat(body.productCost !== undefined ? body.productCost : (currentProduct.product_cost || 0.00)),
+            minimum_company_profit: parseFloat(body.minimumCompanyProfit !== undefined ? body.minimumCompanyProfit : (currentProduct.minimum_company_profit || 0.00)),
+            operating_cost_reserve: parseFloat(body.operatingCostReserve !== undefined ? body.operatingCostReserve : (currentProduct.operating_cost_reserve || 0.00)),
+            payment_processing_reserve: parseFloat(body.paymentProcessingReserve !== undefined ? body.paymentProcessingReserve : (currentProduct.payment_processing_reserve || 0.00)),
+            refund_risk_reserve: parseFloat(body.refundRiskReserve !== undefined ? body.refundRiskReserve : (currentProduct.refund_risk_reserve || 0.00)),
+            tax_reserve: parseFloat(body.taxReserve !== undefined ? body.taxReserve : (currentProduct.tax_reserve || 0.00)),
+            other_reserve: parseFloat(body.otherReserve !== undefined ? body.otherReserve : (currentProduct.other_reserve || 0.00)),
+            commission_safety_buffer: parseFloat(body.commissionSafetyBuffer !== undefined ? body.commissionSafetyBuffer : (currentProduct.commission_safety_buffer || 0.00)),
+            binary_volume: parseFloat(body.binaryVolume !== undefined ? body.binaryVolume : (currentProduct.binary_volume || 0.00)),
+            direct_commission_rate: parseFloat(body.directCommissionRate !== undefined ? body.directCommissionRate : (currentProduct.direct_commission_percent || 8.00)),
+            binary_commission_rate: parseFloat(body.binaryCommissionRate !== undefined ? body.binaryCommissionRate : (currentProduct.binary_commission_percent || 7.00)),
+            max_binary_qualified_levels: parseInt(body.maxBinaryQualifiedLevels !== undefined ? body.maxBinaryQualifiedLevels : (currentProduct.max_binary_qualified_levels || 7)),
+            commission_mode: body.commissionMode || currentProduct.commission_mode || 'MANUAL'
+        };
+
+        const maxSafeRate = SafeBinaryCommissionRateCalculator.calculateMaxSafeRate(merged);
+
+        if (merged.commission_mode === 'AUTO_SAFE') {
+            merged.binary_commission_rate = maxSafeRate;
+        }
+
+        const econCalc = ProductEconomicsCalculator.calculate(merged);
+        const validation = ProductCommissionValidator.validate(econCalc);
+
+        const targetStatus = status !== undefined ? status : currentProduct.status;
+        if (targetStatus === 'ACTIVE') {
+            // 1. Check basic economics block conditions first
+            if (validation.status === 'BLOCKED') {
+                sendJSON(res, 400, {
+                    status: 'BLOCKED',
+                    blocked_reason: validation.blocked_reason,
+                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    remaining_margin: econCalc.calculated.remaining_company_margin,
+                    maximum_safe_binary_rate: maxSafeRate,
+                    requested_binary_rate: merged.binary_commission_rate
+                });
+                return;
+            }
+
+            // 2. Check manual commission limits second
+            if (merged.commission_mode === 'MANUAL' && merged.binary_commission_rate > maxSafeRate) {
+                sendJSON(res, 400, {
+                    status: 'BLOCKED',
+                    blocked_reason: `Manual binary commission rate ${merged.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                    requested_binary_rate: merged.binary_commission_rate,
+                    maximum_safe_binary_rate: maxSafeRate,
+                    difference: Math.round((merged.binary_commission_rate - maxSafeRate) * 100) / 100,
+                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                    remaining_margin: econCalc.calculated.remaining_company_margin
+                });
+                return;
+            }
+        }
+
+        // Apply edits
+        mockProducts[prodIdx] = {
+            ...currentProduct,
+            name: name ? SecurityCore.sanitizeInput(name) : currentProduct.name,
+            price: econCalc.calculated.selling_price,
+            binary_volume: merged.binary_volume,
+            direct_commission_percent: merged.direct_commission_rate,
+            binary_commission_percent: merged.binary_commission_rate,
+            pricing_mode: merged.pricing_mode,
+            market_price: merged.market_price,
+            discount_type: merged.discount_type,
+            discount_value: merged.discount_value,
+            product_cost: merged.product_cost,
+            minimum_company_profit: merged.minimum_company_profit,
+            operating_cost_reserve: merged.operating_cost_reserve,
+            payment_processing_reserve: merged.payment_processing_reserve,
+            refund_risk_reserve: merged.refund_risk_reserve,
+            tax_reserve: merged.tax_reserve,
+            other_reserve: merged.other_reserve,
+            commission_safety_buffer: merged.commission_safety_buffer,
+            max_binary_qualified_levels: merged.max_binary_qualified_levels,
+            commission_mode: merged.commission_mode,
+            economics_status: validation.status,
+            validation_status: validation.status === 'BLOCKED' ? 'FAILED' : 'VALIDATED',
+            blocked_reason: validation.blocked_reason,
+            status: targetStatus
+        };
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_EDITED', 'products', id, currentProduct, mockProducts[prodIdx]);
+
+        sendJSON(res, 200, { success: true, product: mockProducts[prodIdx] });
         return;
     }
 

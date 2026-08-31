@@ -17,6 +17,7 @@ require('./database-economics.test');
 require('./product-economics.test');
 require('./product-validator.test');
 require('./safe-binary-calculator.test');
+require('./product-firewall.test');
 
 // Run
 runTests();
