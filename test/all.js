@@ -16,6 +16,7 @@ require('./integration.test');
 require('./database-economics.test');
 require('./product-economics.test');
 require('./product-validator.test');
+require('./safe-binary-calculator.test');
 
 // Run
 runTests();
