@@ -4,6 +4,7 @@ const path = require('path');
 const AuthService = require('./services/auth-service');
 const PlacementEngine = require('./services/placement-engine');
 const KycService = require('./services/kyc-service');
+const ProductService = require('./services/product-service');
 
 const PORT = 3000;
 
@@ -22,10 +23,29 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4
+// Mock Databases for Phase 3/4/5
 const mockKycDocs = [];
 const mockBankAccounts = [];
 const mockAuditLogs = [];
+
+const mockProducts = [
+    {
+        id: 'prod-fb-mon',
+        name: 'Facebook Monetisation Course',
+        code: 'FB-MON',
+        description: 'Learn to monetize Facebook Pages smartly.',
+        category: 'Social Media',
+        price: 7450.00,
+        binary_volume: 7450.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        image_url: 'assets/fb-mon.jpg',
+        course_url: 'https://hapanamy.lk/courses/fb-mon',
+        status: 'ACTIVE'
+    }
+];
+const mockProductPurchases = [];
+const mockPaymentDeposits = [];
 
 function parseRequestBody(req) {
     return new Promise((resolve) => {
@@ -228,7 +248,7 @@ const server = http.createServer(async (req, res) => {
             id: docId,
             user_id: authUser.id,
             nic_passport: body.nicPassport,
-            document_url: body.documentUrl, // References safe private location
+            document_url: body.documentUrl,
             status: 'PENDING',
             created_at: new Date().toISOString()
         };
@@ -247,7 +267,6 @@ const server = http.createServer(async (req, res) => {
         mockKycDocs.push(docEntry);
         mockBankAccounts.push(bankEntry);
 
-        // Audit Logs
         KycService.logAction(mockAuditLogs, authUser.id, 'KYC_SUBMITTED', 'kyc_documents', docId, null, { status: 'PENDING' });
         KycService.logAction(mockAuditLogs, authUser.id, 'BANK_ADDED', 'bank_accounts', bankId, null, { accountNumber: body.accountNumber });
 
@@ -295,7 +314,7 @@ const server = http.createServer(async (req, res) => {
         }
 
         const body = await parseRequestBody(req);
-        const { kycId, action, notes } = body; // action is 'VERIFIED' or 'REJECTED'
+        const { kycId, action, notes } = body;
 
         if (!kycId || !action || !['VERIFIED', 'REJECTED'].includes(action)) {
             sendJSON(res, 400, { error: 'KycId and action (VERIFIED/REJECTED) are required.' });
@@ -314,7 +333,6 @@ const server = http.createServer(async (req, res) => {
         mockKycDocs[docIdx].review_notes = notes || '';
         mockKycDocs[docIdx].reviewed_at = new Date().toISOString();
 
-        // Audit Logs
         const auditAction = action === 'VERIFIED' ? 'KYC_APPROVED' : 'KYC_REJECTED';
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'kyc_documents', kycId, { status: oldStatus }, { status: action, notes });
 
@@ -357,7 +375,6 @@ const server = http.createServer(async (req, res) => {
         };
         mockBankAccounts.push(newBank);
 
-        // Audit Logs
         const actionType = oldBank ? 'BANK_CHANGED' : 'BANK_ADDED';
         KycService.logAction(mockAuditLogs, authUser.id, actionType, 'bank_accounts', newBankId, oldBank, newBank);
 
@@ -365,7 +382,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /api/kyc/document (Private Storage Streaming Gate)
+    // GET /api/kyc/document
     if (req.method === 'GET' && pathname === '/api/kyc/document') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
@@ -379,7 +396,6 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Safe private storage mapping (Outside the public served dir!)
         const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
         const securePath = path.join(__dirname, 'storage', 'private', 'kyc', safeFilename);
 
@@ -388,20 +404,18 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Verify ownership check: User owns this doc or is admin
         const ownsDoc = mockKycDocs.some(d => d.user_id === authUser.id && d.document_url.includes(safeFilename));
         if (!ownsDoc && authUser.role !== 'admin') {
-            sendJSON(res, 403, { error: 'Access Denied: You do not have permissions to view this file.' });
+            sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
 
-        // Stream file safely
-        res.writeHead(200, { 'Content-Type': 'application/pdf' }); // Assuming standard KYC format
+        res.writeHead(200, { 'Content-Type': 'application/pdf' });
         fs.createReadStream(securePath).pipe(res);
         return;
     }
 
-    // Private Upload Endpoint for KYC
+    // POST /api/kyc/upload
     if (req.method === 'POST' && pathname === '/api/kyc/upload') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
@@ -415,7 +429,6 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Create secure directories recursively if they don't exist
         const kycDir = path.join(__dirname, 'storage', 'private', 'kyc');
         if (!fs.existsSync(kycDir)) {
             fs.mkdirSync(kycDir, { recursive: true });
@@ -438,12 +451,242 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
+    // PRODUCTS & BANK DEPOSIT PAYMENT SYSTEM (PHASE 5)
+    // ========================================================
+
+    // GET /api/products/list
+    if (req.method === 'GET' && pathname === '/api/products/list') {
+        const activeOnly = mockProducts.filter(p => p.status === 'ACTIVE');
+        sendJSON(res, 200, { products: activeOnly });
+        return;
+    }
+
+    // POST /api/products/create (Admin only)
+    if (req.method === 'POST' && pathname === '/api/products/create') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { name, code, price, binaryVolume, directCommission, binaryCommission } = body;
+
+        if (!name || !code || !price || !binaryVolume) {
+            sendJSON(res, 400, { error: 'Name, code, price and binaryVolume are required.' });
+            return;
+        }
+
+        const prodId = 'prod-' + Math.random().toString(36).substr(2, 9);
+        const product = {
+            id: prodId,
+            name,
+            code,
+            price: parseFloat(price),
+            binary_volume: parseFloat(binaryVolume),
+            direct_commission_percent: parseFloat(directCommission || 8),
+            binary_commission_percent: parseFloat(binaryCommission || 7),
+            status: 'ACTIVE'
+        };
+
+        mockProducts.push(product);
+        KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_CREATED', 'products', prodId, null, product);
+
+        sendJSON(res, 201, { success: true, product });
+        return;
+    }
+
+    // POST /api/deposits/submit
+    if (req.method === 'POST' && pathname === '/api/deposits/submit') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId, bankReference, amount, slipUrl, notes } = body;
+
+        if (!productId || !bankReference || !amount || !slipUrl) {
+            sendJSON(res, 400, { error: 'All fields (productId, reference, amount, slip) are required.' });
+            return;
+        }
+
+        // Prevent Duplicate Payment Reference submissions
+        const duplicate = mockPaymentDeposits.some(d => d.bank_reference === bankReference);
+        if (duplicate) {
+            sendJSON(res, 400, { error: 'This payment reference code has already been submitted.' });
+            return;
+        }
+
+        const purchaseId = 'purch-' + Math.random().toString(36).substr(2, 9);
+        const purchase = {
+            id: purchaseId,
+            user_id: authUser.id,
+            product_id: productId,
+            price_paid: parseFloat(amount),
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        const depositId = 'dep-' + Math.random().toString(36).substr(2, 9);
+        const deposit = {
+            id: depositId,
+            purchase_id: purchaseId,
+            user_id: authUser.id,
+            bank_reference: bankReference,
+            slip_url: slipUrl,
+            status: 'PENDING',
+            notes: notes || '',
+            created_at: new Date().toISOString()
+        };
+
+        mockProductPurchases.push(purchase);
+        mockPaymentDeposits.push(deposit);
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'DEPOSIT_SUBMITTED', 'payment_deposits', depositId, null, deposit);
+
+        sendJSON(res, 201, { success: true, purchaseId });
+        return;
+    }
+
+    // GET /api/admin/deposits/pending (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/deposits/pending') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const pending = mockPaymentDeposits.filter(d => d.status === 'PENDING');
+        sendJSON(res, 200, { pending });
+        return;
+    }
+
+    // POST /api/admin/deposits/review (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/deposits/review') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { depositId, action, notes } = body; // action is 'APPROVED' or 'REJECTED'
+
+        if (!depositId || !action || !['APPROVED', 'REJECTED'].includes(action)) {
+            sendJSON(res, 400, { error: 'DepositId and action are required.' });
+            return;
+        }
+
+        const depIdx = mockPaymentDeposits.findIndex(d => d.id === depositId);
+        if (depIdx === -1) {
+            sendJSON(res, 404, { error: 'Deposit not found.' });
+            return;
+        }
+
+        const deposit = mockPaymentDeposits[depIdx];
+        const oldStatus = deposit.status;
+        mockPaymentDeposits[depIdx].status = action;
+        mockPaymentDeposits[depIdx].reviewer_id = authUser.id;
+        mockPaymentDeposits[depIdx].reviewed_at = new Date().toISOString();
+        mockPaymentDeposits[depIdx].review_notes = notes || '';
+
+        const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
+        if (purchIdx !== -1) {
+            if (action === 'APPROVED') {
+                mockProductPurchases[purchIdx].status = 'ACTIVE';
+                mockProductPurchases[purchIdx].activated_at = new Date().toISOString();
+
+                // Trigger decoupled commission engine and binary matching events
+                ProductService.triggerPurchaseActivation(mockProductPurchases[purchIdx]);
+                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id);
+            } else {
+                mockProductPurchases[purchIdx].status = 'CANCELLED';
+            }
+        }
+
+        const auditAction = action === 'APPROVED' ? 'DEPOSIT_APPROVED' : 'DEPOSIT_REJECTED';
+        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'payment_deposits', depositId, { status: oldStatus }, { status: action });
+
+        sendJSON(res, 200, { success: true, message: `Deposit reviewed successfully. Status updated to ${action}.` });
+        return;
+    }
+
+    // GET /api/deposits/slip (Private storage streaming gate for payment slips)
+    if (req.method === 'GET' && pathname === '/api/deposits/slip') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized to view secure slip.' });
+            return;
+        }
+
+        const filename = url.searchParams.get('filename');
+        if (!filename) {
+            sendJSON(res, 400, { error: 'Missing filename.' });
+            return;
+        }
+
+        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const securePath = path.join(__dirname, 'storage', 'private', 'slips', safeFilename);
+
+        if (!fs.existsSync(securePath)) {
+            sendJSON(res, 404, { error: 'Slip not found or access denied.' });
+            return;
+        }
+
+        const ownsSlip = mockPaymentDeposits.some(d => d.user_id === authUser.id && d.slip_url.includes(safeFilename));
+        if (!ownsSlip && authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        res.writeHead(200, { 'Content-Type': 'image/png' }); // Assuming standard slip formats
+        fs.createReadStream(securePath).pipe(res);
+        return;
+    }
+
+    // POST /api/deposits/upload
+    if (req.method === 'POST' && pathname === '/api/deposits/upload') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const filename = url.searchParams.get('filename');
+        if (!filename) {
+            sendJSON(res, 400, { error: 'Missing filename.' });
+            return;
+        }
+
+        const slipsDir = path.join(__dirname, 'storage', 'private', 'slips');
+        if (!fs.existsSync(slipsDir)) {
+            fs.mkdirSync(slipsDir, { recursive: true });
+        }
+
+        const safeFilename = path.basename(filename).replace(/[^a-zA-Z0-9.-]/g, '_');
+        const uploadPath = path.join(slipsDir, safeFilename);
+
+        const writeStream = fs.createWriteStream(uploadPath);
+        req.pipe(writeStream);
+
+        writeStream.on('finish', () => {
+            sendJSON(res, 200, { success: true, filePath: 'storage/private/slips/' + safeFilename });
+        });
+
+        writeStream.on('error', (err) => {
+            sendJSON(res, 500, { success: false, error: err.message });
+        });
+        return;
+    }
+
+    // ========================================================
     // STATIC ASSET SERVING
     // ========================================================
     let safeUrl = pathname;
     let filePath = path.join(__dirname, safeUrl === '/' ? 'index.html' : safeUrl);
     
-    // Explicitly block public HTTP access to the private storage folder!
     if (safeUrl.startsWith('/storage/private/') || !filePath.startsWith(__dirname)) {
         res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
         res.end('Forbidden');
