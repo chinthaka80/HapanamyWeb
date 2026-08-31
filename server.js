@@ -6,6 +6,7 @@ const PlacementEngine = require('./services/placement-engine');
 const KycService = require('./services/kyc-service');
 const ProductService = require('./services/product-service');
 const WalletService = require('./services/wallet-service');
+const ReportService = require('./services/report-service');
 
 const PORT = 3000;
 
@@ -24,7 +25,7 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4/5/8
+// Mock Databases for Phase 3/4/5/8/11
 const mockKycDocs = [];
 const mockBankAccounts = [];
 const mockAuditLogs = [];
@@ -775,6 +776,73 @@ const server = http.createServer(async (req, res) => {
         KycService.logAction(mockAuditLogs, authUser.id, 'WITHDRAWAL_PAID', 'withdrawal_requests', requestId, { status: 'APPROVED' }, { status: 'PAID' });
 
         sendJSON(res, 200, { success: true, message: 'Withdrawal marked as paid successfully.' });
+        return;
+    }
+
+    // ========================================================
+    // REPORTING & ANALYTICS API ROUTER (PHASE 11)
+    // ========================================================
+
+    // GET /api/admin/reports
+    if (req.method === 'GET' && pathname === '/api/admin/reports') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const type = url.searchParams.get('type') || 'sales';
+        const startDate = url.searchParams.get('startDate');
+        const endDate = url.searchParams.get('endDate');
+        const productId = url.searchParams.get('productId');
+        const userId = url.searchParams.get('userId');
+        const limit = url.searchParams.get('limit') || 10;
+        const offset = url.searchParams.get('offset') || 0;
+
+        let dataset = [];
+        if (type === 'sales') {
+            dataset = mockProductPurchases;
+        } else if (type === 'commissions') {
+            dataset = mockWalletLedger.filter(tx => tx.type === 'DIRECT_COMMISSION' || tx.type === 'BINARY_COMMISSION');
+        } else if (type === 'withdrawals') {
+            dataset = mockWithdrawalRequests;
+        } else if (type === 'deposits') {
+            dataset = mockPaymentDeposits;
+        } else if (type === 'kyc') {
+            dataset = mockKycDocs;
+        }
+
+        const report = ReportService.generateReport(dataset, { startDate, endDate, productId, userId, limit, offset });
+        sendJSON(res, 200, report);
+        return;
+    }
+
+    // GET /api/admin/reports/export
+    if (req.method === 'GET' && pathname === '/api/admin/reports/export') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const type = url.searchParams.get('type') || 'sales';
+        let dataset = [];
+        if (type === 'sales') {
+            dataset = mockProductPurchases;
+        } else if (type === 'commissions') {
+            dataset = mockWalletLedger.filter(tx => tx.type === 'DIRECT_COMMISSION' || tx.type === 'BINARY_COMMISSION');
+        } else if (type === 'withdrawals') {
+            dataset = mockWithdrawalRequests;
+        } else if (type === 'deposits') {
+            dataset = mockPaymentDeposits;
+        }
+
+        const csvString = ReportService.exportToCSV(dataset);
+        res.writeHead(200, {
+            'Content-Type': 'text/csv',
+            'Content-Disposition': `attachment; filename="hapanamy_${type}_report.csv"`
+        });
+        res.end(csvString);
         return;
     }
 

@@ -9,6 +9,7 @@ require('./kyc.test');
 require('./products.test');
 require('./binary.test');
 require('./wallet.test');
+require('./report.test');
 
 // Run
 runTests();
