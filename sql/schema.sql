@@ -157,6 +157,34 @@ CREATE TABLE payment_deposits (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Product Economics Snapshots Table (Immutable Historical Record for Commission Integrity)
+CREATE TABLE product_economics_snapshots (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    purchase_id UUID UNIQUE NOT NULL REFERENCES product_purchases(id) ON DELETE RESTRICT,
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
+    product_name VARCHAR(255) NOT NULL,
+    market_price DECIMAL(15, 2) NOT NULL,
+    discount_type VARCHAR(50) NOT NULL,
+    discount_value DECIMAL(15, 2) NOT NULL,
+    selling_price DECIMAL(15, 2) NOT NULL,
+    product_cost DECIMAL(15, 2) NOT NULL,
+    gross_profit DECIMAL(15, 2) NOT NULL,
+    protected_company_amount DECIMAL(15, 2) NOT NULL,
+    net_commission_budget DECIMAL(15, 2) NOT NULL,
+    effective_commission_budget DECIMAL(15, 2) NOT NULL,
+    commission_safety_buffer DECIMAL(15, 2) NOT NULL,
+    binary_volume DECIMAL(15, 2) NOT NULL,
+    direct_commission_rate DECIMAL(5, 2) NOT NULL,
+    binary_commission_rate DECIMAL(5, 2) NOT NULL,
+    max_binary_qualified_levels INTEGER NOT NULL,
+    commission_mode VARCHAR(50) NOT NULL,
+    economics_status VARCHAR(50) NOT NULL,
+    snapshot_version INTEGER NOT NULL DEFAULT 1,
+    integrity_hash VARCHAR(64) NOT NULL,
+    purchase_timestamp TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- ========================================================
 -- 4. BINARY LEDGER & COMMISSION DOMAINS (IMMUTABLE HISTORY)
 -- ========================================================
@@ -294,6 +322,8 @@ CREATE INDEX idx_binary_volume_ledger_match ON binary_volume_ledger(user_id, leg
 CREATE INDEX idx_wallet_transactions_user ON wallet_transactions(user_id);
 CREATE INDEX idx_audit_logs_entity ON audit_logs(entity_type, entity_id);
 CREATE INDEX idx_fraud_alerts_user ON fraud_alerts(user_id);
+CREATE INDEX idx_product_economics_snapshots_purchase ON product_economics_snapshots(purchase_id);
+CREATE INDEX idx_product_economics_snapshots_product ON product_economics_snapshots(product_id);
 
 -- ========================================================
 -- 8. SEED DATABASE ENTRIES

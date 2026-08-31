@@ -14,6 +14,7 @@ const SecurityCore = require('./services/security-core');
 const ProductEconomicsCalculator = require('./services/product-economics-calculator');
 const ProductCommissionValidator = require('./services/product-commission-validator');
 const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
+const ProductSnapshotService = require('./services/product-snapshot-service');
 
 const PORT = 3000;
 
@@ -62,6 +63,10 @@ const mockRefundRequests = [];
 const mockVolumeLedger = [];
 const mockBinaryNodes = [];
 const mockFraudAlerts = [];
+const mockProductSnapshots = [];
+const mockCommissionTransactions = [];
+const mockSponsors = [];
+const mockDailyEarningsMap = new Map();
 
 function parseRequestBody(req) {
     return new Promise((resolve) => {
@@ -828,22 +833,34 @@ const server = http.createServer(async (req, res) => {
         const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
         if (purchIdx !== -1) {
             if (action === 'APPROVED') {
-                mockProductPurchases[purchIdx].status = 'ACTIVE';
-                mockProductPurchases[purchIdx].activated_at = new Date().toISOString();
+                const activePurchase = mockProductPurchases[purchIdx];
+                activePurchase.status = 'ACTIVE';
+                activePurchase.activated_at = new Date().toISOString();
 
-                ProductService.triggerPurchaseActivation(mockProductPurchases[purchIdx]);
-                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id);
+                // 1. Fetch Product definition
+                const product = mockProducts.find(p => p.id === activePurchase.product_id) || mockProducts[0];
 
-                // Auto Seed Direct Referral commission (8%) to sponsor for local testing
-                const sponsorCommission = ProductService.isValidDeposit(deposit) ? mockProducts[0].price * 0.08 : 596.00;
-                mockWalletLedger.push({
-                    id: 'tx-' + Math.random().toString(36).substr(2, 9),
-                    user_id: 'sponsor-uuid-99',
-                    source_purchase_id: deposit.purchase_id, // Store source purchase reference for reversal
-                    type: 'DIRECT_COMMISSION',
-                    amount: sponsorCommission,
-                    created_at: new Date().toISOString()
+                // 2. Create Immutable Economics Snapshot
+                const snapshot = ProductSnapshotService.createSnapshot(
+                    product, 
+                    activePurchase.id, 
+                    activePurchase.activated_at
+                );
+                mockProductSnapshots.push(snapshot);
+
+                // 3. Process Commissions and Volume Propagation via Snapshot
+                CommissionCore.processPurchaseCommissions(activePurchase, snapshot, {
+                    binaryNodes: mockBinaryNodes,
+                    purchases: mockProductPurchases,
+                    sponsors: mockSponsors,
+                    commissionLedger: mockCommissionTransactions,
+                    volumeLedger: mockVolumeLedger,
+                    walletLedger: mockWalletLedger,
+                    dailyEarningsMap: mockDailyEarningsMap
                 });
+
+                ProductService.triggerPurchaseActivation(activePurchase);
+                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id, null, { snapshot_id: snapshot.id });
             } else {
                 mockProductPurchases[purchIdx].status = 'CANCELLED';
             }

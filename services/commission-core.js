@@ -1,5 +1,9 @@
-// Hapanamy.lk Commission Calculation Engine (Phase 7)
-// Calculates direct/referral commissions, handles uplines tree traversal, daily caps, and reversals.
+// Hapanamy.lk Commission Calculation Engine (Phase 7 & Step 9 Integration)
+// Calculates direct/referral commissions, handles uplines tree traversal, daily caps, reversals,
+// and enforces immutable economics snapshot rules with full idempotency protection.
+
+const ProductSnapshotService = require('./product-snapshot-service');
+const VolumeLedger = require('./volume-ledger');
 
 const CommissionCore = {
     /**
@@ -53,9 +57,20 @@ const CommissionCore = {
 
     /**
      * Traces upward through the binary tree to pay binary commissions.
-     * Up to 7 qualified recipients can earn 7% each of the matched volume.
+     * Supports configurable maximum qualified levels (default 7) and binary rate (default 7.00%).
      */
-    processBinaryUplineCommission(originatingUserId, matchedVolume, binaryNodes, purchases, sponsors, commissionLedger, dailyEarningsMap, dailyCapLimit = 30000.00) {
+    processBinaryUplineCommission(
+        originatingUserId, 
+        matchedVolume, 
+        binaryNodes, 
+        purchases, 
+        sponsors, 
+        commissionLedger, 
+        dailyEarningsMap, 
+        dailyCapLimit = 30000.00,
+        maxQualifiedLevels = 7,
+        ratePercent = 7.00
+    ) {
         // Idempotency check: Ensure match is not processed twice
         const matchId = `match-evt-${originatingUserId}-${matchedVolume}`;
         const alreadyProcessed = commissionLedger.some(c => c.source_match_id === matchId);
@@ -69,14 +84,16 @@ const CommissionCore = {
 
         let currentParentId = node.placement_parent_id;
         let qualifiedCount = 0;
+        const levelsLimit = maxQualifiedLevels !== undefined ? maxQualifiedLevels : 7;
+        const binaryRate = ratePercent !== undefined ? ratePercent : 7.00;
 
-        while (currentParentId && qualifiedCount < 7) {
+        while (currentParentId && qualifiedCount < levelsLimit) {
             const parentNode = binaryNodes.find(n => n.user_id === currentParentId);
             
             // Check qualification
             if (this.isQualified(currentParentId, purchases, sponsors)) {
-                // Matched Volume * 7%
-                const baseCommission = this.calculateBinaryCommission(matchedVolume, 7.00);
+                // Matched Volume * rate
+                const baseCommission = this.calculateBinaryCommission(matchedVolume, binaryRate);
                 
                 // Fetch daily earnings to check cap
                 const todayKey = `${currentParentId}-${new Date().toISOString().split('T')[0]}`;
@@ -90,7 +107,7 @@ const CommissionCore = {
                     user_id: currentParentId,
                     source_match_id: matchId,
                     type: 'BINARY',
-                    rate: 7.00,
+                    rate: binaryRate,
                     base_volume: matchedVolume,
                     calculated_amount: capResult.calculatedAmount,
                     eligible_amount: capResult.eligibleAmount,
@@ -107,6 +124,129 @@ const CommissionCore = {
             // Climb up
             currentParentId = parentNode ? parentNode.placement_parent_id : null;
         }
+    },
+
+    /**
+     * Executes end-to-end commission calculation and volume propagation for an approved purchase
+     * using the immutable snapshot data (Step 9 Integration).
+     */
+    processPurchaseCommissions(purchase, snapshot, context = {}) {
+        const {
+            binaryNodes = [],
+            sponsors = [],
+            commissionLedger = [],
+            volumeLedger = [],
+            walletLedger = [],
+            dailyEarningsMap = new Map(),
+            dailyCapLimit = 30000.00
+        } = context;
+
+        // 1. Verify Purchase status
+        if (!purchase || purchase.status !== 'ACTIVE') {
+            return {
+                success: false,
+                reason: 'Purchase is not active or missing.'
+            };
+        }
+
+        // 2. Verify Snapshot existence & cryptographic integrity
+        if (!snapshot) {
+            return {
+                success: false,
+                reason: 'Immutable economics snapshot is missing for purchase.'
+            };
+        }
+
+        const integrity = ProductSnapshotService.verifySnapshotIntegrity(snapshot);
+        if (!integrity.valid) {
+            return {
+                success: false,
+                reason: `Snapshot integrity check failed: ${integrity.reason}`
+            };
+        }
+
+        // 3. Verify MLM was valid at purchase time (Economics status must not be BLOCKED)
+        if (snapshot.economics_status === 'BLOCKED') {
+            return {
+                success: false,
+                reason: 'Product economics status was BLOCKED at purchase time. Commission distribution prohibited.'
+            };
+        }
+
+        // 4. Idempotency check for Direct Commission
+        const directCommIdempotencyKey = `direct-comm-${purchase.id}`;
+        const alreadyDirectPaid = commissionLedger.some(c => 
+            c.idempotency_key === directCommIdempotencyKey || 
+            (c.source_purchase_id === purchase.id && c.type === 'DIRECT')
+        );
+
+        let directCommissionEntry = null;
+
+        if (!alreadyDirectPaid) {
+            // Find direct sponsor of the purchasing user
+            const sponsorLink = sponsors.find(s => s.user_id === purchase.user_id);
+            if (sponsorLink && sponsorLink.sponsor_id) {
+                // Calculate direct commission from snapshot selling_price and direct_commission_rate
+                const directAmount = this.calculateDirectCommission(snapshot.selling_price, snapshot.direct_commission_rate);
+                
+                if (directAmount > 0) {
+                    const todayKey = `${sponsorLink.sponsor_id}-${new Date().toISOString().split('T')[0]}`;
+                    const currentEarnings = dailyEarningsMap.get(todayKey) || 0.00;
+                    const capResult = this.applyDailyCap(directAmount, currentEarnings, dailyCapLimit);
+
+                    directCommissionEntry = {
+                        id: 'comm-uuid-' + Math.random().toString(36).substr(2, 9),
+                        idempotency_key: directCommIdempotencyKey,
+                        user_id: sponsorLink.sponsor_id,
+                        source_purchase_id: purchase.id,
+                        type: 'DIRECT',
+                        rate: snapshot.direct_commission_rate,
+                        base_volume: snapshot.selling_price,
+                        calculated_amount: capResult.calculatedAmount,
+                        eligible_amount: capResult.eligibleAmount,
+                        capped_amount: capResult.cappedAmount,
+                        status: 'APPROVED',
+                        created_at: new Date().toISOString()
+                    };
+
+                    commissionLedger.push(directCommissionEntry);
+
+                    if (walletLedger) {
+                        walletLedger.push({
+                            id: 'tx-' + Math.random().toString(36).substr(2, 9),
+                            user_id: sponsorLink.sponsor_id,
+                            source_purchase_id: purchase.id,
+                            type: 'DIRECT_COMMISSION',
+                            amount: capResult.eligibleAmount,
+                            created_at: new Date().toISOString()
+                        });
+                    }
+
+                    dailyEarningsMap.set(todayKey, currentEarnings + capResult.eligibleAmount);
+                }
+            }
+        }
+
+        // 5. Propagate Binary Volume using snapshot.binary_volume
+        if (volumeLedger && snapshot.binary_volume > 0) {
+            VolumeLedger.propagateVolume(
+                purchase.user_id,
+                snapshot.binary_volume,
+                purchase.id,
+                binaryNodes,
+                volumeLedger
+            );
+        }
+
+        return {
+            success: true,
+            purchase_id: purchase.id,
+            snapshot_version: snapshot.snapshot_version,
+            direct_commission: directCommissionEntry ? directCommissionEntry.eligible_amount : 0.00,
+            binary_volume_propagated: snapshot.binary_volume,
+            max_binary_qualified_levels: snapshot.max_binary_qualified_levels,
+            binary_commission_rate: snapshot.binary_commission_rate
+        };
     },
 
     /**
