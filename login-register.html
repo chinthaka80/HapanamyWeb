@@ -653,22 +653,22 @@
                     return;
                 }
                 
-                // If logging in with an affiliate/partner email
-                if (email.includes('affiliate') || email.includes('partner')) {
-                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'affiliate' }));
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                // If logging in with an affiliate/partner/member email
+                if (email.includes('affiliate') || email.includes('partner') || email.includes('sponsor') || email.includes('member')) {
+                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'member' }));
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Member Dashboard වෙත පිවිසෙමින්...`);
                     setTimeout(() => {
-                        window.location.href = 'my-account.html';
+                        window.location.href = 'dashboard.html';
                     }, 1500);
                     return;
                 }
                 
                 localStorage.setItem('active_user', JSON.stringify({ email, role: 'student' }));
-                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Dashboard වෙත පිවිසෙමින්...`);
                 
-                // Redirect to student dashboard after mock latency
+                // Redirect to member dashboard
                 setTimeout(() => {
-                    window.location.href = 'my-account.html';
+                    window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
                 const name = document.getElementById('regName').value.trim();
@@ -728,7 +728,7 @@
                 
                 // Redirect to appropriate dashboard after latency
                 setTimeout(() => {
-                    window.location.href = 'my-account.html';
+                    window.location.href = 'dashboard.html';
                 }, 2000);
             }
         }
