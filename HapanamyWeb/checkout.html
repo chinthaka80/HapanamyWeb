@@ -132,6 +132,10 @@
             }
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
 
@@ -140,7 +144,10 @@
         <div class="container header-container">
             <a href="index.html" class="logo">
                 <img src="assets/logo.jpg" alt="HAPANAMY Logo" style="height: 38px; border-radius: 6px; border: 2px solid var(--brand-gold);">
-                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif; line-height: 1.1;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                    <span style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
                 <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; height: 38px;">EN</button>

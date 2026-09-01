@@ -1095,22 +1095,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><strong>Nimal Silva</strong></td>
-                                        <td>@nimal_s</td>
-                                        <td>2026-08-05</td>
-                                        <td><span class="badge-pill badge-active">LEFT</span></td>
-                                        <td><span class="badge-pill badge-qualified">QUALIFIED</span></td>
-                                        <td><span style="color: var(--brand-green); font-weight: 700;">● ACTIVE</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Sunil Kumar</strong></td>
-                                        <td>@sunil_k</td>
-                                        <td>2026-08-10</td>
-                                        <td><span class="badge-pill badge-active">RIGHT</span></td>
-                                        <td><span class="badge-pill badge-qualified">QUALIFIED</span></td>
-                                        <td><span style="color: var(--brand-green); font-weight: 700;">● ACTIVE</span></td>
-                                    </tr>
+                                    <!-- Loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -1158,20 +1143,11 @@
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
                             <span>📚 Purchased & Active Masterclasses</span>
-                            <span class="badge-pill badge-qualified">1 Active Course</span>
+                            <span class="badge-pill badge-qualified" id="purchasedProductsCount">0 Active Courses</span>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr; gap: 20px;" id="purchasedProductsContainer">
-                            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                                <div>
-                                    <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">Social Media Income Masterclass</h3>
-                                    <p style="font-size: 13px; color: var(--text-muted);">මිලදී ගත් දිනය: 2026-08-01 | Selling Price: LKR 27,500.00</p>
-                                    <div style="margin-top: 8px;">
-                                        <span class="badge-pill badge-qualified">● ACTIVATED & READY</span>
-                                    </div>
-                                </div>
-                                <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="padding: 12px 24px; text-decoration: none;">Enter Online Classroom 🎥</a>
-                            </div>
+                            <!-- Loaded dynamically -->
                         </div>
                     </div>
                 </div>
@@ -1198,30 +1174,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>2026-08-10 14:10</td>
-                                        <td><strong>BINARY_COMMISSION</strong></td>
-                                        <td>purch-sun-01</td>
-                                        <td style="color: var(--brand-green); font-weight: 800;">+ LKR 1,925.00</td>
-                                        <td>LKR 6,325.00</td>
-                                        <td><span class="badge-pill badge-qualified">COMPLETED</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2026-08-10 14:05</td>
-                                        <td><strong>DIRECT_COMMISSION</strong></td>
-                                        <td>purch-sun-01</td>
-                                        <td style="color: var(--brand-green); font-weight: 800;">+ LKR 2,200.00</td>
-                                        <td>LKR 4,400.00</td>
-                                        <td><span class="badge-pill badge-qualified">COMPLETED</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>2026-08-05 12:05</td>
-                                        <td><strong>DIRECT_COMMISSION</strong></td>
-                                        <td>purch-nim-01</td>
-                                        <td style="color: var(--brand-green); font-weight: 800;">+ LKR 2,200.00</td>
-                                        <td>LKR 2,200.00</td>
-                                        <td><span class="badge-pill badge-qualified">COMPLETED</span></td>
-                                    </tr>
+                                    <!-- Loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -1244,13 +1197,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td>2026-08-20</td>
-                                        <td>Commercial Bank (••• 4851)</td>
-                                        <td style="font-weight: 800;">LKR 2,000.00</td>
-                                        <td><code>CEFT-992104</code></td>
-                                        <td><span class="badge-pill badge-qualified">PAID</span></td>
-                                    </tr>
+                                    <!-- Loaded dynamically -->
                                 </tbody>
                             </table>
                         </div>
@@ -1407,11 +1354,209 @@
             document.getElementById('withdrawModal').style.display = 'none';
         }
 
-        function handleWithdrawSubmit(e) {
+        // Dynamic Table Renderers
+        function renderWalletLedger(transactions) {
+            const tbody = document.querySelector('#walletLedgerTable tbody');
+            if (!tbody) return;
+            if (!transactions || transactions.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 25px;">කිසිදු ගනුදෙනුවක් සටහන් වී නොමැත (No transactions recorded yet - 0.00).</td>
+                    </tr>
+                `;
+                return;
+            }
+            tbody.innerHTML = '';
+            transactions.forEach(tx => {
+                const tr = document.createElement('tr');
+                const dt = tx.created_at ? new Date(tx.created_at).toLocaleString() : '2026-09-01';
+                const isCredit = tx.credit_amount > 0 || (tx.amount > 0 && tx.type !== 'WITHDRAWAL_PAID' && tx.type !== 'WITHDRAWAL_REQUEST');
+                const amtStr = isCredit 
+                    ? `+ LKR ${Number(tx.credit_amount || tx.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`
+                    : `- LKR ${Number(tx.debit_amount || Math.abs(tx.amount) || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const amtColor = isCredit ? 'var(--brand-green)' : 'var(--ph-red)';
+                const balStr = `LKR ${Number(tx.balance_after !== undefined ? tx.balance_after : (tx.balance || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                tr.innerHTML = `
+                    <td>${dt}</td>
+                    <td><strong>${tx.type || 'TRANSACTION'}</strong></td>
+                    <td><code>${tx.reference_id || tx.id || 'TXN-GEN'}</code></td>
+                    <td style="color: ${amtColor}; font-weight: 800;">${amtStr}</td>
+                    <td>${balStr}</td>
+                    <td><span class="badge-pill badge-qualified">${tx.status || 'COMPLETED'}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderWithdrawalHistory(withdrawals) {
+            const tbody = document.querySelector('#withdrawalHistoryTable tbody');
+            if (!tbody) return;
+            if (!withdrawals || withdrawals.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 25px;">කිසිදු මුදල් ආපසු ගැනීමක් සිදු කර නොමැත (No withdrawal history).</td>
+                    </tr>
+                `;
+                return;
+            }
+            tbody.innerHTML = '';
+            withdrawals.forEach(w => {
+                const tr = document.createElement('tr');
+                const dt = w.created_at ? new Date(w.created_at).toLocaleDateString() : '2026-09-01';
+                const bInfo = w.bank_name ? `${w.bank_name} (${w.account_number || ''})` : (w.bank_details || 'Bank Account');
+                const amtStr = `LKR ${Number(w.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const refStr = w.reference_code || w.payment_reference || w.id || 'PENDING';
+                const stClass = w.status === 'PAID' || w.status === 'APPROVED' ? 'badge-qualified' : 'badge-active';
+                
+                tr.innerHTML = `
+                    <td>${dt}</td>
+                    <td>${bInfo}</td>
+                    <td style="font-weight: 800;">${amtStr}</td>
+                    <td><code>${refStr}</code></td>
+                    <td><span class="badge-pill ${stClass}">${w.status || 'PENDING'}</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderDirectReferrals(referrals) {
+            const tbody = document.querySelector('#directReferralsTable tbody');
+            const countBadge = document.getElementById('directReferralsCount');
+            if (countBadge) countBadge.textContent = `${(referrals || []).length} Members`;
+            if (!tbody) return;
+            if (!referrals || referrals.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 25px;">තවමත් සෘජුව යොමු කළ සාමාජිකයින් නොමැත (No direct referrals yet).</td>
+                    </tr>
+                `;
+                return;
+            }
+            tbody.innerHTML = '';
+            referrals.forEach(r => {
+                const tr = document.createElement('tr');
+                const dt = r.join_date ? new Date(r.join_date).toLocaleDateString() : '2026-09-01';
+                const posClass = r.tree_position === 'LEFT' ? 'badge-active' : 'badge-qualified';
+                const prodStatus = r.has_active_purchase 
+                    ? '<span style="color: var(--brand-green); font-weight: 700;">● ACTIVE</span>' 
+                    : '<span style="color: var(--text-muted);">FREE (0.00)</span>';
+                
+                tr.innerHTML = `
+                    <td><strong>${r.full_name || r.name || 'Member'}</strong></td>
+                    <td>@${r.username || ''}</td>
+                    <td>${dt}</td>
+                    <td><span class="badge-pill ${posClass}">${r.tree_position || 'AUTO'}</span></td>
+                    <td><span class="badge-pill badge-qualified">${r.qualification_status || 'REGISTERED'}</span></td>
+                    <td>${prodStatus}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderPurchasedProducts(products) {
+            const container = document.getElementById('purchasedProductsContainer');
+            const countBadge = document.getElementById('purchasedProductsCount');
+            if (countBadge) countBadge.textContent = `${(products || []).length} Active Courses`;
+            if (!container) return;
+            if (!products || products.length === 0) {
+                container.innerHTML = `
+                    <div style="background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 14px; padding: 30px; text-align: center;">
+                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත (No purchased courses yet).</p>
+                        <a href="index.html#courses" class="btn-action-sm btn-primary-action" style="text-decoration: none; padding: 10px 20px;">පාඨමාලා නාමාවලිය බලන්න (Explore Courses) →</a>
+                    </div>
+                `;
+                return;
+            }
+            container.innerHTML = '';
+            products.forEach(p => {
+                const div = document.createElement('div');
+                div.style = 'background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;';
+                const dt = p.activated_at ? new Date(p.activated_at).toLocaleDateString() : '2026-09-01';
+                const priceStr = `LKR ${Number(p.selling_price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                div.innerHTML = `
+                    <div>
+                        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">${p.product_name || 'Masterclass'}</h3>
+                        <p style="font-size: 13px; color: var(--text-muted);">මිලදී ගත් දිනය: ${dt} | Selling Price: ${priceStr}</p>
+                        <div style="margin-top: 8px;">
+                            <span class="badge-pill badge-qualified">● ${p.status || 'ACTIVATED & READY'}</span>
+                        </div>
+                    </div>
+                    <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="padding: 12px 24px; text-decoration: none;">Enter Online Classroom 🎥</a>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function renderBinaryTreeVisualizer(treeData) {
+            const leftName = document.getElementById('treeLeftChildName');
+            const rightName = document.getElementById('treeRightChildName');
+            
+            if (treeData && treeData.left_child) {
+                if (leftName) leftName.textContent = treeData.left_child.name || 'Member';
+            } else {
+                if (leftName) leftName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Left Slot</span>';
+            }
+
+            if (treeData && treeData.right_child) {
+                if (rightName) rightName.textContent = treeData.right_child.name || 'Member';
+            } else {
+                if (rightName) rightName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Right Slot</span>';
+            }
+        }
+
+        async function handleWithdrawSubmit(e) {
             e.preventDefault();
-            const amount = document.getElementById('withdrawAmountInput').value;
-            showMemberToast(`✅ <strong>රු. ${Number(amount).toLocaleString()}.00 ක මුදලක් සඳහා ඉල්ලුම් කරන ලදී.</strong> පරිපාලක අනුමැතියෙන් පසු බැංකුවට බැර කෙරේ.`);
+            const amountInput = document.getElementById('withdrawAmountInput');
+            const amount = parseFloat(amountInput.value);
+            const bankSelect = document.getElementById('withdrawBankSelect');
+            const bankDetails = bankSelect ? bankSelect.options[bankSelect.selectedIndex].text : 'Bank Account';
+
+            if (!amount || amount < 1000) {
+                showMemberToast('⚠️ අවම මුදල් ලබාගැනීමේ සීමාව රු. 1,000.00 කි.');
+                return;
+            }
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/withdrawal/request', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ amount, bankDetails })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    showMemberToast(`✅ <strong>රු. ${amount.toLocaleString()}.00 ක මුදලක් සඳහා ඉල්ලුම් කරන ලදී!</strong> පරිපාලක අනුමැතියෙන් පසු බැංකුවට බැර කෙරේ.`);
+                    closeWithdrawModal();
+                    loadLiveDashboard();
+                    return;
+                }
+            } catch (err) {
+                console.log('Backend offline, queueing in local payout requests queue...');
+            }
+
+            // Fallback: Queue in localStorage
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { username: 'Hiru' };
+            const queue = JSON.parse(localStorage.getItem('payout_requests_queue')) || [];
+            const newReq = {
+                id: 'TXN-WD-' + Math.floor(1000 + Math.random() * 9000),
+                user_id: activeUser.id || 'user-hiru',
+                username: activeUser.username || activeUser.name || 'Hiru',
+                amount: amount,
+                bank_details: bankDetails,
+                status: 'PENDING',
+                created_at: new Date().toISOString()
+            };
+            queue.push(newReq);
+            localStorage.setItem('payout_requests_queue', JSON.stringify(queue));
+
+            showMemberToast(`✅ <strong>රු. ${amount.toLocaleString()}.00 ක මුදලක් සඳහා ඉල්ලුම් කරන ලදී!</strong> පරිපාලක අනුමැතියෙන් පසු බැංකුවට බැර කෙරේ.`);
             closeWithdrawModal();
+            loadLiveDashboard();
         }
 
         async function logoutMember() {
@@ -1438,12 +1583,15 @@
         // Live API Data Fetching with Graceful Fallback
         async function loadLiveDashboard() {
             // Check local active user first for instant UI response
+            const localUserStr = localStorage.getItem('active_user');
+            if (!localUserStr) {
+                window.location.replace('login.html');
+                return;
+            }
+
             try {
-                const localUserStr = localStorage.getItem('active_user');
-                if (localUserStr) {
-                    const localUser = JSON.parse(localUserStr);
-                    applyLocalUserProfile(localUser);
-                }
+                const localUser = JSON.parse(localUserStr);
+                applyLocalUserProfile(localUser);
             } catch (e) {}
 
             const token = localStorage.getItem('auth_token');
@@ -1463,8 +1611,15 @@
                     }
                 }
             } catch (err) {
-                console.log('Live API fallback active, using seeded member dataset.');
+                console.log('Live API fallback active, using local member dataset.');
             }
+
+            // Fallback rendering for clean zero state
+            renderWalletLedger([]);
+            renderWithdrawalHistory(JSON.parse(localStorage.getItem('payout_requests_queue')) || []);
+            renderDirectReferrals([]);
+            renderPurchasedProducts([]);
+            renderBinaryTreeVisualizer(null);
         }
 
         function applyLocalUserProfile(user) {
@@ -1494,6 +1649,13 @@
 
             if (document.getElementById('treeRootName')) document.getElementById('treeRootName').textContent = uName;
             if (document.getElementById('treeRootUser')) document.getElementById('treeRootUser').textContent = `@${uHandle}`;
+
+            // Populate bank select with profile bank if available
+            const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {};
+            const bSelect = document.getElementById('withdrawBankSelect');
+            if (bSelect && prof.bankName && prof.accNumber) {
+                bSelect.innerHTML = `<option value="user-bank">${prof.bankName} — Acc: ${prof.accNumber} (${uName})</option>`;
+            }
 
             // Show Admin Portal Button if admin
             if (user.role === 'admin' || user.role === 'ADMIN') {
@@ -1561,6 +1723,21 @@
                 if (data.referral_tools.general_link) {
                     document.getElementById('tabGeneralRefLink').value = data.referral_tools.general_link;
                 }
+            }
+
+            // 5. Dynamic Tables
+            if (data.financial_activity) {
+                renderWalletLedger(data.financial_activity.recent_transactions);
+                renderWithdrawalHistory(data.financial_activity.withdrawal_history);
+            }
+            if (data.direct_referrals) {
+                renderDirectReferrals(data.direct_referrals.list);
+            }
+            if (data.products) {
+                renderPurchasedProducts(data.products.list);
+            }
+            if (data.binary_network) {
+                renderBinaryTreeVisualizer(data.binary_network);
             }
         }
 

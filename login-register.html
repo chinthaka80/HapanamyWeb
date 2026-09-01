@@ -671,15 +671,25 @@
                 
                 if (matchedUser) {
                     if (matchedUser.password === password) {
-                        localStorage.setItem('active_user', JSON.stringify({ email: matchedUser.email, role: matchedUser.role }));
+                        const tokenStr = 'token-member-' + (matchedUser.id || matchedUser.email.split('@')[0]);
+                        localStorage.setItem('auth_token', tokenStr);
+                        localStorage.setItem('active_token', tokenStr);
+                        localStorage.setItem('active_user', JSON.stringify({ 
+                            id: matchedUser.id || 'user-' + matchedUser.email.split('@')[0],
+                            name: matchedUser.name,
+                            full_name: matchedUser.name,
+                            username: matchedUser.username || matchedUser.name,
+                            email: matchedUser.email, 
+                            role: matchedUser.role || 'member' 
+                        }));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify({
                             name: matchedUser.name,
                             email: matchedUser.email,
                             phone: matchedUser.phone,
                             address: matchedUser.address,
-                            bankName: matchedUser.bank.split(' ')[0] || 'Bank',
+                            bankName: (matchedUser.bank || 'Commercial Bank').split(' ')[0] || 'Bank',
                             branch: 'Branch',
-                            accNumber: matchedUser.bank.split(' ').slice(1).join(' ') || 'Account'
+                            accNumber: (matchedUser.bank || 'Commercial Bank').split(' ').slice(1).join(' ') || 'Account'
                         }));
                         
                         showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.name}!`);

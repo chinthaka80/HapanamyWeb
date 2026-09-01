@@ -67,6 +67,10 @@
             padding-bottom: 0;
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
 
@@ -206,8 +210,8 @@
         }
 
         // Submit bank slip directly to Admin Queue in localStorage
-        function submitBankSlip() {
-            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0719226600' };
+        async function submitBankSlip() {
+            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0726090050' };
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
             
             const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
@@ -226,9 +230,7 @@
                 date: new Date().toLocaleDateString()
             };
 
-            let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
-            slipsQueue.push(newSlip);
-            localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+            await dbAddOrder(newSlip);
 
             showToast('📁 <strong>රිසිට්පත යොමු විය!</strong> ඔබගේ බැංකු රිසිට්පත සාර්ථකව Admin අනුමැතිය සඳහා යොමු කරන ලදී.');
             
@@ -291,7 +293,7 @@
             if (uploader) uploader.style.display = 'block';
             if (waReceipt) {
                 waReceipt.style.display = 'flex';
-                waReceipt.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
+                waReceipt.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20have%20made%20a%20bank%20deposit%20for%20my%20order%20${orderId}%20(${amount}%20LKR).%20Here%20is%20my%20receipt.`;
             }
             const statusEl = document.getElementById('metaPayStatus');
             if (statusEl) {
@@ -343,7 +345,7 @@
                 val_active: 'ගෙවා ඇත (Paid & Active)',
                 lbl_referrer: 'ප්‍රවර්ධකයා (Referred By):',
                 free_aff_title: '🎁 නොමිලේ මුදල් උපයන්න (Free Affiliate Opportunity)!',
-                free_aff_desc: 'ඔබේම අනුබද්ධිත සබැඳිය (Affiliate Link) නොමිලේ ලබාගෙන මිතුරන් සමඟ බෙදාගෙන 15% ක සෘජු කොමිස් මුදල් උපයාගන්න.',
+                free_aff_desc: 'ඔබේම අනුබද්ධිත සබැඳිය (Affiliate Link) නොමිලේ ලබාගෙන මිතුරන් සමඟ බෙදාගෙන 8% ක සෘජු කොමිස් සහ 7% ක ද්විමය (Binary) කොමිස් උපයාගන්න.',
                 instr_title: '🔐 ඔබගේ අධ්‍යාපන පුවරුව (Student Dashboard) සක්‍රියයි!',
                 instr_desc: 'ඔබගේ පාඨමාලාවේ වීඩියෝ නැරඹීම සඳහා පහත ඇති බොත්තම ක්ලික් කර ශිෂ්‍ය පුවරුව වෙත සෘජුවම පිවිසෙන්න.',
                 back_home: 'ප්‍රධාන පිටුවට'

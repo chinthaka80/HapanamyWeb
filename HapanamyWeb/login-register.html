@@ -263,6 +263,10 @@
             }
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
 
@@ -290,7 +294,10 @@
                 <div>
                     <a href="index.html" class="sidebar-logo">
                         <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                        <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                        <div style="display: flex; flex-direction: column; justify-content: center;">
+                            <span style="font-weight: 900; font-family: 'Outfit', sans-serif; line-height: 1.1;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                            <span style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                        </div>
                     </a>
                     
                     <div class="sidebar-main">
@@ -334,12 +341,12 @@
                 <div class="form-panel active" id="loginPanel">
                     <form onsubmit="handleAuthSubmit(event, 'login')">
                         <div class="form-group">
-                            <label for="loginEmail">විද්‍යුත් තැපෑල හෝ පරිශීලක නාමය (Email / Username) *</label>
-                            <input type="text" id="loginEmail" required placeholder="name@example.com හෝ username">
+                            <label for="loginEmail">විද්‍යුත් තැපෑල හෝ පරිශීලක නාමය (Email / Username)</label>
+                            <input type="text" id="loginEmail" required placeholder="ඔබගේ ඊමේල් හෝ Username ඇතුළත් කරන්න">
                         </div>
                         
                         <div class="form-group">
-                            <label for="loginPassword">මුරපදය (Password) *</label>
+                            <label for="loginPassword">මුරපදය (Password)</label>
                             <input type="password" id="loginPassword" required placeholder="ඔබගේ මුරපදය ඇතුළත් කරන්න">
                         </div>
 
@@ -358,27 +365,27 @@
                 <div class="form-panel" id="registerPanel">
                     <form onsubmit="handleAuthSubmit(event, 'register')">
                         <div class="form-group">
-                            <label for="regName">සම්පූර්ණ නම (Full Name) *</label>
-                            <input type="text" id="regName" required placeholder="Kasun Tharaka">
+                            <label for="regName">සම්පූර්ණ නම (Full Name)</label>
+                            <input type="text" id="regName" required placeholder="ඔබගේ සම්පූර්ණ නම">
                         </div>
 
                         <div class="form-group">
-                            <label for="regEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
-                            <input type="email" id="regEmail" required placeholder="kasun@example.com">
+                            <label for="regEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                            <input type="email" id="regEmail" required placeholder="name@example.com">
                         </div>
 
                         <div class="form-group">
-                            <label for="regPhone">දුරකථන අංකය (Phone Number) *</label>
-                            <input type="tel" id="regPhone" required placeholder="0726090050">
+                            <label for="regPhone">දුරකථන අංකය (Phone Number)</label>
+                            <input type="tel" id="regPhone" required placeholder="07XXXXXXXX">
                         </div>
                         
                         <div class="form-group">
-                            <label for="regAddress">ලිපිනය / නගරය (Address / City) *</label>
-                            <input type="text" id="regAddress" required placeholder="No. 12, Kandy Road, Colombo">
+                            <label for="regAddress">ලිපිනය / නගරය (Address / City)</label>
+                            <input type="text" id="regAddress" required placeholder="ඔබගේ ලිපිනය">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 12px;">
-                            <label for="regPassword">මුරපදය (Password) *</label>
+                            <label for="regPassword">මුරපදය (Password)</label>
                             <input type="password" id="regPassword" required placeholder="ශක්තිමත් මුරපදයක් ඇතුළත් කරන්න" oninput="checkPasswordStrength(this.value)">
                         </div>
                         <div id="pswStrength" style="font-size: 11px; font-weight: 700; margin-bottom: 18px; transition: 0.2s; color: var(--text-muted); display: none; text-align: left; padding-left: 5px;"></div>
@@ -398,11 +405,11 @@
                         <div class="extra-fields" id="affiliateFields">
                             <div class="form-group">
                                 <label for="regReferral">ප්‍රවර්ධන කේතය (Referral Code - Optional)</label>
-                                <input type="text" id="regReferral" placeholder="Hiru">
+                                <input type="text" id="regReferral" placeholder="Sponsor code">
                             </div>
                             <div class="form-group">
                                 <label for="regBank">බැංකු ගිණුම් විස්තර (Bank & Account Number for payouts)</label>
-                                <input type="text" id="regBank" placeholder="Commercial Bank, Acc: 8010294851">
+                                <input type="text" id="regBank" placeholder="Bank Name & Account No">
                             </div>
                         </div>
 
@@ -420,8 +427,8 @@
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">ඔබගේ ගිණුමට සම්බන්ධ ඊමේල් ලිපිනය ඇතුළත් කරන්න. එවිට අප ඔබට මුරපදය නැවත සැකසීමට සබැඳියක් (Reset Link) එවනු ඇත.</p>
             <form onsubmit="handleForgotPasswordSubmit(event)">
                 <div class="form-group" style="margin-bottom: 25px;">
-                    <input type="email" id="forgotEmail" required placeholder=" ">
                     <label for="forgotEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                    <input type="email" id="forgotEmail" required placeholder="name@example.com">
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight: 700;">Reset Link යොමු කරන්න</button>
@@ -569,12 +576,38 @@
         }
 
         // Form Submit Actions
-        function handleAuthSubmit(event, type) {
+        async function handleAuthSubmit(event, type) {
             event.preventDefault();
 
             if (type === 'login') {
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value.trim();
+
+                // Live Backend API Attempt
+                try {
+                    const apiRes = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ identifier: email, password })
+                    });
+                    if (apiRes.ok) {
+                        const data = await apiRes.json();
+                        if (data.success) {
+                            localStorage.setItem('active_token', data.token);
+                            localStorage.setItem('active_user', JSON.stringify(data.user));
+                            showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`);
+                            setTimeout(() => {
+                                window.location.href = data.redirect_url || 'dashboard.html';
+                            }, 1200);
+                            return;
+                        } else if (data.error) {
+                            showToast(`❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> ${data.error}`);
+                            return;
+                        }
+                    }
+                } catch (apiErr) {
+                    console.log('Falling back to local auth mode...');
+                }
                 
                 // Enforce root user credentials check (Hiru & NAMOBUDDHAYA)
                 const cleanLogin = email.toUpperCase();
@@ -596,7 +629,7 @@
                         
                         showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Hiru!`);
                         setTimeout(() => {
-                            window.location.href = 'my-account.html';
+                            window.location.href = 'dashboard.html';
                         }, 800);
                         return;
                     } else {
@@ -623,7 +656,7 @@
                         
                         showToast('👑 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!');
                         setTimeout(() => {
-                            window.location.href = 'admin.html';
+                            window.location.href = 'hapanamy-admin-portal-9226.html';
                         }, 800);
                         return;
                     } else {
@@ -633,25 +666,35 @@
                 }
                 
                 // Check if user is registered inside local storage
-                const registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const registeredUsers = await dbGetUsers();
                 const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.name.toLowerCase() === email.toLowerCase());
                 
                 if (matchedUser) {
                     if (matchedUser.password === password) {
-                        localStorage.setItem('active_user', JSON.stringify({ email: matchedUser.email, role: matchedUser.role }));
+                        const tokenStr = 'token-member-' + (matchedUser.id || matchedUser.email.split('@')[0]);
+                        localStorage.setItem('auth_token', tokenStr);
+                        localStorage.setItem('active_token', tokenStr);
+                        localStorage.setItem('active_user', JSON.stringify({ 
+                            id: matchedUser.id || 'user-' + matchedUser.email.split('@')[0],
+                            name: matchedUser.name,
+                            full_name: matchedUser.name,
+                            username: matchedUser.username || matchedUser.name,
+                            email: matchedUser.email, 
+                            role: matchedUser.role || 'member' 
+                        }));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify({
                             name: matchedUser.name,
                             email: matchedUser.email,
                             phone: matchedUser.phone,
                             address: matchedUser.address,
-                            bankName: matchedUser.bank.split(' ')[0] || 'Bank',
+                            bankName: (matchedUser.bank || 'Commercial Bank').split(' ')[0] || 'Bank',
                             branch: 'Branch',
-                            accNumber: matchedUser.bank.split(' ').slice(1).join(' ') || 'Account'
+                            accNumber: (matchedUser.bank || 'Commercial Bank').split(' ').slice(1).join(' ') || 'Account'
                         }));
                         
                         showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.name}!`);
                         setTimeout(() => {
-                            window.location.href = 'my-account.html';
+                            window.location.href = 'dashboard.html';
                         }, 1500);
                     } else {
                         showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
@@ -659,22 +702,22 @@
                     return;
                 }
                 
-                // If logging in with an affiliate/partner email
-                if (email.includes('affiliate') || email.includes('partner')) {
-                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'affiliate' }));
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                // If logging in with an affiliate/partner/member email
+                if (email.includes('affiliate') || email.includes('partner') || email.includes('sponsor') || email.includes('member')) {
+                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'member' }));
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Member Dashboard වෙත පිවිසෙමින්...`);
                     setTimeout(() => {
-                        window.location.href = 'my-account.html';
+                        window.location.href = 'dashboard.html';
                     }, 1500);
                     return;
                 }
                 
                 localStorage.setItem('active_user', JSON.stringify({ email, role: 'student' }));
-                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Account Dashboard වෙත පිවිසෙමින්...`);
+                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Dashboard වෙත පිවිසෙමින්...`);
                 
-                // Redirect to student dashboard after mock latency
+                // Redirect to member dashboard
                 setTimeout(() => {
-                    window.location.href = 'my-account.html';
+                    window.location.href = 'dashboard.html';
                 }, 1500);
             } else {
                 const name = document.getElementById('regName').value.trim();
@@ -684,9 +727,48 @@
                 const password = document.getElementById('regPassword').value;
                 const bankInfo = document.getElementById('regBank').value.trim() || 'HNB Bank';
                 const roleText = selectedRole === 'affiliate' ? 'අනුබද්ධිත (Affiliate Partner)' : 'ශිෂ්‍යයෙක් (Student)';
+                const refCode = localStorage.getItem('hapanamy_referrer') || 'Hiru';
+                const urlPos = new URLSearchParams(window.location.search).get('position') || 'LEFT';
+
+                // Live Backend API Registration
+                try {
+                    const apiRes = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            fullName: name,
+                            username: email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_'),
+                            email: email,
+                            mobile: phone,
+                            password: password,
+                            confirmPassword: password,
+                            sponsorCode: refCode,
+                            requestedPosition: urlPos.toUpperCase(),
+                            termsAccepted: true,
+                            privacyAccepted: true
+                        })
+                    });
+                    if (apiRes.ok) {
+                        const data = await apiRes.json();
+                        if (data.success) {
+                            localStorage.setItem('active_token', data.verification_token);
+                            localStorage.setItem('active_user', JSON.stringify(data.user));
+                            showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${name}!`);
+                            setTimeout(() => {
+                                window.location.href = 'dashboard.html';
+                            }, 1500);
+                            return;
+                        } else if (data.error) {
+                            showToast(`⚠️ <strong>දෝෂයකි:</strong> ${data.error}`);
+                            return;
+                        }
+                    }
+                } catch (apiErr) {
+                    console.log('Falling back to local register mode...');
+                }
                 
                 // Check if user already exists
-                let registeredUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                let registeredUsers = await dbGetUsers();
                 const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
                 if (userExists) {
                     showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
@@ -702,8 +784,7 @@
                     role: selectedRole,
                     bank: bankInfo
                 };
-                registeredUsers.push(newUser);
-                localStorage.setItem('hapanamy_registered_users', JSON.stringify(registeredUsers));
+                await dbAddUser(newUser);
 
                 // Save active user and profile
                 localStorage.setItem('active_user', JSON.stringify({ email, role: selectedRole }));
@@ -718,7 +799,6 @@
                 }));
                 
                 // Record under referrer's downlines in local storage
-                const refCode = localStorage.getItem('hapanamy_referrer') || 'Hiru';
                 if (refCode) {
                     let referredList = JSON.parse(localStorage.getItem('referred_users_' + refCode)) || [];
                     referredList.push({
@@ -735,7 +815,7 @@
                 
                 // Redirect to appropriate dashboard after latency
                 setTimeout(() => {
-                    window.location.href = 'my-account.html';
+                    window.location.href = 'dashboard.html';
                 }, 2000);
             }
         }
@@ -767,12 +847,19 @@
             // Auto switch to Register tab and prefill if referrer ref is present in URL
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
+            const posParam = urlParams.get('position');
             if (refParam) {
                 switchTab('register');
                 const refInput = document.getElementById('regReferral');
                 if (refInput) {
                     refInput.value = refParam;
                 }
+                // Track click event asynchronously
+                fetch('/api/referrals/click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: refParam, position: posParam || 'auto' })
+                }).catch(() => {});
             }
         });
 

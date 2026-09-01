@@ -109,7 +109,7 @@ const mockUsers = [
         username: 'Hiru', 
         full_name: 'Hiru', 
         email: 'hiru@hapanamy.lk', 
-        role: 'admin', 
+        role: 'member', 
         status: 'ACTIVE', 
         referral_code: 'Hiru',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
@@ -129,6 +129,22 @@ const mockUsers = [
         created_at: '2026-09-01T00:00:00Z' 
     }
 ];
+
+// Pre-seed known active sessions
+activeSessions.set('token-hiru-member', { 
+    id: 'user-hiru-root', 
+    username: 'Hiru', 
+    full_name: 'Hiru', 
+    email: 'hiru@hapanamy.lk', 
+    role: 'member' 
+});
+activeSessions.set('token-namobuddhaya-root', { 
+    id: 'user-namobuddhaya-root', 
+    username: 'NAMOBUDDHAYA', 
+    full_name: 'NAMOBUDDHAYA', 
+    email: 'admin@hapanamy.lk', 
+    role: 'admin' 
+});
 
 const mockWalletLedger = [];
 const mockWithdrawalRequests = [];
@@ -175,8 +191,22 @@ function sendJSON(res, status, data) {
 
 function getAuthenticatedUser(req) {
     const authHeader = req.headers['authorization'];
-    const token = authHeader ? authHeader.replace('Bearer ', '') : '';
-    return activeSessions.get(token) || null;
+    const token = authHeader ? authHeader.replace('Bearer ', '').trim() : '';
+    if (activeSessions.has(token)) {
+        return activeSessions.get(token);
+    }
+    // Check if token corresponds to user id directly
+    const foundUser = mockUsers.find(u => u.id === token || ('token-' + u.username.toLowerCase()) === token || ('token-' + u.id) === token);
+    if (foundUser) {
+        return {
+            id: foundUser.id,
+            username: foundUser.username,
+            full_name: foundUser.full_name,
+            email: foundUser.email,
+            role: foundUser.role || 'member'
+        };
+    }
+    return null;
 }
 
 const server = http.createServer(async (req, res) => {
@@ -1465,8 +1495,8 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/withdrawal/request
-    if (req.method === 'POST' && pathname === '/api/withdrawal/request') {
+    // POST /api/withdrawal/request & /api/member/withdraw
+    if (req.method === 'POST' && (pathname === '/api/withdrawal/request' || pathname === '/api/member/withdraw')) {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
             sendJSON(res, 401, { error: 'Unauthorized.' });
