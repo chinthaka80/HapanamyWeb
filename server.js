@@ -224,14 +224,40 @@ const server = http.createServer(async (req, res) => {
             created_at: new Date().toISOString()
         });
 
+        // Initialize KYC entry in PENDING status
+        const docId = 'kyc-doc-' + Math.random().toString(36).substr(2, 9);
+        mockKycDocs.push({
+            id: docId,
+            user_id: userId,
+            nic_passport: nicPassport,
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        });
+
+        // Initialize Bank Account entry
+        const bankId = 'bank-ac-' + Math.random().toString(36).substr(2, 9);
+        mockBankAccounts.push({
+            id: bankId,
+            user_id: userId,
+            bank_name: body.bankName || 'Commercial Bank',
+            branch_name: body.branchName || 'Head Office',
+            account_holder_name: body.accountHolderName || fullName,
+            account_number: body.accountNumber || '0000000000',
+            is_active: true
+        });
+
         // Record referral conversion
         ReferralService.recordConversion(sponsorCode, userId, mockReferralConversions);
+
+        // Audit Log
+        KycService.logAction(mockAuditLogs, userId, 'MEMBER_REGISTERED', 'users', userId, null, { username: cleanUsername, sponsor: sponsorCode, leg: resolvedPlacement.position });
 
         sendJSON(res, 201, {
             success: true,
             message: 'Registration successful! Verification notification sent.',
             user: { id: userId, username: cleanUsername, email: cleanEmail, role: 'member' },
-            placement: resolvedPlacement
+            placement: resolvedPlacement,
+            kycStatus: 'PENDING'
         });
         return;
     }
@@ -382,8 +408,10 @@ const server = http.createServer(async (req, res) => {
         const body = await parseRequestBody(req);
         const { kycId, action, notes } = body;
 
-        if (!kycId || !action || !['VERIFIED', 'REJECTED'].includes(action)) {
-            sendJSON(res, 400, { error: 'KycId and action are required.' });
+        const normalizedAction = (action === 'APPROVED' || action === 'VERIFIED') ? 'APPROVED' : action;
+
+        if (!kycId || !normalizedAction || !['APPROVED', 'REJECTED'].includes(normalizedAction)) {
+            sendJSON(res, 400, { error: 'KycId and valid action (APPROVED or REJECTED) are required.' });
             return;
         }
 
@@ -393,16 +421,29 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        const oldStatus = mockKycDocs[docIdx].status;
-        mockKycDocs[docIdx].status = action;
-        mockKycDocs[docIdx].reviewer_id = authUser.id;
-        mockKycDocs[docIdx].review_notes = notes || '';
-        mockKycDocs[docIdx].reviewed_at = new Date().toISOString();
+        KycService.transitionKycStatus(mockKycDocs[docIdx], normalizedAction, authUser.id, notes, mockAuditLogs);
 
-        const auditAction = action === 'VERIFIED' ? 'KYC_APPROVED' : 'KYC_REJECTED';
-        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'kyc_documents', kycId, { status: oldStatus }, { status: action, notes });
+        sendJSON(res, 200, { success: true, message: `KYC request status has been updated to ${normalizedAction}.`, kyc: mockKycDocs[docIdx] });
+        return;
+    }
 
-        sendJSON(res, 200, { success: true, message: `KYC request status has been updated to ${action}.` });
+    // GET /api/members/qualification
+    if (req.method === 'GET' && pathname === '/api/members/qualification') {
+        const authUser = getAuthenticatedUser(req);
+        const queryParams = parseQueryParams(req.url);
+        const targetUserId = (authUser && authUser.role === 'admin' && queryParams.userId) 
+            ? queryParams.userId 
+            : (authUser ? authUser.id : (queryParams.userId || 'sponsor-uuid-1'));
+
+        const qualification = KycService.evaluateQualification(
+            targetUserId,
+            mockKycDocs,
+            mockProductPurchases,
+            mockSponsors,
+            mockBinaryNodes
+        );
+
+        sendJSON(res, 200, { success: true, qualification });
         return;
     }
 

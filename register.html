@@ -107,37 +107,64 @@
                 </div>
             </div>
 
+            <!-- KYC & Address -->
             <div class="form-row">
+                <div class="form-group">
+                    <label>NIC / Passport අංකය (KYC Identity)</label>
+                    <input type="text" id="nicPassport" class="form-control" required placeholder="199512345678">
+                </div>
                 <div class="form-group">
                     <label>උපන් දිනය (Date of Birth)</label>
                     <input type="date" id="dob" class="form-control" required>
                 </div>
-                <div class="form-group">
-                    <label>NIC / Passport අංකය</label>
-                    <input type="text" id="nicPassport" class="form-control" required>
-                </div>
             </div>
 
             <div class="form-group">
-                <label>ලිපිනය (Address)</label>
-                <textarea id="address" class="form-control" style="height: 80px;" required></textarea>
+                <label>ස්ථිර ලිපිනය (Residential Address)</label>
+                <textarea id="address" class="form-control" style="height: 65px;" required placeholder="No. 12, Main Street, Colombo"></textarea>
             </div>
 
-            <div class="form-row">
-                <div class="form-group">
-                    <label>Sponsor Referral Code</label>
+            <!-- Sponsor & Binary Placement -->
+            <div class="form-row" style="background: rgba(244,123,32,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(244,123,32,0.2); margin-bottom: 20px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: var(--brand-orange);">Sponsor Referral Code</label>
                     <input type="text" id="sponsorCode" class="form-control" required placeholder="admin">
                 </div>
-                <div class="form-group">
-                    <label>ප්‍රියතම Binary පිහිටීම (Preferred Position)</label>
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label style="color: var(--brand-orange);">ස්ථානගත පාදය (Placement Leg)</label>
                     <select id="position" class="form-control" required>
-                        <option value="LEFT">LEFT Leg</option>
-                        <option value="RIGHT">RIGHT Leg</option>
+                        <option value="LEFT">⬅️ LEFT Leg</option>
+                        <option value="RIGHT">➡️ RIGHT Leg</option>
                     </select>
                 </div>
             </div>
 
-            <button type="submit" class="btn-register" style="margin-top: 20px;">ගිණුම සාදන්න (Create Account)</button>
+            <!-- Bank Payout Details -->
+            <div style="background: rgba(240,179,35,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(240,179,35,0.2); margin-bottom: 20px;">
+                <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px;">🏦 ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ගිණුම් හිමියාගේ නම (Account Holder Name)</label>
+                        <input type="text" id="accountHolderName" class="form-control" required placeholder="Kasun Tharaka">
+                    </div>
+                    <div class="form-group">
+                        <label>බැංකුවේ නම (Bank Name)</label>
+                        <input type="text" id="bankName" class="form-control" required placeholder="Commercial Bank">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>ශාඛාව (Branch Name)</label>
+                        <input type="text" id="branchName" class="form-control" required placeholder="Maharagama">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label>ගිණුම් අංකය (Account Number)</label>
+                        <input type="text" id="accountNumber" class="form-control" required placeholder="8010294851">
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-register" style="margin-top: 10px;">ගිණුම සාදන්න (Create Account)</button>
         </form>
 
         <p style="margin-top: 20px; text-align: center; font-size: 13.5px; font-weight: 700;">
@@ -167,7 +194,11 @@
                 address: document.getElementById('address').value,
                 nicPassport: document.getElementById('nicPassport').value,
                 sponsorCode: document.getElementById('sponsorCode').value,
-                position: document.getElementById('position').value
+                position: document.getElementById('position').value,
+                accountHolderName: document.getElementById('accountHolderName').value,
+                bankName: document.getElementById('bankName').value,
+                branchName: document.getElementById('branchName').value,
+                accountNumber: document.getElementById('accountNumber').value
             };
 
             try {

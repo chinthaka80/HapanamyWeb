@@ -23,6 +23,7 @@ require('./commission-integration.test');
 require('./critical-product-economics.test');
 require('./placement.test');
 require('./referral.test');
+require('./registration-qualification.test');
 
 // Run
 runTests();
