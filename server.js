@@ -241,10 +241,10 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/auth/login
+    // POST /api/auth/login (STEP 31 Rate Limiting & Lockout Protected)
     if (req.method === 'POST' && pathname === '/api/auth/login') {
         const body = await parseRequestBody(req);
-        const { email, password } = body;
+        const { email, password, totpCode } = body;
 
         if (!email || !password) {
             sendJSON(res, 400, { error: 'Email and password are required.' });
@@ -252,12 +252,36 @@ const server = http.createServer(async (req, res) => {
         }
 
         const normalizedEmail = (email || '').toLowerCase().trim();
+
+        // 1. Check Account Lockout
+        if (SecurityCore.isAccountLocked(normalizedEmail)) {
+            sendJSON(res, 429, { error: 'Too many failed login attempts. Account temporarily locked for 15 minutes.' });
+            return;
+        }
+
         const foundUser = mockUsers.find(u => 
             (u.email && u.email.toLowerCase() === normalizedEmail) || 
             (u.username && u.username.toLowerCase() === normalizedEmail)
         );
 
-        if (foundUser && (password === 'Araliya321#' || (foundUser.password_hash && AuthService.verifyPassword(password, foundUser.password_hash)) || password === foundUser.password)) {
+        const passwordValid = foundUser && (password === 'Araliya321#' || (foundUser.password_hash && AuthService.verifyPassword(password, foundUser.password_hash)) || password === foundUser.password);
+
+        if (passwordValid) {
+            // Check 2FA if enabled on user
+            if (foundUser.two_factor_enabled && foundUser.two_factor_secret) {
+                if (!totpCode) {
+                    sendJSON(res, 200, { success: false, requires_2fa: true, message: 'Two-factor authentication code required.' });
+                    return;
+                }
+                const totpValid = SecurityCore.verify2FACode(foundUser.two_factor_secret, totpCode, foundUser.backup_codes || []);
+                if (!totpValid.valid) {
+                    SecurityCore.recordLoginAttempt(normalizedEmail, false);
+                    sendJSON(res, 401, { error: 'Invalid two-factor authentication code.' });
+                    return;
+                }
+            }
+
+            SecurityCore.recordLoginAttempt(normalizedEmail, true);
             const token = AuthService.generateToken();
             activeSessions.set(token, {
                 id: foundUser.id,
@@ -282,13 +306,148 @@ const server = http.createServer(async (req, res) => {
 
         // Student/Member Mock Fallback
         if ((normalizedEmail === 'member@hapanamy.lk' || normalizedEmail === 'member') && password === 'Araliya321#') {
+            SecurityCore.recordLoginAttempt(normalizedEmail, true);
             const token = AuthService.generateToken();
             activeSessions.set(token, { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'member@hapanamy.lk', role: 'member' });
             sendJSON(res, 200, { success: true, token, user: { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'member@hapanamy.lk', role: 'member' } });
             return;
         }
 
-        sendJSON(res, 401, { error: 'Invalid credentials or access denied.' });
+        const lockStatus = SecurityCore.recordLoginAttempt(normalizedEmail, false);
+        if (lockStatus.locked) {
+            sendJSON(res, 429, { error: 'Account locked for 15 minutes due to 5 consecutive failed login attempts.' });
+            return;
+        }
+
+        sendJSON(res, 401, { error: `Invalid credentials. ${lockStatus.remainingAttempts} attempts remaining before account lockout.` });
+        return;
+    }
+
+    // POST /api/auth/2fa/setup
+    if (req.method === 'POST' && pathname === '/api/auth/2fa/setup') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const setup = SecurityCore.generate2FASecret(authUser.id);
+        SecurityCore.active2FASessions.set(authUser.id, setup);
+        sendJSON(res, 200, { success: true, ...setup });
+        return;
+    }
+
+    // POST /api/auth/2fa/verify
+    if (req.method === 'POST' && pathname === '/api/auth/2fa/verify') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { code } = body;
+        const setup = SecurityCore.active2FASessions.get(authUser.id);
+
+        if (!setup) {
+            sendJSON(res, 400, { error: 'Please initiate 2FA setup first.' });
+            return;
+        }
+
+        const check = SecurityCore.verify2FACode(setup.secret, code, setup.backupCodes);
+        if (check.valid) {
+            const userIdx = mockUsers.findIndex(u => u.id === authUser.id);
+            if (userIdx !== -1) {
+                mockUsers[userIdx].two_factor_enabled = true;
+                mockUsers[userIdx].two_factor_secret = setup.secret;
+                mockUsers[userIdx].backup_codes = setup.backupCodes;
+            }
+            sendJSON(res, 200, { success: true, message: 'Two-factor authentication successfully enabled!' });
+        } else {
+            sendJSON(res, 400, { error: 'Invalid verification code.' });
+        }
+        return;
+    }
+
+    // POST /api/auth/password/reset-request
+    if (req.method === 'POST' && pathname === '/api/auth/password/reset-request') {
+        const body = await parseRequestBody(req);
+        const { email } = body;
+
+        if (!email) {
+            sendJSON(res, 400, { error: 'Email is required.' });
+            return;
+        }
+
+        const { token, expiresAt } = SecurityCore.createPasswordResetToken(email);
+        SecurityCore.logSecurityEvent(mockAuditLogs, {
+            actorId: 'guest',
+            action: 'PASSWORD_RESET_REQUESTED',
+            entityType: 'users',
+            entityId: email,
+            metadata: { expiresAt }
+        });
+
+        sendJSON(res, 200, { success: true, message: 'Password reset link sent.', reset_token: token });
+        return;
+    }
+
+    // POST /api/auth/password/reset-confirm
+    if (req.method === 'POST' && pathname === '/api/auth/password/reset-confirm') {
+        const body = await parseRequestBody(req);
+        const { token, newPassword } = body;
+
+        if (!token || !newPassword) {
+            sendJSON(res, 400, { error: 'Reset token and new password are required.' });
+            return;
+        }
+
+        const passCheck = SecurityCore.validatePasswordStrength(newPassword);
+        if (!passCheck.valid) {
+            sendJSON(res, 400, { error: passCheck.error });
+            return;
+        }
+
+        const tokenCheck = SecurityCore.consumePasswordResetToken(token);
+        if (!tokenCheck.valid) {
+            sendJSON(res, 400, { error: tokenCheck.error });
+            return;
+        }
+
+        const userIdx = mockUsers.findIndex(u => u.email && u.email.toLowerCase() === tokenCheck.email.toLowerCase());
+        if (userIdx !== -1) {
+            mockUsers[userIdx].password_hash = AuthService.hashPassword(newPassword);
+            mockUsers[userIdx].password = newPassword;
+        }
+
+        SecurityCore.logSecurityEvent(mockAuditLogs, {
+            actorId: userIdx !== -1 ? mockUsers[userIdx].id : 'system',
+            action: 'PASSWORD_RESET_COMPLETED',
+            entityType: 'users',
+            entityId: tokenCheck.email
+        });
+
+        sendJSON(res, 200, { success: true, message: 'Password has been successfully updated.' });
+        return;
+    }
+
+    // GET /api/admin/security/fraud-alerts (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/security/fraud-alerts') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN' && authUser.role !== 'SUPER_ADMIN' && authUser.role !== 'COMPLIANCE')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const signals = SecurityCore.scanFraudSignals({
+            users: mockUsers,
+            kycDocs: mockKycDocs,
+            paymentSubmissions: mockPaymentDeposits,
+            refundRequests: mockRefundRequests,
+            sponsors: mockSponsors
+        });
+
+        sendJSON(res, 200, { success: true, count: signals.length, signals });
         return;
     }
 
