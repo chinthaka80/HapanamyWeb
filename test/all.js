@@ -52,6 +52,7 @@ require('./backup-restore.test');
 require('./step36-live-login-register-flow.test');
 require('./deployment-verification.test');
 require('./step37-member-product-purchase-center.test');
+require('./step38-final-product-purchase-center-e2e.test');
 
 // Run
 runTests();

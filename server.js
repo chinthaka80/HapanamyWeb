@@ -2147,9 +2147,16 @@ const server = http.createServer(async (req, res) => {
 
         const deposit = mockPaymentDeposits[depIdx];
         const oldStatus = deposit.status;
+
+        if (oldStatus === 'APPROVED' && action === 'APPROVED') {
+            sendJSON(res, 400, { error: 'Deposit has already been approved and finalized.' });
+            return;
+        }
+
         mockPaymentDeposits[depIdx].status = action;
         mockPaymentDeposits[depIdx].reviewer_id = authUser.id;
         mockPaymentDeposits[depIdx].reviewed_at = new Date().toISOString();
+        if (notes) mockPaymentDeposits[depIdx].notes = SecurityCore.sanitizeInput(notes);
 
         const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
         if (purchIdx !== -1) {
