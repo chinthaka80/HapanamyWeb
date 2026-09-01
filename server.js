@@ -150,115 +150,29 @@ const server = http.createServer(async (req, res) => {
     // AUTHENTICATION & REGISTRATION API ROUTER (PHASE 3)
     // ========================================================
 
-    // POST /api/auth/register
+    // POST /api/auth/register (STEP 15)
     if (req.method === 'POST' && pathname === '/api/auth/register') {
         const body = await parseRequestBody(req);
-        const { fullName, username, email, mobile, password, dob, address, nicPassport, sponsorCode, position } = body;
 
-        if (!fullName || !username || !email || !mobile || !password || !dob || !address || !nicPassport || !sponsorCode || !position) {
-            sendJSON(res, 400, { error: 'All registration fields are required.' });
+        const result = AuthService.registerMember(body, {
+            users: mockUsers,
+            sponsors: mockSponsors,
+            binaryNodes: mockBinaryNodes,
+            volumeLedger: mockVolumeLedger,
+            wallets: mockWallets,
+            kycDocs: mockKycDocs,
+            bankAccounts: mockBankAccounts,
+            auditLogs: mockAuditLogs,
+            referralConversions: mockReferralConversions,
+            intentStore: mockReferralIntents
+        });
+
+        if (!result.success) {
+            sendJSON(res, 400, { error: result.error });
             return;
         }
 
-        if (position !== 'LEFT' && position !== 'RIGHT') {
-            sendJSON(res, 400, { error: 'Placement position must be LEFT or RIGHT.' });
-            return;
-        }
-
-        // Sanitize Username & Email to prevent XSS injection
-        const cleanUsername = SecurityCore.sanitizeInput(username);
-        const cleanEmail = SecurityCore.sanitizeInput(email);
-
-        if (cleanUsername === 'admin' || cleanUsername === 'sponsor1') {
-            sendJSON(res, 400, { error: 'Username is already taken.' });
-            return;
-        }
-
-        if (cleanEmail === 'admin@hapanamy.lk') {
-            sendJSON(res, 400, { error: 'Email address is already registered.' });
-            return;
-        }
-
-        if (sponsorCode === cleanUsername) {
-            sendJSON(res, 400, { error: 'Self-referral is strictly prohibited.' });
-            return;
-        }
-
-        const sponsorUser = mockUsers.find(u => u.username === sponsorCode || u.id === sponsorCode);
-        const sponsorId = sponsorUser ? sponsorUser.id : (sponsorCode === 'admin' ? 'admin-uuid-123' : 'sponsor-uuid-1');
-
-        const userId = 'user-uuid-' + Math.random().toString(36).substr(2, 9);
-        const passwordHash = AuthService.hashPassword(password);
-
-        // Resolve binary placement and add to network
-        let resolvedPlacement = { placementParentId: sponsorId, position: position, depth: 2, path: sponsorId };
-        try {
-            resolvedPlacement = PlacementEngine.resolvePlacement(sponsorId, position, mockBinaryNodes, mockVolumeLedger);
-            PlacementEngine.addNode(mockBinaryNodes, {
-                userId,
-                placementParentId: resolvedPlacement.placementParentId,
-                position: resolvedPlacement.position,
-                depth: resolvedPlacement.depth,
-                path: resolvedPlacement.path
-            });
-        } catch (e) {
-            console.error('Placement error:', e.message);
-        }
-
-        // Link sponsor genealogy
-        mockSponsors.push({
-            user_id: userId,
-            sponsor_id: sponsorId,
-            created_at: new Date().toISOString()
-        });
-
-        // Store active member user
-        mockUsers.push({
-            id: userId,
-            username: cleanUsername,
-            full_name: fullName,
-            email: cleanEmail,
-            mobile: mobile,
-            role: 'member',
-            status: 'ACTIVE',
-            created_at: new Date().toISOString()
-        });
-
-        // Initialize KYC entry in PENDING status
-        const docId = 'kyc-doc-' + Math.random().toString(36).substr(2, 9);
-        mockKycDocs.push({
-            id: docId,
-            user_id: userId,
-            nic_passport: nicPassport,
-            status: 'PENDING',
-            created_at: new Date().toISOString()
-        });
-
-        // Initialize Bank Account entry
-        const bankId = 'bank-ac-' + Math.random().toString(36).substr(2, 9);
-        mockBankAccounts.push({
-            id: bankId,
-            user_id: userId,
-            bank_name: body.bankName || 'Commercial Bank',
-            branch_name: body.branchName || 'Head Office',
-            account_holder_name: body.accountHolderName || fullName,
-            account_number: body.accountNumber || '0000000000',
-            is_active: true
-        });
-
-        // Record referral conversion
-        ReferralService.recordConversion(sponsorCode, userId, mockReferralConversions);
-
-        // Audit Log
-        KycService.logAction(mockAuditLogs, userId, 'MEMBER_REGISTERED', 'users', userId, null, { username: cleanUsername, sponsor: sponsorCode, leg: resolvedPlacement.position });
-
-        sendJSON(res, 201, {
-            success: true,
-            message: 'Registration successful! Verification notification sent.',
-            user: { id: userId, username: cleanUsername, email: cleanEmail, role: 'member' },
-            placement: resolvedPlacement,
-            kycStatus: 'PENDING'
-        });
+        sendJSON(res, 201, result);
         return;
     }
 
