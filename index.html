@@ -1265,21 +1265,22 @@
                     <div class="form-title">අපට පණිවිඩයක් එවන්න</div>
                     
                     <div class="form-group">
-                        <input type="text" id="formName" required placeholder=" ">
-                        <label for="formName">ඔබේ නම (Your Name)</label>
+                        <label for="formName">ඔබේ නම (Your Name) *</label>
+                        <input type="text" id="formName" required placeholder="ඔබගේ සම්පූර්ණ නම ඇතුළත් කරන්න">
                     </div>
                     
                     <div class="form-group">
-                        <input type="email" id="formEmail" required placeholder=" ">
-                        <label for="formEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                        <label for="formEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
+                        <input type="email" id="formEmail" required placeholder="name@example.com">
                     </div>
                     
                     <div class="form-group">
-                        <input type="tel" id="formPhone" required placeholder=" ">
-                        <label for="formPhone">දුරකථන අංකය (Phone Number)</label>
+                        <label for="formPhone">දුරකථන අංකය (Phone Number) *</label>
+                        <input type="tel" id="formPhone" required placeholder="07XXXXXXXX">
                     </div>
 
                     <div class="form-group">
+                        <label for="formPurpose">සම්බන්ධ වීමේ අරමුණ (Select Purpose) *</label>
                         <select id="formPurpose" required>
                             <option value="" disabled selected>සම්බන්ධ වීමේ අරමුණ තෝරන්න (Select Purpose)</option>
                             <option value="buy_course">පාඨමාලාවක් හෝ පොතක් මිලදී ගැනීමට</option>
@@ -1290,8 +1291,8 @@
                     </div>
                     
                     <div class="form-group">
-                        <textarea id="formMessage" rows="4" required placeholder=" "></textarea>
-                        <label for="formMessage">ඔබේ පණිවිඩය (Your Message)</label>
+                        <label for="formMessage">ඔබේ පණිවිඩය (Your Message) *</label>
+                        <textarea id="formMessage" rows="4" required placeholder="ඔබට අවශ්‍ය විස්තරය මෙහි ලියන්න..."></textarea>
                     </div>
                     
                     <button type="submit" class="btn btn-primary" style="width: 100%; border: none; cursor: pointer;">පණිවිඩය යොමු කරන්න (Send Message)</button>

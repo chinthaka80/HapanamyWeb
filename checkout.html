@@ -172,23 +172,23 @@
             <form id="checkoutForm" onsubmit="processPaymentSubmit(event)">
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
                     <div class="form-group">
-                        <input type="text" id="chkName" required placeholder=" ">
-                        <label for="chkName">සම්පූර්ණ නම (Full Name)</label>
+                        <label for="chkName">සම්පූර්ණ නම (Full Name) *</label>
+                        <input type="text" id="chkName" required placeholder="Kasun Tharaka">
                     </div>
                     <div class="form-group">
-                        <input type="email" id="chkEmail" required placeholder=" ">
-                        <label for="chkEmail">ඊමේල් ලිපිනය (Email Address)</label>
+                        <label for="chkEmail">ඊමේල් ලිපිනය (Email Address) *</label>
+                        <input type="email" id="chkEmail" required placeholder="kasun@example.com">
                     </div>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
                     <div class="form-group">
-                        <input type="tel" id="chkPhone" required placeholder=" ">
-                        <label for="chkPhone">දුරකථන අංකය (Phone Number)</label>
+                        <label for="chkPhone">දුරකථන අංකය (Phone Number) *</label>
+                        <input type="tel" id="chkPhone" required placeholder="0726090050">
                     </div>
                     <div class="form-group">
-                        <input type="text" id="chkReferrer" placeholder=" ">
                         <label for="chkReferrer">ප්‍රවර්ධක අංකය (Referrer ID - Optional)</label>
+                        <input type="text" id="chkReferrer" placeholder="NAMOBUDDHAYA">
                     </div>
                 </div>
 
