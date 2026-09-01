@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapanamy.lk | ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</title>
+    <title>Hapanamy.lk | සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</title>
     
     <!-- Meta tags for SEO -->
     <meta name="description" content="Hapanamy.lk - ශ්‍රී ලංකාවේ ප්‍රමුඛතම ඩිජිටල් අධ්‍යාපනික සහ Affiliate අලෙවිකරණ වේදිකාව. Trading, AI, Social Media සහ E-Books හරහා ඔබේ කුසලතා වර්ධනය කරගෙන නිවසේ සිටම මුදල් උපයන්න.">
@@ -11,7 +11,7 @@
     <meta name="author" content="HAPANAMY.lk">
     
     <!-- Open Graph tags for Social Media Sharing -->
-    <meta property="og:title" content="Hapanamy.lk | Learn • Grow • Earn • Connect">
+    <meta property="og:title" content="Hapanamy.lk | Connect • Learn • Grow • Earn">
     <meta property="og:description" content="ශ්‍රී ලංකාවේ විශාලතම ඩිජිටල් කුසලතා සහ 15% Affiliate කොමිස් ලබාදෙන අධ්‍යාපනික වේදිකාව.">
     <meta property="og:image" content="assets/logo.jpg">
     <meta property="og:url" content="https://www.hapanamy.lk">
@@ -38,6 +38,10 @@
       "description": "ශ්‍රී ලංකාවේ ප්‍රමුඛතම ඩිජිටල් අධ්‍යාපනික සහ Affiliate අලෙවිකරණ වේදිකාව. Trading, AI, Social Media සහ E-Books හරහා ඔබේ කුසලතා වර්ධනය කරගෙන නිවසේ සිටම මුදල් උපයන්න."
     }
     </script>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
 
@@ -50,7 +54,7 @@
             <div class="top-bar-right">
                 <a href="mailto:info@hapanamy.lk">info@hapanamy.lk</a>
                 <span class="bar-separator">|</span>
-                <a href="tel:+94719226600">+94 71 922 6600</a>
+                <a href="tel:+94726090050">+94 72 609 0050</a>
             </div>
         </div>
     </div>
@@ -60,17 +64,25 @@
         <div class="container header-container">
             <a href="#" class="logo" ondblclick="window.location.href='login-register.html?access=admin'" title="Hapanamy Portal">
                 <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
-                <span class="logo-text" style="font-weight: 900;">HAPANAමයි<span>.lk</span></span>
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
             </a>
             
             <nav class="nav-menu" id="navMenu">
                 <a href="#home" class="nav-link active" data-translate="nav_home">Home</a>
                 <a href="#courses" class="nav-link" data-translate="nav_courses">Courses</a>
                 <a href="#affiliate" class="nav-link" data-translate="nav_affiliate">Affiliate</a>
+                <a href="dashboard.html" class="nav-link" id="navDashboardLink" style="color: var(--brand-gold); font-weight: 700;">Dashboard</a>
                 <a href="#calculator" class="nav-link" data-translate="nav_calculator">Earnings Calculator</a>
                 <a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonials</a>
-                <a href="#blog" class="nav-link">Blog</a>
+                <a href="blog.html" target="_blank" class="nav-link">Blog</a>
                 <a href="#contact" class="nav-link" data-translate="nav_contact">Contact</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" style="padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-weight: 700; text-align: center; background: rgba(255,255,255,0.05);">🔐 LOGIN</a>
+                    <a href="register.html" style="padding: 10px; border-radius: 10px; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: white; text-decoration: none; font-weight: 800; text-align: center;">🚀 REGISTER FREE (Rs. 0)</a>
+                </div>
             </nav>
 
             <div class="header-actions">
@@ -83,7 +95,14 @@
                     <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
                     <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </button>
-                <a href="login-register.html" class="cta-btn btn-primary-glass" id="headerCtaBtn"><span data-translate="nav_login">LOGIN</span></a>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="cta-btn" id="headerLoginBtn" style="text-decoration:none; padding:8px 16px; border-radius:20px; font-weight:700; font-size:13px; border:1px solid var(--border-color); color:var(--text-primary); display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.05);">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="cta-btn" id="headerRegisterBtn" style="text-decoration:none; padding:8px 18px; border-radius:20px; font-weight:800; font-size:13px; background:linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color:white; display:inline-flex; align-items:center; gap:5px; box-shadow:0 4px 15px rgba(244,123,32,0.35);">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
                 <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
                     <span></span>
                     <span></span>
@@ -143,7 +162,7 @@
             <div class="video-container-wrapper">
                 <div class="video-frame-glow"></div>
                 <div class="video-iframe-container">
-                    <iframe src="https://www.youtube.com/embed/WWKnPvnCUF8?autoplay=0&rel=0&modestbranding=1" title="Hapanamy.lk Introduction Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+                    <iframe src="https://www.youtube-nocookie.com/embed/WWKnPvnCUF8?autoplay=0&rel=0&modestbranding=1" title="Hapanamy.lk Introduction Video" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
                 </div>
             </div>
         </div>
@@ -188,6 +207,10 @@
                     <button class="filter-btn" data-category="ai-tech">
                         <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="15" x2="23" y2="15"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="15" x2="4" y2="15"></line></svg>
                         <span>AI & Tech</span>
+                    </button>
+                    <button class="filter-btn" data-category="services">
+                        <svg class="cat-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                        <span>සේවා (Services)</span>
                     </button>
                 </div>
             </div>
@@ -315,6 +338,30 @@
                     <div class="card-footer">
                         <span class="card-meta-info">🎥 Zoom Live • සති 7</span>
                         <button class="btn-card-action" onclick="openCourseModal('social-media-masterclass')">View Details</button>
+                    </div>
+                </div>
+
+                <!-- Card: Hapanamy Social Media Growth & Management -->
+                <div class="course-card" data-category="services" data-title="hapanamy social media growth management content planner reels facebook instagram youtube tiktok business">
+                    <div class="card-image-box">
+                        <img src="assets/social_media_growth_banner.jpg" alt="Social Media Growth" class="card-img">
+                        <span class="badge-category" style="background-color: var(--brand-orange) !important;">🔥 NEW BUSINESS GROWTH SERVICE</span>
+                    </div>
+                    <div class="card-content">
+                        <h3 class="card-title">🚀 Hapanamy Social Media Growth</h3>
+                        <p class="card-intro">ඔබේ ව්‍යාපාරයේ Social Media වැඩ අපට භාරදෙන්න. Facebook, Instagram, YouTube සහ TikTok එකම Smart Strategy එකක් යටතේ කළමනාකරණය කරමින් ඔබේ Brand Visibility, Customer Engagement සහ Sales Growth සඳහා සහාය ලබාගන්න.</p>
+                        
+                        <div class="card-pricing-box" style="margin-top: 15px;">
+                            <div class="price-current" style="font-size: 15px; color: var(--brand-gold);">💰 ඔබේ අවශ්‍යතාවය අනුව වෙනස් වේ</div>
+                            <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 2px;">Custom Package Available</div>
+                        </div>
+                        
+                        <div style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 10px; font-style: italic; font-size: 11.5px; color: var(--brand-orange); font-weight: 700; text-align: center;">
+                            “ඔබේ ව්‍යාපාරය ගැන ඔබ අවධානය දෙන්න. ඔබේ Social Media Growth එක අපට භාරදෙන්න.”
+                        </div>
+                    </div>
+                    <div class="card-footer" style="flex-direction: column; gap: 8px;">
+                        <button class="btn-card-action" onclick="openCourseModal('social-media-growth')" style="width: 100%; text-align: center; justify-content: center;">View Details</button>
                     </div>
                 </div>
                 <!-- Card 4: Beginner – Forex Trading Course (MAIN PRODUCT 04) -->
@@ -860,10 +907,10 @@
             </div>
             <div class="modal-body-content">
                 <div class="modal-main-detail">
-                    <h3>💡 පාඨමාලාව ගැන (Course Overview)</h3>
+                    <h3 id="modalOverviewTitle">💡 පාඨමාලාව ගැන (Course Overview)</h3>
                     <p id="modalDesc">Detailed description goes here...</p>
                     
-                    <h3 style="margin-top: 25px;">📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)</h3>
+                    <h3 id="modalSyllabusTitle" style="margin-top: 25px;">📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)</h3>
                     <ul class="syllabus-list" id="modalSyllabus">
                         <!-- Injected dynamically -->
                     </ul>
@@ -1172,7 +1219,7 @@
                 <p class="section-desc">ඩිජිටල් අලෙවිකරණය, කෘත්‍රිම බුද්ධිය (AI), Trading සහ මුදල් ඉපැයීමේ නවතම ක්‍රම පිළිබඳව ලියැවුණු වටිනා ලිපි කියවා ඔබේ දැනුම වර්ධනය කරගන්න.</p>
             </div>
 
-            <div class="testimonials-grid" id="blogArticlesGrid" style="margin-top: 40px;">
+            <div class="blog-articles-slider" id="blogArticlesGrid" style="margin-top: 40px;">
                 <!-- Dynamic blog cards will be injected here -->
             </div>
     </section>
@@ -1196,7 +1243,7 @@
                         <span class="c-icon">📞</span>
                         <div>
                             <h4>දුරකථන (Phone)</h4>
-                            <p>+94 71 922 6600</p>
+                            <p>+94 72 609 0050</p>
                         </div>
                     </div>
                     <div class="contact-method-item">
@@ -1258,9 +1305,12 @@
     <footer class="footer-main">
         <div class="container footer-main-container">
             <div class="footer-col-about">
-                <a href="#" class="logo" style="margin-bottom: 20px;">
+                <a href="#" class="logo" style="margin-bottom: 15px;">
                     <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
-                    <span class="logo-text" style="font-weight: 900;">HAPANAමයි<span>.lk</span></span>
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
                 </a>
                 <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනය සහ Affiliate අලෙවිකරණයේ පෙරළියක් කරමින්, දහස් ගණනකගේ මූල්‍ය ස්වාධීනත්වය උදෙසා කැපවී ක්‍රියා කරන නිල වේදිකාව වේ.</p>
                 <div class="social-icons">
@@ -1281,22 +1331,26 @@
             </div>
             
             <div class="footer-col">
-                <h3>ප්‍රධාන කාණ්ඩ (Categories)</h3>
+                <h3>Quick Links (නවතම සබැඳි)</h3>
                 <ul>
-                    <li><a href="#courses">ඩිජිටල් E-Books</a></li>
-                    <li><a href="#courses">Trading පාඨමාලා</a></li>
-                    <li><a href="#courses">සමාජ මාධ්‍ය පාඨමාලා</a></li>
-                    <li><a href="#courses">AI සහ තාක්ෂණය</a></li>
+                    <li><a href="#home">Home (ප්‍රධාන පිටුව)</a></li>
+                    <li><a href="#courses">Courses (පාඨමාලා)</a></li>
+                    <li><a href="#courses">E-Books (ඩිජිටල් පොත්)</a></li>
+                    <li><a href="blog.html" target="_blank">Blog (අපගේ බ්ලොග් ලිපි)</a></li>
+                    <li><a href="login-register.html">Affiliate Portal (අනුබද්ධිත පිවිසුම)</a></li>
                 </ul>
             </div>
             
             <div class="footer-col">
-                <h3>නවතම සබැඳි (Quick Links)</h3>
+                <h3>Information (නීතිමය තොරතුරු)</h3>
                 <ul>
-                    <li><a href="#home">Home</a></li>
-                    <li><a href="#courses">Courses</a></li>
-                    <li><a href="#affiliate">Affiliate Portal</a></li>
-                    <li><a href="#calculator">Earnings Calculator</a></li>
+                    <li><a href="about-us.html">About Us (අප ගැන)</a></li>
+                    <li><a href="contact-us.html">Contact Us (සම්බන්ධ වන්න)</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy (රහස්‍යතා ප්‍රතිපත්තිය)</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions (සේවා කොන්දේසි)</a></li>
+                    <li><a href="disclaimer.html">Disclaimer (වගකීම් ප්‍රකාශය)</a></li>
+                    <li><a href="refund-policy.html">Refund Policy (මුදල් ආපසු ලබාදීම)</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure (අනුබද්ධිත හෙළිදරව්ව)</a></li>
                 </ul>
             </div>
             
@@ -1313,12 +1367,14 @@
         <div class="footer-bottom">
             <div class="container footer-bottom-content">
                 <p>&copy; 2026 Hapanamy.lk. All Rights Reserved. Designed for Ultimate Growth.</p>
-                <div class="footer-bottom-links">
-                    <a href="privacy-policy.html">Privacy Policy</a>
-                    <span>•</span>
-                    <a href="terms-conditions.html">Terms & Conditions</a>
-                    <span>•</span>
-                    <a href="refund-policy.html">Refund Policy</a>
+                <div class="footer-bottom-links" style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                    <a href="about-us.html">About Us</a> <span>•</span>
+                    <a href="contact-us.html">Contact Us</a> <span>•</span>
+                    <a href="privacy-policy.html">Privacy Policy</a> <span>•</span>
+                    <a href="terms-conditions.html">Terms & Conditions</a> <span>•</span>
+                    <a href="disclaimer.html">Disclaimer</a> <span>•</span>
+                    <a href="refund-policy.html">Refund Policy</a> <span>•</span>
+                    <a href="affiliate-disclosure.html">Affiliate Disclosure</a>
                 </div>
             </div>
         </div>
@@ -1376,6 +1432,11 @@
     </div>
 
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Global Floating WhatsApp Widget -->
+    <a href="https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20want%20to%20know%20more%20details%20about%20your%20services." target="_blank" class="floating-whatsapp-widget" aria-label="Chat on WhatsApp" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(37, 211, 102, 0.4); z-index: 1000; text-decoration: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.49-3.218c1.652.98 3.23 1.493 4.883 1.495 5.518 0 10.011-4.49 10.014-10.01.002-2.653-1.03-5.148-2.908-7.028-1.879-1.881-4.38-2.916-7.037-2.917-5.522 0-10.014 4.493-10.017 10.017-.001 1.745.485 3.326 1.478 4.902L1.082 22.07l4.475-1.173c-.01 0-.01 0 0 0zm12.5-5.32c-.27-.137-1.602-.79-1.85-.88-.248-.09-.43-.137-.61.137-.18.275-.698.88-.856 1.06-.157.18-.315.203-.585.067-.27-.137-1.14-.42-2.17-1.34-.8-.713-1.34-1.595-1.5-1.87-.156-.276-.017-.425.12-.562.124-.123.27-.315.406-.473.136-.158.18-.27.27-.45.09-.18.046-.338-.022-.475-.069-.137-.61-1.472-.836-2.016-.22-.53-.44-.458-.61-.466-.157-.008-.339-.01-.52-.01-.18 0-.476.067-.725.339-.25.275-.953.93-.953 2.27 0 1.34.975 2.637 1.11 2.822.137.184 1.92 2.93 4.65 4.11.65.28 1.157.446 1.55.57.653.208 1.248.178 1.717.108.524-.078 1.602-.656 1.83-.1.228-.61.228-1.13.16-.123-.069-.137-.248-.275-.518zm0 0"/></svg>
+    </a>
 
     <!-- Script File -->
     <script src="index.js"></script>

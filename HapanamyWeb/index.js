@@ -1,4 +1,71 @@
 const courseData = {
+    'social-media-growth': {
+        title: '🚀 Hapanamy Social Media Growth & Management',
+        category: 'Social Media Service',
+        originalPrice: '',
+        currentPrice: '💰 ඔබේ අවශ්‍යතාවය අනුව වෙනස් වේ',
+        discount: 'Custom Package',
+        commission: 'N/A',
+        isCustomService: true,
+        banner: 'assets/social_media_growth_banner.jpg',
+        desc: `
+            <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
+            </div>
+            
+            <p style="font-size: 14px; color: var(--text-primary); line-height: 1.6; font-weight: 700; margin-bottom: 15px; text-align: center;">
+                ඔබේ ව්‍යාපාරය ඔබ කරගෙන යන්න. Social Media අපි බලාගන්නම්!
+            </p>
+            <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 15px;">
+                ඔබේ ව්‍යාපාරයේ Facebook • Instagram • YouTube • TikTok platforms smartly කළමනාකරණය කරමින්, ඔබට වැදගත්ම දේ වන Sales, Brand Growth සහ Customer Base එක වර්ධනය කරගැනීමට අපි සහාය වෙමු.
+            </p>
+
+            <div style="margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">👨‍💼 කාර්යබහුල ඔබට...</h4>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 11.5px; color: var(--text-primary);">
+                    <div>📱 Facebook Page Management</div>
+                    <div>📸 Instagram Content Management</div>
+                    <div>🎬 YouTube Content & Channel</div>
+                    <div>🎵 TikTok Content Management</div>
+                    <div>✍️ Content Ideas & Captions</div>
+                    <div>🎨 Creative Reel Concepts</div>
+                    <div>📅 Daily & Weekly Planning</div>
+                    <div>📊 Performance Monitoring</div>
+                    <div>📈 Audience Growth Strategies</div>
+                    <div>💬 Customer Engagement</div>
+                    <div>🔥 Trending Opportunities</div>
+                    <div>📢 Target Audience Research</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">🔄 දිනපතා Update වෙන Social Media Strategy</h4>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                    What's Trending? → What's Working? → What Your Customers Want? → What Can Generate Sales? ඒ අනුව ඔබේ Social Media Content Strategy එක නිරන්තරයෙන් update කරමු.
+                </p>
+            </div>
+
+            <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 12px;">🎯 කාටද මේ සේවාව?</h4>
+                <p style="font-size: 12px; color: var(--text-muted); line-height: 1.6;">
+                    Business Owners, Shops, Restaurants, Hotels, Education Institutes, Service Providers, Online Businesses, Personal Brands, Startups සහ Content Creators.
+                </p>
+            </div>
+            
+            <div style="margin-top: 25px; background: rgba(240, 179, 35, 0.05); border: 1px dashed var(--brand-gold); padding: 15px; border-radius: 8px; font-size: 12px; color: var(--text-primary);">
+                <strong>💰 සේවා ගාස්තුව:</strong> ඔබගේ ව්‍යාපාරයේ අවශ්‍යතාවය, Social Media Platforms ගණන, Content ප්‍රමාණය සහ කළමනාකරණ අවශ්‍යතා අනුව සේවා ගාස්තුව වෙනස් වේ. ඔබගේ අවශ්‍යතාවයට ගැළපෙන Custom Package එකක් ලබාගන්න.
+                <div style="margin-top: 10px; font-weight: 700; color: var(--brand-orange);">📞 අදම විමසන්න: 072 609 0050 (WhatsApp / Normal Call)</div>
+            </div>
+        `,
+        syllabus: [
+            'Facebook Smart Management',
+            'Instagram Reels & Grid Branding',
+            'YouTube Channel SEO & Growth',
+            'TikTok Audience & Reach Optimization',
+            'Creative Content Calendars & Analytics'
+        ]
+    },
     'facebook-course': {
         title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
         category: 'Social Media',
@@ -10,7 +77,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(24,119,242,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #1877F2; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -116,7 +183,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(254,44,85,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #FE2C55; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📱 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -191,7 +258,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #FF0000; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎥 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -297,7 +364,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -427,7 +494,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #25D366; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💵 FOREX TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -531,7 +598,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(240,179,35,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🪙 CRYPTOCURRENCY TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -634,7 +701,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(0,242,234,0.1), rgba(175,135,255,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📈 OPTIONS & SYNTHETIC INDICES TRADING ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -736,7 +803,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(229,62,62,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-red); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🏆 INSTITUTIONAL TRADING MASTERCLASS</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -838,7 +905,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(175,135,255,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #AF87FF; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎬 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -954,7 +1021,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(244,123,32,0.1), rgba(240,179,35,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1107,7 +1174,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(244,123,32,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💻 WEB DEVELOPMENT ACADEMY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1246,7 +1313,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(37,211,102,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📊 FINANCIAL MARKETS SERIES</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1362,7 +1429,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(255,215,0,0.1), rgba(244,123,32,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🌟 SELF DEVELOPMENT SERIES</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1477,7 +1544,7 @@ const courseData = {
         desc: `
             <div style="background: linear-gradient(135deg, rgba(0,242,234,0.1), rgba(175,135,255,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🤖 AI PROMPTS DIRECTORY</h4>
-                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">ඉගෙන ගන්න • වර්ධනය වන්න • ඩොලර් උපයන්න • සම්බන්ධ වන්න</p>
+                <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
             
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
@@ -1867,15 +1934,72 @@ function openCourseModal(courseId) {
     const course = courseData[courseId];
     if (!course) return;
 
+    window.currentActiveModalCourseId = courseId; // Save active modal course ID
+
     // Load data into elements
     document.getElementById('modalBanner').src = course.banner;
     document.getElementById('modalCategory').textContent = course.category;
     document.getElementById('modalTitle').textContent = course.title;
     document.getElementById('modalDesc').innerHTML = course.desc;
-    document.getElementById('modalOriginalPrice').textContent = course.originalPrice;
-    document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
-    document.getElementById('modalDiscount').textContent = course.discount;
-    document.getElementById('modalCommission').textContent = course.commission;
+
+    // Grab elements to toggle for custom service
+    const origPriceEl = document.getElementById('modalOriginalPrice');
+    const discountEl = document.getElementById('modalDiscount');
+    const commBox = document.querySelector('.sidebar-affiliate-box');
+    const buyBtn = document.getElementById('modalBuyBtn');
+
+    // Dynamic headers based on course type and language
+    const overviewTitleEl = document.getElementById('modalOverviewTitle');
+    const syllabusTitleEl = document.getElementById('modalSyllabusTitle');
+    const lang = localStorage.getItem('language') || 'si';
+
+    if (course.isCustomService) {
+        if (overviewTitleEl) {
+            overviewTitleEl.textContent = lang === 'si' ? '💡 සේවාව ගැන විස්තර (Service Overview)' : '💡 Service Overview';
+        }
+        if (syllabusTitleEl) {
+            syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
+        }
+
+        if (origPriceEl) origPriceEl.style.display = 'none';
+        if (discountEl) discountEl.style.display = 'none';
+        if (commBox) commBox.style.display = 'none';
+        
+        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        if (buyBtn) {
+            buyBtn.textContent = '📞 සේවාව ගැන විමසන්න →';
+            buyBtn.style.background = 'var(--brand-orange)';
+            buyBtn.onclick = () => {
+                window.open("https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20the%20Social%20Media%20Growth%20service%20for%20my%20business.", "_blank");
+            };
+        }
+    } else {
+        if (overviewTitleEl) {
+            overviewTitleEl.textContent = lang === 'si' ? '💡 පාඨමාලාව ගැන (Course Overview)' : '💡 Course Overview';
+        }
+        if (syllabusTitleEl) {
+            syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
+        }
+
+        if (origPriceEl) origPriceEl.style.display = 'block';
+        if (discountEl) discountEl.style.display = 'block';
+        if (commBox) commBox.style.display = 'block';
+        
+        if (origPriceEl) origPriceEl.textContent = course.originalPrice;
+        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        if (discountEl) discountEl.textContent = course.discount;
+        document.getElementById('modalCommission').textContent = course.commission;
+        
+        if (buyBtn) {
+            buyBtn.textContent = 'Enroll / Buy Course';
+            buyBtn.style.background = 'var(--brand-gold)';
+            buyBtn.onclick = () => {
+                closeModal();
+                const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
+                addToCart(courseId, course.title, numericPrice);
+            };
+        }
+    }
 
     // Hook social buttons & WhatsApp support
     const socialContainer = document.getElementById('modalSocialLinksContainer');
@@ -1884,7 +2008,7 @@ function openCourseModal(courseId) {
         
         // WhatsApp button (Always present for conversion optimization & support)
         const waLink = document.createElement('a');
-        waLink.href = `https://wa.me/94719226600?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
+        waLink.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
         waLink.target = '_blank';
         waLink.className = 'btn btn-secondary';
         waLink.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; font-size:12px; text-decoration:none; border-width:1px; color:#25D366; border-color:#25D366; font-weight:700; border-radius:6px; cursor:pointer; margin-top: 8px; width:100%;';
@@ -1912,7 +2036,6 @@ function openCourseModal(courseId) {
     });
 
     // Hook buy button action
-    const buyBtn = document.getElementById('modalBuyBtn');
     if (buyBtn) {
         buyBtn.onclick = () => {
             closeModal();
@@ -1927,6 +2050,7 @@ function openCourseModal(courseId) {
 }
 
 function closeModal() {
+    window.currentActiveModalCourseId = null;
     if (modalOverlay) modalOverlay.classList.remove('open');
     document.body.style.overflow = ''; // Restore page scrolling
 }
@@ -2087,6 +2211,31 @@ function applyLanguage(lang) {
     const langToggle = document.getElementById('langToggleBtn');
     if (langToggle) {
         langToggle.textContent = lang === 'si' ? 'EN' : 'SIN';
+    }
+
+    // Dynamic translation for active details modal if open
+    const activeCourseId = window.currentActiveModalCourseId;
+    if (activeCourseId) {
+        const course = courseData[activeCourseId];
+        if (course) {
+            const overviewTitleEl = document.getElementById('modalOverviewTitle');
+            const syllabusTitleEl = document.getElementById('modalSyllabusTitle');
+            if (course.isCustomService) {
+                if (overviewTitleEl) {
+                    overviewTitleEl.textContent = lang === 'si' ? '💡 සේවාව ගැන විස්තර (Service Overview)' : '💡 Service Overview';
+                }
+                if (syllabusTitleEl) {
+                    syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
+                }
+            } else {
+                if (overviewTitleEl) {
+                    overviewTitleEl.textContent = lang === 'si' ? '💡 පාඨමාලාව ගැන (Course Overview)' : '💡 Course Overview';
+                }
+                if (syllabusTitleEl) {
+                    syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
+                }
+            }
+        }
     }
 }
 
@@ -2326,7 +2475,7 @@ function syncHeaderUserState() {
         const ctaBtns = document.querySelectorAll('#headerCtaBtn, a[href="login-register.html"]');
         ctaBtns.forEach(btn => {
             // Hide the button or point to my-account.html, never admin.html for public safety
-            btn.href = activeUser.role === 'admin' ? 'admin.html' : 'my-account.html';
+            btn.href = activeUser.role === 'admin' ? 'hapanamy-admin-portal-9226.html' : 'my-account.html';
             const span = btn.querySelector('span');
             
             // If admin is logged in, show "My Account" instead of "Admin Panel" to hide admin presence from guests
@@ -2343,8 +2492,45 @@ function syncHeaderUserState() {
 // Sync Course Catalog with Admin Panel customizations (localStorage)
 function syncCourseCatalogDOM() {
     syncHeaderUserState();
-    const adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
-    if (!adminCourses) return;
+    let adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
+    const defaultFbCourse = { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' };
+    
+    if (!adminCourses || !Array.isArray(adminCourses) || adminCourses.length === 0) {
+        adminCourses = [
+            defaultFbCourse,
+            { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
+            { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
+            { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
+            { id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' },
+            { id: 'forex-course', category: 'Trading Course', title: '🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/forex_course_banner.jpg', status: 'Active' },
+            { id: 'crypto-course', category: 'Trading Course', title: '🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/crypto_course_banner.jpg', status: 'Active' },
+            { id: 'options-course', category: 'Trading Course', title: '🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/options_course_banner.jpg', status: 'Active' },
+            { id: 'titan-elite', category: 'Trading Course', title: '🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)', price: 24900, discount: 19900, image: 'assets/advanced_trading_banner.jpg', status: 'Active' },
+            { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', price: 6500, discount: 5200, image: 'assets/ai_video_course_banner.jpg', status: 'Active' },
+            { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', price: 18750, discount: 15000, image: 'assets/ai_mastery_banner.jpg', status: 'Active' },
+            { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', price: 9000, discount: 7200, image: 'assets/coding_course_banner.jpg', status: 'Active' },
+            { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', price: 4990, discount: 3992, image: 'assets/ebooks_banner.jpg', status: 'Active' },
+            { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', price: 6990, discount: 5592, image: 'assets/motivation_ebook_banner.jpg', status: 'Active' },
+            { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
+        ];
+        localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+    } else {
+        // Ensure facebook-course is always present and active
+        const fbIndex = adminCourses.findIndex(c => c.id === 'facebook-course');
+        if (fbIndex === -1) {
+            adminCourses.unshift(defaultFbCourse);
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        } else {
+            adminCourses[fbIndex].status = 'Active';
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        }
+        if (!adminCourses.find(c => c.id === 'social-media-growth')) {
+            adminCourses.push({ id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' });
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        }
+    }
+    
+    // Process list normally
 
     adminCourses.forEach(c => {
         // 1. Update in-memory courseData object so that details modals render the new details
@@ -2363,7 +2549,9 @@ function syncCourseCatalogDOM() {
             'Social Media': 'social-media',
             'Trading Course': 'trading',
             'AI & Tech': 'ai-tech',
-            'E-Book': 'ebooks'
+            'E-Book': 'ebooks',
+            'Services': 'services',
+            'Social Media Service': 'services'
         };
 
         const cards = document.querySelectorAll('.course-card');
@@ -2551,6 +2739,37 @@ function renderBlogArticles() {
     // Default static articles
     const defaultArticles = [
         {
+            id: 'ai-future-prep',
+            title: '🤖 කෘත්‍රම බුද්ධිය (AI) — ඔබේ ජීවිතය, රැකියාව සහ අනාගතය වෙනස් කරන තාක්ෂණය',
+            category: 'AI & Tech',
+            banner: 'assets/ai_future_prep.jpg',
+            readTime: '8',
+            date: '2026-08-10',
+            intro: 'කෘත්‍රම බුද්ධිය (AI) යනු වර්තමානයේ ලෝකය පුරා වේගයෙන්ම ව්‍යාප්ත වන තාක්ෂණයයි. එය අපගේ රැකියා, අධ්‍යාපනය සහ එදිනෙදා ජීවිතය කෙරෙහි බලපාන්නේ කෙසේද සහ ඊට සූදානම් වන්නේ කෙසේද කියා සොයා බලමු.',
+            content: `# කෘත්‍රම බුද්ධිය (AI) සමඟ අනාගතයට සූදානම් වෙමු
+
+තාක්ෂණික ලෝකයේ සිදුවන වේගවත්ම විප්ලවය වන්නේ කෘත්‍රම බුද්ධිය (AI) යි. මෙය හුදෙක් පරිගණක වැඩසටහනක් නොව, මිනිස් බුද්ධියට සමානව සිතීමට, තීරණ ගැනීමට සහ නිර්මාණකරණයේ යෙදීමට හැකි තාක්ෂණයකි.
+
+## AI මඟින් සිදුවන ප්‍රධාන වෙනස්කම් 3ක්:
+
+### 1. රැකියා ක්ෂේත්‍රයේ වෙනස්වීම් (Impact on Jobs):
+සාම්ප්‍රදායික දත්ත ඇතුළත් කිරීම්, ගණකාධිකරණ සහ ලේඛන කටයුතු වැනි බොහෝ රැකියා AI මඟින් ස්වයංක්‍රීය කෙරේ. නමුත් ඒ සමඟම AI Prompt Engineers, Data Analysts සහ AI Developers වැනි ලක්ෂ සංඛ්‍යාත නව රැකියා අවස්ථා නිර්මාණය වේ.
+
+### 2. අධ්‍යාපනය සහ ඉගෙනුම (Impact on Education):
+පොත්පත් කියවීමෙන් ඔබ්බට ගොස් පුද්ගලීකරණය කළ ගුරුවරයෙකු ලෙස AI ක්‍රියා කරයි. ඕනෑම විෂය කරුණක් තත්පර කිහිපයකින් සරලව තේරුම් ගැනීමට සිසුන්ට AI මෙවලම් උපකාරී වේ.
+
+### 3. ව්‍යාපාර හා නව අවස්ථා (Business Opportunities):
+අඩු පිරිවැයකින් සහ ඉහළ කාර්යක්ෂමතාවයකින් යුතුව ව්‍යාපාරික කටයුතු, පාරිභෝගික සේවා (Chatbots) සහ අලෙවිකරණ (Marketing Campaigns) සැලසුම් කිරීමට AI සහාය ලබාගත හැක.
+
+## AI සමඟ අනාගතයට සූදානම් වන්නේ කෙසේද?
+
+- **තාක්ෂණික දැනුම වර්ධනය කරගන්න**: ChatGPT, Midjourney, CapCut AI වැනි මූලික AI මෙවලම් ක්‍රියාත්මක කරන ආකාරය ඉගෙන ගන්න.
+- **නිර්මාණශීලීත්වය (Creativity) වැඩි දියුණු කරන්න**: AI වලට කළ නොහැකි මිනිස් සිතීමේ ශක්තිය සහ සන්නිවේදන කුසලතා (Soft Skills) වර්ධනය කරගන්න.
+- **නිරන්තරයෙන් අලුත් වන්න (Up-to-date)**: දිනෙන් දින අලුත් වන AI මෙවලම් සහ ඒවායේ භාවිතයන් පිළිබඳව නිරන්තරයෙන් අවධානයෙන් සිටින්න.
+
+> "අනාගතයේදී මිනිසුන්ව AI මඟින් ප්‍රතිස්ථාපනය නොකරනු ඇත. නමුත් AI භාවිතා කරන මිනිසුන් විසින් AI භාවිතා නොකරන මිනිසුන්ව ප්‍රතිස්ථාපනය කරනු ඇත."`
+        },
+        {
             id: 'prompt-guide',
             title: 'ChatGPT හරහා නිවැරදිව Prompt ලියන ආකාරය (Prompt Engineering)',
             category: 'AI & Tech',
@@ -2604,7 +2823,7 @@ function renderBlogArticles() {
                  <p class="card-intro" style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 0;">${article.intro}</p>
              </div>
              <div class="card-footer" style="padding: 0 24px 24px 24px; background: transparent; border: none;">
-                 <button class="btn btn-primary" onclick="openBlogModal('${article.id}')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
+                 <button class="btn btn-primary" onclick="window.open('blog.html?id=${article.id}', '_blank')" style="width: 100%; border: none;">ලිපිය කියවන්න (Read Article)</button>
              </div>
         `;
         grid.appendChild(card);
@@ -3045,9 +3264,17 @@ function renderHeroSlide(slideIdx) {
                     ${highlightsHTML}
                 </div>
 
-                <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:15px;">
-                    <a href="#courses" class="btn btn-primary" style="border:none; padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px;">${btnPrimaryText}</a>
-                    <a href="#contact" class="btn btn-secondary" style="padding:12px 32px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.75); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037;">${btnSecondaryText}</a>
+                 <div class="hero-buttons" style="display:flex; flex-wrap:wrap; align-items:center; gap:12px;">
+                    <a href="register.html" class="btn btn-primary" style="border:none; padding:12px 28px; border-radius:30px; font-weight:800; font-size:14.5px; background:linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color:white; text-decoration:none; box-shadow:0 8px 25px rgba(244,123,32,0.35); display:inline-flex; align-items:center; gap:8px;">
+                        <span>🚀 ${lang === 'si' ? 'නොමිලේ ලියාපදිංචි වන්න' : 'REGISTER FREE (Rs. 0)'}</span>
+                    </a>
+                    <a href="login.html" class="btn btn-secondary" style="padding:12px 26px; border-radius:30px; font-weight:700; font-size:14.5px; background:rgba(255,255,255,0.85); backdrop-filter:blur(10px); border:1px solid rgba(212,175,55,0.45); color:#5D4037; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+                        <span>🔐 ${lang === 'si' ? 'පිවිසෙන්න (Login)' : 'LOGIN'}</span>
+                    </a>
+                    <a href="https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20want%20to%20know%20more%20details%20about%20your%20services." target="_blank" class="btn btn-whatsapp-hero" style="display:flex; align-items:center; gap:8px; padding:12px 22px; border-radius:30px; font-weight:800; font-size:14px; background:#25D366; color:white; border:none; text-decoration:none; box-shadow:0 8px 20px rgba(37,211,102,0.25); z-index:11;">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.49-3.218c1.652.98 3.23 1.493 4.883 1.495 5.518 0 10.011-4.49 10.014-10.01.002-2.653-1.03-5.148-2.908-7.028-1.879-1.881-4.38-2.916-7.037-2.917-5.522 0-10.014 4.493-10.017 10.017-.001 1.745.485 3.326 1.478 4.902L1.082 22.07l4.475-1.173c-.01 0-.01 0 0 0zm12.5-5.32c-.27-.137-1.602-.79-1.85-.88-.248-.09-.43-.137-.61.137-.18.275-.698.88-.856 1.06-.157.18-.315.203-.585.067-.27-.137-1.14-.42-2.17-1.34-.8-.713-1.34-1.595-1.5-1.87-.156-.276-.017-.425.12-.562.124-.123.27-.315.406-.473.136-.158.18-.27.27-.45.09-.18.046-.338-.022-.475-.069-.137-.61-1.472-.836-2.016-.22-.53-.44-.458-.61-.466-.157-.008-.339-.01-.52-.01-.18 0-.476.067-.725.339-.25.275-.953.93-.953 2.27 0 1.34.975 2.637 1.11 2.822.137.184 1.92 2.93 4.65 4.11.65.28 1.157.446 1.55.57.653.208 1.248.178 1.717.108.524-.078 1.602-.656 1.83-.1.228-.61.228-1.13.16-.123-.069-.137-.248-.275-.518zm0 0"/></svg>
+                        <span>${lang === 'si' ? 'අපව සම්බන්ධ කරගන්න' : 'Contact Us'}</span>
+                    </a>
                 </div>
             </div>
         `;
@@ -3086,7 +3313,51 @@ function initHeroSlider() {
     }, slideIntervalMs);
 }
 
-// Auto-run slider on load
+// Dynamic Authenticated State Synchronization
+function syncNavAuthState() {
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+    const userStr = localStorage.getItem('active_user');
+    const authBtnContainer = document.getElementById('headerAuthButtons');
+
+    if (token && userStr && authBtnContainer) {
+        try {
+            const user = JSON.parse(userStr);
+            const isAdmin = user.role === 'admin' || user.role === 'ADMIN';
+            const dashLink = isAdmin ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
+
+            authBtnContainer.innerHTML = `
+                <a href="${dashLink}" class="cta-btn" style="text-decoration:none; padding:8px 18px; border-radius:20px; font-weight:800; font-size:13px; background:linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color:white; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 15px rgba(244,123,32,0.35);">
+                    <span>👤 My Dashboard</span>
+                </a>
+                <button onclick="handleGlobalLogout()" class="cta-btn" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ff7675; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                    <span>🚪 Logout</span>
+                </button>
+            `;
+        } catch (e) {}
+    }
+}
+
+// Global Logout Handler
+window.handleGlobalLogout = async function() {
+    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+    try {
+        if (token) {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+        }
+    } catch (e) {}
+    localStorage.removeItem('active_user');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('active_token');
+    localStorage.removeItem('hapanamy_user_profile');
+    sessionStorage.clear();
+    window.location.replace('login.html');
+};
+
+// Auto-run on load
 document.addEventListener('DOMContentLoaded', () => {
     initHeroSlider();
+    syncNavAuthState();
 });

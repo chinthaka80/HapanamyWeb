@@ -2493,9 +2493,11 @@ function syncHeaderUserState() {
 function syncCourseCatalogDOM() {
     syncHeaderUserState();
     let adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
-    if (!adminCourses) {
+    const defaultFbCourse = { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' };
+    
+    if (!adminCourses || !Array.isArray(adminCourses) || adminCourses.length === 0) {
         adminCourses = [
-            { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' },
+            defaultFbCourse,
             { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
             { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
             { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
@@ -2512,9 +2514,20 @@ function syncCourseCatalogDOM() {
             { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
         ];
         localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
-    } else if (!adminCourses.find(c => c.id === 'social-media-growth')) {
-        adminCourses.push({ id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' });
-        localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+    } else {
+        // Ensure facebook-course is always present and active
+        const fbIndex = adminCourses.findIndex(c => c.id === 'facebook-course');
+        if (fbIndex === -1) {
+            adminCourses.unshift(defaultFbCourse);
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        } else {
+            adminCourses[fbIndex].status = 'Active';
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        }
+        if (!adminCourses.find(c => c.id === 'social-media-growth')) {
+            adminCourses.push({ id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' });
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
+        }
     }
     
     // Process list normally
