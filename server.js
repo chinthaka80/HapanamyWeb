@@ -21,6 +21,7 @@ const MemberDashboardService = require('./services/member-dashboard-service');
 const AdminDashboardService = require('./services/admin-dashboard-service');
 const NotificationEngine = require('./services/notification-engine');
 const ReversalEngine = require('./services/reversal-engine');
+const SimulationEngine = require('./services/simulation-engine');
 
 const PORT = 3000;
 
@@ -2043,6 +2044,29 @@ const server = http.createServer(async (req, res) => {
 
         const result = await NotificationEngine.processQueue();
         sendJSON(res, 200, { success: true, result });
+        return;
+    }
+
+    // POST /api/admin/simulation/run (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/simulation/run') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const nodeCount = parseInt(body.nodeCount) || 100;
+        const purchaseCount = parseInt(body.purchaseCount) || 150;
+        const refundRatePercent = parseFloat(body.refundRatePercent) || 5;
+
+        const report = SimulationEngine.runSimulation({
+            nodeCount,
+            purchaseCount,
+            refundRatePercent
+        });
+
+        sendJSON(res, 200, { success: true, report });
         return;
     }
 

@@ -44,6 +44,7 @@ require('./step29-refund-cancellation.test');
 require('./step30-commission-volume-reversal.test');
 require('./step31-security-fraud.test');
 require('./step32-notification-engine.test');
+require('./step33-simulation-load-testing.test');
 
 // Run
 runTests();

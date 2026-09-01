@@ -203,6 +203,11 @@ const ReversalEngine = {
                 );
             }
 
+            reversalResults.total_amount_reversed = Math.round((
+                reversalResults.reversed_direct_commissions.reduce((s, r) => s + (Math.abs(Number(r.amount)) || 0), 0) +
+                reversalResults.reversed_binary_commissions.reduce((s, r) => s + (Math.abs(Number(r.amount)) || 0), 0)
+            ) * 100) / 100;
+
             return {
                 success: true,
                 ...reversalResults
