@@ -32,6 +32,7 @@ require('./step17-binary-volume.test');
 require('./step18-direct-commission.test');
 require('./step19-qualified-upline-commission.test');
 require('./step20-earnings-cap.test');
+require('./step21-wallet-ledger.test');
 
 // Run
 runTests();
