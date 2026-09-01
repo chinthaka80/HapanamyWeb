@@ -81,10 +81,15 @@ const ProductCommissionValidator = {
             }
         }
 
+        const excessAmount = (maxTotalExposure > effectiveBudget) 
+            ? Math.round((maxTotalExposure - effectiveBudget) * 100) / 100 
+            : 0.00;
+
         return {
             status,
             allowed,
             blocked_reason: blockedReason,
+            excess_amount: excessAmount,
             warnings,
             risk_reasons: riskReasons,
             economics: calculated,

@@ -20,6 +20,7 @@ require('./safe-binary-calculator.test');
 require('./product-firewall.test');
 require('./product-snapshot.test');
 require('./commission-integration.test');
+require('./critical-product-economics.test');
 
 // Run
 runTests();
