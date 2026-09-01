@@ -90,7 +90,8 @@ CREATE TABLE binary_nodes (
     CONSTRAINT chk_root_has_no_parent CHECK (
         (placement_parent_id IS NULL AND position IS NULL) OR 
         (placement_parent_id IS NOT NULL AND position IS NOT NULL)
-    )
+    ),
+    CONSTRAINT uq_parent_position UNIQUE (placement_parent_id, position)
 );
 
 -- ========================================================

@@ -560,7 +560,54 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/network/place (Admin or Sponsor Manual Placement)
+    // GET /api/network/node (Node details with Sponsor, Placement Parent & Children)
+    if (req.method === 'GET' && pathname === '/api/network/node') {
+        const queryParams = parseQueryParams(req.url);
+        const memberId = queryParams.memberId || queryParams.userId;
+
+        if (!memberId) {
+            sendJSON(res, 400, { error: 'memberId is required.' });
+            return;
+        }
+
+        const node = mockBinaryNodes.find(n => n.user_id === memberId);
+        if (!node) {
+            sendJSON(res, 404, { error: `Binary node for member ${memberId} not found.` });
+            return;
+        }
+
+        const user = mockUsers.find(u => u.id === memberId) || { username: memberId, full_name: 'Member ' + memberId };
+        const sponsorRecord = mockSponsors.find(s => s.user_id === memberId);
+        const sponsorUser = sponsorRecord ? mockUsers.find(u => u.id === sponsorRecord.sponsor_id) : null;
+        const parentUser = node.placement_parent_id ? mockUsers.find(u => u.id === node.placement_parent_id) : null;
+        const summary = PlacementEngine.getTeamSummary(memberId, mockBinaryNodes, mockVolumeLedger);
+
+        sendJSON(res, 200, {
+            success: true,
+            node: {
+                user_id: node.user_id,
+                username: user.username,
+                full_name: user.full_name,
+                depth: node.depth,
+                path: node.path,
+                position: node.position,
+                placement_parent_id: node.placement_parent_id,
+                placement_parent_username: parentUser ? parentUser.username : null,
+                sponsor_id: sponsorRecord ? sponsorRecord.sponsor_id : null,
+                sponsor_username: sponsorUser ? sponsorUser.username : null,
+                left_child_id: node.left_child_id,
+                right_child_id: node.right_child_id,
+                left_count: summary.leftCount,
+                right_count: summary.rightCount,
+                left_volume: summary.leftVolume,
+                right_volume: summary.rightVolume,
+                team_count: summary.teamCount
+            }
+        });
+        return;
+    }
+
+    // POST /api/network/place (Admin or Sponsor Manual Placement with Audit Logging)
     if (req.method === 'POST' && pathname === '/api/network/place') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
@@ -569,30 +616,21 @@ const server = http.createServer(async (req, res) => {
         }
 
         const body = await parseRequestBody(req);
-        const { userId, placementParentId, position } = body;
-
-        if (!userId || !placementParentId || !position) {
-            sendJSON(res, 400, { error: 'userId, placementParentId, and position are required.' });
-            return;
-        }
-
-        if (position !== 'LEFT' && position !== 'RIGHT') {
-            sendJSON(res, 400, { error: 'Position must be LEFT or RIGHT.' });
-            return;
-        }
-
-        const occupied = PlacementEngine.isPositionOccupied(placementParentId, position, mockBinaryNodes);
-        if (occupied) {
-            sendJSON(res, 400, { error: `Position ${position} under parent ${placementParentId} is already occupied.` });
-            return;
-        }
+        const { userId, placementParentId, position, sponsorId } = body;
 
         try {
-            const newNode = PlacementEngine.addNode(mockBinaryNodes, {
+            const newNode = PlacementEngine.assignPlacement(
                 userId,
+                sponsorId || authUser.id,
                 placementParentId,
-                position
-            });
+                position,
+                mockBinaryNodes,
+                {
+                    isManual: true,
+                    adminUserId: authUser.id,
+                    auditLogs: mockAuditLogs
+                }
+            );
 
             sendJSON(res, 201, { success: true, message: 'Member placed successfully.', node: newNode });
         } catch (e) {

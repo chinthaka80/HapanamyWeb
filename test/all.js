@@ -24,6 +24,7 @@ require('./critical-product-economics.test');
 require('./placement.test');
 require('./referral.test');
 require('./registration-qualification.test');
+require('./step13-binary-placement.test');
 
 // Run
 runTests();

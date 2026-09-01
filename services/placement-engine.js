@@ -1,7 +1,11 @@
-// Hapanamy.lk Binary Network & Placement Engine (Phase 1)
-// Comprehensive service managing binary topology, extreme/balanced placement, visual tree hierarchies, and genealogy.
+// Hapanamy.lk Binary Network & Placement Engine (STEP 13)
+// Production-grade binary tree management, automatic & manual collision-proof placement,
+// cycle detection, ancestor traversal, descendant lookup, and visual tree hierarchy.
 
 const PlacementEngine = {
+    // In-memory slot reservation mutex locks to prevent race conditions during concurrent placements
+    _slotLocks: new Set(),
+
     /**
      * Verifies that the sponsor exists and is active.
      */
@@ -12,7 +16,7 @@ const PlacementEngine = {
     },
 
     /**
-     * Checks if sponsorId is descended from userId (circular referral check).
+     * Checks if sponsorId is descended from userId in the sponsorship genealogy (circular referral check).
      */
     isCircularReferral(userId, sponsorId, sponsorsList) {
         let currentSponsorId = sponsorId;
@@ -35,13 +39,95 @@ const PlacementEngine = {
     },
 
     /**
+     * Checks if proposedParentId is already a descendant of memberId (circular placement loop prevention).
+     */
+    isCircularPlacement(memberId, proposedParentId, binaryNodes) {
+        if (!memberId || !proposedParentId) return false;
+        if (memberId === proposedParentId) return true;
+
+        let currentId = proposedParentId;
+        const visited = new Set();
+
+        while (currentId) {
+            if (currentId === memberId) {
+                return true; // Found memberId as an ancestor of proposedParentId! Cycle detected.
+            }
+            if (visited.has(currentId)) break;
+            visited.add(currentId);
+
+            const parentNode = binaryNodes.find(n => n.user_id === currentId);
+            currentId = parentNode ? parentNode.placement_parent_id : null;
+        }
+
+        return false;
+    },
+
+    /**
      * Verifies if the requested binary position is already occupied under a parent.
      */
     isPositionOccupied(placementParentId, position, binaryNodes) {
+        if (!placementParentId || !position) return false;
+        const targetPos = position.toUpperCase();
         return binaryNodes.some(node => 
             node.placement_parent_id === placementParentId && 
-            node.position === position
+            node.position === targetPos
         );
+    },
+
+    /**
+     * Validates a proposed placement for a member under a parent node.
+     */
+    validatePlacement(memberId, sponsorId, targetParentId, position, binaryNodes) {
+        if (!memberId) {
+            return { valid: false, error: 'Member ID is required.' };
+        }
+
+        // If tree is empty and this is root member
+        if (binaryNodes.length === 0) {
+            if (targetParentId || position) {
+                return { valid: false, error: 'First member (Root) must have null parent and position.' };
+            }
+            return { valid: true };
+        }
+
+        // Prevent placing a member who is already in the tree
+        const alreadyInTree = binaryNodes.some(n => n.user_id === memberId);
+        if (alreadyInTree) {
+            return { valid: false, error: `Member ${memberId} is already placed in the binary tree.` };
+        }
+
+        if (!targetParentId) {
+            return { valid: false, error: 'Placement Parent ID is required for non-root members.' };
+        }
+
+        if (!position || !['LEFT', 'RIGHT'].includes(position.toUpperCase())) {
+            return { valid: false, error: 'Position must be strictly LEFT or RIGHT.' };
+        }
+
+        const normalizedPos = position.toUpperCase();
+
+        // Prevent self-placement
+        if (memberId === targetParentId) {
+            return { valid: false, error: 'Self-placement is strictly prohibited.' };
+        }
+
+        // Verify target parent exists in tree
+        const parentNode = binaryNodes.find(n => n.user_id === targetParentId);
+        if (!parentNode) {
+            return { valid: false, error: `Target placement parent ${targetParentId} does not exist in the binary tree.` };
+        }
+
+        // Check if slot is occupied
+        if (this.isPositionOccupied(targetParentId, normalizedPos, binaryNodes)) {
+            return { valid: false, error: `Position ${normalizedPos} under parent ${targetParentId} is already occupied.` };
+        }
+
+        // Check circular placement
+        if (this.isCircularPlacement(memberId, targetParentId, binaryNodes)) {
+            return { valid: false, error: `Circular placement detected: Parent ${targetParentId} is a descendant of ${memberId}.` };
+        }
+
+        return { valid: true };
     },
 
     /**
@@ -64,6 +150,79 @@ const PlacementEngine = {
             currentId = node.placement_parent_id;
         }
         return null;
+    },
+
+    /**
+     * Traverses up from a member and returns all ancestor uplines in order [Parent, Grandparent, ...].
+     */
+    getAncestors(memberId, binaryNodes, maxDepth = 100) {
+        const ancestors = [];
+        let currentId = memberId;
+        let hop = 1;
+        const visited = new Set();
+
+        while (currentId && hop <= maxDepth) {
+            if (visited.has(currentId)) break;
+            visited.add(currentId);
+
+            const node = binaryNodes.find(n => n.user_id === currentId);
+            if (!node || !node.placement_parent_id) break;
+
+            const parentNode = binaryNodes.find(n => n.user_id === node.placement_parent_id);
+            if (!parentNode) break;
+
+            ancestors.push({
+                hop,
+                user_id: parentNode.user_id,
+                position: node.position, // Leg this child was attached to on parent
+                depth: parentNode.depth,
+                path: parentNode.path
+            });
+
+            currentId = parentNode.user_id;
+            hop++;
+        }
+
+        return ancestors;
+    },
+
+    /**
+     * Returns all descendant nodes residing in the subtree of a member.
+     */
+    getDescendants(memberId, binaryNodes, maxDepth = 100) {
+        const descendants = [];
+        const queue = [{ userId: memberId, relativeDepth: 0 }];
+        const visited = new Set();
+
+        while (queue.length > 0) {
+            const { userId, relativeDepth } = queue.shift();
+            if (visited.has(userId)) continue;
+            visited.add(userId);
+
+            if (relativeDepth > 0) {
+                const node = binaryNodes.find(n => n.user_id === userId);
+                if (node) {
+                    descendants.push({
+                        user_id: node.user_id,
+                        placement_parent_id: node.placement_parent_id,
+                        position: node.position,
+                        relative_depth: relativeDepth,
+                        branch_leg: this.getLegUnderAncestor(node.user_id, memberId, binaryNodes),
+                        depth: node.depth,
+                        path: node.path
+                    });
+                }
+            }
+
+            if (relativeDepth < maxDepth) {
+                const children = binaryNodes.filter(n => n.placement_parent_id === userId);
+                for (const child of children) {
+                    queue.push({ userId: child.user_id, relativeDepth: relativeDepth + 1 });
+                }
+            }
+        }
+
+        return descendants;
     },
 
     /**
@@ -180,15 +339,7 @@ const PlacementEngine = {
     resolvePlacement(sponsorId, requestedPosition = 'AUTO', binaryNodes = [], volumeLedger = []) {
         const posKey = (requestedPosition || 'AUTO').toUpperCase();
 
-        // 1. Direct sponsor exists check
-        const sponsorNode = binaryNodes.find(n => n.user_id === sponsorId);
-        if (!sponsorNode && binaryNodes.length > 0) {
-            // Default to root node if sponsor not in tree
-            const root = binaryNodes.find(n => !n.placement_parent_id) || binaryNodes[0];
-            return this.resolvePlacement(root.user_id, requestedPosition, binaryNodes, volumeLedger);
-        }
-
-        // If tree is completely empty, user is root
+        // 1. If tree is completely empty, user is root
         if (binaryNodes.length === 0) {
             return {
                 placementParentId: null,
@@ -196,6 +347,14 @@ const PlacementEngine = {
                 depth: 1,
                 path: ''
             };
+        }
+
+        // 2. Direct sponsor exists check
+        const sponsorNode = binaryNodes.find(n => n.user_id === sponsorId);
+        if (!sponsorNode) {
+            // Default to root node if sponsor not in tree
+            const root = binaryNodes.find(n => !n.placement_parent_id) || binaryNodes[0];
+            return this.resolvePlacement(root.user_id, requestedPosition, binaryNodes, volumeLedger);
         }
 
         let resolved = null;
@@ -225,43 +384,79 @@ const PlacementEngine = {
     },
 
     /**
-     * Adds a new member node into the binary tree ledger.
+     * Atomic, concurrency-safe assignment of a member into the binary tree.
      */
-    addNode(binaryNodes, { userId, placementParentId, position, depth, path }) {
-        if (!userId) throw new Error('UserId is required for binary node.');
+    assignPlacement(memberId, sponsorId, targetParentId, position, binaryNodes, options = {}) {
+        const normalizedPos = position ? position.toUpperCase() : null;
+        const slotKey = targetParentId && normalizedPos ? `${targetParentId}:${normalizedPos}` : null;
 
-        // Prevent duplicate position under parent
-        if (placementParentId && position) {
-            const occupied = this.isPositionOccupied(placementParentId, position, binaryNodes);
-            if (occupied) {
-                throw new Error(`Position ${position} under parent ${placementParentId} is already occupied.`);
+        // Concurrency mutex check
+        if (slotKey) {
+            if (this._slotLocks.has(slotKey)) {
+                throw new Error(`Slot lock conflict: Position ${normalizedPos} under parent ${targetParentId} is currently being locked by another concurrent process.`);
+            }
+            this._slotLocks.add(slotKey);
+        }
+
+        try {
+            // 1. Validate placement integrity
+            const validation = this.validatePlacement(memberId, sponsorId, targetParentId, normalizedPos, binaryNodes);
+            if (!validation.valid) {
+                throw new Error(validation.error);
+            }
+
+            // 2. Calculate depth and tree path
+            const parentNode = binaryNodes.find(n => n.user_id === targetParentId);
+            const depth = parentNode ? (parentNode.depth || 1) + 1 : 1;
+            const parentPath = parentNode ? (parentNode.path || '') : '';
+            const path = parentPath ? `${parentPath}/${targetParentId}` : (targetParentId || '');
+
+            const newNode = {
+                id: 'node-' + Math.random().toString(36).substr(2, 9),
+                user_id: memberId,
+                placement_parent_id: targetParentId || null,
+                position: normalizedPos,
+                depth,
+                path,
+                left_child_id: null,
+                right_child_id: null,
+                created_at: new Date().toISOString()
+            };
+
+            // Link parent child reference
+            if (parentNode) {
+                if (normalizedPos === 'LEFT') parentNode.left_child_id = memberId;
+                if (normalizedPos === 'RIGHT') parentNode.right_child_id = memberId;
+            }
+
+            binaryNodes.push(newNode);
+
+            // Audit logging if list provided
+            if (options.auditLogs) {
+                options.auditLogs.push({
+                    id: 'audit-pl-' + Math.random().toString(36).substr(2, 9),
+                    user_id: options.adminUserId || memberId,
+                    action: options.isManual ? 'MANUAL_PLACEMENT_ASSIGNED' : 'AUTO_PLACEMENT_ASSIGNED',
+                    entity_type: 'binary_nodes',
+                    entity_id: memberId,
+                    new_values: { placement_parent_id: targetParentId, position: normalizedPos, depth },
+                    created_at: new Date().toISOString()
+                });
+            }
+
+            return newNode;
+        } finally {
+            if (slotKey) {
+                this._slotLocks.delete(slotKey);
             }
         }
+    },
 
-        const parentNode = binaryNodes.find(n => n.user_id === placementParentId);
-        const nodeDepth = depth || (parentNode ? (parentNode.depth || 1) + 1 : 1);
-        const nodePath = path || (parentNode ? (parentNode.path ? `${parentNode.path}/${placementParentId}` : placementParentId) : '');
-
-        const newNode = {
-            id: 'node-' + Math.random().toString(36).substr(2, 9),
-            user_id: userId,
-            placement_parent_id: placementParentId || null,
-            position: position || null,
-            depth: nodeDepth,
-            path: nodePath,
-            left_child_id: null,
-            right_child_id: null,
-            created_at: new Date().toISOString()
-        };
-
-        // Link child ID on parent
-        if (parentNode) {
-            if (position === 'LEFT') parentNode.left_child_id = userId;
-            if (position === 'RIGHT') parentNode.right_child_id = userId;
-        }
-
-        binaryNodes.push(newNode);
-        return newNode;
+    /**
+     * Backward-compatible helper to add node directly.
+     */
+    addNode(binaryNodes, { userId, placementParentId, position, depth, path }) {
+        return this.assignPlacement(userId, null, placementParentId, position, binaryNodes);
     },
 
     /**
@@ -384,7 +579,9 @@ const PlacementEngine = {
             depth: node.depth,
             path: node.path,
             position: node.position,
-            placement_parent_id: node.placement_parent_id
+            placement_parent_id: node.placement_parent_id,
+            left_child_id: node.left_child_id,
+            right_child_id: node.right_child_id
         };
     },
 

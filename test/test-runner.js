@@ -31,6 +31,26 @@ assert.closeTo = function(val1, val2, maxDiff = 0.0001, message) {
     }
 };
 
+assert.throws = function(fn, regex, message) {
+    let threw = false;
+    let thrownErr = null;
+    try {
+        fn();
+    } catch (err) {
+        threw = true;
+        thrownErr = err;
+    }
+    if (!threw) {
+        throw new Error(message || 'Expected function to throw an error, but it did not.');
+    }
+    if (regex && thrownErr) {
+        const str = thrownErr.message || String(thrownErr);
+        if (!regex.test(str)) {
+            throw new Error(`Expected error message matching ${regex}, but got: "${str}"`);
+        }
+    }
+};
+
 async function runTests() {
     console.log('\n🏃 Running Hapanamy MLM Unit Tests...\n');
     let passed = 0;
