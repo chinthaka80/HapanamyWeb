@@ -1394,13 +1394,103 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
-    // REPORTING & ANALYTICS API ROUTER (PHASE 11)
+    // REPORTING & ANALYTICS API ROUTER (STEP 28)
     // ========================================================
+
+    // GET /api/admin/reports/financial (STEP 28)
+    if (req.method === 'GET' && pathname === '/api/admin/reports/financial') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const startDate = url.searchParams.get('startDate');
+        const endDate = url.searchParams.get('endDate');
+        const productId = url.searchParams.get('productId');
+        const status = url.searchParams.get('status');
+
+        try {
+            const report = ReportService.generateFinancialReport({
+                requestingUser: authUser,
+                purchases: mockProductPurchases,
+                walletLedger: mockWalletLedger,
+                withdrawals: mockWithdrawalRequests,
+                products: mockProducts,
+                filters: { startDate, endDate, productId, status },
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 200, report);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/admin/reports/mlm (STEP 28)
+    if (req.method === 'GET' && pathname === '/api/admin/reports/mlm') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        try {
+            const report = ReportService.generateMlmReport({
+                requestingUser: authUser,
+                users: mockUsers,
+                binaryNodes: mockBinaryNodes,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors,
+                walletLedger: mockWalletLedger,
+                purchases: mockProductPurchases,
+                kycDocs: mockKycDocs,
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 200, report);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/reports/statement (STEP 28)
+    if (req.method === 'GET' && pathname === '/api/member/reports/statement') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const targetUserId = url.searchParams.get('userId') || authUser.id;
+        const startDate = url.searchParams.get('startDate');
+        const endDate = url.searchParams.get('endDate');
+        const commissionType = url.searchParams.get('commissionType');
+
+        try {
+            const report = ReportService.generateMemberReport({
+                requestingUser: authUser,
+                targetUserId,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                walletLedger: mockWalletLedger,
+                withdrawals: mockWithdrawalRequests,
+                binaryNodes: mockBinaryNodes,
+                kycDocs: mockKycDocs,
+                filters: { startDate, endDate, commissionType },
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 200, report);
+        } catch (err) {
+            sendJSON(res, 403, { error: err.message });
+        }
+        return;
+    }
 
     // GET /api/admin/reports
     if (req.method === 'GET' && pathname === '/api/admin/reports') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
@@ -1417,7 +1507,7 @@ const server = http.createServer(async (req, res) => {
         if (type === 'sales') {
             dataset = mockProductPurchases;
         } else if (type === 'commissions') {
-            dataset = mockWalletLedger.filter(tx => tx.type === 'DIRECT_COMMISSION' || tx.type === 'BINARY_COMMISSION');
+            dataset = mockWalletLedger.filter(tx => (tx.type || '').includes('COMMISSION'));
         } else if (type === 'withdrawals') {
             dataset = mockWithdrawalRequests;
         } else if (type === 'deposits') {
@@ -1431,29 +1521,55 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /api/admin/reports/export
+    // GET /api/admin/reports/export (STEP 28 multi-format CSV / Excel / PDF)
     if (req.method === 'GET' && pathname === '/api/admin/reports/export') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
 
         const type = url.searchParams.get('type') || 'sales';
+        const format = (url.searchParams.get('format') || 'csv').toLowerCase();
+
         let dataset = [];
         if (type === 'sales') {
             dataset = mockProductPurchases;
         } else if (type === 'commissions') {
-            dataset = mockWalletLedger.filter(tx => tx.type === 'DIRECT_COMMISSION' || tx.type === 'BINARY_COMMISSION');
+            dataset = mockWalletLedger.filter(tx => (tx.type || '').includes('COMMISSION'));
         } else if (type === 'withdrawals') {
             dataset = mockWithdrawalRequests;
         } else if (type === 'deposits') {
             dataset = mockPaymentDeposits;
         }
 
+        // Log sensitive report export
+        KycService.logAction(mockAuditLogs, authUser.id, 'REPORT_EXPORTED', 'reports', type, null, { format, record_count: dataset.length });
+
+        if (format === 'excel' || format === 'xlsx') {
+            const excelString = ReportService.exportToExcel(dataset, `Hapanamy ${type}`);
+            res.writeHead(200, {
+                'Content-Type': 'application/vnd.ms-excel; charset=utf-8',
+                'Content-Disposition': `attachment; filename="hapanamy_${type}_report.xls"`
+            });
+            res.end(excelString);
+            return;
+        }
+
+        if (format === 'pdf') {
+            const pdfDoc = ReportService.exportToPDFFormat(`Hapanamy ${type} Report`, { RecordCount: dataset.length }, dataset);
+            res.writeHead(200, {
+                'Content-Type': 'text/plain; charset=utf-8',
+                'Content-Disposition': `attachment; filename="hapanamy_${type}_report.txt"`
+            });
+            res.end(pdfDoc);
+            return;
+        }
+
+        // Default: CSV
         const csvString = ReportService.exportToCSV(dataset);
         res.writeHead(200, {
-            'Content-Type': 'text/csv',
+            'Content-Type': 'text/csv; charset=utf-8',
             'Content-Disposition': `attachment; filename="hapanamy_${type}_report.csv"`
         });
         res.end(csvString);
