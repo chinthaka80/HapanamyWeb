@@ -507,17 +507,35 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/auth/logout
-    if (req.method === 'POST' && pathname === '/api/auth/logout') {
+    // POST & GET /api/auth/logout (Session Invalidation)
+    if ((req.method === 'POST' || req.method === 'GET') && pathname === '/api/auth/logout') {
         const authHeader = req.headers['authorization'];
         const token = authHeader ? authHeader.replace('Bearer ', '') : '';
 
         if (token && activeSessions.has(token)) {
             activeSessions.delete(token);
-            sendJSON(res, 200, { success: true, message: 'Logged out successfully.' });
-        } else {
-            sendJSON(res, 400, { error: 'Invalid session or token.' });
         }
+        sendJSON(res, 200, { success: true, message: 'Logged out successfully.' });
+        return;
+    }
+
+    // GET /api/auth/me (Current Authenticated User Session)
+    if (req.method === 'GET' && pathname === '/api/auth/me') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Invalid or expired session token.' });
+            return;
+        }
+        sendJSON(res, 200, {
+            success: true,
+            user: {
+                id: authUser.id,
+                username: authUser.username,
+                full_name: authUser.full_name || authUser.name,
+                email: authUser.email,
+                role: authUser.role || 'member'
+            }
+        });
         return;
     }
 
@@ -2162,10 +2180,35 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
-    // STATIC ASSET SERVING
+    // CLEAN URL & STATIC ASSET ROUTING
     // ========================================================
     let safeUrl = pathname;
-    let filePath = path.join(__dirname, safeUrl === '/' ? 'index.html' : safeUrl);
+    
+    // Explicit Clean Route Mappings
+    if (safeUrl === '/') safeUrl = '/index.html';
+    else if (safeUrl === '/login') safeUrl = '/login.html';
+    else if (safeUrl === '/register') safeUrl = '/register.html';
+    else if (safeUrl === '/dashboard') safeUrl = '/dashboard.html';
+    else if (safeUrl === '/admin') safeUrl = '/hapanamy-admin-portal-9226.html';
+    else if (safeUrl === '/checkout') safeUrl = '/checkout.html';
+    else if (safeUrl === '/about' || safeUrl === '/about-us') safeUrl = '/about-us.html';
+    else if (safeUrl === '/courses') safeUrl = '/courses.html';
+    else if (safeUrl === '/how-it-works') safeUrl = '/how-it-works.html';
+    else if (safeUrl === '/compensation-plan') safeUrl = '/compensation-plan.html';
+    else if (safeUrl === '/faq') safeUrl = '/faq.html';
+    else if (safeUrl === '/contact' || safeUrl === '/contact-us') safeUrl = '/contact-us.html';
+    else if (safeUrl === '/terms' || safeUrl === '/terms-conditions') safeUrl = '/terms-conditions.html';
+    else if (safeUrl === '/privacy' || safeUrl === '/privacy-policy') safeUrl = '/privacy-policy.html';
+    else if (safeUrl === '/refund' || safeUrl === '/refund-policy') safeUrl = '/refund-policy.html';
+    else if (safeUrl === '/disclaimer') safeUrl = '/disclaimer.html';
+    else if (safeUrl === '/affiliate-disclosure') safeUrl = '/affiliate-disclosure.html';
+
+    let filePath = path.join(__dirname, safeUrl);
+    
+    // Auto-resolve .html if extension is omitted
+    if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
+        filePath = filePath + '.html';
+    }
     
     if (safeUrl.startsWith('/storage/private/') || !filePath.startsWith(__dirname)) {
         res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
@@ -2180,7 +2223,7 @@ const server = http.createServer(async (req, res) => {
         if (err) {
             if (err.code === 'ENOENT') {
                 res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
-                res.end('<h1>404 Not Found</h1>', 'utf-8');
+                res.end('<h1>404 Not Found - Hapanamy.lk</h1>', 'utf-8');
             } else {
                 res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
                 res.end(`Server Error: ${err.code}`);

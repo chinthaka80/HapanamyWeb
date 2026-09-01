@@ -1,59 +1,216 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapanamy - Register | ලියාපදිංචි වන්න</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <title>Hapanamy.lk | නොමිලේ ලියාපදිංචි වන්න (Free Registration)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
     <link rel="stylesheet" href="index.css">
+    
     <style>
         body {
             font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
             background-color: var(--bg-main);
             color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 50px 20px;
+            position: relative;
+            overflow-x: hidden;
         }
-        .register-container {
+
+        .auth-bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .auth-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(90px);
+            opacity: 0.22;
+        }
+
+        .auth-shape-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--brand-orange);
+            top: -120px;
+            right: -100px;
+        }
+
+        .auth-shape-2 {
+            width: 450px;
+            height: 450px;
+            background: var(--brand-gold);
+            bottom: -100px;
+            left: -100px;
+        }
+
+        .register-card {
             width: 100%;
-            max-width: 600px;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 40px;
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            max-width: 660px;
+            background: rgba(16, 42, 67, 0.8);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(244, 123, 32, 0.1);
+            position: relative;
+            z-index: 10;
         }
-        .form-group {
-            margin-bottom: 20px;
+
+        .auth-logo-header {
+            text-align: center;
+            margin-bottom: 25px;
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13.5px;
-            font-weight: 700;
-            color: var(--text-secondary);
+
+        .auth-logo-header a {
+            text-decoration: none;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
         }
-        .form-control {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-main);
-            color: var(--text-primary);
+
+        .auth-logo-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            border: 2px solid var(--brand-gold);
+            object-fit: cover;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .free-badge-banner {
+            background: linear-gradient(90deg, rgba(244,123,32,0.15), rgba(212,175,55,0.15));
+            border: 1px solid rgba(212,175,55,0.3);
+            border-radius: 16px;
+            padding: 12px 18px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .free-badge-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .free-badge-tag {
+            background: var(--brand-gold);
+            color: #102A43;
+            font-size: 11px;
+            font-weight: 900;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+        }
+
+        .free-badge-fee {
             font-size: 14px;
-            font-weight: 600;
+            font-weight: 800;
+            color: #55efc4;
         }
+
+        .referral-alert-banner {
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            border-radius: 12px;
+            padding: 12px 16px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #55efc4;
+            margin-bottom: 22px;
+            display: none;
+            align-items: center;
+            gap: 10px;
+        }
+
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 16px;
         }
-        .btn-register {
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
             width: 100%;
-            padding: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: rgba(8, 28, 44, 0.85);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.2);
+            background: rgba(8, 28, 44, 1);
+        }
+
+        .section-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 18px;
+            margin-bottom: 20px;
+        }
+
+        .section-box-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--brand-gold);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-auth-submit {
+            width: 100%;
+            padding: 15px;
             border-radius: 30px;
             background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
             color: white;
@@ -61,166 +218,237 @@
             font-weight: 800;
             font-size: 15px;
             cursor: pointer;
-            transition: transform 0.2s ease;
+            transition: var(--transition-smooth);
+            box-shadow: 0 8px 25px rgba(244, 123, 32, 0.35);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
-        .btn-register:hover {
-            transform: scale(1.02);
+
+        .btn-auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(244, 123, 32, 0.45);
+        }
+
+        .auth-toast {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .auth-toast-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ff7675;
+        }
+
+        .auth-toast-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #55efc4;
+        }
+
+        .auth-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 20px;
+        }
+
+        .auth-footer a {
+            color: var(--brand-orange);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .home-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 18px;
+            transition: color 0.2s ease;
+        }
+
+        .home-back-link:hover {
+            color: var(--brand-gold);
         }
     </style>
 </head>
 <body>
-    <div class="register-container">
-        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">ලියාපදිංචි වන්න | Register</h2>
-        <p style="color: var(--text-secondary); font-size: 13.5px; margin-bottom: 30px;">Hapanamy පද්ධතියට සම්බන්ධ වී ඉගෙන ගෙන උපයන්න.</p>
-        
+    <div class="auth-bg-shapes">
+        <div class="auth-shape auth-shape-1"></div>
+        <div class="auth-shape auth-shape-2"></div>
+    </div>
+
+    <div class="register-card">
+        <a href="index.html" class="home-back-link">
+            ← ආපසු මුල් පිටුවට (Back to Home)
+        </a>
+
+        <div class="auth-logo-header">
+            <a href="index.html">
+                <img src="assets/logo.jpg" alt="Hapanamy Logo" class="auth-logo-img">
+                <h1 style="font-size: 24px; font-weight: 800; color: var(--text-primary); margin-top: 12px; margin-bottom: 4px;">🚀 JOIN HAPANAMY.LK</h1>
+                <p style="font-size: 13px; color: var(--text-secondary);">ඔබේ නොමිලේ සාමාජික ගිණුම සාදා ඩිජිටල් අධ්‍යාපනික ගමන අරඹන්න.</p>
+            </a>
+        </div>
+
+        <div class="free-badge-banner">
+            <div class="free-badge-left">
+                <span class="free-badge-tag">FREE REGISTRATION</span>
+                <span style="font-size: 12.5px; font-weight: 750;">ලියාපදිංචි ගාස්තුව (Joining Fee):</span>
+            </div>
+            <span class="free-badge-fee">රු. 0.00 (100% FREE)</span>
+        </div>
+
+        <div id="referralAlert" class="referral-alert-banner">
+            <span>🌟</span>
+            <span id="referralAlertText">Referred by: <strong>admin</strong> | Placement: <strong>LEFT LEG</strong></span>
+        </div>
+
+        <div id="authToast" class="auth-toast"></div>
+
         <form id="registerForm">
+            <!-- 1. Account Details -->
             <div class="form-row">
                 <div class="form-group">
-                    <label>සම්පූර්ණ නම (Full Name)</label>
-                    <input type="text" id="fullName" class="form-control" required>
+                    <label for="fullName">සම්පූර්ණ නම (Full Name) *</label>
+                    <input type="text" id="fullName" class="form-control" required placeholder="Kasun Tharaka">
                 </div>
                 <div class="form-group">
-                    <label>පරිශීලක නාමය (Username)</label>
-                    <input type="text" id="username" class="form-control" required>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group">
-                    <label>ඊමේල් ලිපිනය (Email Address)</label>
-                    <input type="email" id="email" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label>දුරකථන අංකය (Mobile Number)</label>
-                    <input type="text" id="mobile" class="form-control" required placeholder="0726090050">
+                    <label for="username">පරිශීලක නාමය (Username) *</label>
+                    <input type="text" id="username" class="form-control" required placeholder="kasun_p">
                 </div>
             </div>
 
             <div class="form-row">
                 <div class="form-group">
-                    <label>මුරපදය (Password)</label>
-                    <input type="password" id="password" class="form-control" required>
+                    <label for="email">ඊමේල් ලිපිනය (Email Address) *</label>
+                    <input type="email" id="email" class="form-control" required placeholder="kasun@example.com">
                 </div>
                 <div class="form-group">
-                    <label>මුරපදය තහවුරු කරන්න (Confirm Password)</label>
-                    <input type="password" id="confirmPassword" class="form-control" required>
+                    <label for="mobile">දුරකථන අංකය (Mobile Number) *</label>
+                    <input type="tel" id="mobile" class="form-control" required placeholder="0726090050">
                 </div>
             </div>
 
-            <!-- KYC & Address -->
             <div class="form-row">
                 <div class="form-group">
-                    <label>NIC / Passport අංකය (KYC Identity)</label>
-                    <input type="text" id="nicPassport" class="form-control" required placeholder="199512345678">
+                    <label for="password">මුරපදය (Password) *</label>
+                    <input type="password" id="password" class="form-control" required placeholder="අවම අකුරු 8ක් (8+ chars)">
                 </div>
                 <div class="form-group">
-                    <label>උපන් දිනය (Date of Birth)</label>
+                    <label for="confirmPassword">මුරපදය තහවුරු කරන්න (Confirm) *</label>
+                    <input type="password" id="confirmPassword" class="form-control" required placeholder="මුරපදය නැවත ඇතුළත් කරන්න">
+                </div>
+            </div>
+
+            <!-- 2. KYC & Identity -->
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nicPassport">ජාතික හැඳුනුම්පත් අංකය (NIC / Passport) *</label>
+                    <input type="text" id="nicPassport" class="form-control" required placeholder="199512345678 හෝ 951234567V">
+                </div>
+                <div class="form-group">
+                    <label for="dob">උපන් දිනය (Date of Birth) *</label>
                     <input type="date" id="dob" class="form-control" required>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>ස්ථිර ලිපිනය (Residential Address)</label>
-                <textarea id="address" class="form-control" style="height: 65px;" required placeholder="No. 12, Main Street, Colombo"></textarea>
+                <label for="address">ස්ථිර ලිපිනය (Residential Address) *</label>
+                <input type="text" id="address" class="form-control" required placeholder="No. 12, Kandy Road, Colombo">
             </div>
 
-            <!-- Sponsor & Binary Placement -->
-            <div class="form-row" style="background: rgba(244,123,32,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(244,123,32,0.2); margin-bottom: 20px;">
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label style="color: var(--brand-orange);">Sponsor Referral Code</label>
-                    <input type="text" id="sponsorCode" class="form-control" required placeholder="admin">
+            <!-- 3. Sponsor & Binary Placement -->
+            <div class="section-box" style="border-color: rgba(244,123,32,0.25); background: rgba(244,123,32,0.04);">
+                <div class="section-box-title" style="color: var(--brand-orange);">
+                    <span>👥 SPONSOR & PLACEMENT (අනුබද්ධිත පිහිටීම)</span>
                 </div>
-                <div class="form-group" style="margin-bottom: 0;">
-                    <label style="color: var(--brand-orange);">ස්ථානගත පාදය (Placement Leg)</label>
-                    <select id="position" class="form-control" required>
-                        <option value="LEFT">⬅️ LEFT Leg</option>
-                        <option value="RIGHT">➡️ RIGHT Leg</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="sponsorCode" style="color: var(--brand-orange);">Sponsor Code *</label>
+                        <input type="text" id="sponsorCode" class="form-control" required placeholder="admin" value="admin">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="position" style="color: var(--brand-orange);">ස්ථානගත පාදය (Placement Leg) *</label>
+                        <select id="position" class="form-control" required>
+                            <option value="LEFT">⬅️ LEFT Leg (වම් පාදය)</option>
+                            <option value="RIGHT">➡️ RIGHT Leg (දකුණු පාදය)</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 
-            <!-- Bank Payout Details -->
-            <div style="background: rgba(240,179,35,0.05); padding: 15px; border-radius: 12px; border: 1px solid rgba(240,179,35,0.2); margin-bottom: 20px;">
-                <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px;">🏦 ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):</h4>
+            <!-- 4. Bank Payout Details -->
+            <div class="section-box" style="border-color: rgba(212,175,55,0.25); background: rgba(212,175,55,0.04);">
+                <div class="section-box-title" style="color: var(--brand-gold);">
+                    <span>🏦 බැංකු ගිණුම් විස්තර (Bank Payout Details)</span>
+                </div>
                 <div class="form-row">
                     <div class="form-group">
-                        <label>ගිණුම් හිමියාගේ නම (Account Holder Name)</label>
+                        <label for="accountHolderName">ගිණුම් හිමියාගේ නම (Holder Name) *</label>
                         <input type="text" id="accountHolderName" class="form-control" required placeholder="Kasun Tharaka">
                     </div>
                     <div class="form-group">
-                        <label>බැංකුවේ නම (Bank Name)</label>
+                        <label for="bankName">බැංකුවේ නම (Bank Name) *</label>
                         <input type="text" id="bankName" class="form-control" required placeholder="Commercial Bank">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label>ශාඛාව (Branch Name)</label>
+                        <label for="branchName">ශාඛාව (Branch) *</label>
                         <input type="text" id="branchName" class="form-control" required placeholder="Maharagama">
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
-                        <label>ගිණුම් අංකය (Account Number)</label>
+                        <label for="accountNumber">ගිණුම් අංකය (Account Number) *</label>
                         <input type="text" id="accountNumber" class="form-control" required placeholder="8010294851">
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-register" style="margin-top: 10px;">ගිණුම සාදන්න (Create Account)</button>
+            <!-- Terms agreement -->
+            <div class="form-group" style="display: flex; align-items: center; gap: 10px; margin-top: 10px;">
+                <input type="checkbox" id="termsCheck" required style="width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;">
+                <label for="termsCheck" style="font-size: 12.5px; margin-bottom: 0; cursor: pointer; color: var(--text-secondary);">
+                    මම Hapanamy.lk හි <a href="terms-conditions.html" target="_blank" style="color: var(--brand-orange);">නියමයන් සහ කොන්දේසි</a> පිළිගනිමි.
+                </label>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-auth-submit">
+                <span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>
+            </button>
         </form>
 
-        <p style="margin-top: 20px; text-align: center; font-size: 13.5px; font-weight: 700;">
-            දැනටමත් ගිණුමක් තිබේද? <a href="login.html" style="color: var(--brand-orange);">ලොග් වන්න (Login)</a>
-        </p>
+        <div class="auth-footer">
+            <span>දැනටමත් ගිණුමක් තිබේද?</span>
+            <a href="login.html">ලොග් වන්න (Login)</a>
+        </div>
     </div>
 
     <script>
-        document.getElementById('registerForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        const toast = document.getElementById('authToast');
+        const registerForm = document.getElementById('registerForm');
+        const btnSubmit = document.getElementById('btnSubmit');
 
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+        function showToast(msg, isError = true) {
+            toast.className = `auth-toast ${isError ? 'auth-toast-error' : 'auth-toast-success'}`;
+            toast.innerHTML = msg;
+            toast.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
 
-            if (password !== confirmPassword) {
-                alert('⚠️ මුරපදයන් ගැලපෙන්නේ නැත (Passwords do not match).');
-                return;
-            }
-
-            const payload = {
-                fullName: document.getElementById('fullName').value,
-                username: document.getElementById('username').value,
-                email: document.getElementById('email').value,
-                mobile: document.getElementById('mobile').value,
-                password: password,
-                dob: document.getElementById('dob').value,
-                address: document.getElementById('address').value,
-                nicPassport: document.getElementById('nicPassport').value,
-                sponsorCode: document.getElementById('sponsorCode').value,
-                position: document.getElementById('position').value,
-                accountHolderName: document.getElementById('accountHolderName').value,
-                bankName: document.getElementById('bankName').value,
-                branchName: document.getElementById('branchName').value,
-                accountNumber: document.getElementById('accountNumber').value
-            };
-
-            try {
-                const response = await fetch('/api/auth/register', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-                
-                const data = await response.json();
-                if (response.ok) {
-                    alert('🎉 ලියාපදිංචි වීම සාර්ථකයි! (Registration Successful)');
-                    window.location.href = 'login.html';
-                } else {
-                    alert('❌ ' + (data.error || 'ලියාපදිංචි වීම අසාර්ථකයි.'));
-                }
-            } catch (err) {
-                alert('❌ Error connecting to server: ' + err.message);
-            }
-        });
-
-        // Auto-fill from Referral Link query params and track click (Phase 2)
+        // Auto-fill from Referral Link parameters
         document.addEventListener('DOMContentLoaded', () => {
             const urlParams = new URLSearchParams(window.location.search);
             const ref = urlParams.get('ref');
@@ -229,10 +457,18 @@
             if (ref) {
                 const sponsorInput = document.getElementById('sponsorCode');
                 if (sponsorInput) {
-                    sponsorInput.value = ref;
-                    sponsorInput.style.borderColor = 'var(--brand-orange)';
+                    sponsorInput.value = ref.trim();
                 }
-                // Track click event asynchronously
+
+                const refBanner = document.getElementById('referralAlert');
+                const refBannerText = document.getElementById('referralAlertText');
+                if (refBanner && refBannerText) {
+                    const posLabel = (pos && pos.toUpperCase() === 'RIGHT') ? 'RIGHT LEG (දකුණු පාදය)' : 'LEFT LEG (වම් පාදය)';
+                    refBannerText.innerHTML = `🌟 ඔබ සම්බන්ධ වන්නේ: <strong>${ref}</strong> හරහායි (ස්ථානගත පාදය: <strong>${posLabel}</strong>)`;
+                    refBanner.style.display = 'flex';
+                }
+
+                // Track referral link click telemetry
                 fetch('/api/referrals/click', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -246,9 +482,82 @@
                     const normalized = pos.toUpperCase();
                     if (normalized === 'LEFT' || normalized === 'RIGHT') {
                         posSelect.value = normalized;
-                        posSelect.style.borderColor = 'var(--brand-orange)';
                     }
                 }
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            toast.style.display = 'none';
+
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (password.length < 8) {
+                showToast('⚠️ මුරපදය සඳහා අවම වශයෙන් අකුරු 8ක් ඇතුළත් කරන්න (Password must be at least 8 characters).');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showToast('⚠️ මුරපදයන් දෙක ගැලපෙන්නේ නැත (Passwords do not match).');
+                return;
+            }
+
+            const payload = {
+                fullName: document.getElementById('fullName').value.trim(),
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                mobile: document.getElementById('mobile').value.trim(),
+                password: password,
+                dob: document.getElementById('dob').value,
+                address: document.getElementById('address').value.trim(),
+                nicPassport: document.getElementById('nicPassport').value.trim(),
+                sponsorCode: document.getElementById('sponsorCode').value.trim(),
+                position: document.getElementById('position').value,
+                accountHolderName: document.getElementById('accountHolderName').value.trim(),
+                bankName: document.getElementById('bankName').value.trim(),
+                branchName: document.getElementById('branchName').value.trim(),
+                accountNumber: document.getElementById('accountNumber').value.trim()
+            };
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span>⏳ ගිණුම සකසමින් පවතී... (Creating Account)</span>';
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showToast('🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> ඔබගේ ගිණුම සාර්ථකව සාදන ලදී. කරුණාකර පිවිසෙන්න...', false);
+
+                    // Auto login if token returned, or redirect to login
+                    if (data.token && data.user) {
+                        localStorage.setItem('auth_token', data.token);
+                        localStorage.setItem('active_token', data.token);
+                        localStorage.setItem('active_user', JSON.stringify(data.user));
+                        setTimeout(() => {
+                            window.location.replace('dashboard.html');
+                        }, 1200);
+                    } else {
+                        setTimeout(() => {
+                            window.location.replace('login.html');
+                        }, 1500);
+                    }
+                } else {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
+                    showToast(`❌ <strong>ලියාපදිංචිය අසාර්ථකයි:</strong> ${data.error || 'දෝෂයක් සිදුවිය. කරුණාකර නැවත උත්සාහ කරන්න.'}`);
+                }
+            } catch (err) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
+                showToast(`❌ <strong>සම්බන්ධතා දෝෂයකි:</strong> ${err.message}`);
             }
         });
     </script>

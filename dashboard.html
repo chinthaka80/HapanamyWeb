@@ -13,6 +13,17 @@
     <!-- Core styles -->
     <link rel="stylesheet" href="index.css">
     
+    <!-- Client-Side Auth Guard -->
+    <script>
+        (function() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const user = localStorage.getItem('active_user');
+            if (!token && !user) {
+                window.location.replace('login.html?redirect=dashboard');
+            }
+        })();
+    </script>
+    
     <style>
         :root {
             --sidebar-width: 270px;
@@ -1399,13 +1410,25 @@
             closeWithdrawModal();
         }
 
-        function logoutMember() {
+        async function logoutMember() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                }
+            } catch (e) {}
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
+            localStorage.removeItem('active_token');
+            localStorage.removeItem('hapanamy_user_profile');
+            sessionStorage.clear();
             showMemberToast('👋 Logged out successfully.');
             setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+                window.location.replace('login.html');
+            }, 600);
         }
 
         // Live API Data Fetching with Graceful Fallback
