@@ -578,18 +578,36 @@
                 
                 // Enforce root user credentials check (Hiru & NAMOBUDDHAYA)
                 const cleanLogin = email.toUpperCase();
-                if (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk' || cleanLogin === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
+                if (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk') {
                     if (password === 'Hapana20260808') {
-                        const isHiru = (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk');
-                        const rootUser = isHiru ? {
-                            id: 'user-hiru-root',
+                        const memberUser = {
+                            id: 'user-hiru',
                             username: 'Hiru',
                             full_name: 'Hiru',
                             name: 'Hiru',
                             email: 'hiru@hapanamy.lk',
-                            role: 'admin',
+                            role: 'member',
                             status: 'ACTIVE'
-                        } : {
+                        };
+                        localStorage.setItem('auth_token', 'token-hiru-member');
+                        localStorage.setItem('active_token', 'token-hiru-member');
+                        localStorage.setItem('active_user', JSON.stringify(memberUser));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(memberUser));
+                        
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Hiru!`);
+                        setTimeout(() => {
+                            window.location.href = 'my-account.html';
+                        }, 800);
+                        return;
+                    } else {
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
+                        return;
+                    }
+                }
+
+                if (cleanLogin === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
+                    if (password === 'Hapana20260808') {
+                        const rootUser = {
                             id: 'user-namobuddhaya-root',
                             username: 'NAMOBUDDHAYA',
                             full_name: 'NAMOBUDDHAYA',
@@ -598,20 +616,20 @@
                             role: 'admin',
                             status: 'ACTIVE'
                         };
-                        const tokenKey = isHiru ? 'token-hiru-root' : 'token-namobuddhaya-root';
-                        localStorage.setItem('auth_token', tokenKey);
-                        localStorage.setItem('active_token', tokenKey);
+                        localStorage.setItem('auth_token', 'token-namobuddhaya-root');
+                        localStorage.setItem('active_token', 'token-namobuddhaya-root');
                         localStorage.setItem('active_user', JSON.stringify(rootUser));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify(rootUser));
                         
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${rootUser.full_name}!`);
+                        showToast('👑 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!');
                         setTimeout(() => {
-                            window.location.href = 'my-account.html';
-                        }, 1000);
+                            window.location.href = 'admin.html';
+                        }, 800);
+                        return;
                     } else {
                         showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
+                        return;
                     }
-                    return;
                 }
                 
                 // Check if user is registered inside local storage
