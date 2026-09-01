@@ -39,6 +39,7 @@ require('./step24-withdrawal-system.test');
 require('./step25-kyc-verification.test');
 require('./step26-member-dashboard.test');
 require('./step27-admin-dashboard.test');
+require('./step28-reports-analytics.test');
 
 // Run
 runTests();
