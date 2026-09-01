@@ -42,6 +42,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="db.js"></script>
+    <!-- AdSense Configuration & Cookie Consent -->
+    <script src="adsense-config.js"></script>
+    <script src="cookie-consent.js"></script>
 </head>
 <body>
 
@@ -171,6 +174,9 @@
     <!-- Course Section -->
     <section class="courses-section" id="courses">
         <div class="container">
+            <!-- Non-intrusive AdSense Slot -->
+            <div id="homeTopAd"></div>
+
             <div class="section-title-wrapper">
                 <span class="sub-title" data-translate="section_courses_sub">අපගේ පාඨමාලා සහ ග්‍රන්ථ</span>
                 <h2 class="section-main-title" data-translate="section_courses_main">ඩිජිටල් අධ්‍යාපන නිෂ්පාදන</h2>
@@ -690,6 +696,8 @@
     <section class="ai-masterclass-details-section" id="ai-masterclass-details" style="padding: 100px 0; background-color: rgba(244,123,32,0.01); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); position: relative; overflow: hidden;">
         <div class="affiliate-bg-glow" style="top: -20%; left: 60%; width: 500px; height: 500px; opacity: 0.15;"></div>
         <div class="container">
+            <!-- Non-intrusive Content Ad -->
+            <div id="homeBottomAd"></div>
             
             <!-- Section Header -->
             <div style="text-align: center; margin-bottom: 60px;">
@@ -1440,5 +1448,11 @@
 
     <!-- Script File -->
     <script src="index.js"></script>
+    <script>
+        if (window.HapanamyAdSense) {
+            HapanamyAdSense.renderAdUnit('homeTopAd', 'TOP_CONTENT_AD');
+            HapanamyAdSense.renderAdUnit('homeBottomAd', 'CONTENT_BOTTOM_AD');
+        }
+    </script>
 </body>
 </html>

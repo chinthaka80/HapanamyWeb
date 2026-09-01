@@ -22,6 +22,9 @@
     
     <!-- External stylesheet for global variables -->
     <link rel="stylesheet" href="index.css">
+    <!-- AdSense Configuration & Cookie Consent -->
+    <script src="adsense-config.js"></script>
+    <script src="cookie-consent.js"></script>
     
     <!-- Scoped Blog Styles override (Light Warm Editorial Theme) -->
     <style>
@@ -1053,6 +1056,9 @@
 
     <!-- Main Feed Container -->
     <div id="blogFeedContainer">
+        <!-- AdSense Top Content Slot -->
+        <div id="blogTopAd" class="blog-container"></div>
+
         <!-- Hero Section -->
         <section class="blog-hero">
             <div class="blog-container hero-wrap">
@@ -1203,7 +1209,8 @@
             <div class="related-grid" id="relatedArticlesContainer">
                 <!-- 3 dynamic cards -->
             </div>
-        </section>
+        <!-- AdSense Bottom Content Slot -->
+        <div id="blogBottomAd" class="blog-container"></div>
     </div>
 
     <!-- Premium Footer -->
@@ -1745,6 +1752,10 @@
         // Initialize Blog platform on load
         window.addEventListener('DOMContentLoaded', () => {
             initBlog();
+            if (window.HapanamyAdSense) {
+                HapanamyAdSense.renderAdUnit('blogTopAd', 'TOP_CONTENT_AD');
+                HapanamyAdSense.renderAdUnit('blogBottomAd', 'CONTENT_BOTTOM_AD');
+            }
         });
     </script>
 </body>

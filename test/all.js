@@ -54,6 +54,7 @@ require('./deployment-verification.test');
 require('./step37-member-product-purchase-center.test');
 require('./step38-final-product-purchase-center-e2e.test');
 require('./step39-enterprise-security-hardening.test');
+require('./step40-adsense-monetization.test');
 
 // Run
 runTests();

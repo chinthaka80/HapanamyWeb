@@ -35,7 +35,8 @@ const MIME_TYPES = {
     '.png': 'image/png',
     '.gif': 'image/gif',
     '.svg': 'image/svg+xml',
-    '.json': 'application/json'
+    '.json': 'application/json',
+    '.txt': 'text/plain'
 };
 
 // Simulated Database Sessions (Token store)
