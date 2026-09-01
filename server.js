@@ -19,6 +19,8 @@ const ReferralService = require('./services/referral-service');
 const QualificationEngine = require('./services/qualification-engine');
 const MemberDashboardService = require('./services/member-dashboard-service');
 const AdminDashboardService = require('./services/admin-dashboard-service');
+const NotificationEngine = require('./services/notification-engine');
+const ReversalEngine = require('./services/reversal-engine');
 
 const PORT = 3000;
 
@@ -1947,6 +1949,100 @@ const server = http.createServer(async (req, res) => {
         } catch (err) {
             sendJSON(res, 500, { error: err.message });
         }
+        return;
+    }
+
+    // ========================================================
+    // NOTIFICATION ENGINE API ROUTER (STEP 32)
+    // ========================================================
+
+    // GET /api/member/notifications
+    if (req.method === 'GET' && pathname === '/api/member/notifications') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const unreadOnly = url.searchParams.get('unread') === 'true';
+        const notifs = NotificationEngine.getUserInAppNotifications(authUser.id, NotificationEngine.inAppStore, { unreadOnly });
+        sendJSON(res, 200, { count: notifs.length, notifications: notifs });
+        return;
+    }
+
+    // POST /api/member/notifications/read
+    if (req.method === 'POST' && pathname === '/api/member/notifications/read') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { notificationId } = body;
+
+        if (!notificationId) {
+            sendJSON(res, 400, { error: 'Notification ID is required.' });
+            return;
+        }
+
+        const success = NotificationEngine.markInAppAsRead(notificationId, authUser.id, NotificationEngine.inAppStore);
+        sendJSON(res, 200, { success });
+        return;
+    }
+
+    // GET /api/member/notifications/preferences
+    if (req.method === 'GET' && pathname === '/api/member/notifications/preferences') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const prefs = NotificationEngine.getPreferences(authUser.id);
+        sendJSON(res, 200, { preferences: prefs });
+        return;
+    }
+
+    // POST /api/member/notifications/preferences
+    if (req.method === 'POST' && pathname === '/api/member/notifications/preferences') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const updated = NotificationEngine.updatePreferences(authUser.id, body);
+        sendJSON(res, 200, { success: true, preferences: updated });
+        return;
+    }
+
+    // GET /api/admin/notifications/outbox (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/notifications/outbox') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        sendJSON(res, 200, {
+            queue_length: NotificationEngine.outboxQueue.length,
+            items: NotificationEngine.outboxQueue
+        });
+        return;
+    }
+
+    // POST /api/admin/notifications/process-queue (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/notifications/process-queue') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const result = await NotificationEngine.processQueue();
+        sendJSON(res, 200, { success: true, result });
         return;
     }
 
