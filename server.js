@@ -100,52 +100,44 @@ const mockProductSnapshots = [
     }
 ];
 
-const mockProductPurchases = [
-    { id: 'purch-sp1-01', user_id: 'sponsor-uuid-1', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-01T10:00:00Z' },
-    { id: 'purch-nim-01', user_id: 'nimal-uuid-2', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-05T12:00:00Z' },
-    { id: 'purch-sun-01', user_id: 'sunil-uuid-3', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-10T14:00:00Z' }
-];
-const mockPaymentDeposits = [
-    { id: 'dep-101', user_id: 'sponsor-uuid-1', product_id: 'prod-social-master', amount: 27500.00, transfer_reference: 'SLIP-89210', slip_file_hash: 'hash-89210-abc', status: 'APPROVED', created_at: '2026-08-01T09:30:00Z' }
-];
+const mockProductPurchases = [];
+const mockPaymentDeposits = [];
 
 const mockUsers = [
-    { id: 'admin-uuid-123', username: 'admin', full_name: 'Administrator Hapanamy', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE', created_at: '2026-07-01T00:00:00Z' },
-    { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'kasun@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'sponsor1', created_at: '2026-08-01T08:00:00Z' },
-    { id: 'nimal-uuid-2', username: 'nimal_s', full_name: 'Nimal Silva', email: 'nimal@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'nimal_s', created_at: '2026-08-05T09:00:00Z' },
-    { id: 'sunil-uuid-3', username: 'sunil_k', full_name: 'Sunil Kumar', email: 'sunil@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'sunil_k', created_at: '2026-08-10T11:00:00Z' },
-    { id: 'amara-uuid-4', username: 'amara_j', full_name: 'Amara Jayawardena', email: 'amara@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'amara_j', created_at: '2026-08-15T15:00:00Z' }
+    { 
+        id: 'user-namobuddhaya-root', 
+        username: 'NAMOBUDDHAYA', 
+        full_name: 'NAMOBUDDHAYA', 
+        email: 'admin@hapanamy.lk', 
+        role: 'admin', 
+        status: 'ACTIVE', 
+        referral_code: 'NAMOBUDDHAYA',
+        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
+        password: 'Hapana20260808',
+        created_at: '2026-09-01T00:00:00Z' 
+    }
 ];
 
-const mockWalletLedger = [
-    { id: 'tx-seed-1', user_id: 'sponsor-uuid-1', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 0.00, balance_after: 2200.00, status: 'COMPLETED', reference_id: 'purch-nim-01', created_at: '2026-08-05T12:05:00Z' },
-    { id: 'tx-seed-2', user_id: 'sponsor-uuid-1', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 2200.00, balance_after: 4400.00, status: 'COMPLETED', reference_id: 'purch-sun-01', created_at: '2026-08-10T14:05:00Z' },
-    { id: 'tx-seed-3', user_id: 'sponsor-uuid-1', type: 'BINARY_COMMISSION', amount: 1650.00, balance_before: 4400.00, balance_after: 6050.00, status: 'COMPLETED', reference_id: 'purch-sun-01', created_at: '2026-08-10T14:10:00Z' }
-];
-const mockWithdrawalRequests = [
-    { id: 'wd-seed-1', user_id: 'sponsor-uuid-1', amount: 2000.00, bank_name: 'Commercial Bank', account_number: '8010294851', status: 'PAID', bank_transfer_reference: 'CEFT-992104', created_at: '2026-08-20T10:00:00Z', paid_at: '2026-08-20T16:00:00Z' }
-];
+const mockWalletLedger = [];
+const mockWithdrawalRequests = [];
 const mockRefundRequests = [];
-const mockVolumeLedger = [
-    { id: 'vol-1', user_id: 'sponsor-uuid-1', leg: 'LEFT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-nim-01', created_at: '2026-08-05T12:00:00Z' },
-    { id: 'vol-2', user_id: 'sponsor-uuid-1', leg: 'LEFT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-nim-01', created_at: '2026-08-15T15:00:00Z' },
-    { id: 'vol-3', user_id: 'sponsor-uuid-1', leg: 'RIGHT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-sun-01', created_at: '2026-08-10T14:00:00Z' }
-];
+const mockVolumeLedger = [];
 const mockBinaryNodes = [
-    { id: 'node-root', user_id: 'admin-uuid-123', placement_parent_id: null, position: null, depth: 1, path: '', left_child_id: 'sponsor-uuid-1', right_child_id: null, created_at: '2026-07-01T00:00:00Z' },
-    { id: 'node-sp1', user_id: 'sponsor-uuid-1', placement_parent_id: 'admin-uuid-123', position: 'LEFT', depth: 2, path: 'admin-uuid-123', left_child_id: 'nimal-uuid-2', right_child_id: 'sunil-uuid-3', created_at: '2026-08-01T08:00:00Z' },
-    { id: 'node-nim', user_id: 'nimal-uuid-2', placement_parent_id: 'sponsor-uuid-1', position: 'LEFT', depth: 3, path: 'admin-uuid-123/sponsor-uuid-1', left_child_id: 'amara-uuid-4', right_child_id: null, created_at: '2026-08-05T09:00:00Z' },
-    { id: 'node-sun', user_id: 'sunil-uuid-3', placement_parent_id: 'sponsor-uuid-1', position: 'RIGHT', depth: 3, path: 'admin-uuid-123/sponsor-uuid-1', left_child_id: null, right_child_id: null, created_at: '2026-08-10T11:00:00Z' },
-    { id: 'node-ama', user_id: 'amara-uuid-4', placement_parent_id: 'nimal-uuid-2', position: 'LEFT', depth: 4, path: 'admin-uuid-123/sponsor-uuid-1/nimal-uuid-2', left_child_id: null, right_child_id: null, created_at: '2026-08-15T15:00:00Z' }
+    { 
+        id: 'node-namobuddhaya-root', 
+        user_id: 'user-namobuddhaya-root', 
+        placement_parent_id: null, 
+        position: null, 
+        depth: 1, 
+        path: '', 
+        left_child_id: null, 
+        right_child_id: null, 
+        created_at: '2026-09-01T00:00:00Z' 
+    }
 ];
 const mockFraudAlerts = [];
 const mockCommissionTransactions = [];
-const mockSponsors = [
-    { user_id: 'sponsor-uuid-1', sponsor_id: 'admin-uuid-123', created_at: '2026-08-01T08:00:00Z' },
-    { user_id: 'nimal-uuid-2', sponsor_id: 'sponsor-uuid-1', created_at: '2026-08-05T09:00:00Z' },
-    { user_id: 'sunil-uuid-3', sponsor_id: 'sponsor-uuid-1', created_at: '2026-08-10T11:00:00Z' },
-    { user_id: 'amara-uuid-4', sponsor_id: 'nimal-uuid-2', created_at: '2026-08-15T15:00:00Z' }
-];
+const mockSponsors = [];
 const mockReferralClicks = [];
 const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
@@ -786,7 +778,7 @@ const server = http.createServer(async (req, res) => {
         const queryParams = parseQueryParams(req.url);
         const targetUserId = (authUser && authUser.role === 'admin' && queryParams.userId) 
             ? queryParams.userId 
-            : (authUser ? authUser.id : (queryParams.userId || 'admin-uuid-123'));
+            : (authUser ? authUser.id : (queryParams.userId || 'user-namobuddhaya-root'));
 
         const maxDepth = parseInt(queryParams.depth || 4);
         const treeHierarchy = PlacementEngine.buildTreeHierarchy(

@@ -330,12 +330,18 @@ CREATE INDEX idx_product_economics_snapshots_product ON product_economics_snapsh
 -- 8. SEED DATABASE ENTRIES
 -- ========================================================
 
--- 8.1 Admin User Seeding (Password: Araliya321# hashed)
+-- 8.1 First Production Root Admin User (Username: NAMOBUDDHAYA, Password: Hapana20260808)
 INSERT INTO users (id, email, password_hash, role, status) VALUES 
-('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'admin@hapanamy.lk', '$2y$10$TKh8H1.PfQx37YgCzwiKb.KjNyWgpVM9ku71yqS8vW1g8Yt4a7X9.', 'admin', 'ACTIVE');
+('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'admin@hapanamy.lk', '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed', 'admin', 'ACTIVE');
 
 INSERT INTO user_profiles (user_id, username, full_name, mobile, dob, address) VALUES 
-('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'admin', 'Administrator Hapanamy', '+94726090050', '1990-01-01', 'Hapanamy Campus Headquarters, Colombo, Sri Lanka');
+('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'NAMOBUDDHAYA', 'NAMOBUDDHAYA', '+94726090050', '1990-01-01', 'Hapanamy Campus Headquarters, Colombo, Sri Lanka');
+
+INSERT INTO binary_nodes (id, user_id, placement_parent_id, position, depth, path) VALUES
+('b1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 'a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', NULL, NULL, 1, '');
+
+INSERT INTO wallets (user_id, available_balance, pending_balance, withdrawn_amount) VALUES
+('a1b2c3d4-e5f6-7a8b-9c0d-1e2f3a4b5c6d', 0.00, 0.00, 0.00);
 
 -- 8.2 Products Seeding
 INSERT INTO products (id, name, code, description, category, price, binary_volume, direct_commission_percent, binary_commission_percent, status) VALUES
