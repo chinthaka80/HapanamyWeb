@@ -668,6 +668,90 @@
             max-width: 680px;
         }
 
+        .nav-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.08);
+            margin: 8px 6px;
+        }
+
+        /* Profile & Settings Info Styles */
+        .profile-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+        }
+
+        .info-cell {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+        }
+
+        .info-cell-label {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-bottom: 4px;
+        }
+
+        .info-cell-val {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* Notification Card Styles */
+        .notif-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            margin-bottom: 12px;
+            transition: var(--transition-smooth);
+        }
+
+        .notif-card:hover {
+            border-color: var(--brand-gold);
+            transform: translateX(3px);
+        }
+
+        .notif-card.unread {
+            border-left: 4px solid var(--brand-orange);
+            background: rgba(245, 124, 0, 0.04);
+        }
+
+        .notif-icon-circle {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* Form Group Styles */
+        .form-group-custom {
+            margin-bottom: 16px;
+        }
+
+        .form-group-custom label {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
         /* Product Store Styles */
         .store-filter-bar {
             display: flex;
@@ -925,41 +1009,74 @@
             </a>
 
             <ul class="member-nav">
+                <!-- Group 1: Core Navigation -->
                 <li class="member-nav-link active" onclick="switchMemberTab('overview')" id="nav-overview">
-                    <span class="member-nav-icon">📊</span>
-                    <span>Overview (විමර්ශනය)</span>
+                    <span class="member-nav-icon">🏠</span>
+                    <span>Dashboard</span>
                 </li>
-                <li class="member-nav-link" onclick="switchMemberTab('earnings')" id="nav-earnings">
-                    <span class="member-nav-icon">💰</span>
-                    <span>Earnings (ඉපැයීම්)</span>
+                <li class="member-nav-link" onclick="switchMemberTab('profile')" id="nav-profile">
+                    <span class="member-nav-icon">👤</span>
+                    <span>My Profile</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('network')" id="nav-network">
-                    <span class="member-nav-icon">🌿</span>
-                    <span>Binary Tree (ජාලය)</span>
+                    <span class="member-nav-icon">🌐</span>
+                    <span>My Network</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('referrals')" id="nav-referrals">
-                    <span class="member-nav-icon">👥</span>
-                    <span>Direct Referrals (යොමුකිරීම්)</span>
-                </li>
-                <li class="member-nav-link" onclick="switchMemberTab('links')" id="nav-links">
                     <span class="member-nav-icon">🔗</span>
-                    <span>Referral Links (සබැඳි)</span>
+                    <span>My Referrals</span>
                 </li>
+
+                <div class="nav-divider"></div>
+
+                <!-- Group 2: Products & Orders -->
                 <li class="member-nav-link" onclick="switchMemberTab('buy-products')" id="nav-buy-products">
                     <span class="member-nav-icon">🛒</span>
-                    <span>Buy Products (මිලදී ගන්න)</span>
+                    <span>Buy Products</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('products')" id="nav-products">
                     <span class="member-nav-icon">📚</span>
-                    <span>My Courses (මගේ පාඨමාලා)</span>
+                    <span>My Products</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('orders')" id="nav-orders">
                     <span class="member-nav-icon">📦</span>
-                    <span>My Orders (ඇණවුම් / Slips)</span>
+                    <span>My Orders</span>
                 </li>
+
+                <div class="nav-divider"></div>
+
+                <!-- Group 3: Financials -->
                 <li class="member-nav-link" onclick="switchMemberTab('financial')" id="nav-financial">
-                    <span class="member-nav-icon">💳</span>
-                    <span>Wallet Ledger (ලෙජරය)</span>
+                    <span class="member-nav-icon">💰</span>
+                    <span>My Wallet</span>
+                </li>
+                <li class="member-nav-link" onclick="switchMemberTab('commissions')" id="nav-commissions">
+                    <span class="member-nav-icon">📊</span>
+                    <span>Commission History</span>
+                </li>
+                <li class="member-nav-link" onclick="switchMemberTab('withdrawals')" id="nav-withdrawals">
+                    <span class="member-nav-icon">🏦</span>
+                    <span>Withdrawals</span>
+                </li>
+
+                <div class="nav-divider"></div>
+
+                <!-- Group 4: Account & Security -->
+                <li class="member-nav-link" onclick="switchMemberTab('kyc')" id="nav-kyc">
+                    <span class="member-nav-icon">🪪</span>
+                    <span>KYC Verification</span>
+                </li>
+                <li class="member-nav-link" onclick="switchMemberTab('notifications')" id="nav-notifications">
+                    <span class="member-nav-icon">🔔</span>
+                    <span>Notifications</span>
+                </li>
+                <li class="member-nav-link" onclick="switchMemberTab('settings')" id="nav-settings">
+                    <span class="member-nav-icon">⚙️</span>
+                    <span>Settings</span>
+                </li>
+                <li class="member-nav-link" onclick="logoutMember()" style="color: #EF5350;">
+                    <span class="member-nav-icon">🚪</span>
+                    <span>Logout</span>
                 </li>
             </ul>
 
@@ -1146,29 +1263,72 @@
 
                 </div>
 
-                <!-- TAB 2: EARNINGS FULL BREAKDOWN -->
-                <div class="tab-panel" id="panel-earnings">
-                    <div class="dashboard-card">
+                <!-- TAB 2: MY PROFILE -->
+                <div class="tab-panel" id="panel-profile">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
                         <div class="dashboard-card-title">
-                            <span>💰 Complete Earnings & Cap Status (ඉපැයීම් සහ සීමාවන්)</span>
+                            <span>👤 සාමාජික ගිණුම් විස්තර (Member Profile & Identity)</span>
+                            <span class="badge-pill badge-kyc-approved" id="profileKycBadgeTab">🛡️ KYC APPROVED</span>
                         </div>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Hapanamy ආරක්ෂිත මූල්‍ය ආකෘතිය යටතේ දෛනික හා මාසික සීමාවන් තුළ ගණනය වූ ආදායම් විස්තර.</p>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">ඔබගේ පුද්ගලික තොරතුරු, අනුග්‍රාහක විස්තර සහ බැංකු ගිණුම් විස්තර මෙහි දැක්වේ.</p>
 
-                        <div class="earnings-grid" style="margin-bottom: 20px;">
-                            <div class="stat-card">
-                                <div class="stat-card-label">Daily Cap Limit</div>
-                                <div class="stat-card-amount">LKR 30,000.00</div>
-                                <div class="stat-card-hint">අද ඉතිරි සීමාව: LKR 30,000.00</div>
+                        <div class="profile-info-grid" style="margin-bottom: 24px;">
+                            <div class="info-cell">
+                                <div class="info-cell-label">Full Name (සම්පූර්ණ නම)</div>
+                                <div class="info-cell-val" id="profDetailName">Hiru</div>
                             </div>
-                            <div class="stat-card gold">
-                                <div class="stat-card-label">Monthly Cap Limit</div>
-                                <div class="stat-card-amount">LKR 900,000.00</div>
-                                <div class="stat-card-hint">මෙම මාසයේ ඉතිරි සීමාව: LKR 893,950.00</div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Username (පරිශීලක නාමය)</div>
+                                <div class="info-cell-val" id="profDetailUsername">@Hiru</div>
                             </div>
-                            <div class="stat-card green">
-                                <div class="stat-card-label">Withdrawal Hold</div>
-                                <div class="stat-card-amount" id="earningsHoldBal">LKR 0.00</div>
-                                <div class="stat-card-hint">ඉල්ලුම් කර ඇති මුදල් ශේෂය</div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Member ID (සාමාජික අංකය)</div>
+                                <div class="info-cell-val"><code id="profDetailId">user-hiru-root</code></div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Account Status (ගිණුම් තත්ත්වය)</div>
+                                <div class="info-cell-val" style="color: var(--brand-green);">● ACTIVE</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Qualification Status</div>
+                                <div class="info-cell-val" style="color: var(--brand-gold);">★ QUALIFIED</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Direct Sponsor (අනුග්‍රාහකයා)</div>
+                                <div class="info-cell-val">@admin (Root System)</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Assigned Placement Leg</div>
+                                <div class="info-cell-val" style="color: var(--brand-orange);">LEFT LEG (Depth: 2)</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Registered Date</div>
+                                <div class="info-cell-val">2026-08-01</div>
+                            </div>
+                        </div>
+
+                        <!-- Linked Bank Account -->
+                        <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px;">
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--brand-gold); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                🏦 මුදල් ලබාගැනීමට ලියාපදිංචි බැංකු ගිණුම (Linked Payout Bank)
+                            </h4>
+                            <div class="profile-info-grid">
+                                <div class="info-cell">
+                                    <div class="info-cell-label">Bank Name</div>
+                                    <div class="info-cell-val">Hatton National Bank (HNB)</div>
+                                </div>
+                                <div class="info-cell">
+                                    <div class="info-cell-label">Branch</div>
+                                    <div class="info-cell-val">Maharagama</div>
+                                </div>
+                                <div class="info-cell">
+                                    <div class="info-cell-label">Account Number</div>
+                                    <div class="info-cell-val"><code style="font-size: 16px;">081020048921</code></div>
+                                </div>
+                                <div class="info-cell">
+                                    <div class="info-cell-label">Account Holder Name</div>
+                                    <div class="info-cell-val">Hiru</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1178,7 +1338,7 @@
                 <div class="tab-panel" id="panel-network">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>🌿 Binary Network & Volume Analytics</span>
+                            <span>🌐 ද්විමය ජාල ව්‍යුහය (Binary Network & Tree Structure)</span>
                             <span class="badge-pill badge-qualified" id="treeQualStatus">★ QUALIFIED STATUS</span>
                         </div>
 
@@ -1233,11 +1393,46 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: DIRECT REFERRALS -->
+                <!-- TAB 4: MY REFERRALS -->
                 <div class="tab-panel" id="panel-referrals">
+                    <!-- Referral Links Generator Cards -->
+                    <div class="ref-box-container">
+                        <div class="ref-box-header">
+                            <h3>🔗 ඔබේ ප්‍රවර්ධන සහ යොමු කිරීමේ සබැඳි (Dual-Leg Referral Links)</h3>
+                            <p>සාමාජිකයින් ලියාපදිංචි කරමින් 8% සෘජු කොමිස් සහ 7% ද්විමය (Binary) කොමිස් උපයන්න.</p>
+                        </div>
+
+                        <div class="ref-link-card-grid" style="margin-bottom: 20px;">
+                            <div class="ref-link-card">
+                                <h4>👈 LEFT Leg Placement Link</h4>
+                                <div class="ref-input-group">
+                                    <input type="text" class="ref-input-field" id="tabLeftRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru&position=left">
+                                    <button class="btn-copy-link" onclick="copyRefLink('tabLeftRefLink')">📋 Copy Left</button>
+                                </div>
+                            </div>
+
+                            <div class="ref-link-card">
+                                <h4>👉 RIGHT Leg Placement Link</h4>
+                                <div class="ref-input-group">
+                                    <input type="text" class="ref-input-field" id="tabRightRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru&position=right">
+                                    <button class="btn-copy-link" onclick="copyRefLink('tabRightRefLink')">📋 Copy Right</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ref-link-card">
+                            <h4>🌐 General Direct Referral Link (Auto-Balance Spillover)</h4>
+                            <div class="ref-input-group">
+                                <input type="text" class="ref-input-field" id="tabGeneralRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru">
+                                <button class="btn-copy-link" onclick="copyRefLink('tabGeneralRefLink')">📋 Copy General</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Direct Referrals Table -->
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>👥 Direct Referrals List (සෘජුව යොමු කළ සාමාජිකයින්)</span>
+                            <span>👥 සෘජුව යොමු කළ සාමාජිකයින්ගේ ලැයිස්තුව (Direct Referrals)</span>
                             <span class="badge-pill badge-active" id="directReferralsCount">2 Members</span>
                         </div>
 
@@ -1261,43 +1456,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: REFERRAL LINKS -->
-                <div class="tab-panel" id="panel-links">
-                    <div class="ref-box-container">
-                        <div class="ref-box-header">
-                            <h3>🔗 ඔබේ ප්‍රවර්ධන සබැඳි (Promotional Referral Links)</h3>
-                            <p>පහත සබැඳි මගින් ලියාපදිංචි වන නව සාමාජිකයින් ස්වයංක්‍රීයව ඔබ තෝරාගත් ශාඛාවට එක්වේ.</p>
-                        </div>
-
-                        <div class="ref-link-card-grid" style="margin-bottom: 24px;">
-                            <div class="ref-link-card">
-                                <h4>👈 LEFT Placement Referral Link</h4>
-                                <div class="ref-input-group">
-                                    <input type="text" class="ref-input-field" id="tabLeftRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru&position=left">
-                                    <button class="btn-copy-link" onclick="copyRefLink('tabLeftRefLink')">📋 Copy Link</button>
-                                </div>
-                            </div>
-
-                            <div class="ref-link-card">
-                                <h4>👉 RIGHT Placement Referral Link</h4>
-                                <div class="ref-input-group">
-                                    <input type="text" class="ref-input-field" id="tabRightRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru&position=right">
-                                    <button class="btn-copy-link" onclick="copyRefLink('tabRightRefLink')">📋 Copy Link</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="ref-link-card">
-                            <h4>🌐 General Direct Referral Link (Auto-Balance Spillover)</h4>
-                            <div class="ref-input-group">
-                                <input type="text" class="ref-input-field" id="tabGeneralRefLink" readonly value="https://hapanamy.lk/register?ref=Hiru">
-                                <button class="btn-copy-link" onclick="copyRefLink('tabGeneralRefLink')">📋 Copy General</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 6: BUY PRODUCTS (COURSE STORE) -->
+                <!-- TAB 5: BUY PRODUCTS (COURSE STORE) -->
                 <div class="tab-panel" id="panel-buy-products">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
@@ -1324,7 +1483,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 7: PRODUCTS & MASTERCLASSES -->
+                <!-- TAB 6: MY PRODUCTS -->
                 <div class="tab-panel" id="panel-products">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
@@ -1341,7 +1500,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 8: MY ORDERS / PAYMENT SLIPS -->
+                <!-- TAB 7: MY ORDERS / PAYMENT SLIPS -->
                 <div class="tab-panel" id="panel-orders">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
@@ -1371,12 +1530,42 @@
                     </div>
                 </div>
 
-                <!-- TAB 9: FINANCIAL & WALLET LEDGER -->
+                <!-- TAB 8: MY WALLET -->
                 <div class="tab-panel" id="panel-financial">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
+                        <div class="dashboard-card-title">
+                            <span>💰 මූල්‍ය පසුම්බිය (My Wallet Balance & Payout Overview)</span>
+                            <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 Request Withdrawal</button>
+                        </div>
+                        
+                        <div class="earnings-grid" style="margin-bottom: 20px;">
+                            <div class="stat-card green">
+                                <div class="stat-card-label">Total Earnings (මුළු ආදායම)</div>
+                                <div class="stat-card-amount" id="statWalletTotalEarnings">LKR 0.00</div>
+                                <div class="stat-card-hint">ජීවිත කාලය තුළ උපයා ඇති මුදල</div>
+                            </div>
+                            <div class="stat-card navy">
+                                <div class="stat-card-label">Available Balance (ලබාගත හැකි ශේෂය)</div>
+                                <div class="stat-card-amount" id="statWalletAvailBalance" style="color: var(--brand-gold);">LKR 0.00</div>
+                                <div class="stat-card-hint">බැංකුවට ලබාගැනීමට ඇති මුදල</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-card-label">Pending / Hold Balance</div>
+                                <div class="stat-card-amount" id="statWalletPendingBalance">LKR 0.00</div>
+                                <div class="stat-card-hint">තහවුරු වෙමින් පවතින මුදල</div>
+                            </div>
+                            <div class="stat-card gold">
+                                <div class="stat-card-label">Withdrawn Amount (ලබාගත් මුදල)</div>
+                                <div class="stat-card-amount" id="statWalletWithdrawnAmount">LKR 0.00</div>
+                                <div class="stat-card-hint">බැංකුවට ගෙවූ එකතුව</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Double-Entry Wallet Ledger -->
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>💳 Immutable Double-Entry Wallet Ledger</span>
-                            <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 Request Withdrawal</button>
+                            <span>💳 Immutable Double-Entry Wallet Ledger (ලෙජර සටහන්)</span>
                         </div>
                         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 18px;">සියලුම කොමිස් බැරවීම් සහ ආපසු ගැනීම් පිළිබඳ විස්තරාත්මක ලෙජර සටහන්.</p>
 
@@ -1398,11 +1587,91 @@
                             </table>
                         </div>
                     </div>
+                </div>
+
+                <!-- TAB 9: COMMISSION HISTORY -->
+                <div class="tab-panel" id="panel-commissions">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
+                        <div class="dashboard-card-title">
+                            <span>📊 කොමිස් ඉතිහාසය සහ ඉපැයීම් සීමාවන් (Commission History)</span>
+                        </div>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Hapanamy ආරක්ෂිත මූල්‍ය ආකෘතිය යටතේ 8% සෘජු යොමුකිරීම් සහ 7% Binary Pair Matching කොමිස් විස්තර.</p>
+
+                        <div class="earnings-grid" style="margin-bottom: 20px;">
+                            <div class="stat-card">
+                                <div class="stat-card-label">8% Direct Referral Income</div>
+                                <div class="stat-card-amount" id="commDirectTotal">LKR 0.00</div>
+                                <div class="stat-card-hint">සෘජු සාමාජික විකිණුම් කොමිස්</div>
+                            </div>
+                            <div class="stat-card gold">
+                                <div class="stat-card-label">7% Binary Matching Income</div>
+                                <div class="stat-card-amount" id="commBinaryTotal">LKR 0.00</div>
+                                <div class="stat-card-hint">දුර්වල ශාඛා පරිමාව මත කොමිස්</div>
+                            </div>
+                            <div class="stat-card green">
+                                <div class="stat-card-label">Daily Earning Cap</div>
+                                <div class="stat-card-amount">LKR 30,000.00</div>
+                                <div class="stat-card-hint">දෛනික උපරිම ආදායම් සීමාව</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            <span>📋 Detailed Commission Distribution Log</span>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="custom-table" id="commissionsLogTable">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Commission Type</th>
+                                        <th>Trigger Order / Member</th>
+                                        <th>Base Volume (LKR)</th>
+                                        <th>Rate</th>
+                                        <th>Payout (LKR)</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">කිසිදු කොමිස් ගනුදෙනුවක් සටහන් වී නොමැත (No commissions recorded yet - 0.00).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 10: WITHDRAWALS -->
+                <div class="tab-panel" id="panel-withdrawals">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
+                        <div class="dashboard-card-title">
+                            <span>🏦 බැංකු මුදල් ආපසු ගැනීම් (Bank Withdrawals)</span>
+                            <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 New Withdrawal Request</button>
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px;">
+                            අවම මුදල් ලබාගැනීමේ සීමාව: <strong>රු. 1,000.00</strong> කි. ඉල්ලුම් කිරීමෙන් පසු පැය 24-48 ක් ඇතුළත ශ්‍රී ලංකාවේ ඕනෑම වාණිජ බැංකුවකට CEFT හරහා මුදල් බැර කෙරේ.
+                        </p>
+
+                        <div class="earnings-grid" style="grid-template-columns: 1fr 1fr; margin-bottom: 10px;">
+                            <div class="stat-card navy">
+                                <div class="stat-card-label">Available for Withdrawal</div>
+                                <div class="stat-card-amount" id="withdrawTabAvailBal" style="color: var(--brand-gold);">LKR 0.00</div>
+                                <div class="stat-card-hint">වහාම බැංකුවට ලබාගත හැක</div>
+                            </div>
+                            <div class="stat-card green">
+                                <div class="stat-card-label">Total Successfully Paid</div>
+                                <div class="stat-card-amount" id="withdrawTabPaidBal">LKR 0.00</div>
+                                <div class="stat-card-hint">සාර්ථකව බැංකු ගිණුමට ලැබී ඇති එකතුව</div>
+                            </div>
+                        </div>
+                    </div>
 
                     <!-- Withdrawal History Table -->
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>🏦 Bank Withdrawal History (මුදල් ලබාගැනීමේ ඉතිහාසය)</span>
+                            <span>📜 මුදල් ලබාගැනීමේ ඉල්ලුම් ඉතිහාසය (Withdrawal History)</span>
                         </div>
                         <div style="overflow-x: auto;">
                             <table class="custom-table" id="withdrawalHistoryTable">
@@ -1419,6 +1688,121 @@
                                     <!-- Loaded dynamically -->
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 11: KYC VERIFICATION -->
+                <div class="tab-panel" id="panel-kyc">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            <span>🪪 හැඳුනුම්පත් සත්‍යාපනය (KYC Verification Status)</span>
+                            <span class="badge-pill badge-kyc-approved" id="kycPanelStatus">🛡️ KYC APPROVED</span>
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
+                            ශ්‍රී ලංකා මහ බැංකු සහ මූල්‍ය ප්‍රතිපත්ති අනුව සාමාජික ගිණුම්වල ආරක්ෂාව සහතික කිරීම සඳහා ජාතික හැඳුනුම්පත (NIC) හෝ රියදුරු බලපත්‍රය සත්‍යාපනය කරනු ලැබේ.
+                        </p>
+
+                        <div style="background: rgba(33, 150, 243, 0.08); border: 1px solid rgba(33, 150, 243, 0.3); border-radius: 12px; padding: 20px; margin-bottom: 24px; display: flex; align-items: center; gap: 16px;">
+                            <div style="font-size: 36px;">🛡️</div>
+                            <div>
+                                <h4 style="font-size: 16px; font-weight: 800; color: #2196F3; margin-bottom: 4px;">ඔබගේ ගිණුම සම්පූර්ණයෙන්ම සත්‍යාපනය කර ඇත (Verified Account)</h4>
+                                <p style="font-size: 13px; color: var(--text-secondary); margin: 0;">ඔබට බාධාවකින් තොරව සියලුම පාඨමාලා මිලදී ගැනීම්, කොමිස් ඉපැයීම් සහ බැංකු මුදල් ආපසු ගැනීම් සිදු කළ හැක.</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-info-grid">
+                            <div class="info-cell">
+                                <div class="info-cell-label">Document Type</div>
+                                <div class="info-cell-val">National Identity Card (NIC)</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Verification Date</div>
+                                <div class="info-cell-val">2026-08-01</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Verification Authority</div>
+                                <div class="info-cell-val">Hapanamy Security Compliance</div>
+                            </div>
+                            <div class="info-cell">
+                                <div class="info-cell-label">Access Level</div>
+                                <div class="info-cell-val" style="color: var(--brand-green);">Unlimited Payouts (LKR 30k/day)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 12: NOTIFICATIONS -->
+                <div class="tab-panel" id="panel-notifications">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            <span>🔔 දැනුම්දීම් මධ්‍යස්ථානය (Notifications Inbox)</span>
+                            <button class="btn-action-sm" onclick="showMemberToast('✓ All notifications marked as read.')">Mark All Read</button>
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">ඔබගේ ගිණුමට ලැබෙන කොමිස්, ඇණවුම් අනුමැතීන් සහ පද්ධති නිවේදන.</p>
+
+                        <div id="notificationsContainer">
+                            <div class="notif-card unread">
+                                <div class="notif-icon-circle">💰</div>
+                                <div style="flex-grow: 1;">
+                                    <div style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px;">Direct Referral Commission Credited</div>
+                                    <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px;">ඔබේ සෘජු යොමුකිරීම Kasun Tharaka විසින් සිදුකළ පාඨමාලා මිලදී ගැනීම වෙනුවෙන් <strong>රු. 633.60</strong> ක 8% Direct Commission මුදලක් ඔබේ Wallet එකට බැරවිය.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);">2026-09-01 19:30</span>
+                                </div>
+                            </div>
+
+                            <div class="notif-card">
+                                <div class="notif-icon-circle">🌿</div>
+                                <div style="flex-grow: 1;">
+                                    <div style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px;">Binary Volume Propagated</div>
+                                    <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px;">ඔබගේ LEFT Team ශාඛාවට <strong>LKR 7,920.00</strong> ක නව විකිණුම් පරිමාවක් (Binary Volume) සාර්ථකව එකතු විය.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);">2026-09-01 19:15</span>
+                                </div>
+                            </div>
+
+                            <div class="notif-card">
+                                <div class="notif-icon-circle">🛒</div>
+                                <div style="flex-grow: 1;">
+                                    <div style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 3px;">Welcome to HAPANAMY.LK</div>
+                                    <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 6px;">Hapanamy සාමාජික පාලන පුවරුව වෙත සාදරයෙන් පිළිගනිමු! ඔබේ Referral Link මිතුරන් අතර බෙදාහරිමින් අදම ඉපැයීම් ආරම්භ කරන්න.</p>
+                                    <span style="font-size: 11px; color: var(--text-muted);">2026-08-01 10:00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 13: SETTINGS -->
+                <div class="tab-panel" id="panel-settings">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
+                        <div class="dashboard-card-title">
+                            <span>⚙️ ගිණුම් සහ ආරක්ෂක සැකසුම් (Account & Security Settings)</span>
+                        </div>
+                        
+                        <!-- Change Password Form -->
+                        <div style="max-width: 500px; margin-bottom: 30px;">
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--brand-gold); margin-bottom: 14px;">🔒 මුරපදය වෙනස් කිරීම (Change Password)</h4>
+                            <form onsubmit="event.preventDefault(); showMemberToast('✅ මුරපදය සාර්ථකව යාවත්කාලීන කරන ලදී.'); this.reset();">
+                                <div class="form-group-custom">
+                                    <label>වත්මන් මුරපදය (Current Password)</label>
+                                    <input type="password" required class="ref-input-field" style="width: 100%;" placeholder="••••••••">
+                                </div>
+                                <div class="form-group-custom">
+                                    <label>නව මුරපදය (New Password)</label>
+                                    <input type="password" required minlength="8" class="ref-input-field" style="width: 100%;" placeholder="අවම වශයෙන් අකුරු 8 ක්">
+                                </div>
+                                <div class="form-group-custom">
+                                    <label>නව මුරපදය තහවුරු කරන්න (Confirm New Password)</label>
+                                    <input type="password" required minlength="8" class="ref-input-field" style="width: 100%;" placeholder="••••••••">
+                                </div>
+                                <button type="submit" class="btn-action-sm btn-primary-action" style="padding: 10px 20px;">💾 මුරපදය සුරකින්න (Save Password)</button>
+                            </form>
+                        </div>
+
+                        <!-- Theme Settings -->
+                        <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--brand-gold); margin-bottom: 12px;">🌓 Interface Appearance</h4>
+                            <button class="btn-action-sm" onclick="toggleDashboardTheme()">🌓 Toggle Dark / Light Mode</button>
                         </div>
                     </div>
                 </div>
@@ -1594,7 +1978,7 @@
     <!-- Mobile Bottom Navigation -->
     <nav class="mobile-bottom-nav">
         <div class="mobile-nav-item active" onclick="switchMemberTab('overview')" id="mob-overview">
-            <span>📊</span>
+            <span>🏠</span>
             <span>Home</span>
         </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('buy-products')" id="mob-buy-products">
@@ -1605,13 +1989,13 @@
             <span>📚</span>
             <span>Courses</span>
         </div>
-        <div class="mobile-nav-item" onclick="switchMemberTab('orders')" id="mob-orders">
-            <span>📦</span>
-            <span>Orders</span>
-        </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('financial')" id="mob-financial">
-            <span>💳</span>
+            <span>💰</span>
             <span>Wallet</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchMemberTab('profile')" id="mob-profile">
+            <span>👤</span>
+            <span>Profile</span>
         </div>
     </nav>
 
@@ -1648,30 +2032,38 @@
 
             const sectionTitles = {
                 'overview': 'සාමාජික පාලන පුවරුව (Member Dashboard)',
-                'earnings': 'ඉපැයීම් විස්තර (Earnings Breakdown)',
+                'profile': 'මගේ ගිණුම් විස්තර (My Profile & Identity)',
                 'network': 'ද්විමය ජාලය (Binary Network Tree)',
-                'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
-                'links': 'ප්‍රවර්ධන සබැඳි (Referral Link Tools)',
+                'referrals': 'සෘජු යොමුකිරීම් සහ සබැඳි (My Referrals & Links)',
                 'buy-products': 'පාඨමාලා මිලදී ගැනීම (Buy Products & Courses)',
                 'products': 'මගේ පාඨමාලා (My Enrolled Courses)',
                 'orders': 'මගේ ඇණවුම් සහ ගෙවීම් (My Orders & Payment Slips)',
-                'financial': 'මූල්‍ය ලෙජරය (Double-Entry Wallet Ledger)'
+                'financial': 'මූල්‍ය පසුම්බිය (My Wallet & Balance)',
+                'commissions': 'කොමිස් ඉතිහාසය (Commission History & Caps)',
+                'withdrawals': 'මුදල් ආපසු ගැනීම් (Bank Withdrawals)',
+                'kyc': 'හැඳුනුම්පත් සත්‍යාපනය (KYC Verification)',
+                'notifications': 'දැනුම්දීම් (Notifications Inbox)',
+                'settings': 'පද්ධති සැකසුම් (Account & Security Settings)'
             };
 
             const sectionIcons = {
-                'overview': '📊',
-                'earnings': '💰',
-                'network': '🌿',
-                'referrals': '👥',
-                'links': '🔗',
+                'overview': '🏠',
+                'profile': '👤',
+                'network': '🌐',
+                'referrals': '🔗',
                 'buy-products': '🛒',
                 'products': '📚',
                 'orders': '📦',
-                'financial': '💳'
+                'financial': '💰',
+                'commissions': '📊',
+                'withdrawals': '🏦',
+                'kyc': '🪪',
+                'notifications': '🔔',
+                'settings': '⚙️'
             };
 
             document.getElementById('topbarSectionTitle').textContent = sectionTitles[tabId] || 'Member Dashboard';
-            document.getElementById('topbarSectionIcon').textContent = sectionIcons[tabId] || '📊';
+            document.getElementById('topbarSectionIcon').textContent = sectionIcons[tabId] || '🏠';
 
             if (tabId === 'buy-products') {
                 loadBuyProductsStore();
@@ -2480,6 +2872,10 @@
             document.getElementById('profileAvatarBig').textContent = initial;
             document.getElementById('sidebarAvatar').textContent = initial;
 
+            if (document.getElementById('profDetailName')) document.getElementById('profDetailName').textContent = uName;
+            if (document.getElementById('profDetailUsername')) document.getElementById('profDetailUsername').textContent = `@${uHandle}`;
+            if (document.getElementById('profDetailId')) document.getElementById('profDetailId').textContent = uId;
+
             const baseOrigin = window.location.origin;
             const leftL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=left`;
             const rightL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=right`;
@@ -2527,17 +2923,38 @@
                 document.getElementById('profileAccountStatus').textContent = `● ${data.profile.account_status}`;
                 document.getElementById('profileQualStatus').textContent = `★ ${data.profile.qualification_status}`;
                 document.getElementById('profileKycStatus').textContent = `🛡️ KYC ${data.profile.kyc_status}`;
+
+                if (document.getElementById('profDetailName')) document.getElementById('profDetailName').textContent = data.profile.full_name || 'Member';
+                if (document.getElementById('profDetailUsername')) document.getElementById('profDetailUsername').textContent = `@${data.profile.username}`;
+                if (document.getElementById('profDetailId')) document.getElementById('profDetailId').textContent = data.profile.id;
             }
 
             // 2. Earnings
             if (data.earnings) {
-                document.getElementById('statTodayEarnings').textContent = `LKR ${Number(data.earnings.today_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('statMonthEarnings').textContent = `LKR ${Number(data.earnings.month_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('statTotalEarnings').textContent = `LKR ${Number(data.earnings.total_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('statAvailBalance').textContent = `LKR ${Number(data.earnings.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('statPendingBalance').textContent = `LKR ${Number(data.earnings.pending_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('statWithdrawnAmount').textContent = `LKR ${Number(data.earnings.total_withdrawn || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('withdrawAvailDisplay').value = `LKR ${Number(data.earnings.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const todayFormatted = `LKR ${Number(data.earnings.today_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const monthFormatted = `LKR ${Number(data.earnings.month_earnings || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const totalFormatted = `LKR ${Number(data.earnings.total_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const availFormatted = `LKR ${Number(data.earnings.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const pendingFormatted = `LKR ${Number(data.earnings.pending_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const withdrawnFormatted = `LKR ${Number(data.earnings.total_withdrawn || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+                document.getElementById('statTodayEarnings').textContent = todayFormatted;
+                document.getElementById('statMonthEarnings').textContent = monthFormatted;
+                document.getElementById('statTotalEarnings').textContent = totalFormatted;
+                document.getElementById('statAvailBalance').textContent = availFormatted;
+                document.getElementById('statPendingBalance').textContent = pendingFormatted;
+                document.getElementById('statWithdrawnAmount').textContent = withdrawnFormatted;
+
+                // Sync Wallet & Withdrawal Panels
+                if (document.getElementById('statWalletTotalEarnings')) document.getElementById('statWalletTotalEarnings').textContent = totalFormatted;
+                if (document.getElementById('statWalletAvailBalance')) document.getElementById('statWalletAvailBalance').textContent = availFormatted;
+                if (document.getElementById('statWalletPendingBalance')) document.getElementById('statWalletPendingBalance').textContent = pendingFormatted;
+                if (document.getElementById('statWalletWithdrawnAmount')) document.getElementById('statWalletWithdrawnAmount').textContent = withdrawnFormatted;
+
+                if (document.getElementById('withdrawTabAvailBal')) document.getElementById('withdrawTabAvailBal').textContent = availFormatted;
+                if (document.getElementById('withdrawTabPaidBal')) document.getElementById('withdrawTabPaidBal').textContent = withdrawnFormatted;
+
+                document.getElementById('withdrawAvailDisplay').value = availFormatted;
                 document.getElementById('withdrawAmountInput').max = data.earnings.available_balance || 0;
             }
 
@@ -2557,15 +2974,15 @@
             // 4. Referral Links
             if (data.referral_tools) {
                 if (data.referral_tools.left_link) {
-                    document.getElementById('leftRefLinkInput').value = data.referral_tools.left_link;
-                    document.getElementById('tabLeftRefLink').value = data.referral_tools.left_link;
+                    if (document.getElementById('leftRefLinkInput')) document.getElementById('leftRefLinkInput').value = data.referral_tools.left_link;
+                    if (document.getElementById('tabLeftRefLink')) document.getElementById('tabLeftRefLink').value = data.referral_tools.left_link;
                 }
                 if (data.referral_tools.right_link) {
-                    document.getElementById('rightRefLinkInput').value = data.referral_tools.right_link;
-                    document.getElementById('tabRightRefLink').value = data.referral_tools.right_link;
+                    if (document.getElementById('rightRefLinkInput')) document.getElementById('rightRefLinkInput').value = data.referral_tools.right_link;
+                    if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = data.referral_tools.right_link;
                 }
                 if (data.referral_tools.general_link) {
-                    document.getElementById('tabGeneralRefLink').value = data.referral_tools.general_link;
+                    if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = data.referral_tools.general_link;
                 }
             }
 
