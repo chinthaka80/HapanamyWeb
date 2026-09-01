@@ -760,12 +760,19 @@
             // Auto switch to Register tab and prefill if referrer ref is present in URL
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
+            const posParam = urlParams.get('position');
             if (refParam) {
                 switchTab('register');
                 const refInput = document.getElementById('regReferral');
                 if (refInput) {
                     refInput.value = refParam;
                 }
+                // Track click event asynchronously
+                fetch('/api/referrals/click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref: refParam, position: posParam || 'auto' })
+                }).catch(() => {});
             }
         });
 

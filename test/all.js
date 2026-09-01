@@ -21,6 +21,8 @@ require('./product-firewall.test');
 require('./product-snapshot.test');
 require('./commission-integration.test');
 require('./critical-product-economics.test');
+require('./placement.test');
+require('./referral.test');
 
 // Run
 runTests();

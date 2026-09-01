@@ -188,6 +188,38 @@
                 alert('❌ Error connecting to server: ' + err.message);
             }
         });
+
+        // Auto-fill from Referral Link query params and track click (Phase 2)
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ref = urlParams.get('ref');
+            const pos = urlParams.get('position');
+
+            if (ref) {
+                const sponsorInput = document.getElementById('sponsorCode');
+                if (sponsorInput) {
+                    sponsorInput.value = ref;
+                    sponsorInput.style.borderColor = 'var(--brand-orange)';
+                }
+                // Track click event asynchronously
+                fetch('/api/referrals/click', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ref, position: pos || 'auto' })
+                }).catch(() => {});
+            }
+
+            if (pos) {
+                const posSelect = document.getElementById('position');
+                if (posSelect) {
+                    const normalized = pos.toUpperCase();
+                    if (normalized === 'LEFT' || normalized === 'RIGHT') {
+                        posSelect.value = normalized;
+                        posSelect.style.borderColor = 'var(--brand-orange)';
+                    }
+                }
+            }
+        });
     </script>
 </body>
 </html>

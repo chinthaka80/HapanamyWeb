@@ -15,6 +15,7 @@ const ProductEconomicsCalculator = require('./services/product-economics-calcula
 const ProductCommissionValidator = require('./services/product-commission-validator');
 const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
 const ProductSnapshotService = require('./services/product-snapshot-service');
+const ReferralService = require('./services/referral-service');
 
 const PORT = 3000;
 
@@ -57,15 +58,27 @@ const mockProducts = [
 const mockProductPurchases = [];
 const mockPaymentDeposits = [];
 
+const mockUsers = [
+    { id: 'admin-uuid-123', username: 'admin', full_name: 'Administrator Hapanamy', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE' },
+    { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'kasun@hapanamy.lk', role: 'member', status: 'ACTIVE' }
+];
+
 const mockWalletLedger = [];
 const mockWithdrawalRequests = [];
 const mockRefundRequests = [];
 const mockVolumeLedger = [];
-const mockBinaryNodes = [];
+const mockBinaryNodes = [
+    { id: 'node-root', user_id: 'admin-uuid-123', placement_parent_id: null, position: null, depth: 1, path: '', left_child_id: 'sponsor-uuid-1', right_child_id: null, created_at: new Date().toISOString() },
+    { id: 'node-sp1', user_id: 'sponsor-uuid-1', placement_parent_id: 'admin-uuid-123', position: 'LEFT', depth: 2, path: 'admin-uuid-123', left_child_id: null, right_child_id: null, created_at: new Date().toISOString() }
+];
 const mockFraudAlerts = [];
 const mockProductSnapshots = [];
 const mockCommissionTransactions = [];
-const mockSponsors = [];
+const mockSponsors = [
+    { user_id: 'sponsor-uuid-1', sponsor_id: 'admin-uuid-123', created_at: new Date().toISOString() }
+];
+const mockReferralClicks = [];
+const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
 
 function parseRequestBody(req) {
@@ -171,19 +184,54 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        const validSponsors = ['admin', 'sponsor1'];
-        if (!validSponsors.includes(sponsorCode)) {
-            sendJSON(res, 400, { error: 'Invalid or non-existent sponsor referral code.' });
-            return;
-        }
+        const sponsorUser = mockUsers.find(u => u.username === sponsorCode || u.id === sponsorCode);
+        const sponsorId = sponsorUser ? sponsorUser.id : (sponsorCode === 'admin' ? 'admin-uuid-123' : 'sponsor-uuid-1');
 
         const userId = 'user-uuid-' + Math.random().toString(36).substr(2, 9);
         const passwordHash = AuthService.hashPassword(password);
 
+        // Resolve binary placement and add to network
+        let resolvedPlacement = { placementParentId: sponsorId, position: position, depth: 2, path: sponsorId };
+        try {
+            resolvedPlacement = PlacementEngine.resolvePlacement(sponsorId, position, mockBinaryNodes, mockVolumeLedger);
+            PlacementEngine.addNode(mockBinaryNodes, {
+                userId,
+                placementParentId: resolvedPlacement.placementParentId,
+                position: resolvedPlacement.position,
+                depth: resolvedPlacement.depth,
+                path: resolvedPlacement.path
+            });
+        } catch (e) {
+            console.error('Placement error:', e.message);
+        }
+
+        // Link sponsor genealogy
+        mockSponsors.push({
+            user_id: userId,
+            sponsor_id: sponsorId,
+            created_at: new Date().toISOString()
+        });
+
+        // Store active member user
+        mockUsers.push({
+            id: userId,
+            username: cleanUsername,
+            full_name: fullName,
+            email: cleanEmail,
+            mobile: mobile,
+            role: 'member',
+            status: 'ACTIVE',
+            created_at: new Date().toISOString()
+        });
+
+        // Record referral conversion
+        ReferralService.recordConversion(sponsorCode, userId, mockReferralConversions);
+
         sendJSON(res, 201, {
             success: true,
             message: 'Registration successful! Verification notification sent.',
-            user: { id: userId, username: cleanUsername, email: cleanEmail, role: 'member' }
+            user: { id: userId, username: cleanUsername, email: cleanEmail, role: 'member' },
+            placement: resolvedPlacement
         });
         return;
     }
@@ -397,6 +445,162 @@ const server = http.createServer(async (req, res) => {
         KycService.logAction(mockAuditLogs, authUser.id, actionType, 'bank_accounts', newBankId, oldBank, newBank);
 
         sendJSON(res, 200, { success: true, message: 'Bank account updated successfully.' });
+        return;
+    }
+
+    // ========================================================
+    // BINARY NETWORK & PLACEMENT ENGINE REST ENDPOINTS (PHASE 1)
+    // ========================================================
+
+    // GET /api/network/tree
+    if (req.method === 'GET' && pathname === '/api/network/tree') {
+        const authUser = getAuthenticatedUser(req);
+        const queryParams = parseQueryParams(req.url);
+        const targetUserId = (authUser && authUser.role === 'admin' && queryParams.userId) 
+            ? queryParams.userId 
+            : (authUser ? authUser.id : (queryParams.userId || 'admin-uuid-123'));
+
+        const maxDepth = parseInt(queryParams.depth || 4);
+        const treeHierarchy = PlacementEngine.buildTreeHierarchy(
+            targetUserId, 
+            mockBinaryNodes, 
+            mockUsers, 
+            mockProductPurchases, 
+            mockVolumeLedger, 
+            maxDepth
+        );
+
+        sendJSON(res, 200, { 
+            success: true, 
+            root_user_id: targetUserId, 
+            tree: treeHierarchy 
+        });
+        return;
+    }
+
+    // GET /api/network/search
+    if (req.method === 'GET' && pathname === '/api/network/search') {
+        const queryParams = parseQueryParams(req.url);
+        const q = queryParams.q || '';
+        const searchResult = PlacementEngine.searchTreeNode(q, mockBinaryNodes, mockUsers);
+
+        if (!searchResult) {
+            sendJSON(res, 404, { error: 'No member found matching query in binary tree.' });
+            return;
+        }
+
+        sendJSON(res, 200, { success: true, result: searchResult });
+        return;
+    }
+
+    // GET /api/network/directs
+    if (req.method === 'GET' && pathname === '/api/network/directs') {
+        const authUser = getAuthenticatedUser(req);
+        const targetUserId = authUser ? authUser.id : 'sponsor-uuid-1';
+        const directs = PlacementEngine.getDirectReferrals(
+            targetUserId,
+            mockSponsors,
+            mockUsers,
+            mockProductPurchases,
+            mockBinaryNodes
+        );
+
+        sendJSON(res, 200, { success: true, directs, count: directs.length });
+        return;
+    }
+
+    // GET /api/network/summary
+    if (req.method === 'GET' && pathname === '/api/network/summary') {
+        const authUser = getAuthenticatedUser(req);
+        const targetUserId = authUser ? authUser.id : 'sponsor-uuid-1';
+        const summary = PlacementEngine.getTeamSummary(targetUserId, mockBinaryNodes, mockVolumeLedger);
+
+        sendJSON(res, 200, { success: true, summary });
+        return;
+    }
+
+    // POST /api/network/place (Admin or Sponsor Manual Placement)
+    if (req.method === 'POST' && pathname === '/api/network/place') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { userId, placementParentId, position } = body;
+
+        if (!userId || !placementParentId || !position) {
+            sendJSON(res, 400, { error: 'userId, placementParentId, and position are required.' });
+            return;
+        }
+
+        if (position !== 'LEFT' && position !== 'RIGHT') {
+            sendJSON(res, 400, { error: 'Position must be LEFT or RIGHT.' });
+            return;
+        }
+
+        const occupied = PlacementEngine.isPositionOccupied(placementParentId, position, mockBinaryNodes);
+        if (occupied) {
+            sendJSON(res, 400, { error: `Position ${position} under parent ${placementParentId} is already occupied.` });
+            return;
+        }
+
+        try {
+            const newNode = PlacementEngine.addNode(mockBinaryNodes, {
+                userId,
+                placementParentId,
+                position
+            });
+
+            sendJSON(res, 201, { success: true, message: 'Member placed successfully.', node: newNode });
+        } catch (e) {
+            sendJSON(res, 400, { error: e.message });
+        }
+        return;
+    }
+
+    // ========================================================
+    // REFERRAL LINK ENGINE REST ENDPOINTS (PHASE 2)
+    // ========================================================
+
+    // GET /api/referrals/my-links
+    if (req.method === 'GET' && pathname === '/api/referrals/my-links') {
+        const authUser = getAuthenticatedUser(req);
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'kasun_t';
+
+        const links = ReferralService.generateReferralLinks(username);
+        const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
+        const qrSvg = ReferralService.generateQrCodeSvg(links.general_link);
+
+        sendJSON(res, 200, {
+            success: true,
+            username,
+            links,
+            stats,
+            qr_code_svg: qrSvg
+        });
+        return;
+    }
+
+    // POST /api/referrals/click
+    if (req.method === 'POST' && pathname === '/api/referrals/click') {
+        const body = await parseRequestBody(req);
+        const { ref, position } = body;
+        const clientIp = req.socket.remoteAddress || '127.0.0.1';
+
+        const clickEvent = ReferralService.trackClick(ref, position, clientIp, mockReferralClicks);
+        sendJSON(res, 200, { success: true, click: clickEvent });
+        return;
+    }
+
+    // GET /api/referrals/analytics
+    if (req.method === 'GET' && pathname === '/api/referrals/analytics') {
+        const authUser = getAuthenticatedUser(req);
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'kasun_t';
+        const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
+
+        sendJSON(res, 200, { success: true, stats });
         return;
     }
 
