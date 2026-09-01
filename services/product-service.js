@@ -90,7 +90,7 @@ const ProductService = {
                 other_reserve: 550.00,
                 commission_safety_buffer: 1375.00,
                 direct_commission_rate: 8.00, // Rs. 2,200
-                binary_commission_rate: 6.00, // Rs. 1,650 x 7 = Rs. 11,550
+                binary_commission_rate: 7.00, // Rs. 1,925 x 7 = Rs. 13,475
                 max_binary_qualified_levels: 7,
                 binary_volume: 27500.00,
                 status: 'ACTIVE',

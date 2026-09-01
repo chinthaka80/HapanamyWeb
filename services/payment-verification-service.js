@@ -256,7 +256,7 @@ const PaymentVerificationService = {
                 product_cost: 10500,
                 min_company_profit: 2000,
                 direct_commission_rate: 8.00,
-                binary_commission_rate: 6.00,
+                binary_commission_rate: 7.00,
                 binary_volume: payment.amount,
                 max_binary_qualified_levels: 7,
                 status: 'ACTIVE'

@@ -78,7 +78,7 @@ const mockProducts = [
         price: 27500.00,
         binary_volume: 27500.00,
         direct_commission_percent: 8.00,
-        binary_commission_percent: 6.00,
+        binary_commission_percent: 7.00,
         image_url: 'assets/social_media_banner.jpg',
         course_url: 'https://hapanamy.lk/courses/soc-master',
         status: 'ACTIVE'
@@ -94,7 +94,7 @@ const mockProductSnapshots = [
         product_cost: 2500.00,
         binary_volume: 27500.00,
         direct_commission_percent: 8.00,
-        binary_commission_percent: 6.00,
+        binary_commission_percent: 7.00,
         max_binary_qualified_levels: 7,
         created_at: '2026-08-01T08:00:00Z'
     }

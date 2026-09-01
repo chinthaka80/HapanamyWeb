@@ -9,14 +9,14 @@ function createSampleSnapshot() {
         name: 'Social Media Income Masterclass',
         selling_price: 27500,
         binary_volume: 27500,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         max_binary_qualified_levels: 7,
         status: 'ACTIVE'
     };
     return ProductSnapshotService.createSnapshot(product, 'purch-sample-19');
 }
 
-test('Step 19: 1. Single qualified upline receives exact Binary Commission (6% of Rs. 27,500 = Rs. 1,650.00)', () => {
+test('Step 19: 1. Single qualified upline receives exact Binary Commission (7% of Rs. 27,500 = Rs. 1,925.00)', () => {
     const snapshot = createSampleSnapshot();
     const binaryNodes = [
         { user_id: 'u-root', placement_parent_id: null, position: null },
@@ -56,10 +56,10 @@ test('Step 19: 1. Single qualified upline receives exact Binary Commission (6% o
 
     assert(result.success);
     assert.equal(result.qualified_recipients_count, 1);
-    assert.equal(result.total_commission_paid, 1650.00);
+    assert.equal(result.total_commission_paid, 1925.00);
     assert.equal(commissionLedger.length, 1);
     assert.equal(commissionLedger[0].user_id, 'u-root');
-    assert.equal(commissionLedger[0].eligible_amount, 1650.00);
+    assert.equal(commissionLedger[0].eligible_amount, 1925.00);
 });
 
 test('Step 19: 2. Exactly 7 Qualified Uplines: All 7 receive full binary commission in bottom-up order', () => {
@@ -103,7 +103,7 @@ test('Step 19: 2. Exactly 7 Qualified Uplines: All 7 receive full binary commiss
     assert(result.success);
     // 9 uplines exist (u-9 down to u-1), but maximum 7 qualified levels allowed -> strictly 7 paid!
     assert.equal(result.qualified_recipients_count, 7);
-    assert.equal(result.total_commission_paid, 7 * 1650.00); // 11,550.00
+    assert.equal(result.total_commission_paid, 7 * 1925.00); // 13,475.00
 
     // Closest uplines received priority: u-9, u-8, u-7, u-6, u-5, u-4, u-3
     const paidUserIds = commissionLedger.map(c => c.user_id);
@@ -236,15 +236,15 @@ test('Step 19: 5. Daily Earning Cap partially restricts payout when upline limit
     });
 
     assert(result.success);
-    assert.equal(commissionLedger[0].calculated_amount, 1650.00);
+    assert.equal(commissionLedger[0].calculated_amount, 1925.00);
     assert.equal(commissionLedger[0].eligible_amount, 1000.00, 'Eligible amount capped to remaining Rs. 1,000');
-    assert.equal(commissionLedger[0].capped_amount, 650.00);
+    assert.equal(commissionLedger[0].capped_amount, 925.00);
 });
 
 test('Step 19: 6. Refund Reversal: Generates compensating negative binary commission entries for all recipients', () => {
     const commissionLedger = [
-        { id: 'c1', user_id: 'u-1', source_purchase_id: 'purch-refund-19', type: 'BINARY', calculated_amount: 1650, eligible_amount: 1650, status: 'APPROVED' },
-        { id: 'c2', user_id: 'u-2', source_purchase_id: 'purch-refund-19', type: 'BINARY', calculated_amount: 1650, eligible_amount: 1650, status: 'APPROVED' }
+        { id: 'c1', user_id: 'u-1', source_purchase_id: 'purch-refund-19', type: 'BINARY', calculated_amount: 1925, eligible_amount: 1925, status: 'APPROVED' },
+        { id: 'c2', user_id: 'u-2', source_purchase_id: 'purch-refund-19', type: 'BINARY', calculated_amount: 1925, eligible_amount: 1925, status: 'APPROVED' }
     ];
     const walletLedger = [];
 
@@ -253,9 +253,9 @@ test('Step 19: 6. Refund Reversal: Generates compensating negative binary commis
     assert.equal(reversals.length, 2);
     assert.equal(commissionLedger.length, 4);
     assert.equal(commissionLedger[2].type, 'BINARY_REVERSAL');
-    assert.equal(commissionLedger[2].eligible_amount, -1650.00);
+    assert.equal(commissionLedger[2].eligible_amount, -1925.00);
     assert.equal(walletLedger.length, 2);
-    assert.equal(walletLedger[0].amount, -1650.00);
+    assert.equal(walletLedger[0].amount, -1925.00);
 });
 
 if (require.main === module) {

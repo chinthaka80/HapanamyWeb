@@ -11,9 +11,9 @@ const QualifiedUplineCommissionEngine = {
     _processingLocks: new Set(),
 
     /**
-     * Calculates binary commission amount in cents.
+     * Calculates binary commission amount in cents (7.00% default).
      */
-    calculateBinaryCommission(binaryVolume, ratePercent = 6.00) {
+    calculateBinaryCommission(binaryVolume, ratePercent = 7.00) {
         const volumeCents = Math.round(Number(binaryVolume) * 100);
         const commissionCents = Math.round(volumeCents * (Number(ratePercent) / 100));
         return commissionCents / 100;
@@ -104,7 +104,7 @@ const QualifiedUplineCommissionEngine = {
             const binaryVolume = effectiveSnapshot.binary_volume || effectiveSnapshot.selling_price || 0;
             const binaryRate = effectiveSnapshot.binary_commission_rate !== undefined 
                 ? effectiveSnapshot.binary_commission_rate 
-                : 6.00;
+                : 7.00;
 
             const maxQualifiedLevels = effectiveSnapshot.max_binary_qualified_levels !== undefined 
                 ? effectiveSnapshot.max_binary_qualified_levels 
