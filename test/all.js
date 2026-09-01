@@ -27,6 +27,7 @@ require('./registration-qualification.test');
 require('./step13-binary-placement.test');
 require('./step14-referral-engine.test');
 require('./step15-member-registration.test');
+require('./step16-qualification-engine.test');
 
 // Run
 runTests();

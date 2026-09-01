@@ -16,6 +16,7 @@ const ProductCommissionValidator = require('./services/product-commission-valida
 const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
 const ProductSnapshotService = require('./services/product-snapshot-service');
 const ReferralService = require('./services/referral-service');
+const QualificationEngine = require('./services/qualification-engine');
 
 const PORT = 3000;
 
@@ -341,7 +342,7 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /api/members/qualification
+    // GET /api/members/qualification (STEP 16)
     if (req.method === 'GET' && pathname === '/api/members/qualification') {
         const authUser = getAuthenticatedUser(req);
         const queryParams = parseQueryParams(req.url);
@@ -349,15 +350,68 @@ const server = http.createServer(async (req, res) => {
             ? queryParams.userId 
             : (authUser ? authUser.id : (queryParams.userId || 'sponsor-uuid-1'));
 
-        const qualification = KycService.evaluateQualification(
+        const qualification = QualificationEngine.evaluateQualification(
             targetUserId,
-            mockKycDocs,
-            mockProductPurchases,
-            mockSponsors,
-            mockBinaryNodes
+            {
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                volumeLedger: mockVolumeLedger
+            }
         );
 
         sendJSON(res, 200, { success: true, qualification });
+        return;
+    }
+
+    // GET /api/admin/members/qualification-history
+    if (req.method === 'GET' && pathname === '/api/admin/members/qualification-history') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const queryParams = parseQueryParams(req.url);
+        const targetUserId = queryParams.userId;
+        const history = targetUserId 
+            ? QualificationEngine.getMemberQualificationHistory(targetUserId)
+            : QualificationEngine._qualificationHistory;
+
+        sendJSON(res, 200, { success: true, history });
+        return;
+    }
+
+    // GET /api/admin/members/qualification-config
+    if (req.method === 'GET' && pathname === '/api/admin/members/qualification-config') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const config = QualificationEngine.getActiveRuleConfig();
+        sendJSON(res, 200, { success: true, config });
+        return;
+    }
+
+    // PUT /api/admin/members/qualification-config
+    if (req.method === 'PUT' && pathname === '/api/admin/members/qualification-config') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        try {
+            const updatedConfig = QualificationEngine.updateRuleConfig(body, authUser.id, mockAuditLogs);
+            sendJSON(res, 200, { success: true, message: 'Qualification rule updated successfully.', config: updatedConfig });
+        } catch (e) {
+            sendJSON(res, 400, { error: e.message });
+        }
         return;
     }
 
