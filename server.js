@@ -248,14 +248,16 @@ const server = http.createServer(async (req, res) => {
     // POST /api/auth/login (STEP 31 Rate Limiting & Lockout Protected)
     if (req.method === 'POST' && pathname === '/api/auth/login') {
         const body = await parseRequestBody(req);
-        const { email, password, totpCode } = body;
+        const identifier = body.identifier || body.email;
+        const password = body.password;
+        const totpCode = body.totpCode;
 
-        if (!email || !password) {
-            sendJSON(res, 400, { error: 'Email and password are required.' });
+        if (!identifier || !password) {
+            sendJSON(res, 400, { error: 'Username/Email and password are required.' });
             return;
         }
 
-        const normalizedEmail = (email || '').toLowerCase().trim();
+        const normalizedEmail = (identifier || '').toLowerCase().trim();
 
         // 1. Check Account Lockout
         if (SecurityCore.isAccountLocked(normalizedEmail)) {
