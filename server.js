@@ -22,6 +22,7 @@ const AdminDashboardService = require('./services/admin-dashboard-service');
 const NotificationEngine = require('./services/notification-engine');
 const ReversalEngine = require('./services/reversal-engine');
 const SimulationEngine = require('./services/simulation-engine');
+const ProductService = require('./services/product-service');
 
 const PORT = 3000;
 
@@ -2067,6 +2068,44 @@ const server = http.createServer(async (req, res) => {
         });
 
         sendJSON(res, 200, { success: true, report });
+        return;
+    }
+
+    // GET /api/courses/catalog (Public Catalog)
+    if (req.method === 'GET' && pathname === '/api/courses/catalog') {
+        const catalog = ProductService.getCatalog();
+        sendJSON(res, 200, { success: true, count: catalog.length, catalog });
+        return;
+    }
+
+    // GET /api/courses/delivery?courseId=... (Member Personalized Delivery & Progress)
+    if (req.method === 'GET' && pathname === '/api/courses/delivery') {
+        const authUser = getAuthenticatedUser(req);
+        const courseId = parsedUrl.query.courseId || 'prod-pro-02';
+        const userId = authUser ? authUser.id : 'guest';
+
+        const delivery = ProductService.getCourseDelivery(
+            userId,
+            courseId,
+            PurchaseOrchestrator.purchasesStore || [],
+            {}
+        );
+
+        sendJSON(res, 200, delivery);
+        return;
+    }
+
+    // POST /api/admin/products/validate-economics (Admin Margin Safety Firewall)
+    if (req.method === 'POST' && pathname === '/api/admin/products/validate-economics') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const validation = ProductService.validateEconomics(body);
+        sendJSON(res, 200, { success: true, validation });
         return;
     }
 
