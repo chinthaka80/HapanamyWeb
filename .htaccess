@@ -1,6 +1,9 @@
 # ==============================================================================
-# HAPANAMY.LK — APACHE PRODUCTION CONFIGURATION (.htaccess)
+# HAPANAMY.LK — PRODUCTION APACHE CONFIGURATION (.htaccess)
 # ==============================================================================
+
+# Disable directory browsing
+Options -Indexes
 
 # Enable Rewrite Engine
 <IfModule mod_rewrite.c>
@@ -12,68 +15,63 @@
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-    # 2. Prevent Access to Hidden Files & Sensitive Assets
-    RewriteRule ^\.env - [F,L,NC]
-    RewriteRule ^ecosystem\.config\.js - [F,L,NC]
-    RewriteRule ^sql/ - [F,L,NC]
-    RewriteRule ^storage/private/ - [F,L,NC]
-    RewriteRule ^package(-lock)?\.json - [F,L,NC]
+    # 2. Block Public Access to Sensitive Files, Directories & Backups
+    RewriteRule (^|/)\.(env|git|htaccess|htpasswd) - [F,L,NC]
+    RewriteRule ^(sql|services|test|storage/private)/ - [F,L,NC]
+    RewriteRule ^(ecosystem\.config\.js|package\.json|package-lock\.json|server\.js)$ - [F,L,NC]
+    RewriteRule \.(sql|log|bak|cfg|ini|sh|bat)$ - [F,L,NC]
 
-    # 3. Reverse Proxy API Requests to Node.js Backend (Port 3000) if mod_proxy is active
+    # 3. Dedicated API Reverse Proxy (ONLY for /api/* routes if mod_proxy is enabled)
     <IfModule mod_proxy.c>
         RewriteCond %{REQUEST_URI} ^/api/ [NC]
         RewriteRule ^api/(.*)$ http://127.0.0.1:3000/api/$1 [P,L]
     </IfModule>
 
-    # 4. Clean Route Mappings
+    # 4. Serve Existing Physical Files & Directories Directly
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # 5. Clean Route Mappings (Explicitly mapped to existing HTML pages)
     RewriteRule ^login/?$ login.html [L,NC,QSA]
     RewriteRule ^register/?$ register.html [L,NC,QSA]
     RewriteRule ^dashboard/?$ dashboard.html [L,NC,QSA]
     RewriteRule ^admin/?$ hapanamy-admin-portal-9226.html [L,NC,QSA]
     RewriteRule ^checkout/?$ checkout.html [L,NC,QSA]
     RewriteRule ^about/?$ about-us.html [L,NC,QSA]
-    RewriteRule ^courses/?$ courses.html [L,NC,QSA]
-    RewriteRule ^how-it-works/?$ how-it-works.html [L,NC,QSA]
-    RewriteRule ^compensation-plan/?$ compensation-plan.html [L,NC,QSA]
-    RewriteRule ^faq/?$ faq.html [L,NC,QSA]
+    RewriteRule ^about-us/?$ about-us.html [L,NC,QSA]
     RewriteRule ^contact/?$ contact-us.html [L,NC,QSA]
+    RewriteRule ^contact-us/?$ contact-us.html [L,NC,QSA]
     RewriteRule ^terms/?$ terms-conditions.html [L,NC,QSA]
+    RewriteRule ^terms-conditions/?$ terms-conditions.html [L,NC,QSA]
     RewriteRule ^privacy/?$ privacy-policy.html [L,NC,QSA]
+    RewriteRule ^privacy-policy/?$ privacy-policy.html [L,NC,QSA]
     RewriteRule ^refund/?$ refund-policy.html [L,NC,QSA]
+    RewriteRule ^refund-policy/?$ refund-policy.html [L,NC,QSA]
     RewriteRule ^disclaimer/?$ disclaimer.html [L,NC,QSA]
     RewriteRule ^affiliate-disclosure/?$ affiliate-disclosure.html [L,NC,QSA]
+    RewriteRule ^blog/?$ blog.html [L,NC,QSA]
+    RewriteRule ^my-account/?$ my-account.html [L,NC,QSA]
 
-    # 5. Automatically append .html if file exists
+    # 6. Generic Clean URL mapping: append .html if file physically exists
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{DOCUMENT_ROOT}/$1.html -f
-    RewriteRule ^([^/]+)/?$ $1.html [L]
-
-    # 6. Fallback for Static Assets & Existing Files
-    RewriteCond %{REQUEST_FILENAME} -f [OR]
-    RewriteCond %{REQUEST_FILENAME} -d
-    RewriteRule ^ - [L]
-
-    # 7. Reverse proxy any dynamic requests to Node.js backend if mod_proxy is active
-    <IfModule mod_proxy.c>
-        RewriteCond %{REQUEST_FILENAME} !-f
-        RewriteCond %{REQUEST_FILENAME} !-d
-        RewriteRule ^(.*)$ http://127.0.0.1:3000/$1 [P,L]
-    </IfModule>
+    RewriteRule ^([^/]+)/?$ $1.html [L,QSA]
 
 </IfModule>
 
-# Custom Error Documents
+# Custom Error Documents (Prevent Apache default directory disclosures)
 ErrorDocument 404 /index.html
 ErrorDocument 403 /index.html
-ErrorDocument 500 /index.html
 
-# Security & Cache Headers
+# Security & Header Protection
 <IfModule mod_headers.c>
     Header set X-Content-Type-Options "nosniff"
     Header set X-XSS-Protection "1; mode=block"
+    Header set X-Frame-Options "SAMEORIGIN"
     Header set Referrer-Policy "strict-origin-when-cross-origin"
     
-    # Prevent browser caching on dynamic HTML files
+    # Prevent browser caching of dynamic HTML files
     <FilesMatch "\.(html|htm)$">
         Header set Cache-Control "no-cache, no-store, must-revalidate"
         Header set Pragma "no-cache"

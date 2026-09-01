@@ -193,7 +193,8 @@ const server = http.createServer(async (req, res) => {
         const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER);
 
         sendJSON(res, 200, {
-            status: 'HEALTHY',
+            status: 'ok',
+            service: 'HAPANAMY API',
             timestamp: new Date().toISOString(),
             application: 'HAPANAMY.LK MLM PLATFORM',
             environment: process.env.NODE_ENV || 'development',

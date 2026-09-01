@@ -50,6 +50,7 @@ require('./e2e-user-journey.test');
 require('./step35-public-auth-foundation.test');
 require('./backup-restore.test');
 require('./step36-live-login-register-flow.test');
+require('./deployment-verification.test');
 
 // Run
 runTests();
