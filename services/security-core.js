@@ -88,6 +88,146 @@ const SecurityCore = {
     },
 
     /**
+     * Sanitizes object to prevent Prototype Pollution attacks by stripping __proto__, constructor, and prototype.
+     */
+    sanitizeObject(obj) {
+        if (!obj || typeof obj !== 'object') return obj;
+        if (Array.isArray(obj)) {
+            return obj.map(item => this.sanitizeObject(item));
+        }
+        const clean = {};
+        for (const [key, value] of Object.entries(obj)) {
+            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                continue;
+            }
+            clean[key] = (value && typeof value === 'object') ? this.sanitizeObject(value) : value;
+        }
+        return clean;
+    },
+
+    /**
+     * Validates Origin / Referer headers to protect against Cross-Site Request Forgery (CSRF).
+     */
+    validateCsrfOrigin(req, host = null) {
+        // Safe read-only HTTP methods are exempt from CSRF checks
+        if (['GET', 'HEAD', 'OPTIONS'].includes(req.method)) return true;
+
+        const origin = req.headers['origin'];
+        const referer = req.headers['referer'];
+        const targetHost = host || req.headers['host'] || 'localhost';
+
+        if (origin) {
+            try {
+                const originUrl = new URL(origin);
+                if (originUrl.host !== targetHost && !originUrl.host.includes('hapanamy.lk') && !originUrl.host.includes('localhost') && !originUrl.host.includes('127.0.0.1')) {
+                    return false;
+                }
+            } catch (e) {
+                return false;
+            }
+        }
+
+        if (referer) {
+            try {
+                const refererUrl = new URL(referer);
+                if (refererUrl.host !== targetHost && !refererUrl.host.includes('hapanamy.lk') && !refererUrl.host.includes('localhost') && !refererUrl.host.includes('127.0.0.1')) {
+                    return false;
+                }
+            } catch (e) {
+                return false;
+            }
+        }
+
+        return true;
+    },
+
+    /**
+     * Validates file upload against allow-list, size, MIME type and magic byte file signatures.
+     */
+    validateFileUpload({ filename, mimeType, sizeBytes = 0, buffer = null, maxSizeBytes = 5 * 1024 * 1024 }) {
+        if (!filename || typeof filename !== 'string') {
+            return { valid: false, error: 'Invalid or missing filename.' };
+        }
+
+        // 1. Path Traversal & Null Byte Guard
+        if (filename.includes('..') || filename.includes('/') || filename.includes('\\') || filename.includes('\0')) {
+            return { valid: false, error: 'Path traversal or invalid characters detected in filename.' };
+        }
+
+        // 2. Extension Allow-list
+        const extMatch = filename.match(/\.([a-zA-Z0-9]+)$/);
+        if (!extMatch) {
+            return { valid: false, error: 'File must have a valid extension.' };
+        }
+        const ext = extMatch[1].toLowerCase();
+        const allowedExtensions = ['jpg', 'jpeg', 'png', 'pdf'];
+        if (!allowedExtensions.includes(ext)) {
+            return { valid: false, error: `File type .${ext} is not allowed. Only JPG, PNG, and PDF files are accepted.` };
+        }
+
+        // 3. Block Executable Extensions
+        const dangerousExtensions = ['php', 'phtml', 'exe', 'sh', 'bat', 'cmd', 'js', 'html', 'svg', 'py', 'pl', 'cgi'];
+        if (dangerousExtensions.includes(ext)) {
+            return { valid: false, error: 'Executable file uploads are strictly forbidden.' };
+        }
+
+        // 4. File Size Boundary Check (Default 5MB)
+        if (sizeBytes > maxSizeBytes) {
+            return { valid: false, error: `File size exceeds the maximum limit of ${maxSizeBytes / (1024 * 1024)}MB.` };
+        }
+
+        // 5. MIME Type Validation
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+        if (mimeType && !allowedMimeTypes.includes(mimeType.toLowerCase())) {
+            return { valid: false, error: `MIME type '${mimeType}' is not permitted.` };
+        }
+
+        // 6. Magic Bytes Validation if buffer is available
+        if (buffer && Buffer.isBuffer(buffer) && buffer.length >= 4) {
+            const hex = buffer.slice(0, 4).toString('hex').toUpperCase();
+            const isJpeg = hex.startsWith('FFD8FF');
+            const isPng = hex.startsWith('89504E47');
+            const isPdf = buffer.slice(0, 4).toString('utf-8') === '%PDF';
+
+            if (ext === 'jpg' || ext === 'jpeg') {
+                if (!isJpeg) return { valid: false, error: 'File content does not match JPEG image signature.' };
+            } else if (ext === 'png') {
+                if (!isPng) return { valid: false, error: 'File content does not match PNG image signature.' };
+            } else if (ext === 'pdf') {
+                if (!isPdf) return { valid: false, error: 'File content does not match PDF document signature.' };
+            }
+        }
+
+        // 7. Generate Random Server-Side Storage Filename
+        const secureRandomName = `slip-${crypto.randomBytes(16).toString('hex')}.${ext}`;
+
+        return {
+            valid: true,
+            extension: ext,
+            secureFilename: secureRandomName,
+            mimeType: mimeType || (ext === 'pdf' ? 'application/pdf' : `image/${ext === 'jpg' ? 'jpeg' : ext}`)
+        };
+    },
+
+    /**
+     * Returns comprehensive enterprise HTTP security headers.
+     */
+    getSecurityHeaders(isHttps = false) {
+        const headers = {
+            'X-Content-Type-Options': 'nosniff',
+            'X-Frame-Options': 'SAMEORIGIN',
+            'X-XSS-Protection': '1; mode=block',
+            'Referrer-Policy': 'strict-origin-when-cross-origin',
+            'Permissions-Policy': 'geolocation=(), camera=(), microphone=(), payment=()',
+            'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https:; connect-src 'self'; frame-ancestors 'self';"
+        };
+        if (isHttps) {
+            headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains';
+        }
+        return headers;
+    },
+
+    /**
      * Strips client-manipulated fields (e.g., role, balance, commission_rates, status) to prevent frontend tampering.
      */
     filterAuthoritativeFields(clientPayload = {}, forbiddenKeys = ['role', 'balance', 'status', 'is_admin', 'commission_rate', 'price', 'direct_commission_percent']) {

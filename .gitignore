@@ -1,3 +1,13 @@
 node_modules/
 .DS_Store
 *.log
+*.sql
+*.bak
+*.backup
+.env
+.env.*
+!.env.example
+storage/private/
+uploads/private/
+brain/
+scratch/

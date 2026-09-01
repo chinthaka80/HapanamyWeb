@@ -554,13 +554,26 @@ const mockReferralClicks = [];
 const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
 
-function parseRequestBody(req) {
+function parseRequestBody(req, maxSizeBytes = 10 * 1024 * 1024) {
     return new Promise((resolve) => {
         let body = '';
-        req.on('data', chunk => { body += chunk.toString(); });
+        let tooLarge = false;
+        req.on('data', chunk => { 
+            body += chunk.toString(); 
+            if (body.length > maxSizeBytes) {
+                tooLarge = true;
+                req.destroy();
+                resolve({});
+            }
+        });
         req.on('end', () => {
+            if (tooLarge) {
+                resolve({});
+                return;
+            }
             try {
-                resolve(body ? JSON.parse(body) : {});
+                const parsed = body ? JSON.parse(body) : {};
+                resolve(SecurityCore.sanitizeObject(parsed));
             } catch (e) {
                 resolve({});
             }
@@ -568,8 +581,13 @@ function parseRequestBody(req) {
     });
 }
 
-function sendJSON(res, status, data) {
-    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+function sendJSON(res, status, data, extraHeaders = {}) {
+    const securityHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
+    res.writeHead(status, {
+        'Content-Type': 'application/json; charset=utf-8',
+        ...securityHeaders,
+        ...extraHeaders
+    });
     res.end(JSON.stringify(data));
 }
 
@@ -597,11 +615,20 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const pathname = url.pathname;
 
-    // Enforce Rate Limiter on all incoming requests (API Abuse, Brute force prevention)
+    // 1. Enforce Rate Limiter on all incoming requests (API Abuse, Brute force prevention)
     const clientIp = req.socket.remoteAddress || '127.0.0.1';
-    if (SecurityCore.isRateLimited(clientIp, 150)) { // Set threshold slightly higher for dev
+    if (SecurityCore.isRateLimited(clientIp, 150)) {
         sendJSON(res, 429, { error: 'Too many requests. Please try again later.' });
         return;
+    }
+
+    // 2. CSRF Origin / Referer Validation for Mutating Requests
+    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+        const isCsrfSafe = SecurityCore.validateCsrfOrigin(req, req.headers.host);
+        if (!isCsrfSafe) {
+            sendJSON(res, 403, { error: 'Cross-Site Request Forgery (CSRF) validation failed.' });
+            return;
+        }
     }
 
     // GET /api/health (System Health & Readiness Inspection)
@@ -2965,30 +2992,45 @@ const server = http.createServer(async (req, res) => {
     let filePath = path.join(__dirname, safeUrl);
     
     // Auto-resolve .html if extension is omitted
-    if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
-        filePath = filePath + '.html';
-    }
-    
-    if (safeUrl.startsWith('/storage/private/') || !filePath.startsWith(__dirname)) {
-        res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
-        res.end('Forbidden');
+    const isSensitive = safeUrl.startsWith('/storage/private/') ||
+        safeUrl.startsWith('/services/') ||
+        safeUrl.startsWith('/test/') ||
+        safeUrl.startsWith('/sql/') ||
+        safeUrl.includes('/.env') ||
+        safeUrl.includes('/.git') ||
+        safeUrl.includes('/.htaccess') ||
+        safeUrl.includes('/.htpasswd') ||
+        safeUrl.endsWith('.sql') ||
+        safeUrl.endsWith('.log') ||
+        safeUrl.endsWith('.bak') ||
+        safeUrl.endsWith('.sh') ||
+        safeUrl === '/server.js' ||
+        safeUrl === '/package.json' ||
+        safeUrl === '/package-lock.json';
+
+    const normalizedPath = path.normalize(filePath);
+    if (isSensitive || !normalizedPath.startsWith(__dirname)) {
+        const secHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
+        res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8', ...secHeaders });
+        res.end('403 Forbidden: Access to sensitive file is prohibited.');
         return;
     }
     
     const extname = String(path.extname(filePath)).toLowerCase();
     const contentType = MIME_TYPES[extname] || 'application/octet-stream';
+    const secHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
     
     fs.readFile(filePath, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', ...secHeaders });
                 res.end('<h1>404 Not Found - Hapanamy.lk</h1>', 'utf-8');
             } else {
-                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end(`Server Error: ${err.code}`);
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8', ...secHeaders });
+                res.end(`Server Error: An unexpected error occurred.`);
             }
         } else {
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, { 'Content-Type': contentType, ...secHeaders });
             res.end(content, 'utf-8');
         }
     });

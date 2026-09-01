@@ -8,22 +8,28 @@ const ReferralService = require('./referral-service');
 
 const AuthService = {
     /**
-     * Hashing a password using Node.js pbkdf2Sync (Secure PBKDF2 with SHA-512)
+     * Hashing a password using Node.js pbkdf2Sync (Secure PBKDF2 with SHA-512 and 10,000 iterations)
      */
     hashPassword(password) {
         const salt = crypto.randomBytes(16).toString('hex');
-        const hash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+        const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
         return `${salt}:${hash}`;
     },
 
     /**
-     * Verifies a password against a stored hash
+     * Verifies a password against a stored hash (timing-safe)
      */
     verifyPassword(password, storedPassword) {
         if (!storedPassword || !storedPassword.includes(':')) return false;
-        const [salt, originalHash] = storedPassword.split(':');
-        const verifyHash = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
-        return originalHash === verifyHash;
+        try {
+            const [salt, originalHash] = storedPassword.split(':');
+            const verifyHash10k = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+            if (crypto.timingSafeEqual(Buffer.from(originalHash), Buffer.from(verifyHash10k))) return true;
+            const verifyHash1k = crypto.pbkdf2Sync(password, salt, 1000, 64, 'sha512').toString('hex');
+            return crypto.timingSafeEqual(Buffer.from(originalHash), Buffer.from(verifyHash1k));
+        } catch (e) {
+            return false;
+        }
     },
 
     /**
