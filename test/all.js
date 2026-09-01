@@ -30,6 +30,7 @@ require('./step15-member-registration.test');
 require('./step16-qualification-engine.test');
 require('./step17-binary-volume.test');
 require('./step18-direct-commission.test');
+require('./step19-qualified-upline-commission.test');
 
 // Run
 runTests();
