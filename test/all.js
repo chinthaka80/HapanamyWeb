@@ -28,6 +28,7 @@ require('./step13-binary-placement.test');
 require('./step14-referral-engine.test');
 require('./step15-member-registration.test');
 require('./step16-qualification-engine.test');
+require('./step17-binary-volume.test');
 
 // Run
 runTests();
