@@ -116,6 +116,8 @@ test('Step 27: 2. Financial Metrics: Authoritative snapshot-driven revenue, cost
     assert.equal(res.financial_summary.total_gross_profit, 51000.00);
     // Commission Paid = 2,200 + 1,650 = 3,850
     assert.equal(res.financial_summary.total_commission_paid, 3850.00);
+    // Commission / Payout Pending = 2,000
+    assert.equal(res.financial_summary.total_commission_pending, 2000.00);
     // Net Company Margin = 51,000 - 3,850 = 47,150
     assert.equal(res.financial_summary.company_net_margin_estimate, 47150.00);
 });

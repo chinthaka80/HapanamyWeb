@@ -100,10 +100,19 @@ const AdminDashboardService = {
 
         // Calculate Total Commissions from Wallet Ledger
         let totalCommissionPaid = 0;
+        let totalCommissionPending = 0;
         walletLedger.forEach(tx => {
             const txType = (tx.type || '').toUpperCase();
             if (txType.includes('COMMISSION') && !txType.includes('REVERSAL') && tx.status === 'COMPLETED') {
                 totalCommissionPaid += Math.abs(Number(tx.amount) || 0);
+            } else if (txType.includes('COMMISSION') && tx.status === 'PENDING') {
+                totalCommissionPending += Math.abs(Number(tx.amount) || 0);
+            }
+        });
+
+        withdrawals.forEach(w => {
+            if (w.status === 'PENDING' || w.status === 'UNDER_REVIEW') {
+                totalCommissionPending += Number(w.amount) || 0;
             }
         });
 
@@ -172,6 +181,7 @@ const AdminDashboardService = {
                 total_product_cost: Math.round(totalProductCost * 100) / 100,
                 total_gross_profit: Math.round(grossProfit * 100) / 100,
                 total_commission_paid: Math.round(totalCommissionPaid * 100) / 100,
+                total_commission_pending: Math.round(totalCommissionPending * 100) / 100,
                 company_net_margin_estimate: companyNetMarginEstimate,
                 profit_margin_percent: profitMarginPercent
             },
