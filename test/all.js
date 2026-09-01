@@ -34,6 +34,7 @@ require('./step19-qualified-upline-commission.test');
 require('./step20-earnings-cap.test');
 require('./step21-wallet-ledger.test');
 require('./step22-payment-verification.test');
+require('./step23-purchase-orchestrator.test');
 
 // Run
 runTests();
