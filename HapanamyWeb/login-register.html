@@ -577,44 +577,28 @@
                 const password = document.getElementById('loginPassword').value.trim();
                 
                 // Enforce default user credentials check
-                if (email === 'NamoBudhdhaya') {
-                    if (password === 'Araliya321#') {
-                        localStorage.setItem('active_user', JSON.stringify({ email: 'namobudhdhaya@hapanamy.lk', role: 'student' }));
-                        const profile = {
-                            name: 'NamoBudhdhaya',
-                            email: 'namobudhdhaya@hapanamy.lk',
-                            phone: '0778899123',
-                            address: 'Maharagama, Sri Lanka',
-                            bankName: 'Commercial Bank',
-                            branch: 'Maharagama',
-                            accNumber: '8010294851'
+                if (email.toUpperCase() === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
+                    if (password === 'Hapana20260808') {
+                        const rootUser = {
+                            id: 'user-namobuddhaya-root',
+                            username: 'NAMOBUDDHAYA',
+                            full_name: 'NAMOBUDDHAYA',
+                            name: 'NAMOBUDDHAYA',
+                            email: 'admin@hapanamy.lk',
+                            role: 'admin',
+                            status: 'ACTIVE'
                         };
-                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
+                        localStorage.setItem('auth_token', 'token-namobuddhaya-root');
+                        localStorage.setItem('active_token', 'token-namobuddhaya-root');
+                        localStorage.setItem('active_user', JSON.stringify(rootUser));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(rootUser));
                         
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු NamoBudhdhaya!`);
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු NAMOBUDDHAYA!`);
                         setTimeout(() => {
                             window.location.href = 'my-account.html';
-                        }, 1500);
+                        }, 1000);
                     } else {
-                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> NamoBudhdhaya සඳහා ඇතුළත් කළ මුරපදය වැරදියි.`);
-                    }
-                    return;
-                }
-                
-                // Enforce Admin credentials check
-                if (email.toLowerCase() === 'admin' || email === 'admin@hapanamy.lk') {
-                    if (!isAdminPortal) {
-                        showToast('⚠️ <strong>Access Denied!</strong> මෙම පිවිසුම සිසුන් සඳහා පමණි. Admin ලොගින් වීමට රහස් සබැඳිය භාවිතා කරන්න.');
-                        return;
-                    }
-                    if (password === 'Araliya321#') {
-                        localStorage.setItem('active_user', JSON.stringify({ email, role: 'admin' }));
-                        showToast(`👑 <strong>ආයුබෝවන් Admin!</strong> Hapanamy Admin Panel වෙත පිවිසෙමින්...`);
-                        setTimeout(() => {
-                            window.location.href = 'admin.html';
-                        }, 1500);
-                    } else {
-                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> Admin සඳහා ඇතුළත් කළ මුරපදය වැරදියි.`);
+                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
                     }
                     return;
                 }

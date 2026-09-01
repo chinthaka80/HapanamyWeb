@@ -547,6 +547,26 @@
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ ගිණුම සකසමින් පවතී... (Creating Account)</span>';
 
+            // 1. Check local storage duplicate prevention
+            let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            const isDupEmail = regUsers.some(u => u.email && u.email.toLowerCase() === payload.email.toLowerCase());
+            const isDupUsername = regUsers.some(u => u.username && u.username.toLowerCase() === payload.username.toLowerCase());
+
+            if (isDupEmail) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
+                showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
+                return;
+            }
+
+            if (isDupUsername) {
+                btnSubmit.disabled = false;
+                btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
+                showToast('⚠️ <strong>පරිශීලක නාමය දැනටමත් පවතී!</strong> කරුණාකර වෙනත් පරිශීලක නාමයක් තෝරන්න.');
+                return;
+            }
+
+            // 2. Try Backend API
             try {
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
@@ -554,34 +574,72 @@
                     body: JSON.stringify(payload)
                 });
 
-                const data = await response.json();
-
-                if (response.ok && data.success) {
-                    showToast('🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> ඔබගේ ගිණුම සාර්ථකව සාදන ලදී. කරුණාකර පිවිසෙන්න...', false);
-
-                    // Auto login if token returned, or redirect to login
-                    if (data.token && data.user) {
-                        localStorage.setItem('auth_token', data.token);
-                        localStorage.setItem('active_token', data.token);
-                        localStorage.setItem('active_user', JSON.stringify(data.user));
-                        setTimeout(() => {
-                            window.location.replace('dashboard.html');
-                        }, 1200);
-                    } else {
-                        setTimeout(() => {
-                            window.location.replace('login.html');
-                        }, 1500);
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        showToast('🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> ඔබගේ ගිණුම සාර්ථකව සාදන ලදී. පිවිසෙමින් පවතී...', false);
+                        if (data.token && data.user) {
+                            localStorage.setItem('auth_token', data.token);
+                            localStorage.setItem('active_token', data.token);
+                            localStorage.setItem('active_user', JSON.stringify(data.user));
+                            setTimeout(() => {
+                                window.location.replace('dashboard.html');
+                            }, 1000);
+                            return;
+                        } else {
+                            setTimeout(() => {
+                                window.location.replace('login.html');
+                            }, 1200);
+                            return;
+                        }
+                    } else if (data.error) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
+                        showToast(`❌ <strong>ලියාපදිංචිය අසාර්ථකයි:</strong> ${data.error}`);
+                        return;
                     }
-                } else {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
-                    showToast(`❌ <strong>ලියාපදිංචිය අසාර්ථකයි:</strong> ${data.error || 'දෝෂයක් සිදුවිය. කරුණාකර නැවත උත්සාහ කරන්න.'}`);
                 }
             } catch (err) {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<span>🚀 නොමිලේ ගිණුම සාදන්න (Create Free Account)</span>';
-                showToast(`❌ <strong>සම්බන්ධතා දෝෂයකි:</strong> ${err.message}`);
+                console.log('Backend API offline, registering to local database.');
             }
+
+            // 3. Fallback: Save to Local Storage Database
+            const newMember = {
+                id: 'user-' + Date.now(),
+                username: payload.username,
+                full_name: payload.fullName,
+                name: payload.fullName,
+                email: payload.email,
+                mobile: payload.mobile,
+                phone: payload.mobile,
+                password: payload.password,
+                dob: payload.dob,
+                address: payload.address,
+                nic_passport: payload.nicPassport,
+                sponsor_code: payload.sponsorCode || 'NAMOBUDDHAYA',
+                position: payload.position || 'LEFT',
+                account_holder_name: payload.accountHolderName,
+                bank_name: payload.bankName,
+                branch_name: payload.branchName,
+                account_number: payload.accountNumber,
+                role: 'member',
+                status: 'ACTIVE',
+                created_at: new Date().toISOString()
+            };
+
+            regUsers.push(newMember);
+            localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
+
+            const localToken = 'token-member-' + newMember.id;
+            localStorage.setItem('auth_token', localToken);
+            localStorage.setItem('active_token', localToken);
+            localStorage.setItem('active_user', JSON.stringify(newMember));
+
+            showToast('🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ' + newMember.full_name + '!', false);
+            setTimeout(() => {
+                window.location.replace('dashboard.html');
+            }, 1000);
         });
     </script>
 </body>

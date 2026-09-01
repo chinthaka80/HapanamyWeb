@@ -336,6 +336,35 @@
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ පරීක්ෂා කරමින්... (Verifying)</span>';
 
+            // 1. Root Administrator Direct Auth
+            const cleanId = identifier.toUpperCase();
+            if ((cleanId === 'NAMOBUDDHAYA' || identifier.toLowerCase() === 'admin@hapanamy.lk')) {
+                if (password === 'Hapana20260808') {
+                    const rootUser = {
+                        id: 'user-namobuddhaya-root',
+                        username: 'NAMOBUDDHAYA',
+                        full_name: 'NAMOBUDDHAYA',
+                        email: 'admin@hapanamy.lk',
+                        role: 'admin',
+                        status: 'ACTIVE'
+                    };
+                    localStorage.setItem('auth_token', 'token-namobuddhaya-root');
+                    localStorage.setItem('active_token', 'token-namobuddhaya-root');
+                    localStorage.setItem('active_user', JSON.stringify(rootUser));
+                    showToast('👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු NAMOBUDDHAYA!', false);
+                    setTimeout(() => {
+                        window.location.replace('dashboard.html');
+                    }, 800);
+                    return;
+                } else {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                    return;
+                }
+            }
+
+            // 2. Try Backend API
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
@@ -343,30 +372,59 @@
                     body: JSON.stringify({ identifier, password })
                 });
 
-                const data = await response.json();
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        localStorage.setItem('auth_token', data.token);
+                        localStorage.setItem('active_token', data.token);
+                        localStorage.setItem('active_user', JSON.stringify(data.user));
 
-                if (response.ok && data.success) {
-                    localStorage.setItem('auth_token', data.token);
-                    localStorage.setItem('active_token', data.token);
-                    localStorage.setItem('active_user', JSON.stringify(data.user));
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
+                        const targetUrl = data.redirect_url || (data.user.role === 'admin' || data.user.role === 'ADMIN' ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html');
+                        setTimeout(() => {
+                            window.location.replace(targetUrl);
+                        }, 800);
+                        return;
+                    } else if (data.error) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                        showToast(`❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> ${data.error}`);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log('Backend API offline, falling back to local database.');
+            }
 
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
+            // 3. Fallback to Local Storage Registered Users
+            const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            const matched = regUsers.find(u => 
+                (u.email && u.email.toLowerCase() === identifier.toLowerCase()) || 
+                (u.username && u.username.toLowerCase() === identifier.toLowerCase())
+            );
 
-                    const targetUrl = data.redirect_url || (data.user.role === 'admin' || data.user.role === 'ADMIN' ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html');
-
+            if (matched) {
+                if (matched.password === password) {
+                    localStorage.setItem('auth_token', 'token-member-' + (matched.id || Date.now()));
+                    localStorage.setItem('active_token', 'token-member-' + (matched.id || Date.now()));
+                    localStorage.setItem('active_user', JSON.stringify(matched));
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
                     setTimeout(() => {
-                        window.location.replace(targetUrl);
-                    }, 1000);
+                        window.location.replace('dashboard.html');
+                    }, 800);
+                    return;
                 } else {
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
-                    showToast(`❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> ${data.error || 'විස්තර වැරදියි. කරුණාකර නැවත උත්සාහ කරන්න.'}`);
+                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                    return;
                 }
-            } catch (err) {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
-                showToast(`❌ <strong>සම්බන්ධතා දෝෂයකි:</strong> ${err.message}`);
             }
+
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+            showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> පරිශීලක නාමය හෝ මුරපදය වැරදියි. කරුණාකර නැවත උත්සාහ කරන්න.');
         });
     </script>
 </body>
