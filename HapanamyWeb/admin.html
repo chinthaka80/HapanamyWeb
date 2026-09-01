@@ -981,25 +981,11 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><strong>NamoBudhdhaya</strong></td>
-                                        <td>Affiliate & Student</td>
-                                        <td>4 Members</td>
-                                        <td>12 Sales</td>
-                                        <td><span class="badge-status paid">Active</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Kasun Tharaka</strong></td>
-                                        <td>Affiliate & Student</td>
-                                        <td>2 Members</td>
-                                        <td>3 Sales</td>
-                                        <td><span class="badge-status paid">Active</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Kavinda Perera</strong></td>
-                                        <td>Student</td>
+                                        <td><strong>Hiru</strong></td>
+                                        <td>Active Member / Affiliate</td>
                                         <td>0 Members</td>
                                         <td>0 Sales</td>
-                                        <td><span class="badge-status pending">Inactive</span></td>
+                                        <td><span class="badge-status paid">Active</span></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1241,14 +1227,24 @@
                 return;
             }
 
-            // Mock transactional database
-            const txnDatabase = [
-                { id: 'TXN-WD-8291-K4A7', type: 'Withdrawal Payout', amount: 'රු. 15,000.00', party: 'නිපුන් රණසිංහ', status: 'Paid & Completed', date: '2026-08-01', details: 'HNB Bank Transfer paid successfully.' },
-                { id: 'TXN-WD-5542-G9E2', type: 'Withdrawal Payout', amount: 'රු. 45,000.00', party: 'කසුන් තාරක', status: 'Pending Approval', date: '2026-08-04', details: 'Commercial Bank payout request pending approval.' },
-                { id: 'TXN-DEP-8422-X7Y9', type: 'Direct Bank Deposit', amount: 'රු. 19,900.00', party: 'රුවන් කුමාර (ruwan@gmail.com)', status: 'Pending Slip Verification', date: '2026-08-04', details: 'HNB Bank Transfer slip uploaded.' },
-                { id: 'TXN-DEP-10432', type: 'Course Sale', amount: 'රු. 7,920.00', party: 'Kasun Tharaka (student@hapanamy.lk)', status: 'Paid & Active', date: '2026-08-04', details: 'Direct checkout using Bank Deposit.' },
-                { id: 'TXN-DEP-10431', type: 'Course Sale', amount: 'රු. 3,992.00', party: 'Kavinda Perera (kavinda@gmail.com)', status: 'Paid & Active', date: '2026-08-04', details: 'Direct checkout using Credit Card.' }
-            ];
+            // Dynamic transactional database from live storage
+            const txnDatabase = [];
+
+            // Read live dynamic bank slips / course sales
+            const slips = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            slips.forEach(item => {
+                if (item.txnCode || item.orderId) {
+                    txnDatabase.push({
+                        id: item.txnCode || item.orderId,
+                        type: 'Course Sale / Deposit',
+                        amount: 'රු. ' + (item.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2}),
+                        party: (item.userName || 'Member') + ' (' + (item.email || '') + ')',
+                        status: item.status || 'Active',
+                        date: item.date || new Date().toISOString().split('T')[0],
+                        details: 'Course: ' + (item.course || '')
+                    });
+                }
+            });
 
             // Read live dynamic payout requests queue
             const list = JSON.parse(localStorage.getItem('payout_requests_queue')) || [];
@@ -1706,9 +1702,12 @@
                 }
             });
 
-            document.getElementById('reportPeriodSales').textContent = 'රු. ' + Math.round(totalSales).toLocaleString();
-            document.getElementById('reportPeriodComm').textContent = 'රු. ' + totalComm.toFixed(2).toLocaleString();
-            document.getElementById('reportPeriodNet').textContent = 'රු. ' + Math.round(totalSales - totalComm).toLocaleString();
+            const repSalesEl = document.getElementById('reportPeriodSales');
+            const repCommEl = document.getElementById('reportPeriodComm');
+            const repNetEl = document.getElementById('reportPeriodNet');
+            if (repSalesEl) repSalesEl.textContent = totalSales > 0 ? 'රු. ' + Math.round(totalSales).toLocaleString() : 'රු. 0.00';
+            if (repCommEl) repCommEl.textContent = totalComm > 0 ? 'රු. ' + totalComm.toFixed(2).toLocaleString() : 'රු. 0.00';
+            if (repNetEl) repNetEl.textContent = (totalSales - totalComm) > 0 ? 'රු. ' + Math.round(totalSales - totalComm).toLocaleString() : 'රු. 0.00';
         }
 
         // Export Report to CSV
