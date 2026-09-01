@@ -805,16 +805,19 @@
             </ul>
 
             <div class="sidebar-user-pill" onclick="switchMemberTab('overview')">
-                <div class="sidebar-avatar" id="sidebarAvatar">K</div>
+                <div class="sidebar-avatar" id="sidebarAvatar">N</div>
                 <div style="overflow: hidden;">
-                    <h5 style="font-size: 13.5px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" id="sidebarName">Kasun Tharaka</h5>
-                    <p style="font-size: 11px; color: #94A3B8;" id="sidebarUsername">@sponsor1</p>
+                    <h5 style="font-size: 13.5px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" id="sidebarName">NAMOBUDDHAYA</h5>
+                    <p style="font-size: 11px; color: #94A3B8;" id="sidebarUsername">@NAMOBUDDHAYA</p>
                 </div>
             </div>
 
-            <div style="margin-top: 14px; display: flex; gap: 8px;">
-                <a href="index.html" class="btn-action-sm" style="flex: 1; justify-content: center; background: rgba(255,255,255,0.05); color: #FFF; border: 1px solid rgba(255,255,255,0.1);">🏠 Home</a>
-                <button onclick="logoutMember()" class="btn-action-sm" style="background: rgba(239,83,80,0.15); color: #EF5350; border: 1px solid rgba(239,83,80,0.3);">🚪 Exit</button>
+            <div style="margin-top: 14px; display: flex; flex-direction: column; gap: 8px;">
+                <a id="sidebarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; justify-content: center; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Portal</a>
+                <div style="display: flex; gap: 8px;">
+                    <a href="index.html" class="btn-action-sm" style="flex: 1; justify-content: center; background: rgba(255,255,255,0.05); color: #FFF; border: 1px solid rgba(255,255,255,0.1);">🏠 Home</a>
+                    <button onclick="logoutMember()" class="btn-action-sm" style="background: rgba(239,83,80,0.15); color: #EF5350; border: 1px solid rgba(239,83,80,0.3);">🚪 Exit</button>
+                </div>
             </div>
         </aside>
 
@@ -829,6 +832,7 @@
                 </div>
 
                 <div class="member-topbar-controls">
+                    <a id="topbarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Panel</a>
                     <button class="btn-action-sm" onclick="toggleDashboardTheme()" id="themeToggleBtn">🌓 Theme</button>
                     <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 Withdraw (මුදල් ලබාගන්න)</button>
                 </div>
@@ -840,9 +844,9 @@
                 <!-- 1. PROFILE SECTION BANNER -->
                 <section class="profile-banner">
                     <div class="profile-meta-group">
-                        <div class="profile-avatar-large" id="profileAvatarBig">K</div>
+                        <div class="profile-avatar-large" id="profileAvatarBig">N</div>
                         <div>
-                            <h2 class="profile-name-title" id="profileFullName">Kasun Tharaka</h2>
+                            <h2 class="profile-name-title" id="profileFullName">NAMOBUDDHAYA</h2>
                             <div class="profile-sub-badges">
                                 <span class="badge-pill badge-active" id="profileAccountStatus">● ACTIVE</span>
                                 <span class="badge-pill badge-qualified" id="profileQualStatus">★ QUALIFIED</span>
@@ -853,7 +857,7 @@
 
                     <div class="profile-id-box">
                         <div class="profile-id-label">Member ID & Username</div>
-                        <div class="profile-id-val" id="profileUsernameDisplay">@sponsor1 (<span id="profileUserId">sponsor-uuid-1</span>)</div>
+                        <div class="profile-id-val" id="profileUsernameDisplay">@NAMOBUDDHAYA (<span id="profileUserId">user-namobuddhaya-root</span>)</div>
                     </div>
                 </section>
 
@@ -1433,6 +1437,15 @@
 
         // Live API Data Fetching with Graceful Fallback
         async function loadLiveDashboard() {
+            // Check local active user first for instant UI response
+            try {
+                const localUserStr = localStorage.getItem('active_user');
+                if (localUserStr) {
+                    const localUser = JSON.parse(localUserStr);
+                    applyLocalUserProfile(localUser);
+                }
+            } catch (e) {}
+
             const token = localStorage.getItem('auth_token');
             try {
                 const res = await fetch('/api/member/dashboard', {
@@ -1440,14 +1453,54 @@
                 });
 
                 if (res.ok) {
-                    const data = await res.json();
-                    if (data && data.profile) {
-                        applyDashboardData(data);
-                        return;
+                    const contentType = res.headers.get('content-type') || '';
+                    if (contentType.includes('application/json')) {
+                        const data = await res.json();
+                        if (data && data.profile) {
+                            applyDashboardData(data);
+                            return;
+                        }
                     }
                 }
             } catch (err) {
                 console.log('Live API fallback active, using seeded member dataset.');
+            }
+        }
+
+        function applyLocalUserProfile(user) {
+            if (!user) return;
+            const uName = user.full_name || user.name || user.username || 'NAMOBUDDHAYA';
+            const uHandle = user.username || 'NAMOBUDDHAYA';
+            const uId = user.id || 'user-namobuddhaya-root';
+            const initial = (uName || 'N')[0].toUpperCase();
+
+            document.getElementById('profileFullName').textContent = uName;
+            document.getElementById('sidebarName').textContent = uName;
+            document.getElementById('profileUsernameDisplay').innerHTML = `@${uHandle} (<span>${uId}</span>)`;
+            document.getElementById('sidebarUsername').textContent = `@${uHandle}`;
+            document.getElementById('profileAvatarBig').textContent = initial;
+            document.getElementById('sidebarAvatar').textContent = initial;
+
+            const baseOrigin = window.location.origin;
+            const leftL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=left`;
+            const rightL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=right`;
+            const genL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}`;
+
+            if (document.getElementById('leftRefLinkInput')) document.getElementById('leftRefLinkInput').value = leftL;
+            if (document.getElementById('tabLeftRefLink')) document.getElementById('tabLeftRefLink').value = leftL;
+            if (document.getElementById('rightRefLinkInput')) document.getElementById('rightRefLinkInput').value = rightL;
+            if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = rightL;
+            if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = genL;
+
+            if (document.getElementById('treeRootName')) document.getElementById('treeRootName').textContent = uName;
+            if (document.getElementById('treeRootUser')) document.getElementById('treeRootUser').textContent = `@${uHandle}`;
+
+            // Show Admin Portal Button if admin
+            if (user.role === 'admin' || user.role === 'ADMIN') {
+                const sBtn = document.getElementById('sidebarAdminBtn');
+                const tBtn = document.getElementById('topbarAdminBtn');
+                if (sBtn) sBtn.style.display = 'flex';
+                if (tBtn) tBtn.style.display = 'inline-flex';
             }
         }
 
