@@ -336,11 +336,19 @@
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ පරීක්ෂා කරමින්... (Verifying)</span>';
 
-            // 1. Root Administrator Direct Auth
+            // 1. Root Administrator Direct Auth (Hiru & NAMOBUDDHAYA)
             const cleanId = identifier.toUpperCase();
-            if ((cleanId === 'NAMOBUDDHAYA' || identifier.toLowerCase() === 'admin@hapanamy.lk')) {
+            if (cleanId === 'HIRU' || identifier.toLowerCase() === 'hiru@hapanamy.lk' || cleanId === 'NAMOBUDDHAYA' || identifier.toLowerCase() === 'admin@hapanamy.lk') {
                 if (password === 'Hapana20260808') {
-                    const rootUser = {
+                    const isHiru = (cleanId === 'HIRU' || identifier.toLowerCase() === 'hiru@hapanamy.lk');
+                    const rootUser = isHiru ? {
+                        id: 'user-hiru-root',
+                        username: 'Hiru',
+                        full_name: 'Hiru',
+                        email: 'hiru@hapanamy.lk',
+                        role: 'admin',
+                        status: 'ACTIVE'
+                    } : {
                         id: 'user-namobuddhaya-root',
                         username: 'NAMOBUDDHAYA',
                         full_name: 'NAMOBUDDHAYA',
@@ -348,10 +356,11 @@
                         role: 'admin',
                         status: 'ACTIVE'
                     };
-                    localStorage.setItem('auth_token', 'token-namobuddhaya-root');
-                    localStorage.setItem('active_token', 'token-namobuddhaya-root');
+                    const tokenKey = isHiru ? 'token-hiru-root' : 'token-namobuddhaya-root';
+                    localStorage.setItem('auth_token', tokenKey);
+                    localStorage.setItem('active_token', tokenKey);
                     localStorage.setItem('active_user', JSON.stringify(rootUser));
-                    showToast('👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!', false);
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${rootUser.full_name}!`, false);
                     setTimeout(() => {
                         window.location.replace('hapanamy-admin-portal-9226.html');
                     }, 800);

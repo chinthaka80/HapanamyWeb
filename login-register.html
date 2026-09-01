@@ -609,10 +609,20 @@
                     console.log('Falling back to local auth mode...');
                 }
                 
-                // Enforce root user credentials check
-                if (email.toUpperCase() === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
+                // Enforce root user credentials check (Hiru & NAMOBUDDHAYA)
+                const cleanLogin = email.toUpperCase();
+                if (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk' || cleanLogin === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
                     if (password === 'Hapana20260808') {
-                        const rootUser = {
+                        const isHiru = (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk');
+                        const rootUser = isHiru ? {
+                            id: 'user-hiru-root',
+                            username: 'Hiru',
+                            full_name: 'Hiru',
+                            name: 'Hiru',
+                            email: 'hiru@hapanamy.lk',
+                            role: 'admin',
+                            status: 'ACTIVE'
+                        } : {
                             id: 'user-namobuddhaya-root',
                             username: 'NAMOBUDDHAYA',
                             full_name: 'NAMOBUDDHAYA',
@@ -621,14 +631,15 @@
                             role: 'admin',
                             status: 'ACTIVE'
                         };
-                        localStorage.setItem('auth_token', 'token-namobuddhaya-root');
-                        localStorage.setItem('active_token', 'token-namobuddhaya-root');
+                        const tokenKey = isHiru ? 'token-hiru-root' : 'token-namobuddhaya-root';
+                        localStorage.setItem('auth_token', tokenKey);
+                        localStorage.setItem('active_token', tokenKey);
                         localStorage.setItem('active_user', JSON.stringify(rootUser));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify(rootUser));
                         
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු NAMOBUDDHAYA!`);
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${rootUser.full_name}!`);
                         setTimeout(() => {
-                            window.location.href = 'dashboard.html';
+                            window.location.href = 'hapanamy-admin-portal-9226.html';
                         }, 1000);
                     } else {
                         showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);

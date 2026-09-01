@@ -105,6 +105,18 @@ const mockPaymentDeposits = [];
 
 const mockUsers = [
     { 
+        id: 'user-hiru-root', 
+        username: 'Hiru', 
+        full_name: 'Hiru', 
+        email: 'hiru@hapanamy.lk', 
+        role: 'admin', 
+        status: 'ACTIVE', 
+        referral_code: 'Hiru',
+        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
+        password: 'Hapana20260808',
+        created_at: '2026-09-01T00:00:00Z' 
+    },
+    { 
         id: 'user-namobuddhaya-root', 
         username: 'NAMOBUDDHAYA', 
         full_name: 'NAMOBUDDHAYA', 
@@ -124,8 +136,8 @@ const mockRefundRequests = [];
 const mockVolumeLedger = [];
 const mockBinaryNodes = [
     { 
-        id: 'node-namobuddhaya-root', 
-        user_id: 'user-namobuddhaya-root', 
+        id: 'node-hiru-root', 
+        user_id: 'user-hiru-root', 
         placement_parent_id: null, 
         position: null, 
         depth: 1, 
@@ -778,7 +790,7 @@ const server = http.createServer(async (req, res) => {
         const queryParams = parseQueryParams(req.url);
         const targetUserId = (authUser && authUser.role === 'admin' && queryParams.userId) 
             ? queryParams.userId 
-            : (authUser ? authUser.id : (queryParams.userId || 'user-namobuddhaya-root'));
+            : (authUser ? authUser.id : (queryParams.userId || 'user-hiru-root'));
 
         const maxDepth = parseInt(queryParams.depth || 4);
         const treeHierarchy = PlacementEngine.buildTreeHierarchy(
