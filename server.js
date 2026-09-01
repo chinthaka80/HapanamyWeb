@@ -17,6 +17,8 @@ const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commi
 const ProductSnapshotService = require('./services/product-snapshot-service');
 const ReferralService = require('./services/referral-service');
 const QualificationEngine = require('./services/qualification-engine');
+const MemberDashboardService = require('./services/member-dashboard-service');
+const AdminDashboardService = require('./services/admin-dashboard-service');
 
 const PORT = 3000;
 
@@ -35,9 +37,17 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
-// Mock Databases for Phase 3/4/5/8/11/12/13
-const mockKycDocs = [];
-const mockBankAccounts = [];
+// Mock Databases for Phase 3/4/5/8/11/12/13/26/27
+const mockWallets = [];
+const mockReferralIntents = [];
+const mockKycDocs = [
+    { id: 'kyc-1', user_id: 'sponsor-uuid-1', id_type: 'NIC', id_number: '199512345678', full_name: 'Kasun Tharaka', status: 'APPROVED', created_at: '2026-08-01T10:00:00Z' },
+    { id: 'kyc-2', user_id: 'nimal-uuid-2', id_type: 'NIC', id_number: '199487654321', full_name: 'Nimal Silva', status: 'APPROVED', created_at: '2026-08-05T10:00:00Z' },
+    { id: 'kyc-3', user_id: 'sunil-uuid-3', id_type: 'NIC', id_number: '199611223344', full_name: 'Sunil Kumar', status: 'APPROVED', created_at: '2026-08-10T10:00:00Z' }
+];
+const mockBankAccounts = [
+    { user_id: 'sponsor-uuid-1', bank_name: 'Commercial Bank', branch: 'Maharagama', account_number: '8010294851', account_holder_name: 'Kasun Tharaka' }
+];
 const mockAuditLogs = [];
 
 const mockProducts = [
@@ -54,29 +64,83 @@ const mockProducts = [
         image_url: 'assets/fb-mon.jpg',
         course_url: 'https://hapanamy.lk/courses/fb-mon',
         status: 'ACTIVE'
+    },
+    {
+        id: 'prod-social-master',
+        name: 'Social Media Income Masterclass',
+        code: 'SOC-MASTER',
+        description: 'Complete digital agency & high-income skills blueprint.',
+        category: 'Income Masterclass',
+        price: 27500.00,
+        binary_volume: 27500.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 6.00,
+        image_url: 'assets/social_media_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/soc-master',
+        status: 'ACTIVE'
     }
 ];
-const mockProductPurchases = [];
-const mockPaymentDeposits = [];
+
+const mockProductSnapshots = [
+    {
+        id: 'snap-soc-1',
+        product_id: 'prod-social-master',
+        product_name: 'Social Media Income Masterclass',
+        selling_price: 27500.00,
+        product_cost: 2500.00,
+        binary_volume: 27500.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 6.00,
+        max_binary_qualified_levels: 7,
+        created_at: '2026-08-01T08:00:00Z'
+    }
+];
+
+const mockProductPurchases = [
+    { id: 'purch-sp1-01', user_id: 'sponsor-uuid-1', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-01T10:00:00Z' },
+    { id: 'purch-nim-01', user_id: 'nimal-uuid-2', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-05T12:00:00Z' },
+    { id: 'purch-sun-01', user_id: 'sunil-uuid-3', product_id: 'prod-social-master', product_name: 'Social Media Income Masterclass', selling_price: 27500.00, economics_snapshot: mockProductSnapshots[0], status: 'ACTIVE', created_at: '2026-08-10T14:00:00Z' }
+];
+const mockPaymentDeposits = [
+    { id: 'dep-101', user_id: 'sponsor-uuid-1', product_id: 'prod-social-master', amount: 27500.00, transfer_reference: 'SLIP-89210', slip_file_hash: 'hash-89210-abc', status: 'APPROVED', created_at: '2026-08-01T09:30:00Z' }
+];
 
 const mockUsers = [
-    { id: 'admin-uuid-123', username: 'admin', full_name: 'Administrator Hapanamy', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE' },
-    { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'kasun@hapanamy.lk', role: 'member', status: 'ACTIVE' }
+    { id: 'admin-uuid-123', username: 'admin', full_name: 'Administrator Hapanamy', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE', created_at: '2026-07-01T00:00:00Z' },
+    { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'kasun@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'sponsor1', created_at: '2026-08-01T08:00:00Z' },
+    { id: 'nimal-uuid-2', username: 'nimal_s', full_name: 'Nimal Silva', email: 'nimal@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'nimal_s', created_at: '2026-08-05T09:00:00Z' },
+    { id: 'sunil-uuid-3', username: 'sunil_k', full_name: 'Sunil Kumar', email: 'sunil@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'sunil_k', created_at: '2026-08-10T11:00:00Z' },
+    { id: 'amara-uuid-4', username: 'amara_j', full_name: 'Amara Jayawardena', email: 'amara@hapanamy.lk', role: 'member', status: 'ACTIVE', referral_code: 'amara_j', created_at: '2026-08-15T15:00:00Z' }
 ];
 
-const mockWalletLedger = [];
-const mockWithdrawalRequests = [];
+const mockWalletLedger = [
+    { id: 'tx-seed-1', user_id: 'sponsor-uuid-1', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 0.00, balance_after: 2200.00, status: 'COMPLETED', reference_id: 'purch-nim-01', created_at: '2026-08-05T12:05:00Z' },
+    { id: 'tx-seed-2', user_id: 'sponsor-uuid-1', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 2200.00, balance_after: 4400.00, status: 'COMPLETED', reference_id: 'purch-sun-01', created_at: '2026-08-10T14:05:00Z' },
+    { id: 'tx-seed-3', user_id: 'sponsor-uuid-1', type: 'BINARY_COMMISSION', amount: 1650.00, balance_before: 4400.00, balance_after: 6050.00, status: 'COMPLETED', reference_id: 'purch-sun-01', created_at: '2026-08-10T14:10:00Z' }
+];
+const mockWithdrawalRequests = [
+    { id: 'wd-seed-1', user_id: 'sponsor-uuid-1', amount: 2000.00, bank_name: 'Commercial Bank', account_number: '8010294851', status: 'PAID', bank_transfer_reference: 'CEFT-992104', created_at: '2026-08-20T10:00:00Z', paid_at: '2026-08-20T16:00:00Z' }
+];
 const mockRefundRequests = [];
-const mockVolumeLedger = [];
+const mockVolumeLedger = [
+    { id: 'vol-1', user_id: 'sponsor-uuid-1', leg: 'LEFT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-nim-01', created_at: '2026-08-05T12:00:00Z' },
+    { id: 'vol-2', user_id: 'sponsor-uuid-1', leg: 'LEFT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-nim-01', created_at: '2026-08-15T15:00:00Z' },
+    { id: 'vol-3', user_id: 'sponsor-uuid-1', leg: 'RIGHT', amount: 27500.00, type: 'SALE_VOLUME', purchase_id: 'purch-sun-01', created_at: '2026-08-10T14:00:00Z' }
+];
 const mockBinaryNodes = [
-    { id: 'node-root', user_id: 'admin-uuid-123', placement_parent_id: null, position: null, depth: 1, path: '', left_child_id: 'sponsor-uuid-1', right_child_id: null, created_at: new Date().toISOString() },
-    { id: 'node-sp1', user_id: 'sponsor-uuid-1', placement_parent_id: 'admin-uuid-123', position: 'LEFT', depth: 2, path: 'admin-uuid-123', left_child_id: null, right_child_id: null, created_at: new Date().toISOString() }
+    { id: 'node-root', user_id: 'admin-uuid-123', placement_parent_id: null, position: null, depth: 1, path: '', left_child_id: 'sponsor-uuid-1', right_child_id: null, created_at: '2026-07-01T00:00:00Z' },
+    { id: 'node-sp1', user_id: 'sponsor-uuid-1', placement_parent_id: 'admin-uuid-123', position: 'LEFT', depth: 2, path: 'admin-uuid-123', left_child_id: 'nimal-uuid-2', right_child_id: 'sunil-uuid-3', created_at: '2026-08-01T08:00:00Z' },
+    { id: 'node-nim', user_id: 'nimal-uuid-2', placement_parent_id: 'sponsor-uuid-1', position: 'LEFT', depth: 3, path: 'admin-uuid-123/sponsor-uuid-1', left_child_id: 'amara-uuid-4', right_child_id: null, created_at: '2026-08-05T09:00:00Z' },
+    { id: 'node-sun', user_id: 'sunil-uuid-3', placement_parent_id: 'sponsor-uuid-1', position: 'RIGHT', depth: 3, path: 'admin-uuid-123/sponsor-uuid-1', left_child_id: null, right_child_id: null, created_at: '2026-08-10T11:00:00Z' },
+    { id: 'node-ama', user_id: 'amara-uuid-4', placement_parent_id: 'nimal-uuid-2', position: 'LEFT', depth: 4, path: 'admin-uuid-123/sponsor-uuid-1/nimal-uuid-2', left_child_id: null, right_child_id: null, created_at: '2026-08-15T15:00:00Z' }
 ];
 const mockFraudAlerts = [];
-const mockProductSnapshots = [];
 const mockCommissionTransactions = [];
 const mockSponsors = [
-    { user_id: 'sponsor-uuid-1', sponsor_id: 'admin-uuid-123', created_at: new Date().toISOString() }
+    { user_id: 'sponsor-uuid-1', sponsor_id: 'admin-uuid-123', created_at: '2026-08-01T08:00:00Z' },
+    { user_id: 'nimal-uuid-2', sponsor_id: 'sponsor-uuid-1', created_at: '2026-08-05T09:00:00Z' },
+    { user_id: 'sunil-uuid-3', sponsor_id: 'sponsor-uuid-1', created_at: '2026-08-10T11:00:00Z' },
+    { user_id: 'amara-uuid-4', sponsor_id: 'nimal-uuid-2', created_at: '2026-08-15T15:00:00Z' }
 ];
 const mockReferralClicks = [];
 const mockReferralConversions = [];
@@ -187,19 +251,40 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        const adminEmail = 'admin@hapanamy.lk';
-        if (email === adminEmail && password === 'Araliya321#') {
+        const normalizedEmail = (email || '').toLowerCase().trim();
+        const foundUser = mockUsers.find(u => 
+            (u.email && u.email.toLowerCase() === normalizedEmail) || 
+            (u.username && u.username.toLowerCase() === normalizedEmail)
+        );
+
+        if (foundUser && (password === 'Araliya321#' || (foundUser.password_hash && AuthService.verifyPassword(password, foundUser.password_hash)) || password === foundUser.password)) {
             const token = AuthService.generateToken();
-            activeSessions.set(token, { email, role: 'admin', id: 'admin-uuid-123' });
-            sendJSON(res, 200, { success: true, token, user: { email, role: 'admin' } });
+            activeSessions.set(token, {
+                id: foundUser.id,
+                username: foundUser.username,
+                full_name: foundUser.full_name,
+                email: foundUser.email,
+                role: foundUser.role || 'member'
+            });
+            sendJSON(res, 200, {
+                success: true,
+                token,
+                user: {
+                    id: foundUser.id,
+                    username: foundUser.username,
+                    full_name: foundUser.full_name,
+                    email: foundUser.email,
+                    role: foundUser.role || 'member'
+                }
+            });
             return;
         }
 
-        // Student Mock Login
-        if (email === 'member@hapanamy.lk' && password === 'Araliya321#') {
+        // Student/Member Mock Fallback
+        if ((normalizedEmail === 'member@hapanamy.lk' || normalizedEmail === 'member') && password === 'Araliya321#') {
             const token = AuthService.generateToken();
-            activeSessions.set(token, { email, role: 'member', id: 'member-uuid-100' });
-            sendJSON(res, 200, { success: true, token, user: { email, role: 'member' } });
+            activeSessions.set(token, { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'member@hapanamy.lk', role: 'member' });
+            sendJSON(res, 200, { success: true, token, user: { id: 'sponsor-uuid-1', username: 'sponsor1', full_name: 'Kasun Tharaka', email: 'member@hapanamy.lk', role: 'member' } });
             return;
         }
 
@@ -1476,6 +1561,75 @@ const server = http.createServer(async (req, res) => {
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'refund_requests', refundId);
 
         sendJSON(res, 200, { success: true, message: `Refund request updated to ${action}.` });
+        return;
+    }
+
+    // ========================================================
+    // MEMBER DASHBOARD API ROUTER (STEP 26)
+    // ========================================================
+
+    // GET /api/member/dashboard
+    if (req.method === 'GET' && pathname === '/api/member/dashboard') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const dashboardData = MemberDashboardService.getMemberDashboardData({
+                userId: authUser.id,
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                walletLedger: mockWalletLedger,
+                volumeLedger: mockVolumeLedger,
+                withdrawals: mockWithdrawalRequests,
+                paymentSubmissions: mockPaymentDeposits,
+                baseUrl: `http://${req.headers.host || 'localhost:3000'}`
+            });
+
+            sendJSON(res, 200, dashboardData);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // ========================================================
+    // ADMIN MLM OPERATIONS DASHBOARD API ROUTER (STEP 27)
+    // ========================================================
+
+    // GET /api/admin/dashboard
+    if (req.method === 'GET' && pathname === '/api/admin/dashboard') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        try {
+            const adminData = AdminDashboardService.getAdminDashboardData({
+                requestingUser: authUser,
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                walletLedger: mockWalletLedger,
+                volumeLedger: mockVolumeLedger,
+                withdrawals: mockWithdrawalRequests,
+                paymentSubmissions: mockPaymentDeposits,
+                refundRequests: mockRefundRequests,
+                targetDate: new Date()
+            });
+
+            sendJSON(res, 200, adminData);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
         return;
     }
 
