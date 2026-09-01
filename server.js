@@ -186,6 +186,56 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /api/health (System Health & Readiness Inspection)
+    if (req.method === 'GET' && (pathname === '/api/health' || pathname === '/api/db/health')) {
+        const isProduction = process.env.NODE_ENV === 'production';
+        const hasDbUrl = Boolean(process.env.DATABASE_URL);
+        const hasSmtp = Boolean(process.env.SMTP_HOST && process.env.SMTP_USER);
+
+        sendJSON(res, 200, {
+            status: 'HEALTHY',
+            timestamp: new Date().toISOString(),
+            application: 'HAPANAMY.LK MLM PLATFORM',
+            environment: process.env.NODE_ENV || 'development',
+            uptime_seconds: Math.floor(process.uptime()),
+            checks: {
+                database: {
+                    configured: hasDbUrl,
+                    mode: isProduction ? (hasDbUrl ? 'CLOUD_POSTGRESQL' : 'FAIL_CLOSED') : 'DEV_MEMORY_TEST_HARNESS',
+                    fail_closed_enforced: isProduction && !hasDbUrl
+                },
+                smtp: {
+                    configured: hasSmtp,
+                    status: hasSmtp ? 'CONFIGURED' : 'NOT_CONFIGURED'
+                },
+                business_rules: {
+                    registration_fee: 'FREE (Rs. 0)',
+                    direct_commission_percent: 8.00,
+                    binary_commission_percent: 7.00,
+                    max_qualified_uplines: 7,
+                    daily_earnings_cap_lkr: 30000.00,
+                    timezone: 'Asia/Colombo'
+                }
+            }
+        });
+        return;
+    }
+
+    // Production Fail-Closed Safety Middleware for Financial Mutations
+    const financialEndpoints = [
+        '/api/purchases',
+        '/api/payments/verify',
+        '/api/withdrawals',
+        '/api/admin/refunds'
+    ];
+    if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL && financialEndpoints.some(ep => pathname.startsWith(ep))) {
+        sendJSON(res, 503, {
+            error: 'FAIL_CLOSED: Production financial operations require a live PostgreSQL DATABASE_URL connection.',
+            code: 'DATABASE_UNAVAILABLE'
+        });
+        return;
+    }
+
     // API Route: Image Upload (Original functionality preserved)
     if (req.method === 'POST' && pathname === '/api/upload') {
         const filename = url.searchParams.get('filename');

@@ -48,6 +48,7 @@ require('./step33-simulation-load-testing.test');
 require('./step34-production-readiness.test');
 require('./e2e-user-journey.test');
 require('./step35-public-auth-foundation.test');
+require('./backup-restore.test');
 
 // Run
 runTests();
