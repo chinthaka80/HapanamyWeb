@@ -261,7 +261,7 @@
 
                     <div class="form-row" style="margin-bottom: 25px;">
                         <label>Cardholder Name</label>
-                        <input type="text" class="form-control" placeholder="KASUN THARAKA" required id="phCardholderName">
+                        <input type="text" class="form-control" placeholder="CARDHOLDER NAME" required id="phCardholderName">
                     </div>
 
                     <button type="submit" class="btn-ph-pay" id="phPayButton">
@@ -276,7 +276,7 @@
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const amount = parseFloat(urlParams.get('amount')) || 0;
-        const name = urlParams.get('name') || 'KASUN THARAKA';
+        const name = urlParams.get('name') || '';
 
         document.getElementById('phAmountText').textContent = amount.toLocaleString();
         document.getElementById('phPayButton').textContent = `Pay LKR ${amount.toLocaleString()}`;

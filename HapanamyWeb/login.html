@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ඇතුල් වන්න (Login)</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        :root {
+            --brand-orange: #F47B20;
+            --brand-gold: #D4AF37;
+            --bg-main: #0B192C;
+            --bg-surface: #102A43;
+            --text-primary: #FFFFFF;
+            --text-secondary: #E2E8F0;
+            --text-muted: #94A3B8;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --transition-smooth: all 0.25s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .auth-bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .auth-shape {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.25;
+        }
+
+        .auth-shape-1 {
+            width: 450px;
+            height: 450px;
+            background: var(--brand-orange);
+            top: -100px;
+            left: -100px;
+        }
+
+        .auth-shape-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--brand-gold);
+            bottom: -80px;
+            right: -80px;
+        }
+
+        .login-card {
+            width: 100%;
+            max-width: 440px;
+            background: rgba(16, 42, 67, 0.75);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 28px;
+            padding: 45px 35px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(244, 123, 32, 0.1);
+            position: relative;
+            z-index: 10;
+        }
+
+        .auth-logo-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-logo-header a {
+            text-decoration: none;
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .auth-logo-img {
+            width: 55px;
+            height: 55px;
+            border-radius: 14px;
+            border: 2px solid var(--brand-gold);
+            object-fit: cover;
+            box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+        }
+
+        .auth-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 12px;
+            margin-bottom: 4px;
+        }
+
+        .auth-subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block !important;
+            position: static !important;
+            transform: none !important;
+            margin-bottom: 8px !important;
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            color: var(--text-secondary) !important;
+            pointer-events: auto !important;
+        }
+
+        .form-input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 13px 18px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: rgba(8, 28, 44, 0.85);
+            color: var(--text-primary);
+            font-size: 14px;
+            font-weight: 600;
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .form-control:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.2);
+            background: rgba(8, 28, 44, 1);
+        }
+
+        .btn-auth-submit {
+            width: 100%;
+            padding: 14px;
+            border-radius: 30px;
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            color: white;
+            border: none;
+            font-weight: 800;
+            font-size: 15px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            box-shadow: 0 8px 25px rgba(244, 123, 32, 0.35);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(244, 123, 32, 0.45);
+        }
+
+        .btn-auth-submit:active {
+            transform: translateY(0);
+        }
+
+        .auth-toast {
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .auth-toast-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #ff7675;
+        }
+
+        .auth-toast-success {
+            background: rgba(34, 197, 94, 0.15);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: #55efc4;
+        }
+
+        .auth-footer {
+            margin-top: 25px;
+            text-align: center;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 20px;
+        }
+
+        .auth-footer a {
+            color: var(--brand-orange);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .auth-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .home-back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            margin-bottom: 18px;
+            transition: color 0.2s ease;
+        }
+
+        .home-back-link:hover {
+            color: var(--brand-gold);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-bg-shapes">
+        <div class="auth-shape auth-shape-1"></div>
+        <div class="auth-shape auth-shape-2"></div>
+    </div>
+
+    <div class="login-card">
+        <a href="index.html" class="home-back-link">
+            ← ආපසු මුල් පිටුවට (Back to Home)
+        </a>
+
+        <div class="auth-logo-header">
+            <a href="index.html">
+                <img src="assets/logo.jpg" alt="Hapanamy Logo" class="auth-logo-img">
+                <h1 class="auth-title">සාදරයෙන් පිළිගනිමු!</h1>
+                <p class="auth-subtitle">Hapanamy Portal වෙත පිවිසීමට ඔබගේ විස්තර ඇතුළත් කරන්න.</p>
+            </a>
+        </div>
+
+        <div id="authToast" class="auth-toast"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="identifier">ඊමේල් හෝ පරිශීලක නාමය (Email / Username)</label>
+                <div class="form-input-wrap">
+                    <input type="text" id="identifier" class="form-control" required placeholder="kasun_p හෝ info@hapanamy.lk" autocomplete="username">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>මුරපදය (Password)</span>
+                    <a href="forgot-password.html" style="color: var(--brand-orange); font-size: 12px; text-decoration: none;">මුරපදය අමතකද?</a>
+                </label>
+                <div class="form-input-wrap">
+                    <input type="password" id="password" class="form-control" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+            </div>
+
+            <button type="submit" id="btnSubmit" class="btn-auth-submit">
+                <span>🔐 පිවිසෙන්න (Login)</span>
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <span>නව සාමාජිකයෙක්ද?</span>
+            <a href="register.html">නොමිලේ ලියාපදිංචි වන්න (Register Free)</a>
+        </div>
+    </div>
+
+    <script>
+        const toast = document.getElementById('authToast');
+        const loginForm = document.getElementById('loginForm');
+        const btnSubmit = document.getElementById('btnSubmit');
+
+        function showToast(msg, isError = true) {
+            toast.className = `auth-toast ${isError ? 'auth-toast-error' : 'auth-toast-success'}`;
+            toast.innerHTML = msg;
+            toast.style.display = 'block';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            toast.style.display = 'none';
+
+            const identifier = document.getElementById('identifier').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (!identifier || !password) {
+                showToast('⚠️ කරුණාකර ඔබගේ ඊමේල්/පරිශීලක නාමය සහ මුරපදය ඇතුළත් කරන්න.');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '<span>⏳ පරීක්ෂා කරමින්... (Verifying)</span>';
+
+            // 1. First Production Member (Hiru)
+            const cleanId = identifier.toUpperCase();
+            if (cleanId === 'HIRU' || identifier.toLowerCase() === 'hiru@hapanamy.lk') {
+                if (password === 'Hapana20260808') {
+                    const memberUser = {
+                        id: 'user-hiru',
+                        username: 'Hiru',
+                        full_name: 'Hiru',
+                        name: 'Hiru',
+                        email: 'hiru@hapanamy.lk',
+                        role: 'member',
+                        status: 'ACTIVE'
+                    };
+                    localStorage.setItem('auth_token', 'token-hiru-member');
+                    localStorage.setItem('active_token', 'token-hiru-member');
+                    localStorage.setItem('active_user', JSON.stringify(memberUser));
+                    localStorage.setItem('hapanamy_user_profile', JSON.stringify(memberUser));
+                    showToast('👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Hiru!', false);
+                    setTimeout(() => {
+                        window.location.replace('dashboard.html');
+                    }, 800);
+                    return;
+                } else {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                    return;
+                }
+            }
+
+            // 2. Root Administrator Direct Auth (NAMOBUDDHAYA)
+            if (cleanId === 'NAMOBUDDHAYA' || identifier.toLowerCase() === 'admin@hapanamy.lk') {
+                if (password === 'Hapana20260808') {
+                    const rootUser = {
+                        id: 'user-namobuddhaya-root',
+                        username: 'NAMOBUDDHAYA',
+                        full_name: 'NAMOBUDDHAYA',
+                        email: 'admin@hapanamy.lk',
+                        role: 'admin',
+                        status: 'ACTIVE'
+                    };
+                    localStorage.setItem('auth_token', 'token-namobuddhaya-root');
+                    localStorage.setItem('active_token', 'token-namobuddhaya-root');
+                    localStorage.setItem('active_user', JSON.stringify(rootUser));
+                    showToast('👑 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!', false);
+                    setTimeout(() => {
+                        window.location.replace('hapanamy-admin-portal-9226.html');
+                    }, 800);
+                    return;
+                } else {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                    return;
+                }
+            }
+
+            // 2. Try Backend API
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ identifier, password })
+                });
+
+                const contentType = response.headers.get('content-type') || '';
+                if (contentType.includes('application/json')) {
+                    const data = await response.json();
+                    if (response.ok && data.success) {
+                        localStorage.setItem('auth_token', data.token);
+                        localStorage.setItem('active_token', data.token);
+                        localStorage.setItem('active_user', JSON.stringify(data.user));
+
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
+                        const targetUrl = data.redirect_url || (data.user.role === 'admin' || data.user.role === 'ADMIN' ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html');
+                        setTimeout(() => {
+                            window.location.replace(targetUrl);
+                        }, 800);
+                        return;
+                    } else if (data.error) {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                        showToast(`❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> ${data.error}`);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log('Backend API offline, falling back to local database.');
+            }
+
+            // 3. Fallback to Local Storage Registered Users
+            const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            const matched = regUsers.find(u => 
+                (u.email && u.email.toLowerCase() === identifier.toLowerCase()) || 
+                (u.username && u.username.toLowerCase() === identifier.toLowerCase())
+            );
+
+            if (matched) {
+                if (matched.password === password) {
+                    localStorage.setItem('auth_token', 'token-member-' + (matched.id || Date.now()));
+                    localStorage.setItem('active_token', 'token-member-' + (matched.id || Date.now()));
+                    localStorage.setItem('active_user', JSON.stringify(matched));
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
+                    setTimeout(() => {
+                        window.location.replace('dashboard.html');
+                    }, 800);
+                    return;
+                } else {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                    return;
+                }
+            }
+
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+            showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> පරිශීලක නාමය හෝ මුරපදය වැරදියි. කරුණාකර නැවත උත්සාහ කරන්න.');
+        });
+    </script>
+</body>
+</html>

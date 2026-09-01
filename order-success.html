@@ -306,7 +306,7 @@
         function goToStudentDashboard() {
             // Retrieve purchaser's name from localStorage
             const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
-            const name = billing.name || 'Kasun Tharaka';
+            const name = billing.name || 'Student';
             
             // Clear cart
             localStorage.removeItem('hapanamy_cart');

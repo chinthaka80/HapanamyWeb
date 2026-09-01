@@ -1,0 +1,2887 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | Admin Dashboard</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        /* Modal Overlay & Box Styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2100;
+        }
+        .modal-box {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Specific Admin layout */
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            min-height: 100vh;
+            background-color: var(--bg-main);
+        }
+
+        .admin-sidebar {
+            background-color: #102A43; /* Deep Navy always */
+            color: #FFF9F0;
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid rgba(255, 249, 240, 0.1);
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-left: 10px;
+        }
+
+        .admin-logo img {
+            height: 36px;
+            border-radius: 6px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .admin-logo span {
+            font-size: 20px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .admin-logo span span {
+            color: var(--brand-orange);
+        }
+
+        .admin-nav {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .admin-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14.5px;
+            font-weight: 600;
+            opacity: 0.8;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .admin-nav-link:hover, .admin-nav-link.active {
+            opacity: 1;
+            background-color: rgba(255, 255, 255, 0.08);
+            color: var(--brand-orange);
+        }
+
+        .admin-nav-icon {
+            font-size: 18px;
+        }
+
+        .admin-content-area {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-topbar {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-topbar h1 {
+            font-size: 22px;
+            color: var(--text-primary);
+        }
+
+        .admin-topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .admin-avatar-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .admin-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background-color: var(--brand-orange);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+        }
+
+        .admin-avatar-info h4 {
+            font-size: 13.5px;
+            color: var(--text-primary);
+        }
+
+        .admin-avatar-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .admin-main-content {
+            padding: 40px;
+            flex-grow: 1;
+        }
+
+        .admin-panel {
+            display: none;
+        }
+
+        .admin-panel.active {
+            display: block;
+            animation: fadeIn 0.4s ease;
+        }
+
+        /* Stats grid override */
+        .blog-manager-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: var(--card-shadow);
+            border-bottom: 4px solid var(--brand-gold);
+        }
+
+        .admin-stat-card.orange { border-bottom-color: var(--brand-orange); }
+        .admin-stat-card.green { border-bottom-color: var(--brand-green-light); }
+        .admin-stat-card.navy { border-bottom-color: #102A43; }
+
+        .admin-stat-label {
+            font-size: 13px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .admin-stat-val {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* Custom tables */
+        .admin-table-box {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 30px;
+        }
+
+        .admin-table-title {
+            padding: 20px 24px;
+            font-size: 16px;
+            font-weight: 700;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13.5px;
+        }
+
+        .admin-table th {
+            background-color: rgba(16, 42, 67, 0.03);
+            color: var(--text-muted);
+            font-weight: 700;
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        [data-theme="dark"] .admin-table th {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .admin-table td {
+            padding: 14px 24px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .admin-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .admin-table tr:hover td {
+            background-color: rgba(244, 123, 32, 0.02);
+        }
+
+        .badge-status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-status.pending {
+            background-color: rgba(244, 123, 32, 0.15);
+            color: var(--brand-orange);
+        }
+
+        .badge-status.active, .badge-status.paid {
+            background-color: rgba(185, 231, 105, 0.15);
+            color: #2E7D32;
+        }
+
+        [data-theme="dark"] .badge-status.active, [data-theme="dark"] .badge-status.paid {
+            color: var(--brand-green-light);
+        }
+
+        .btn-table-action {
+            background: none;
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            color: var(--text-primary);
+        }
+
+        .btn-table-action.approve:hover {
+            background-color: var(--brand-orange);
+            border-color: var(--brand-orange);
+            color: white;
+        }
+
+        .btn-table-action.pay:hover {
+            background-color: var(--brand-green-light);
+            border-color: var(--brand-green-light);
+            color: #102A43;
+        }
+
+        /* Config fields inside settings tab */
+        .admin-settings-form {
+            max-width: 600px;
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: var(--card-shadow);
+        }
+
+        /* Toggle switch component */
+        .toggle-switch-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .switch-label h4 {
+            font-size: 15px;
+            margin-bottom: 4px;
+        }
+
+        .switch-label p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider-round {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider-round::before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider-round {
+            background-color: var(--brand-orange);
+        }
+
+        input:checked + .slider-round::before {
+            transform: translateX(24px);
+        }
+
+        @media (max-width: 1000px) {
+            .blog-manager-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+            .mobile-bottom-nav {
+                justify-content: flex-start !important;
+                overflow-x: auto !important;
+                gap: 8px !important;
+                padding: 8px 12px !important;
+                -webkit-overflow-scrolling: touch;
+            }
+            .mobile-nav-item {
+                flex-shrink: 0 !important;
+                min-width: 65px !important;
+            }
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            .admin-sidebar {
+                display: none;
+            }
+            .mobile-bottom-nav {
+                display: flex !important;
+            }
+            .admin-content-area {
+                padding-bottom: 75px !important;
+            }
+            .admin-stats-grid {
+                grid-template-columns: 1fr 1fr !important;
+            }
+            .admin-topbar {
+                padding: 16px 20px !important;
+            }
+            .admin-main-content {
+                padding: 20px !important;
+            }
+        }
+        
+        /* Mobile Bottom Nav styles */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #102A43;
+            border-top: 1px solid rgba(255, 249, 240, 0.1);
+            z-index: 1999;
+            justify-content: space-around;
+            padding: 8px 0;
+            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #FFF9F0;
+            opacity: 0.7;
+            cursor: pointer;
+            font-size: 9px;
+            font-weight: 700;
+            transition: 0.2s;
+        }
+        .mobile-nav-item.active {
+            opacity: 1;
+            color: var(--brand-orange);
+        }
+        .mobile-nav-icon {
+            font-size: 16px;
+        }
+    </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+</head>
+<body>
+
+    <div class="admin-layout">
+        <!-- Sidebar Navigation -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <img src="assets/logo.jpg" alt="Hapanamy Logo">
+                <span>HAPANAMY<span>.lk</span></span>
+            </div>
+            
+            <ul class="admin-nav">
+                <li class="admin-nav-link active" onclick="switchAdminTab('dashboard')" id="nav-dashboard">
+                    <span class="admin-nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('courses')" id="nav-courses">
+                    <span class="admin-nav-icon">📚</span>
+                    <span>Course Products</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('simulator')" id="nav-simulator">
+                    <span class="admin-nav-icon">🧮</span>
+                    <span>Economics Simulator</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('affiliates')" id="nav-affiliates">
+                    <span class="admin-nav-icon">👥</span>
+                    <span>Affiliate Partners</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('payouts')" id="nav-payouts">
+                    <span class="admin-nav-icon">💰</span>
+                    <span>Payout Requests</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('reports')" id="nav-reports">
+                    <span class="admin-nav-icon">📈</span>
+                    <span>Sales & Reports</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('blog')" id="nav-blog">
+                    <span class="admin-nav-icon">✍️</span>
+                    <span>Blog Manager</span>
+                </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('settings')" id="nav-settings">
+                    <span class="admin-nav-icon">⚙️</span>
+                    <span>System Settings</span>
+                </li>
+            </ul>
+
+            <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 249, 240, 0.1); display: flex; flex-direction: column; gap: 8px;">
+                <a href="index.html" class="admin-nav-link" style="color: var(--brand-gold);">
+                    <span class="admin-nav-icon">←</span>
+                    <span>View Website</span>
+                </a>
+                <div class="admin-nav-link" onclick="logoutAdmin()" style="color: var(--ph-red) !important; cursor: pointer; display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: 8px; font-size: 14.5px; font-weight: 600;">
+                    <span class="admin-nav-icon">🚪</span>
+                    <span>Log Out</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Content side -->
+        <main class="admin-content-area">
+            <!-- Topbar -->
+            <header class="admin-topbar">
+                <h1 id="adminHeaderTitle">Admin Dashboard</h1>
+                
+                <div class="admin-topbar-actions">
+                    <!-- Lang Switcher in admin topbar -->
+                    <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
+                        EN
+                    </button>
+                    <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                        <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                    </button>
+                    
+                    <div class="admin-avatar-box">
+                        <div class="admin-avatar">AD</div>
+                        <div class="admin-avatar-info">
+                            <h4>Admin Panel</h4>
+                            <p>Administrator</p>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <div class="admin-main-content">
+                
+                <!-- TAB 1: OVERVIEW DASHBOARD -->
+                <div class="admin-panel active" id="panel-dashboard">
+                    <div class="admin-stats-grid">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">මාසික මුළු අලෙවිය (Monthly Sales)</div>
+                            <div class="admin-stat-val" id="dashboardMonthlySales">රු. 0.00</div>
+                        </div>
+                        <div class="admin-stat-card orange">
+                            <div class="admin-stat-label">සක්‍රිය සබඳතා (Active Affiliates)</div>
+                            <div class="admin-stat-val" id="dashboardActiveAffiliates">0</div>
+                        </div>
+                        <div class="admin-stat-card green">
+                            <div class="admin-stat-label">ගෙවූ මුළු කොමිස් (Paid Commissions)</div>
+                            <div class="admin-stat-val" id="dashboardPaidComm">රු. 0.00</div>
+                        </div>
+                        <div class="admin-stat-card navy">
+                            <div class="admin-stat-label">ගෙවීමට ඇති මුදල් (Pending Payouts)</div>
+                            <div class="admin-stat-val" id="dashboardPendingComm">රු. 0.00</div>
+                        </div>
+                    </div>
+
+                    <!-- Pending KYC Actions -->
+                    <iframe src="admin-kyc.html" style="width: 100%; height: 500px; border: none; border-radius: 12px; margin-top: 20px;"></iframe>
+                </div>
+
+                <!-- TAB 2: COURSE PRODUCTS MANAGER -->
+                <div class="admin-panel" id="panel-courses">
+                    <div class="admin-table-box">
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center;">
+                            <span>පාඨමාලා නිෂ්පාදන කළමනාකරණය (Course Catalog CRUD)</span>
+                            <button class="btn btn-primary" style="padding: 10px 16px; font-size: 13px;" onclick="openProductModal('add')">+ Add New Products</button>
+                        </div>
+                        <table class="admin-table" id="adminCoursesCatalogTable">
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>කාණ්ඩය (Category)</th>
+                                    <th>නිෂ්පාදන නම (Title)</th>
+                                    <th class="text-right">සාමාන්‍ය මිල (Reg Price)</th>
+                                    <th class="text-right">වට්ටම් මිල (Discount)</th>
+                                    <th>Status</th>
+                                    <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Loaded dynamically from localStorage -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ADD/EDIT PRODUCT MODAL OVERLAY -->
+                <div class="modal-overlay" id="productCrudModal" style="z-index: 2100; display: none;">
+                    <div class="modal-box" style="max-width: 900px; padding: 25px; width: 90%; max-height: 90vh; overflow-y: auto;">
+                        <h3 id="productModalTitle" style="font-size: 18px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color:var(--text-primary);">📝 Add New Course Product</h3>
+                        
+                        <form id="productCrudForm" onsubmit="saveProductForm(event)">
+                            <input type="hidden" id="crudProductId">
+                            
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                                <!-- Column 1: Core Details & Pricing -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">1. Product Details & Cost</h4>
+                                    
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <select id="crudProductCategory" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="Trading Course">Trading Course</option>
+                                            <option value="AI & Tech">AI & Tech</option>
+                                            <option value="Social Media">Social Media</option>
+                                            <option value="E-Book">E-Book</option>
+                                            <option value="Astrology">Astrology</option>
+                                            <option value="Services">Services</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="text" id="crudProductTitle" required placeholder=" ">
+                                        <label for="crudProductTitle">නිෂ්පාදන නම (Course Title)</label>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="number" id="crudProductMarketPrice" oninput="recalcProductEconomicsFrontend()" value="10000" placeholder=" ">
+                                            <label for="crudProductMarketPrice">Market Price (LKR)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <select id="crudProductPricingMode" onchange="togglePricingFields(); recalcProductEconomicsFrontend();" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="FIXED">FIXED</option>
+                                                <option value="DISCOUNTED">DISCOUNTED</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div id="discountFieldsGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <select id="crudProductDiscountType" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="NONE">NONE</option>
+                                                <option value="FIXED">FIXED AMOUNT</option>
+                                                <option value="PERCENTAGE">PERCENTAGE</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom: 0;">
+                                            <input type="number" id="crudProductDiscountValue" oninput="recalcProductEconomicsFrontend()" value="0" placeholder=" ">
+                                            <label for="crudProductDiscountValue">Discount Value</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="number" id="crudProductPrice" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
+                                        <label for="crudProductPrice">Final Selling Price (LKR)</label>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="number" id="crudProductCost" required oninput="recalcProductEconomicsFrontend()" value="2000" placeholder=" ">
+                                        <label for="crudProductCost">නිෂ්පාදන පිරිවැය (Product Cost LKR)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                            <span>Gross Profit:</span>
+                                            <strong id="previewGrossProfit">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Gross Margin %:</span>
+                                            <strong id="previewGrossMargin">0.00%</strong>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom: 15px;">
+                                        <input type="text" id="crudProductImg" required placeholder=" " value="assets/trading_banner.jpg">
+                                        <label for="crudProductImg">පින්තූර ලිපිනය (Product Banner Image Path)</label>
+                                    </div>
+                                    
+                                    <div style="margin-bottom: 15px; text-align: left;">
+                                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විස්තරය (Description)</label>
+                                        <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 50px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                                    </div>
+                                </div>
+
+                                <!-- Column 2: Reserves & Commission Details -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">2. Company Profit Reserves</h4>
+                                    
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductMinProfit" oninput="recalcProductEconomicsFrontend()" value="1000" placeholder=" ">
+                                            <label for="crudProductMinProfit">Min Profit (LKR)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductOpReserve" oninput="recalcProductEconomicsFrontend()" value="500" placeholder=" ">
+                                            <label for="crudProductOpReserve">Op Cost Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductProcessingReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder=" ">
+                                            <label for="crudProductProcessingReserve">Pay Processing Reserve</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductRefundReserve" oninput="recalcProductEconomicsFrontend()" value="200" placeholder=" ">
+                                            <label for="crudProductRefundReserve">Refund Risk Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductTaxReserve" oninput="recalcProductEconomicsFrontend()" value="300" placeholder=" ">
+                                            <label for="crudProductTaxReserve">Tax Reserve</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductOtherReserve" oninput="recalcProductEconomicsFrontend()" value="100" placeholder=" ">
+                                            <label for="crudProductOtherReserve">Other Reserve</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom:15px;">
+                                        <input type="number" id="crudProductSafetyBuffer" oninput="recalcProductEconomicsFrontend()" value="500" placeholder=" ">
+                                        <label for="crudProductSafetyBuffer">Commission Safety Buffer (LKR)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Protected Company Amount:</span>
+                                            <strong id="previewProtectedAmount">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Net Commission Budget:</span>
+                                            <strong id="previewNetBudget">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Effective Commission Budget:</span>
+                                            <strong id="previewEffectiveBudget">LKR 0.00</strong>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Column 3: MLM Settings & Safety Card -->
+                                <div>
+                                    <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">3. MLM settings</h4>
+                                    
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductDirectPercent" required oninput="recalcProductEconomicsFrontend()" value="8" step="0.1" placeholder=" ">
+                                            <label for="crudProductDirectPercent">Direct Comm (%)</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductBinaryVolume" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
+                                            <label for="crudProductBinaryVolume">Binary Volume (BV)</label>
+                                        </div>
+                                    </div>
+
+                                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <input type="number" id="crudProductMaxLevels" required oninput="recalcProductEconomicsFrontend()" value="7" placeholder=" ">
+                                            <label for="crudProductMaxLevels">Max Binary Tiers</label>
+                                        </div>
+                                        <div class="form-group" style="margin-bottom:0;">
+                                            <select id="crudProductCommissionMode" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                                <option value="MANUAL">MANUAL</option>
+                                                <option value="AUTO_SAFE">AUTO_SAFE</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" style="margin-bottom:15px;">
+                                        <input type="number" id="crudProductBinaryPercent" required oninput="recalcProductEconomicsFrontend()" value="7" step="0.1" placeholder=" ">
+                                        <label for="crudProductBinaryPercent">Binary Commission (%)</label>
+                                    </div>
+
+                                    <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Direct Comm Amount:</span>
+                                            <strong id="previewDirectCommAmount">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Binary Comm/Level:</span>
+                                            <strong id="previewBinaryCommPerRecipient">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                                            <span>Max Binary Exposure:</span>
+                                            <strong id="previewMaxBinaryExposure">LKR 0.00</strong>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between;">
+                                            <span>Max Total Exposure:</span>
+                                            <strong id="previewMaxTotalExposure">LKR 0.00</strong>
+                                        </div>
+                                    </div>
+
+                                    <!-- SAFETY CARD PREVIEW -->
+                                    <div id="safetyCardBox" class="safety-card safe" style="padding:15px; border-radius:10px; margin-bottom:15px; border-left:5px solid; font-size:12px;">
+                                        <style>
+                                            .safety-card.safe { background: rgba(185, 231, 105, 0.1); border-left-color: var(--brand-green-light); color: var(--brand-green-light); }
+                                            .safety-card.warning { background: rgba(244, 123, 32, 0.1); border-left-color: var(--brand-orange); color: var(--brand-orange); }
+                                            .safety-card.blocked { background: rgba(229, 62, 62, 0.1); border-left-color: var(--ph-red); color: var(--ph-red); }
+                                        </style>
+                                        <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:8px;">
+                                            <span>ECONOMICS:</span>
+                                            <span id="safetyCardStatus">SAFE</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Effective Budget:</span>
+                                            <span id="cardEffectiveBudget" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Max Exposure:</span>
+                                            <span id="cardMaxTotalExposure" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; margin-bottom:3px; color:var(--text-muted);">
+                                            <span>Remaining Margin:</span>
+                                            <span id="cardRemainingMargin" style="color:var(--text-primary); font-weight:700;">LKR 0.00</span>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; color:var(--text-muted);">
+                                            <span>Max Safe Binary Rate:</span>
+                                            <span id="cardMaxSafeRate" style="color:var(--text-primary); font-weight:700;">0.00%</span>
+                                        </div>
+
+                                        <div id="safetyCardReasonBox" style="display:none; margin-top:10px; padding-top:10px; border-top:1px solid rgba(229,62,62,0.2); font-size:11px; font-weight:700;">
+                                            ⚠️ Reason: <span id="safetyCardReasonText"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style="margin-bottom: 20px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                                <div>
+                                    <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විෂය නිර්දේශය (Syllabus - line per topic)</label>
+                                    <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 60px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                                </div>
+                                <div style="display:flex; flex-direction:column; justify-content:flex-end;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                                        <span style="font-size:12px; color:var(--text-muted);">Max Safe Binary Rate: <strong id="previewMaxSafeRate" style="color:var(--text-primary);">0.00%</strong></span>
+                                    </div>
+                                    <div style="display: flex; gap: 10px;">
+                                        <button type="submit" id="saveProductSubmitBtn" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight:700;">Save Product</button>
+                                        <button type="button" class="btn btn-secondary" style="padding: 12px; cursor: pointer; border-width:1px;" onclick="closeProductModal()">Cancel</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- TAB 2.5: PRODUCT ECONOMICS SIMULATOR -->
+                <div class="admin-panel" id="panel-simulator" style="display:none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 4px;">🧮 Product Economics & Commission Simulator</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Real-time financial simulation engine for calculating profit margins, commission safety budgets, and binary exposures.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn" onclick="autoCalculateSafeCommission()" style="background: linear-gradient(135deg, var(--brand-gold), var(--brand-orange)); color: #102A43; font-weight: 800; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(244, 123, 32, 0.25);">
+                                <span>⚡</span>
+                                <span>CALCULATE SAFE COMMISSION</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetSimulatorDefaults()" style="padding: 10px 16px; border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color); color: var(--text-primary);">
+                                🔄 Reset Defaults
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
+                        <!-- Left Column: Simulator Inputs -->
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Card 1: Pricing & Product Cost -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>🏷️</span>
+                                    <span>1. Product Pricing & Base Cost</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMarketPrice" oninput="runEconomicsSimulation()" value="10000" placeholder=" ">
+                                        <label for="simMarketPrice">Market Price (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <select id="simPricingMode" onchange="toggleSimulatorDiscountFields(); runEconomicsSimulation();" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="FIXED">FIXED</option>
+                                            <option value="DISCOUNTED">DISCOUNTED</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="simDiscountGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <select id="simDiscountType" onchange="runEconomicsSimulation()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="NONE">NONE</option>
+                                            <option value="FIXED">FIXED AMOUNT</option>
+                                            <option value="PERCENTAGE">PERCENTAGE</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simDiscountValue" oninput="runEconomicsSimulation()" value="0" placeholder=" ">
+                                        <label for="simDiscountValue">Discount Value</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simSellingPrice" oninput="runEconomicsSimulation()" value="7450" placeholder=" ">
+                                        <label for="simSellingPrice">Selling Price (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simProductCost" oninput="runEconomicsSimulation()" value="2000" placeholder=" ">
+                                        <label for="simProductCost">Product Cost (LKR)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Company Protection Reserves & Buffers -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>🛡️</span>
+                                    <span>2. Company Profit Reserves & Buffers</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMinProfit" oninput="runEconomicsSimulation()" value="1000" placeholder=" ">
+                                        <label for="simMinProfit">Min Profit (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simOpReserve" oninput="runEconomicsSimulation()" value="500" placeholder=" ">
+                                        <label for="simOpReserve">Operating Cost (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simProcReserve" oninput="runEconomicsSimulation()" value="150" placeholder=" ">
+                                        <label for="simProcReserve">Payment Processing (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simRefundReserve" oninput="runEconomicsSimulation()" value="200" placeholder=" ">
+                                        <label for="simRefundReserve">Refund Risk (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simTaxReserve" oninput="runEconomicsSimulation()" value="300" placeholder=" ">
+                                        <label for="simTaxReserve">Tax Reserve (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simOtherReserve" oninput="runEconomicsSimulation()" value="100" placeholder=" ">
+                                        <label for="simOtherReserve">Other Reserve (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="number" id="simSafetyBuffer" oninput="runEconomicsSimulation()" value="500" placeholder=" ">
+                                    <label for="simSafetyBuffer">Commission Safety Buffer (LKR)</label>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Commission Configuration -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>⚙️</span>
+                                    <span>3. Commission Configuration</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simDirectRate" oninput="runEconomicsSimulation()" value="8" step="0.1" placeholder=" ">
+                                        <label for="simDirectRate">Direct Comm (%)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simBinaryVolume" oninput="runEconomicsSimulation()" value="7450" placeholder=" ">
+                                        <label for="simBinaryVolume">Binary Volume (BV)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMaxLevels" oninput="runEconomicsSimulation()" value="7" min="1" max="15" placeholder=" ">
+                                        <label for="simMaxLevels">Max Qualified Levels</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simBinaryRate" oninput="runEconomicsSimulation()" value="7" step="0.1" placeholder=" ">
+                                        <label for="simBinaryRate">Binary Comm Rate (%)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Output & Exposure Analysis -->
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Card 1: Safety & Profitability Dashboard Card -->
+                            <div id="simSafetyCardBox" class="safety-card safe" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 6px solid var(--brand-green-light); border-radius: 12px; padding: 22px; box-shadow: var(--card-shadow);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+                                    <div>
+                                        <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">PROFITABILITY STATUS</span>
+                                        <span id="simSafetyBadge" style="font-size: 22px; font-weight: 900; letter-spacing: 0.5px; color: var(--brand-green-light);">SAFE</span>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="font-size: 11px; color: var(--text-muted); display: block;">MAX SAFE BINARY RATE</span>
+                                        <span id="simMaxSafeRateDisplay" style="font-size: 20px; font-weight: 900; color: var(--brand-gold);">0.00%</span>
+                                    </div>
+                                </div>
+
+                                <div id="simReasonBanner" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 12.5px; font-weight: 600; line-height: 1.4;">
+                                    <span id="simReasonText"></span>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; margin-bottom: 16px;">
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Revenue (Selling Price)</span>
+                                        <strong id="simDispRevenue" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Product Cost</span>
+                                        <strong id="simDispCost" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Gross Profit (Margin %)</span>
+                                        <strong id="simDispGrossProfit" style="color: var(--brand-green-light); font-size: 15px;">LKR 0.00 (0%)</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Protected Company Amt</span>
+                                        <strong id="simDispProtectedAmt" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Net Commission Budget</span>
+                                        <strong id="simDispNetBudget" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Effective Comm Budget</span>
+                                        <strong id="simDispEffectiveBudget" style="color: var(--brand-gold); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Direct Commission</span>
+                                        <strong id="simDispDirectComm" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Binary / Member</span>
+                                        <strong id="simDispBinaryPerMember" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                </div>
+
+                                <div style="border-top: 1px dashed var(--border-color); padding-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div>
+                                        <span style="font-size: 11.5px; color: var(--text-muted); display: block;">Max Total Exposure</span>
+                                        <span id="simDispTotalExposure" style="font-size: 17px; font-weight: 800; color: var(--text-primary);">LKR 0.00</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11.5px; color: var(--text-muted); display: block;">Remaining Company Margin</span>
+                                        <span id="simDispRemainingMargin" style="font-size: 17px; font-weight: 800; color: var(--brand-green-light);">LKR 0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Binary Level-by-Level Cumulative Exposure Table -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>📊 Binary Exposure Breakdown (Levels 1 to 7+)</span>
+                                    <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Max Exposure: <strong id="simDispMaxBinaryExposure" style="color:var(--text-primary);">LKR 0.00</strong></span>
+                                </h3>
+
+                                <div class="admin-table-box" style="margin-bottom: 0; border-radius: 8px;">
+                                    <table class="admin-table" style="font-size: 12.5px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Level</th>
+                                                <th>Recipients</th>
+                                                <th>Payout / Recipient</th>
+                                                <th>Cumulative Exposure</th>
+                                                <th>Budget Left</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="simLevelBreakdownTableBody">
+                                            <!-- Dynamically rendered -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 3: AFFILIATES LIST -->
+                <div class="admin-panel" id="panel-affiliates">
+                    <div class="admin-table-box">
+                        <div class="admin-table-title">
+                            <span>අනුබද්ධිත ජාලයේ ප්‍රමුඛයෝ (Affiliate Leaderboard)</span>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>සාමාජිකයා (Partner Name)</th>
+                                    <th>Unique Link Code</th>
+                                    <th>විකුණුම් ගණන (Direct Sales)</th>
+                                    <th>කණ්ඩායම (Team Members)</th>
+                                    <th>උපයාගත් මුළු කොමිස් (Total Commissions)</th>
+                                    <th>මට්ටම (Level Status)</th>
+                                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="adminAffiliatesLeaderboardBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">නව විකුණුම් සිදු වූ පසු අනුබද්ධිත නායකයින් මෙහි ස්වයංක්‍රීයව දිස්වේ (No sales recorded yet - 0).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Registered Users Directory Box -->
+                    <div class="admin-table-box" style="margin-top: 30px;">
+                        <div class="admin-table-title">
+                            <span>ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Users & Students)</span>
+                        </div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>සාමාජිකයා (Name)</th>
+                                    <th>ඊමේල් (Email)</th>
+                                    <th>කාර්යභාරය (Role)</th>
+                                    <th>දුරකථනය (Phone)</th>
+                                    <th>ලියාපදිංචි වූ දිනය (Date Registered)</th>
+                                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="registeredUsersTableBody">
+                                <tr>
+                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4: PAYOUTS MANAGER -->
+                <div class="admin-panel" id="panel-payouts">
+                    <iframe src="admin-withdrawals.html" style="width: 100%; height: 750px; border: none; border-radius: 12px;"></iframe>
+                </div>
+
+                <!-- TAB 4.5: BANK RECEIPTS APPROVALS -->
+                <div class="admin-panel" id="panel-receipts">
+                    <div class="admin-table-box">
+                        <div class="admin-table-title" data-translate="receipts_title">🏦 බැංකු තැන්පතු රිසිට්පත් අනුමැතිය (Bank Slip Manual Approvals)</div>
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>ඇණවුම (Order ID)</th>
+                                    <th>Txn Ref</th>
+                                    <th>පාරිභෝගිකයා (Customer Details)</th>
+                                    <th>පාඨමාලාව (Course)</th>
+                                    <th>මුදල (Amount LKR)</th>
+                                    <th>රිසිට්පත (Receipt Slip)</th>
+                                    <th>ක්‍රියාව (Actions)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bankReceiptsTableBody">
+                                <tr>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">තහවුරු කිරීමට නව බැංකු තැන්පතු රිසිට්පත් නොමැත (No pending bank slips).</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- TAB 4.5: DAILY SALES & COMMISSION REPORTS (5 SUB-SECTIONS) -->
+                <div class="admin-panel" id="panel-reports">
+                    <!-- GLOBAL TRANSACTION ID AUDIT SEARCH BAR -->
+                    <div style="background-color: var(--bg-surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 25px;">
+                        <h4 style="font-size: 14.5px; margin-bottom: 12px; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">🔍 ගනුදෙනු විමසුම් පැනලය (Global Transaction Audit Search)</h4>
+                        <div style="display: flex; gap: 10px;">
+                            <input type="text" id="globalTxnSearchInput" placeholder="Enter Transaction ID (e.g. TXN-WD-8291-K4A7)..." style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
+                            <button class="btn btn-primary" onclick="searchGlobalTransaction()" style="border: none; padding: 0 20px; border-radius: 6px; font-size: 13px; cursor: pointer; background-color: var(--brand-orange); font-weight: 700;">Search</button>
+                        </div>
+                        
+                        <!-- Search Results Area -->
+                        <div id="txnSearchResultBox" style="margin-top: 15px; display: none; padding: 15px; border-radius: 6px; background-color: rgba(0,0,0,0.15); border: 1px dashed var(--brand-gold); text-align: left; font-size: 13px; line-height: 1.6;">
+                            <!-- Results injected dynamically -->
+                        </div>
+                    </div>
+                    <!-- Reports Submenu Nav -->
+                    <div style="display: flex; gap: 10px; margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px; flex-wrap: wrap;">
+                        <button class="btn btn-secondary report-sub-tab active" onclick="switchReportSubTab('sales')" id="rep-sub-sales" style="padding: 10px 18px; font-size: 13px; font-weight:700;">📊 Sales Report</button>
+                        <button class="btn btn-secondary report-sub-tab" onclick="switchReportSubTab('products')" id="rep-sub-products" style="padding: 10px 18px; font-size: 13px; font-weight:700;">📚 Products Report</button>
+                        <button class="btn btn-secondary report-sub-tab" onclick="switchReportSubTab('commissions')" id="rep-sub-commissions" style="padding: 10px 18px; font-size: 13px; font-weight:700;">💸 Commission Report</button>
+                        <button class="btn btn-secondary report-sub-tab" onclick="switchReportSubTab('finance')" id="rep-sub-finance" style="padding: 10px 18px; font-size: 13px; font-weight:700;">💰 Income & Expenses</button>
+                        <button class="btn btn-secondary report-sub-tab" onclick="switchReportSubTab('members')" id="rep-sub-members" style="padding: 10px 18px; font-size: 13px; font-weight:700;">👥 Team & Member Status</button>
+                    </div>
+
+                    <!-- SUB-TAB 1: SALES REPORT -->
+                    <div class="report-panel-content active" id="rep-panel-sales">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h3 style="font-size: 16px; color: var(--text-primary);">📊 විකුණුම් වාර්තාව (Sales & Transaction Log)</h3>
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 12px;" onclick="exportCSVReport('sales')">Export CSV</button>
+                        </div>
+                        <div class="admin-table-box">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Date</th>
+                                        <th>Customer</th>
+                                        <th>Product Name</th>
+                                        <th>Total Paid</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 25px;">නව ඇණවුම් ලියාපදිංචි වූ පසු මෙහි දිස්වේ (No sales recorded yet - 0).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SUB-TAB 2: PRODUCTS REPORT -->
+                    <div class="report-panel-content" id="rep-panel-products" style="display:none;">
+                        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 20px;">📚 නිෂ්පාදන සහ පාඨමාලා වාර්තාව (Popular Course Products Performance)</h3>
+                        <div class="admin-stats-grid" style="margin-bottom: 25px;">
+                            <div class="admin-stat-card" style="border-bottom-color: var(--brand-orange);">
+                                <div class="admin-stat-label">Trading Academy Enrollments</div>
+                                <div class="admin-stat-val">0 Students</div>
+                            </div>
+                            <div class="admin-stat-card" style="border-bottom-color: var(--brand-gold);">
+                                <div class="admin-stat-label">AI Mastery Enrollments</div>
+                                <div class="admin-stat-val">0 Students</div>
+                            </div>
+                            <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
+                                <div class="admin-stat-label">Astrology Bhaskara Enrollments</div>
+                                <div class="admin-stat-val">0 Students</div>
+                            </div>
+                        </div>
+                        <div class="admin-table-box">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Product Name</th>
+                                        <th>Price (LKR)</th>
+                                        <th>Total Sales Count</th>
+                                        <th>Total Revenue (LKR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Titan Elite Trading Academy</strong></td>
+                                        <td>රු. 7,920</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>AI Mastery Course</strong></td>
+                                        <td>රු. 7,200</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Bhaskara Astrology - භාස්කර</strong></td>
+                                        <td>රු. 2,241</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SUB-TAB 3: COMMISSION REPORT -->
+                    <div class="report-panel-content" id="rep-panel-commissions" style="display:none;">
+                        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 20px;">💸 කොමිස් ලැබීමේ වාර්තා (Commissions & Payout Splits)</h3>
+                        <div class="admin-table-box">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Affiliate Name</th>
+                                        <th>Level / Split</th>
+                                        <th>Percentage (%)</th>
+                                        <th>Commission Paid (LKR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 25px;">කොමිස් ගනුදෙනු කිසිවක් නොමැත (No commission splits recorded yet - 0).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SUB-TAB 4: INCOME & EXPENSES -->
+                    <div class="report-panel-content" id="rep-panel-finance" style="display:none;">
+                        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 20px;">💰 ආදායම් සහ වියදම් (Income & Expenses Sheet)</h3>
+                        <div class="admin-stats-grid" style="margin-bottom: 25px;">
+                            <div class="admin-stat-card green" style="border-bottom-color: var(--brand-green-light);">
+                                <div class="admin-stat-label">මුළු දළ ආදායම (Gross Inflow)</div>
+                                <div class="admin-stat-val">රු. 0.00</div>
+                            </div>
+                            <div class="admin-stat-card orange" style="border-bottom-color: var(--brand-orange);">
+                                <div class="admin-stat-label">මුළු ගෙවූ කොමිස් (Commissions Paid)</div>
+                                <div class="admin-stat-val">රු. 0.00</div>
+                            </div>
+                            <div class="admin-stat-card" style="border-bottom-color: var(--brand-gold);">
+                                <div class="admin-stat-label">ශුද්ධ ලාභ ශේෂය (Net Revenue)</div>
+                                <div class="admin-stat-val" style="color:var(--brand-gold);">රු. 0.00</div>
+                            </div>
+                        </div>
+                        <div class="admin-table-box">
+                            <div class="admin-table-title">මූල්‍ය ලොග් සටහන (Financial Logs)</div>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Type</th>
+                                        <th>Description</th>
+                                        <th>Amount (LKR)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 25px;">මූල්‍ය වාර්තා කිසිවක් නොමැත (No financial transactions recorded yet - 0).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SUB-TAB 5: TEAM & MEMBER STATUS -->
+                    <div class="report-panel-content" id="rep-panel-members" style="display:none;">
+                        <h3 style="font-size: 16px; color: var(--text-primary); margin-bottom: 20px;">👥 සාමාජික වාර්තා (Team & Member Status)</h3>
+                        <div class="admin-stats-grid" style="margin-bottom: 25px;">
+                            <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
+                                <div class="admin-stat-label">සක්‍රීය සාමාජිකයින් (Active Members)</div>
+                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Hiru)</div>
+                            </div>
+                            <div class="admin-stat-card" style="border-bottom-color: var(--ph-red);">
+                                <div class="admin-stat-label">අක්‍රීය සාමාජිකයින් (Inactive Members)</div>
+                                <div class="admin-stat-val" style="color:var(--ph-red);">0 Members</div>
+                            </div>
+                        </div>
+                        <div class="admin-table-box">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Member Name</th>
+                                        <th>Role</th>
+                                        <th>Direct Downlines</th>
+                                        <th>Total Sales Generated</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Hiru</strong></td>
+                                        <td>Active Member / Affiliate</td>
+                                        <td>0 Members</td>
+                                        <td>0 Sales</td>
+                                        <td><span class="badge-status paid">Active</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PANEL: BLOG MANAGER -->
+                <div class="admin-panel" id="panel-blog">
+                    <div class="blog-manager-grid">
+                        <!-- Left: Create Post Form -->
+                        <div class="admin-card">
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-primary);">📝 බ්ලොග් ලිපියක් පළ කිරීම (Create New Blog Post)</h3>
+                            <form id="blogPostForm" onsubmit="event.preventDefault(); publishBlogArticle();">
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">ලිපියේ මාතෘකාව (Article Title) *</label>
+                                    <input type="text" id="blogPostTitle" required placeholder="ChatGPT හරහා මුදල් උපයන හැටි..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px; display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div>
+                                        <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">කාණ්ඩය (Category) *</label>
+                                        <select id="blogPostCategory" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                            <option value="AI & Tech">AI & Tech</option>
+                                            <option value="Trading">Trading</option>
+                                            <option value="Social Media">Social Media</option>
+                                            <option value="Online Business">Online Business</option>
+                                            <option value="General">General</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">කියවීමේ කාලය (Read Time in mins) *</label>
+                                        <input type="number" id="blogPostReadTime" required value="5" min="1" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                    </div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">පින්තූරය තෝරන්න (Select Image File)</label>
+                                    <input type="file" id="blogPostImageFile" accept="image/*" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                    <div style="font-size:11px; color:var(--text-muted); margin-top:5px;">පරිගණකයෙන් පින්තූරය තෝරා Upload කරන්න.</div>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">නැතහොත් පින්තූරයේ ලිපිනය (Or Banner Image URL/Path)</label>
+                                    <input type="text" id="blogPostImage" placeholder="assets/ai_prompts_ebook_banner.jpg" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); outline: none;">
+                                </div>
+                                <div class="form-group" style="margin-bottom: 15px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">කෙටි විස්තරය (Short Intro) *</label>
+                                    <textarea id="blogPostIntro" required rows="3" placeholder="ලිපිය ගැන කෙටි හැඳින්වීමක් (කාඩ් එකෙහි පෙන්වීමට)..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); font-family:inherit; resize:vertical; outline: none;"></textarea>
+                                </div>
+                                <div class="form-group" style="margin-bottom: 20px;">
+                                    <label style="display:block; margin-bottom:5px; font-weight:600; font-size:13px; color: var(--text-primary);">සම්පූර්ණ ලිපිය (Full Content HTML / Text) *</label>
+                                    <textarea id="blogPostContent" required rows="8" placeholder="ලිපියේ සම්පූර්ණ අන්තර්ගතය මෙහි ලියන්න (HTML tags භාවිතා කළ හැක)..." style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--border-color); background-color:var(--bg-main); color:var(--text-primary); font-family:inherit; resize:vertical; outline: none;"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; border:none; font-weight:700; cursor: pointer;">ලිපිය සජීවීව පළ කරන්න (Publish Article)</button>
+                            </form>
+                        </div>
+                        
+                        <!-- Right: Published Custom Articles List -->
+                        <div class="admin-card">
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-primary);">📂 පළ කළ ලිපි ලැයිස්තුව (Published Custom Articles)</h3>
+                            <div class="admin-table-box">
+                                <table class="admin-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Category</th>
+                                            <th>Date</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adminBlogList">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-panel" id="panel-settings">
+                    <div class="admin-settings-form">
+                        <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">⚙️ WooCommerce / PayHere Gateway Settings</h3>
+                        
+                        <div class="toggle-switch-container">
+                            <div class="switch-label">
+                                <h4>PayHere Sandbox Mode</h4>
+                                <p>පරීක්ෂණ ගනුදෙනු (Sandbox transactions) සක්‍රිය කිරීමට මෙය සක්‍රිය කරන්න.</p>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" checked id="sandboxMode">
+                                <span class="slider-round"></span>
+                            </label>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="merchantId" value="1210234" required placeholder=" ">
+                            <label for="merchantId">PayHere Merchant ID</label>
+                        </div>
+                        
+                        <div class="form-group" style="margin-top: 15px; margin-bottom: 25px;">
+                            <label for="merchantSecret">PayHere Merchant Secret</label>
+                            <input type="password" id="merchantSecret" value="••••••••••••••••••••" required placeholder="PayHere Merchant Secret">
+                        </div>
+
+                        <div style="background: rgba(13, 148, 136, 0.08); border: 1px solid rgba(13, 148, 136, 0.25); border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+                            <h4 style="color: var(--brand-teal); margin-bottom: 8px; font-size: 15px;">🌿 Active Binary MLM Plan (ද්විමය සැලැස්ම)</h4>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">පද්ධතියේ නිල වශයෙන් ක්‍රියාත්මක වන්නේ <strong>Binary MLM ආකෘතිය</strong> පමණි (Direct 8% + Binary 7% + Daily Cap LKR 30,000). කොමිස් ප්‍රතිශත සහ ආරක්ෂිත සීමාවන් වෙනස් කිරීමට Binary Economics පැනලය භාවිතා කරන්න.</p>
+                            <button type="button" class="btn btn-secondary" style="font-size: 13px; padding: 8px 16px;" onclick="switchAdminTab('economics')">🛡️ Go to Binary MLM Economics & Margin Simulator</button>
+                        </div>
+
+                        <button type="button" class="btn btn-primary" style="width: 100%; border: none;" onclick="saveSystemSettings()">💾 Save Gateway Settings</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <div class="mobile-bottom-nav">
+        <div class="mobile-nav-item active" onclick="switchAdminTab('dashboard')" id="mob-nav-dashboard">
+            <span class="mobile-nav-icon">📊</span>
+            <span>Overview</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('courses')" id="mob-nav-courses">
+            <span class="mobile-nav-icon">🛒</span>
+            <span>Catalog</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('affiliates')" id="mob-nav-affiliates">
+            <span class="mobile-nav-icon">👥</span>
+            <span>Partners</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('payouts')" id="mob-nav-payouts">
+            <span class="mobile-nav-icon">💸</span>
+            <span>Payouts</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('reports')" id="mob-nav-reports">
+            <span class="mobile-nav-icon">📈</span>
+            <span>Reports</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('receipts')" id="mob-nav-receipts">
+            <span class="mobile-nav-icon">📥</span>
+            <span>Receipts</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('blog')" id="mob-nav-blog">
+            <span class="mobile-nav-icon">✍️</span>
+            <span>Blog</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('settings')" id="mob-nav-settings">
+            <span class="mobile-nav-icon">⚙️</span>
+            <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // 🔒 Session Security Guard
+        (function() {
+            const activeUser = JSON.parse(localStorage.getItem('active_user'));
+            if (!activeUser || activeUser.role !== 'admin') {
+                alert('🔒 Access Denied! Please sign in as Administrator first.');
+                window.location.href = 'login-register.html';
+            }
+        })();
+        
+        // Admin UI translations
+        const adminTranslations = {
+            si: {
+                viewWeb: '← View Website',
+                payoutTitle: 'කොමිස් මුදල් ගෙවීමේ ඉල්ලීම් (Pending Commission Payouts)',
+                regTitle: 'නව ලියාපදිංචි වීමේ අයදුම්පත් (Pending Registrations)'
+            },
+            en: {
+                viewWeb: '← Back to Live Site',
+                payoutTitle: 'Affiliate Payout Requests (Pending Bank Deposits)',
+                regTitle: 'Pending Partner Approvals (Affiliate Registrations)'
+            }
+        };
+
+        function applyAdminLanguage(lang) {
+            const trans = adminTranslations[lang];
+            if (!trans) return;
+
+            document.querySelector('aside div a').innerHTML = `<span class="admin-nav-icon">←</span>` + trans.viewWeb;
+            
+            const headings = document.querySelectorAll('.admin-table-title span');
+            if (headings.length >= 2) {
+                headings[0].textContent = trans.regTitle;
+                headings[1].textContent = trans.payoutTitle;
+            }
+
+            const langToggle = document.getElementById('langToggleBtn');
+            if (langToggle) {
+                langToggle.textContent = lang === 'si' ? 'EN' : 'සිං';
+            }
+        }
+
+        function initAdminLanguage() {
+            const langToggle = document.getElementById('langToggleBtn');
+            let currentLang = localStorage.getItem('language') || 'si';
+            
+            applyAdminLanguage(currentLang);
+            
+            if (langToggle) {
+                langToggle.addEventListener('click', () => {
+                    currentLang = currentLang === 'si' ? 'en' : 'si';
+                    localStorage.setItem('language', currentLang);
+                    applyAdminLanguage(currentLang);
+                    showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
+                });
+            }
+        }
+
+        initAdminLanguage();
+
+        // Init theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Theme Toggle Logic
+        const themeToggleBtn = document.getElementById('themeToggleBtn');
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+                
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
+            });
+        }
+
+        // Global Transaction Search function (Searches mock DB + live payouts localStorage)
+        function searchGlobalTransaction() {
+            const query = document.getElementById('globalTxnSearchInput').value.trim();
+            const resultBox = document.getElementById('txnSearchResultBox');
+            
+            if (!query) {
+                showToast('⚠️ Please enter a Transaction ID to search.');
+                return;
+            }
+
+            // Dynamic transactional database from live storage
+            const txnDatabase = [];
+
+            // Read live dynamic bank slips / course sales
+            const slips = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            slips.forEach(item => {
+                if (item.txnCode || item.orderId) {
+                    txnDatabase.push({
+                        id: item.txnCode || item.orderId,
+                        type: 'Course Sale / Deposit',
+                        amount: 'රු. ' + (item.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2}),
+                        party: (item.userName || 'Member') + ' (' + (item.email || '') + ')',
+                        status: item.status || 'Active',
+                        date: item.date || new Date().toISOString().split('T')[0],
+                        details: 'Course: ' + (item.course || '')
+                    });
+                }
+            });
+
+            // Read live dynamic payout requests queue
+            const list = JSON.parse(localStorage.getItem('payout_requests_queue')) || [];
+            list.forEach(item => {
+                if (item.txnCode) {
+                    txnDatabase.push({
+                        id: item.txnCode,
+                        type: 'Withdrawal Payout',
+                        amount: 'රු. ' + item.amount.toLocaleString(undefined, {minimumFractionDigits: 2}),
+                        party: item.name + ' (' + item.email + ')',
+                        status: item.status,
+                        date: item.date,
+                        details: 'Requested Bank Account Details: ' + item.bank
+                    });
+                }
+            });
+
+            const found = txnDatabase.find(t => t.id.toLowerCase() === query.toLowerCase());
+
+            if (found) {
+                resultBox.style.display = 'block';
+                const statusClass = (found.status.toLowerCase().includes('paid') || found.status.toLowerCase().includes('completed') || found.status.toLowerCase().includes('released')) ? 'paid' : 'pending';
+                resultBox.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px dashed var(--border-color); padding-bottom:5px;">
+                        <strong style="color:var(--brand-gold);">Transaction Found!</strong>
+                        <span class="badge-status ${statusClass}">${found.status}</span>
+                    </div>
+                    <strong>Txn ID:</strong> <span style="font-family:monospace; color:var(--brand-orange);">${found.id}</span><br>
+                    <strong>Type:</strong> ${found.type}<br>
+                    <strong>Party:</strong> ${found.party}<br>
+                    <strong>Amount:</strong> <span style="font-weight:800; color:var(--brand-green-light);">${found.amount}</span><br>
+                    <strong>Date:</strong> ${found.date}<br>
+                    <strong>Audit logs:</strong> ${found.details}
+                `;
+                showToast('🟢 Transaction matching ID successfully found!');
+            } else {
+                resultBox.style.display = 'block';
+                resultBox.innerHTML = `<span style="color:var(--ph-red); font-weight:700;">❌ Transaction ID not found!</span><br><span style="font-size:12px; color:var(--text-muted);">ගනුදෙනු කේතය නිවැරදිදැයි නැවත පරීක්‍ෂා කරන්න (E.g. try searching for: <strong>TXN-WD-8291-K4A7</strong>).</span>`;
+                showToast('❌ No matching transaction ID found.');
+            }
+        }
+
+        // Switch subtabs inside the Reports panel
+        function switchReportSubTab(subTabId) {
+            // Remove active class from buttons
+            document.querySelectorAll('.report-sub-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            // Hide all sub-panels
+            document.querySelectorAll('.report-panel-content').forEach(panel => {
+                panel.style.display = 'none';
+                panel.classList.remove('active');
+            });
+
+            // Set active classes
+            const activeBtn = document.getElementById('rep-sub-' + subTabId);
+            const activePanel = document.getElementById('rep-panel-' + subTabId);
+            if (activeBtn) activeBtn.classList.add('active');
+            if (activePanel) {
+                activePanel.style.display = 'block';
+                activePanel.classList.add('active');
+            }
+            showToast('📂 Switched to ' + subTabId.toUpperCase() + ' Report view');
+        }
+
+        // Log Out Administrator
+        function logoutAdmin() {
+            localStorage.removeItem('active_user');
+            showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
+            setTimeout(() => {
+                window.location.href = 'login-register.html';
+            }, 1500);
+        }
+
+        // Load dynamic bank slips from queue
+        function loadBankReceiptsTable() {
+            const list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            const tbody = document.getElementById('bankReceiptsTableBody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">තහවුරු කිරීමට නව බැංකු තැන්පතු රිසිට්පත් නොමැත (No pending bank slips).</td>
+                    </tr>
+                `;
+                return;
+            }
+
+            let rowsHtml = '';
+            // Append dynamic slips
+            list.forEach((item, index) => {
+                const badgeClass = item.status.toLowerCase().includes('pending') ? 'pending' : 'paid';
+                const actionButtons = item.status.toLowerCase().includes('pending') 
+                    ? `<div style="display: flex; gap: 8px;">
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '${item.orderId}', '${item.userName}', ${item.amount}, '${item.course}', ${index})">Approve</button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${index})">Reject</button>
+                        </div>`
+                    : `<span class="badge-status ${badgeClass}">${item.status}</span>`;
+
+                rowsHtml += `
+                    <tr>
+                        <td>${item.orderId}</td>
+                        <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode}</td>
+                        <td><strong>${item.userName}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${item.email} | ${item.phone}</span></td>
+                        <td>${item.course}</td>
+                        <td>LKR ${item.amount.toLocaleString()}</td>
+                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Slip Image</span></td>
+                        <td>${actionButtons}</td>
+                    </tr>`;
+            });
+            tbody.innerHTML = rowsHtml;
+        }
+
+        // Approve manual bank order receipt and distribute commissions
+        function approveBankOrder(btn, orderId, userName, amount, courseName, queueIndex = -1) {
+            // 1. Calculate Binary MLM Direct Commission (8%)
+            const commDirect = amount * 0.08;
+            
+            let referrerCode = 'Hiru';
+
+            // 2. Save approved status to queue and unlock course for student
+            if (queueIndex !== -1) {
+                let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+                const item = slipsQueue[queueIndex];
+                if (item) {
+                    item.status = 'Approved & Activated';
+                    referrerCode = item.referrer || 'Hiru';
+                    
+                    // Unlock the specific courses/ebooks dynamically for the buyer
+                    const userEmail = item.email || 'student@hapanamy.lk';
+                    let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + userEmail)) || [];
+                    const coursesToUnlock = item.course.split(',').map(name => name.trim());
+                    coursesToUnlock.forEach(cName => {
+                        if (!unlocked.includes(cName)) unlocked.push(cName);
+                    });
+                    localStorage.setItem('unlocked_courses_' + userEmail, JSON.stringify(unlocked));
+                }
+                localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+            }
+
+            // Sync MLM payout ledger for the specific referrer
+            let currentBalance = parseFloat(localStorage.getItem('affiliate_balance_' + referrerCode) || '0');
+            localStorage.setItem('affiliate_balance_' + referrerCode, (currentBalance + commDirect).toString());
+
+            // 3. Update table UI row
+            const tr = btn.closest('tr');
+            if (tr) {
+                tr.querySelector('td:last-child').innerHTML = '<span class="badge-status paid">Approved & Active</span>';
+            }
+
+            // 4. Update Admin sales revenue metrics
+            const repEl = document.getElementById('reportPeriodSales');
+            if (repEl) {
+                let currentRev = parseFloat(repEl.textContent.replace(/[^0-9]/g, '')) || 0;
+                repEl.textContent = 'රු. ' + (currentRev + amount).toLocaleString();
+            }
+
+            showToast(`✅ <strong>ඇණවුම අනුමතයි!</strong> ${courseName} සඳහා රු. ${amount.toLocaleString()} ක ගෙවීම සාර්ථකව තහවුරු විය.`);
+            loadBankReceiptsTable();
+        }
+
+        // Reject manual bank slip
+        function rejectBankOrder(btn, queueIndex = -1) {
+            if (queueIndex !== -1) {
+                let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+                if (slipsQueue[queueIndex]) {
+                    slipsQueue[queueIndex].status = 'Rejected / Invalid';
+                }
+                localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+            }
+
+            const tr = btn.closest('tr');
+            if (tr) {
+                tr.querySelector('td:last-child').innerHTML = '<span class="badge-status" style="background-color:rgba(229,62,62,0.15); color:var(--ph-red);">Rejected</span>';
+            }
+
+            showToast('❌ <strong>රිසිට්පත ප්‍රතික්ෂේප විය!</strong> අදාළ බැංකු රිසිට්පත ප්‍රතික්ෂේප කරන ලදී.');
+            loadBankReceiptsTable();
+        }
+
+        // Dynamic Products Database initial setup
+        function initCoursesList() {
+            let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
+            if (!courses) {
+                courses = [
+                    { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' },
+                    { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
+                    { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
+                    { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
+                    { id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' },
+                    { id: 'forex-course', category: 'Trading Course', title: '🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/forex_course_banner.jpg', status: 'Active' },
+                    { id: 'crypto-course', category: 'Trading Course', title: '🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/crypto_course_banner.jpg', status: 'Active' },
+                    { id: 'options-course', category: 'Trading Course', title: '🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/options_course_banner.jpg', status: 'Active' },
+                    { id: 'titan-elite', category: 'Trading Course', title: '🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)', price: 24900, discount: 19900, image: 'assets/advanced_trading_banner.jpg', status: 'Active' },
+                    { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', price: 6500, discount: 5200, image: 'assets/ai_video_course_banner.jpg', status: 'Active' },
+                    { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', price: 18750, discount: 15000, image: 'assets/ai_mastery_banner.jpg', status: 'Active' },
+                    { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', price: 9000, discount: 7200, image: 'assets/coding_course_banner.jpg', status: 'Active' },
+                    { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', price: 4990, discount: 3992, image: 'assets/ebooks_banner.jpg', status: 'Active' },
+                    { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', price: 6990, discount: 5592, image: 'assets/motivation_ebook_banner.jpg', status: 'Active' },
+                    { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
+                ];
+                localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+            }
+            renderAdminCourses();
+        }
+
+        // Render catalog table
+        function renderAdminCourses() {
+            const courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+            const tbody = document.querySelector('#adminCoursesCatalogTable tbody');
+            if (!tbody) return;
+
+            tbody.innerHTML = '';
+            courses.forEach(c => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><img src="${c.image}" style="width:45px; height:30px; object-fit:cover; border-radius:4px; border:1px solid var(--border-color);"></td>
+                    <td>${c.category}</td>
+                    <td><strong>${c.title}</strong></td>
+                    <td class="text-right">රු. ${c.price.toLocaleString()}</td>
+                    <td class="text-right" style="color:var(--brand-orange); font-weight:700;">රු. ${c.discount.toLocaleString()}</td>
+                    <td><span class="badge-status ${c.status === 'Active' ? 'paid' : 'pending'}">${c.status}</span></td>
+                    <td>
+                        <div style="display:flex; gap:6px; justify-content:center;">
+                            <button class="btn btn-secondary" onclick="openProductModal('edit', '${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px;">✏️ Edit</button>
+                            <button class="btn btn-secondary" onclick="toggleProductStatus('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--brand-gold); border-color:var(--brand-gold);">🔄 Toggle</button>
+                            <button class="btn btn-secondary" onclick="deleteProduct('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--ph-red); border-color:var(--ph-red);">🗑️ Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Toggle course active status
+        function toggleProductStatus(courseId) {
+            let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+            courses = courses.map(c => {
+                if (c.id === courseId) {
+                    c.status = (c.status === 'Active' ? 'Inactive' : 'Active');
+                    showToast(`🔄 Product ${c.title} status toggled to <strong>${c.status}</strong>.`);
+                }
+                return c;
+            });
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+            renderAdminCourses();
+        }
+
+        // Delete course
+        function deleteProduct(courseId) {
+            let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+            const found = courses.find(c => c.id === courseId);
+            if (!found) return;
+
+            if (confirm(`🗑️ Are you sure you want to delete "${found.title}"?`)) {
+                courses = courses.filter(c => c.id !== courseId);
+                localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+                showToast(`🗑️ Course product "${found.title}" successfully deleted.`);
+                renderAdminCourses();
+            }
+        }
+
+        function togglePricingFields() {
+            const mode = document.getElementById('crudProductPricingMode').value;
+            const discountGroup = document.getElementById('discountFieldsGroup');
+            if (mode === 'DISCOUNTED') {
+                discountGroup.style.display = 'grid';
+            } else {
+                discountGroup.style.display = 'none';
+            }
+        }
+
+        function recalcProductEconomicsFrontend() {
+            const marketPrice = parseFloat(document.getElementById('crudProductMarketPrice').value || 0);
+            const pricingMode = document.getElementById('crudProductPricingMode').value;
+            const discountType = document.getElementById('crudProductDiscountType').value;
+            const discountValue = parseFloat(document.getElementById('crudProductDiscountValue').value || 0);
+            const configuredSellingPrice = parseFloat(document.getElementById('crudProductPrice').value || 0);
+            const productCost = parseFloat(document.getElementById('crudProductCost').value || 0);
+
+            const minProfit = parseFloat(document.getElementById('crudProductMinProfit').value || 0);
+            const opReserve = parseFloat(document.getElementById('crudProductOpReserve').value || 0);
+            const procReserve = parseFloat(document.getElementById('crudProductProcessingReserve').value || 0);
+            const refReserve = parseFloat(document.getElementById('crudProductRefundReserve').value || 0);
+            const taxReserve = parseFloat(document.getElementById('crudProductTaxReserve').value || 0);
+            const otherReserve = parseFloat(document.getElementById('crudProductOtherReserve').value || 0);
+            const safetyBuffer = parseFloat(document.getElementById('crudProductSafetyBuffer').value || 0);
+
+            const directPercent = parseFloat(document.getElementById('crudProductDirectPercent').value || 0);
+            const binaryVolume = parseFloat(document.getElementById('crudProductBinaryVolume').value || 0);
+            const maxLevels = parseInt(document.getElementById('crudProductMaxLevels').value || 7);
+            const commissionMode = document.getElementById('crudProductCommissionMode').value;
+            let binaryPercent = parseFloat(document.getElementById('crudProductBinaryPercent').value || 0);
+
+            // 1. Calculate Final Selling Price
+            let sellingPrice = 0;
+            if (pricingMode === 'FIXED') {
+                sellingPrice = configuredSellingPrice;
+                document.getElementById('crudProductPrice').disabled = false;
+            } else {
+                if (discountType === 'FIXED') {
+                    sellingPrice = Math.max(0, marketPrice - discountValue);
+                } else if (discountType === 'PERCENTAGE') {
+                    sellingPrice = Math.max(0, marketPrice - (marketPrice * (discountValue / 100)));
+                } else {
+                    sellingPrice = marketPrice;
+                }
+                document.getElementById('crudProductPrice').value = sellingPrice.toFixed(2);
+                document.getElementById('crudProductPrice').disabled = true;
+            }
+
+            // 2. Gross Profit & Margin
+            const grossProfit = sellingPrice - productCost;
+            const grossMargin = sellingPrice > 0 ? (grossProfit / sellingPrice) * 100 : 0;
+            document.getElementById('previewGrossProfit').textContent = 'රු. ' + grossProfit.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewGrossMargin').textContent = grossMargin.toFixed(2) + '%';
+
+            // 3. Protected Company Amount
+            const protectedAmount = minProfit + opReserve + procReserve + refReserve + taxReserve + otherReserve;
+            document.getElementById('previewProtectedAmount').textContent = 'රු. ' + protectedAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 4. Net Commission Budget
+            const netBudget = grossProfit - protectedAmount;
+            document.getElementById('previewNetBudget').textContent = 'රු. ' + netBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 5. Effective Commission Budget
+            const effectiveBudget = netBudget - safetyBuffer;
+            document.getElementById('previewEffectiveBudget').textContent = 'රු. ' + effectiveBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardEffectiveBudget').textContent = 'රු. ' + effectiveBudget.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 6. Direct Commission Amount
+            const directCommAmount = sellingPrice * (directPercent / 100);
+            document.getElementById('previewDirectCommAmount').textContent = 'රු. ' + directCommAmount.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 7. Calculate Max Safe Rate
+            const remainingBinaryBudget = effectiveBudget - directCommAmount;
+            let maxSafeRate = 0;
+            if (remainingBinaryBudget > 0 && binaryVolume > 0 && maxLevels > 0) {
+                const maxBinaryPerLevel = remainingBinaryBudget / maxLevels;
+                maxSafeRate = Math.floor((maxBinaryPerLevel / binaryVolume) * 100 * 100) / 100;
+                if (maxSafeRate < 0) maxSafeRate = 0;
+            }
+            document.getElementById('cardMaxSafeRate').textContent = maxSafeRate.toFixed(2) + '%';
+            document.getElementById('previewMaxSafeRate').textContent = maxSafeRate.toFixed(2) + '%';
+
+            // 8. Apply Auto Safe Mode
+            if (commissionMode === 'AUTO_SAFE') {
+                binaryPercent = maxSafeRate;
+                document.getElementById('crudProductBinaryPercent').value = binaryPercent.toFixed(2);
+                document.getElementById('crudProductBinaryPercent').disabled = true;
+            } else {
+                document.getElementById('crudProductBinaryPercent').disabled = false;
+            }
+
+            // 9. Binary Exposure calculations
+            const binaryCommPerRecipient = binaryVolume * (binaryPercent / 100);
+            const maxBinaryExposure = binaryCommPerRecipient * maxLevels;
+            const maxTotalExposure = directCommAmount + maxBinaryExposure;
+            const remainingMargin = effectiveBudget - maxTotalExposure;
+
+            document.getElementById('previewBinaryCommPerRecipient').textContent = 'රු. ' + binaryCommPerRecipient.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewMaxBinaryExposure').textContent = 'රු. ' + maxBinaryExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('previewMaxTotalExposure').textContent = 'රු. ' + maxTotalExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardMaxTotalExposure').textContent = 'රු. ' + maxTotalExposure.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('cardRemainingMargin').textContent = 'රු. ' + remainingMargin.toLocaleString(undefined, {minimumFractionDigits: 2});
+
+            // 10. Update Safety Card Status
+            const statusCard = document.getElementById('safetyCardBox');
+            const statusLabel = document.getElementById('safetyCardStatus');
+            const saveBtn = document.getElementById('saveProductSubmitBtn');
+            const reasonBox = document.getElementById('safetyCardReasonBox');
+            const reasonText = document.getElementById('safetyCardReasonText');
+
+            let status = 'SAFE';
+            let blockedReason = null;
+
+            if (productCost > sellingPrice) {
+                status = 'BLOCKED';
+                blockedReason = 'Product cost exceeds selling price.';
+            } else if (grossProfit <= 0) {
+                status = 'BLOCKED';
+                blockedReason = 'Gross profit is zero or negative.';
+            } else if (effectiveBudget <= 0) {
+                status = 'BLOCKED';
+                blockedReason = 'Effective commission budget is zero or negative after accounting for reserves.';
+            } else if (directCommAmount > effectiveBudget) {
+                status = 'BLOCKED';
+                blockedReason = 'Direct referral commission exceeds effective commission budget.';
+            } else if (maxTotalExposure > effectiveBudget) {
+                status = 'BLOCKED';
+                const exceeded = maxTotalExposure - effectiveBudget;
+                blockedReason = `Maximum total commission exposure exceeds effective commission budget by රු. ${exceeded.toLocaleString(undefined, {minimumFractionDigits: 2})}.`;
+            } else if (remainingMargin < 500.00) {
+                status = 'WARNING';
+            }
+
+            // Apply UI classes
+            statusCard.className = 'safety-card ' + status.toLowerCase();
+            statusLabel.textContent = status;
+            
+            if (status === 'BLOCKED') {
+                reasonBox.style.display = 'block';
+                reasonText.textContent = blockedReason;
+                saveBtn.disabled = true;
+                saveBtn.style.opacity = '0.5';
+                saveBtn.style.cursor = 'not-allowed';
+            } else {
+                reasonBox.style.display = 'none';
+                saveBtn.disabled = false;
+                saveBtn.style.opacity = '1';
+                saveBtn.style.cursor = 'pointer';
+            }
+        }
+
+        // Open CRUD modal
+        let currentCrudAction = 'add';
+        function openProductModal(action, courseId = '') {
+            currentCrudAction = action;
+            document.getElementById('productCrudModal').style.display = 'flex';
+            
+            if (action === 'add') {
+                document.getElementById('productModalTitle').textContent = '➕ Add New Course Product';
+                document.getElementById('crudProductId').value = '';
+                document.getElementById('crudProductTitle').value = '';
+                document.getElementById('crudProductCategory').value = 'Trading Course';
+                document.getElementById('crudProductMarketPrice').value = '10000';
+                document.getElementById('crudProductPricingMode').value = 'FIXED';
+                document.getElementById('crudProductDiscountType').value = 'NONE';
+                document.getElementById('crudProductDiscountValue').value = '0';
+                document.getElementById('crudProductPrice').value = '7450';
+                document.getElementById('crudProductCost').value = '2000';
+                document.getElementById('crudProductMinProfit').value = '1000';
+                document.getElementById('crudProductOpReserve').value = '500';
+                document.getElementById('crudProductProcessingReserve').value = '150';
+                document.getElementById('crudProductRefundReserve').value = '200';
+                document.getElementById('crudProductTaxReserve').value = '300';
+                document.getElementById('crudProductOtherReserve').value = '100';
+                document.getElementById('crudProductSafetyBuffer').value = '500';
+                document.getElementById('crudProductDirectPercent').value = '8';
+                document.getElementById('crudProductBinaryVolume').value = '7450';
+                document.getElementById('crudProductMaxLevels').value = '7';
+                document.getElementById('crudProductCommissionMode').value = 'MANUAL';
+                document.getElementById('crudProductBinaryPercent').value = '7';
+                document.getElementById('crudProductImg').value = 'assets/trading_banner.jpg';
+                document.getElementById('crudProductDesc').value = '';
+                document.getElementById('crudProductSyllabus').value = '';
+            } else {
+                document.getElementById('productModalTitle').textContent = '✏️ Edit Course Details';
+                const courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+                const c = courses.find(item => item.id === courseId);
+                if (c) {
+                    const price = c.price || 0;
+                    document.getElementById('crudProductId').value = c.id;
+                    document.getElementById('crudProductCategory').value = c.category || 'Trading Course';
+                    document.getElementById('crudProductTitle').value = c.title || '';
+                    
+                    document.getElementById('crudProductMarketPrice').value = c.marketPrice !== undefined ? c.marketPrice : (c.price || 0);
+                    document.getElementById('crudProductPricingMode').value = c.pricingMode || 'FIXED';
+                    document.getElementById('crudProductDiscountType').value = c.discountType || 'NONE';
+                    document.getElementById('crudProductDiscountValue').value = c.discountValue || 0;
+                    document.getElementById('crudProductPrice').value = c.price || 0;
+                    
+                    document.getElementById('crudProductCost').value = c.productCost !== undefined ? c.productCost : Math.round(price * 0.3);
+                    document.getElementById('crudProductMinProfit').value = c.minimumCompanyProfit !== undefined ? c.minimumCompanyProfit : Math.round(price * 0.15);
+                    document.getElementById('crudProductOpReserve').value = c.operatingCostReserve !== undefined ? c.operatingCostReserve : Math.round(price * 0.05);
+                    document.getElementById('crudProductProcessingReserve').value = c.paymentProcessingReserve !== undefined ? c.paymentProcessingReserve : Math.round(price * 0.02);
+                    document.getElementById('crudProductRefundReserve').value = c.refundRiskReserve !== undefined ? c.refundRiskReserve : Math.round(price * 0.03);
+                    document.getElementById('crudProductTaxReserve').value = c.taxReserve !== undefined ? c.taxReserve : Math.round(price * 0.05);
+                    document.getElementById('crudProductOtherReserve').value = c.otherReserve !== undefined ? c.otherReserve : Math.round(price * 0.02);
+                    document.getElementById('crudProductSafetyBuffer').value = c.commissionSafetyBuffer !== undefined ? c.commissionSafetyBuffer : Math.round(price * 0.05);
+                    
+                    document.getElementById('crudProductDirectPercent').value = c.directCommissionRate !== undefined ? c.directCommissionRate : 8.0;
+                    document.getElementById('crudProductBinaryVolume').value = c.binaryVolume !== undefined ? c.binaryVolume : (c.price || 0);
+                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 7;
+                    document.getElementById('crudProductCommissionMode').value = c.commissionMode || 'MANUAL';
+                    document.getElementById('crudProductBinaryPercent').value = c.binaryCommissionRate !== undefined ? c.binaryCommissionRate : 7.0;
+                    document.getElementById('crudProductImg').value = c.image || 'assets/trading_banner.jpg';
+                    document.getElementById('crudProductDesc').value = c.description || '';
+                    document.getElementById('crudProductSyllabus').value = c.syllabus || '';
+                }
+            }
+            togglePricingFields();
+            recalcProductEconomicsFrontend();
+        }
+
+        function closeProductModal() {
+            document.getElementById('productCrudModal').style.display = 'none';
+        }
+
+        // Save Form (Create & Update)
+        function saveProductForm(event) {
+            event.preventDefault();
+            
+            recalcProductEconomicsFrontend();
+            const submitBtn = document.getElementById('saveProductSubmitBtn');
+            if (submitBtn.disabled) {
+                showToast('❌ Cannot save product: Product Economics are BLOCKED.');
+                return;
+            }
+
+            const id = document.getElementById('crudProductId').value;
+            const category = document.getElementById('crudProductCategory').value;
+            const title = document.getElementById('crudProductTitle').value;
+            const marketPrice = parseFloat(document.getElementById('crudProductMarketPrice').value || 0);
+            const pricingMode = document.getElementById('crudProductPricingMode').value;
+            const discountType = document.getElementById('crudProductDiscountType').value;
+            const discountValue = parseFloat(document.getElementById('crudProductDiscountValue').value || 0);
+            const price = parseFloat(document.getElementById('crudProductPrice').value || 0);
+            const productCost = parseFloat(document.getElementById('crudProductCost').value || 0);
+            
+            const minProfit = parseFloat(document.getElementById('crudProductMinProfit').value || 0);
+            const opReserve = parseFloat(document.getElementById('crudProductOpReserve').value || 0);
+            const processingReserve = parseFloat(document.getElementById('crudProductProcessingReserve').value || 0);
+            const refundReserve = parseFloat(document.getElementById('crudProductRefundReserve').value || 0);
+            const taxReserve = parseFloat(document.getElementById('crudProductTaxReserve').value || 0);
+            const otherReserve = parseFloat(document.getElementById('crudProductOtherReserve').value || 0);
+            const safetyBuffer = parseFloat(document.getElementById('crudProductSafetyBuffer').value || 0);
+            
+            const directPercent = parseFloat(document.getElementById('crudProductDirectPercent').value || 0);
+            const binaryVolume = parseFloat(document.getElementById('crudProductBinaryVolume').value || 0);
+            const maxLevels = parseInt(document.getElementById('crudProductMaxLevels').value || 7);
+            const commissionMode = document.getElementById('crudProductCommissionMode').value;
+            const binaryPercent = parseFloat(document.getElementById('crudProductBinaryPercent').value || 0);
+            
+            const image = document.getElementById('crudProductImg').value;
+            const description = document.getElementById('crudProductDesc').value;
+            const syllabus = document.getElementById('crudProductSyllabus').value;
+
+            let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+
+            if (currentCrudAction === 'add') {
+                const newCourse = {
+                    id: 'prod-' + Math.floor(1000 + Math.random() * 9000),
+                    category,
+                    title,
+                    price,
+                    discount: price,
+                    marketPrice,
+                    pricingMode,
+                    discountType,
+                    discountValue,
+                    productCost,
+                    minimumCompanyProfit: minProfit,
+                    operatingCostReserve: opReserve,
+                    paymentProcessingReserve: processingReserve,
+                    refundRiskReserve: refundReserve,
+                    taxReserve,
+                    otherReserve,
+                    commissionSafetyBuffer: safetyBuffer,
+                    directCommissionRate: directPercent,
+                    binaryVolume,
+                    maxBinaryQualifiedLevels: maxLevels,
+                    commissionMode,
+                    binaryCommissionRate: binaryPercent,
+                    image,
+                    description,
+                    syllabus,
+                    status: 'Active'
+                };
+                courses.push(newCourse);
+                showToast(`➕ Course <strong>${title}</strong> successfully added!`);
+            } else {
+                courses = courses.map(c => {
+                    if (c.id === id) {
+                        c.category = category;
+                        c.title = title;
+                        c.price = price;
+                        c.discount = price;
+                        c.marketPrice = marketPrice;
+                        c.pricingMode = pricingMode;
+                        c.discountType = discountType;
+                        c.discountValue = discountValue;
+                        c.productCost = productCost;
+                        c.minimumCompanyProfit = minProfit;
+                        c.operatingCostReserve = opReserve;
+                        c.paymentProcessingReserve = processingReserve;
+                        c.refundRiskReserve = refundReserve;
+                        c.taxReserve = taxReserve;
+                        c.otherReserve = otherReserve;
+                        c.commissionSafetyBuffer = safetyBuffer;
+                        c.directCommissionRate = directPercent;
+                        c.binaryVolume = binaryVolume;
+                        c.maxBinaryQualifiedLevels = maxLevels;
+                        c.commissionMode = commissionMode;
+                        c.binaryCommissionRate = binaryPercent;
+                        c.image = image;
+                        c.description = description;
+                        c.syllabus = syllabus;
+                        showToast(`✏️ Course <strong>${title}</strong> successfully updated!`);
+                    }
+                    return c;
+                });
+            }
+
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+            closeProductModal();
+            renderAdminCourses();
+        }
+
+        // Switch panel tabs
+        function switchAdminTab(tabId) {
+            // Remove active classes
+            const tabs = document.querySelectorAll('.admin-nav-link');
+            const panels = document.querySelectorAll('.admin-panel');
+            
+            tabs.forEach(t => t.classList.remove('active'));
+            panels.forEach(p => p.classList.remove('active'));
+            
+            // Set active class
+            document.getElementById(`nav-${tabId}`).classList.add('active');
+            document.getElementById(`panel-${tabId}`).classList.add('active');
+            
+            if (tabId === 'blog') {
+                renderAdminBlogArticles();
+            }
+            if (tabId === 'affiliates') {
+                renderRegisteredUsers();
+            }
+            if (tabId === 'simulator') {
+                runEconomicsSimulation();
+            }
+
+            // Sync mobile tab icons
+            const mobItems = document.querySelectorAll('.mobile-nav-item');
+            mobItems.forEach(i => i.classList.remove('active'));
+            const mobActiveItem = document.getElementById(`mob-nav-${tabId}`);
+            if (mobActiveItem) mobActiveItem.classList.add('active');
+
+            // Set Title text
+            const headerTitles = {
+                'dashboard': 'Admin Dashboard (Overview)',
+                'courses': 'WooCommerce Course Catalog',
+                'simulator': 'Product Economics & Commission Simulator',
+                'affiliates': 'Affiliate Partners Directory',
+                'payouts': 'Commissions & Payout Management',
+                'reports': 'Daily Sales & Commission Reports',
+                'settings': 'Global System & Gateway Config',
+                'blog': 'Hapanamy.lk Blog Post Manager',
+                'receipts': 'Manual Bank Slip Approvals'
+            };
+            document.getElementById('adminHeaderTitle').textContent = headerTitles[tabId];
+        }
+
+        // Toast alert helper
+        function showToast(message) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = message;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 4000);
+        }
+
+        // Approve affiliate registration
+        function approveAffiliate(rowId, name) {
+            document.getElementById(rowId).remove();
+            showToast(`✅ <strong>අනුමත කරන ලදී!</strong> ${name} සාර්ථකව Affiliate කණ්ඩායමට ඇතුළත් කරන ලදී.`);
+            
+            // If table is empty, show empty message
+            const tableBody = document.querySelector('#pendingRegTable tbody');
+            if (tableBody.children.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td colspan="5" style="text-align: center; color: var(--text-muted);">නව අයදුම්පත් නොමැත.</td>`;
+                tableBody.appendChild(tr);
+            }
+        }
+
+        // Process Bank Payouts
+        let currentPendingTotal = 18340 + 45000;
+        function processPayout(rowId, statusId, amount, name) {
+            const statusSpan = document.getElementById(statusId);
+            const rowElement = document.getElementById(rowId);
+            const payButton = rowElement.querySelector('.pay');
+
+            // Change status to approved/paid
+            statusSpan.className = 'badge-status paid';
+            statusSpan.textContent = 'Paid & Completed';
+            
+            // Disable button
+            payButton.disabled = true;
+            payButton.textContent = 'Completed';
+            payButton.style.opacity = '0.5';
+            payButton.style.cursor = 'default';
+
+            // Show Toast notification
+            showToast(`💸 <strong>ගෙවීම සාර්ථකයි!</strong> රු. ${amount.toLocaleString()} ක මුදල ${name} ගේ බැංකු ගිණුමට යවන ලදී.`);
+
+            // Update pending total stats
+            currentPendingTotal -= amount;
+            document.getElementById('dashboardPendingComm').textContent = 'රු. ' + currentPendingTotal.toLocaleString();
+        }
+
+        // Daily Reports filter logic
+        function filterReportsByDate() {
+            var range = document.getElementById('reportDateRange').value;
+            var rows = document.querySelectorAll('.rep-row');
+            
+            var totalSales = 0;
+            var totalComm = 0;
+            
+            rows.forEach(function(row) {
+                var dateTag = row.getAttribute('data-date');
+                var isMatch = false;
+
+                if (range === 'today' && dateTag === 'today') isMatch = true;
+                else if (range === 'yesterday' && dateTag === 'yesterday') isMatch = true;
+                else if (range === '7days' && (dateTag === 'today' || dateTag === 'yesterday' || dateTag === '7days')) isMatch = true;
+                else if (range === '30days') isMatch = true;
+
+                if (isMatch) {
+                    row.style.display = 'table-row';
+                    var priceText = row.children[3].textContent.replace('රු. ', '').replace(',', '');
+                    var commText = row.children[5].textContent.replace('රු. ', '').replace(',', '');
+                    
+                    totalSales += parseFloat(priceText);
+                    totalComm += parseFloat(commText);
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+
+            const repSalesEl = document.getElementById('reportPeriodSales');
+            const repCommEl = document.getElementById('reportPeriodComm');
+            const repNetEl = document.getElementById('reportPeriodNet');
+            if (repSalesEl) repSalesEl.textContent = totalSales > 0 ? 'රු. ' + Math.round(totalSales).toLocaleString() : 'රු. 0.00';
+            if (repCommEl) repCommEl.textContent = totalComm > 0 ? 'රු. ' + totalComm.toFixed(2).toLocaleString() : 'රු. 0.00';
+            if (repNetEl) repNetEl.textContent = (totalSales - totalComm) > 0 ? 'රු. ' + Math.round(totalSales - totalComm).toLocaleString() : 'රු. 0.00';
+        }
+
+        // Export Report to CSV
+        function exportCSVReport() {
+            var range = document.getElementById('reportDateRange').value;
+            showToast('📊 <strong>CSV generated!</strong> Hapanamy Sales Report (' + range + ') successfully exported.');
+        }
+
+        // Initial setup for reports
+        setTimeout(filterReportsByDate, 200);
+
+        // Load saved configurations
+        function loadSystemSettings() {
+            const settings = JSON.parse(localStorage.getItem('hapanamy_settings')) || {
+                sandbox: true,
+                merchantId: '1210234',
+                merchantSecret: 'secret_hash_code_12345'
+            };
+
+            const sbox = document.getElementById('sandboxMode');
+            const mId = document.getElementById('merchantId');
+            const mSec = document.getElementById('merchantSecret');
+
+            if (sbox) sbox.checked = settings.sandbox !== undefined ? settings.sandbox : true;
+            if (mId) mId.value = settings.merchantId || '1210234';
+            if (mSec) mSec.value = settings.merchantSecret || '••••••••••••••••••••';
+        }
+
+        // Save global configurations
+        function saveSystemSettings() {
+            const sandbox = document.getElementById('sandboxMode') ? document.getElementById('sandboxMode').checked : true;
+            const merchantId = document.getElementById('merchantId') ? document.getElementById('merchantId').value : '1210234';
+            const merchantSecret = document.getElementById('merchantSecret') ? document.getElementById('merchantSecret').value : '••••••••••••••••••••';
+
+            const config = { sandbox, merchantId, merchantSecret };
+            localStorage.setItem('hapanamy_settings', JSON.stringify(config));
+
+            showToast('💾 <strong>ගෙවීම් සැකසුම් සුරකින ලදී!</strong> PayHere Merchant ID: ' + merchantId + ' (Sandbox: ' + (sandbox ? 'ON' : 'OFF') + ')');
+        }
+
+        // ==================== BLOG POST MANAGEMENT ====================
+        let editingArticleId = null;
+
+        function renderAdminBlogArticles() {
+            const blogListBody = document.getElementById('adminBlogList');
+            if (!blogListBody) return;
+            
+            blogListBody.innerHTML = '';
+            
+            // Retrieve custom articles from localStorage
+            const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+            
+            if (customArticles.length === 0) {
+                blogListBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No custom articles published yet.</td></tr>`;
+                return;
+            }
+            
+            customArticles.forEach((article, idx) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${article.title}</strong></td>
+                    <td><span class="badge-status active" style="background-color: var(--brand-orange); color: white;">${article.category}</span></td>
+                    <td>${article.date}</td>
+                    <td>
+                        <button class="btn btn-secondary" onclick="editBlogArticle(${idx})" style="padding: 6px 12px; background-color: var(--brand-orange); color: white; border: none; font-size: 11px; cursor: pointer; border-radius: 4px; margin-right: 5px;">✏️ Edit</button>
+                        <button class="btn btn-secondary" onclick="deleteBlogArticle(${idx})" style="padding: 6px 12px; background-color: var(--ph-red); color: white; border: none; font-size: 11px; cursor: pointer; border-radius: 4px;">🗑️ Delete</button>
+                    </td>
+                `;
+                blogListBody.appendChild(tr);
+            });
+        }
+
+        function uploadBlogImage(file) {
+            if (!file) return Promise.resolve(null);
+            
+            return new Promise((resolve, reject) => {
+                const filename = file.name;
+                fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
+                    method: 'POST',
+                    body: file,
+                    headers: {
+                        'Content-Type': 'application/octet-stream'
+                    }
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        resolve(data.filePath);
+                    } else {
+                        reject(new Error(data.error || 'Upload failed'));
+                    }
+                })
+                .catch(err => reject(err));
+            });
+        }
+
+        function publishBlogArticle() {
+            const title = document.getElementById('blogPostTitle').value.trim();
+            const category = document.getElementById('blogPostCategory').value;
+            const textImage = document.getElementById('blogPostImage').value.trim();
+            const readTime = document.getElementById('blogPostReadTime').value || '5';
+            const intro = document.getElementById('blogPostIntro').value.trim();
+            const content = document.getElementById('blogPostContent').value.trim();
+            const fileInput = document.getElementById('blogPostImageFile');
+            const file = fileInput ? fileInput.files[0] : null;
+            
+            if (!title || !intro || !content) {
+                showToast('⚠️ Please fill in all required fields (Title, Intro, and Content)!');
+                return;
+            }
+
+            if (file && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+                showToast('⚠️ <strong>සජීවී වෙබ් අඩවියේදී සෘජුවම File Upload කළ නොහැක!</strong> කරුණාකර ImgBB වැනි සේවාවකට පින්තූරය දමා එහි ලින්ක් එක පහළ කොටසට ඇතුළත් කරන්න.');
+                return;
+            }
+
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.textContent = '🔄 Processing Article...';
+            submitBtn.disabled = true;
+
+            // Handle image upload first if a file is selected
+            uploadBlogImage(file)
+                .then(uploadedPath => {
+                    const finalBanner = uploadedPath || textImage || 'assets/ai_prompts_ebook_banner.jpg';
+                    let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+                    
+                    if (editingArticleId) {
+                        // Update existing article
+                        const articleIdx = customArticles.findIndex(art => art.id === editingArticleId);
+                        if (articleIdx !== -1) {
+                            customArticles[articleIdx].title = title;
+                            customArticles[articleIdx].category = category;
+                            customArticles[articleIdx].banner = finalBanner;
+                            customArticles[articleIdx].readTime = readTime;
+                            customArticles[articleIdx].intro = intro;
+                            customArticles[articleIdx].content = content;
+                            
+                            localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                            showToast('🎉 <strong>Success!</strong> Blog article updated successfully!');
+                        }
+                        cancelEdit();
+                    } else {
+                        // Create a new article
+                        const articleId = 'custom-' + title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+                        
+                        const newArticle = {
+                            id: articleId,
+                            title: title,
+                            category: category,
+                            banner: finalBanner,
+                            readTime: readTime,
+                            intro: intro,
+                            content: content,
+                            date: new Date().toLocaleDateString()
+                        };
+                        
+                        customArticles.push(newArticle);
+                        localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                        showToast('🎉 <strong>Success!</strong> Blog article published and live on homepage!');
+                        document.getElementById('blogPostForm').reset();
+                    }
+
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                    renderAdminBlogArticles();
+                })
+                .catch(err => {
+                    showToast('❌ <strong>Error:</strong> Image upload failed: ' + err.message);
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                });
+        }
+
+        function editBlogArticle(index) {
+            const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+            const article = customArticles[index];
+            if (!article) return;
+            
+            document.getElementById('blogPostTitle').value = article.title;
+            document.getElementById('blogPostCategory').value = article.category;
+            document.getElementById('blogPostImage').value = article.banner;
+            document.getElementById('blogPostReadTime').value = article.readTime;
+            document.getElementById('blogPostIntro').value = article.intro;
+            document.getElementById('blogPostContent').value = article.content;
+            
+            editingArticleId = article.id;
+            
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            submitBtn.textContent = 'ලිපිය යාවත්කාලීන කරන්න (Update Article)';
+            submitBtn.style.backgroundColor = 'var(--brand-gold)';
+            
+            if (!document.getElementById('cancelEditBtn')) {
+                const cancelBtn = document.createElement('button');
+                cancelBtn.type = 'button';
+                cancelBtn.id = 'cancelEditBtn';
+                cancelBtn.className = 'btn btn-secondary';
+                cancelBtn.textContent = 'සංස්කරණය අවලංගු කරන්න (Cancel Edit)';
+                cancelBtn.style.cssText = 'width: 100%; padding: 10px; margin-top: 10px; border-width: 1px; cursor: pointer; font-weight:700; border-radius:6px;';
+                cancelBtn.onclick = cancelEdit;
+                document.getElementById('blogPostForm').appendChild(cancelBtn);
+            }
+            
+            document.getElementById('blogPostForm').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function cancelEdit() {
+            editingArticleId = null;
+            document.getElementById('blogPostForm').reset();
+            
+            const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
+            submitBtn.textContent = 'ලිපිය සජීවීව පළ කරන්න (Publish Article)';
+            submitBtn.style.backgroundColor = '';
+            
+            const cancelBtn = document.getElementById('cancelEditBtn');
+            if (cancelBtn) cancelBtn.remove();
+        }
+
+        function deleteBlogArticle(index) {
+            if (confirm('Are you sure you want to delete this article?')) {
+                let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
+                customArticles.splice(index, 1);
+                localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
+                showToast('🗑️ Article deleted successfully!');
+                renderAdminBlogArticles();
+            }
+        }
+
+        // Render Registered Users Directory
+        async function renderRegisteredUsers() {
+            const tableBody = document.getElementById('registeredUsersTableBody');
+            if (!tableBody) return;
+            
+            try {
+                const users = await dbGetUsers();
+                if (users.length === 0) {
+                    tableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                tableBody.innerHTML = '';
+                // Sort users: newest first
+                const sortedUsers = [...users].reverse();
+                
+                sortedUsers.forEach(user => {
+                    const tr = document.createElement('tr');
+                    
+                    const name = user.name || 'N/A';
+                    const email = user.email || 'N/A';
+                    const role = user.role || 'student';
+                    const phone = user.phone || 'N/A';
+                    const date = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
+                    
+                    const roleBadge = role === 'admin' 
+                        ? '<span class="badge-status" style="background-color: rgba(240, 179, 35, 0.15); color: var(--brand-gold);">Admin</span>' 
+                        : (role === 'affiliate' 
+                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate</span>' 
+                            : '<span class="badge-status" style="background: rgba(40, 167, 69, 0.15) !important; color: #28a745 !important; border-color: #28a745 !important;">Student</span>');
+                    
+                    tr.innerHTML = `
+                        <td><strong>${name}</strong></td>
+                        <td><code>${email}</code></td>
+                        <td>${roleBadge}</td>
+                        <td>${phone}</td>
+                        <td>${date}</td>
+                        <td style="text-align: center;">
+                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error('Error rendering registered users:', err);
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function resetUserPasswordPrompt(userName, email) {
+            const displayEmail = email ? ` (${email})` : '';
+            alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
+        }
+
+        // ========================================================
+        // PRODUCT ECONOMICS REAL-TIME SIMULATOR (STEP 10)
+        // ========================================================
+        function toggleSimulatorDiscountFields() {
+            const mode = document.getElementById('simPricingMode').value;
+            const discountGroup = document.getElementById('simDiscountGroup');
+            if (mode === 'DISCOUNTED') {
+                discountGroup.style.display = 'grid';
+            } else {
+                discountGroup.style.display = 'none';
+            }
+        }
+
+        function resetSimulatorDefaults() {
+            document.getElementById('simMarketPrice').value = '10000';
+            document.getElementById('simPricingMode').value = 'FIXED';
+            document.getElementById('simDiscountType').value = 'NONE';
+            document.getElementById('simDiscountValue').value = '0';
+            document.getElementById('simSellingPrice').value = '7450';
+            document.getElementById('simProductCost').value = '2000';
+            document.getElementById('simMinProfit').value = '1000';
+            document.getElementById('simOpReserve').value = '500';
+            document.getElementById('simProcReserve').value = '150';
+            document.getElementById('simRefundReserve').value = '200';
+            document.getElementById('simTaxReserve').value = '300';
+            document.getElementById('simOtherReserve').value = '100';
+            document.getElementById('simSafetyBuffer').value = '500';
+            document.getElementById('simDirectRate').value = '8';
+            document.getElementById('simBinaryVolume').value = '7450';
+            document.getElementById('simMaxLevels').value = '7';
+            document.getElementById('simBinaryRate').value = '7';
+
+            toggleSimulatorDiscountFields();
+            runEconomicsSimulation();
+            showToast('🔄 Simulator reset to default values.');
+        }
+
+        function runEconomicsSimulation() {
+            const pricingMode = document.getElementById('simPricingMode') ? document.getElementById('simPricingMode').value : 'FIXED';
+            const marketPrice = parseFloat(document.getElementById('simMarketPrice') ? document.getElementById('simMarketPrice').value : 0) || 0.0;
+            const discountType = document.getElementById('simDiscountType') ? document.getElementById('simDiscountType').value : 'NONE';
+            const discountValue = parseFloat(document.getElementById('simDiscountValue') ? document.getElementById('simDiscountValue').value : 0) || 0.0;
+            let configuredPrice = parseFloat(document.getElementById('simSellingPrice') ? document.getElementById('simSellingPrice').value : 0) || 0.0;
+
+            let sellingPrice = configuredPrice;
+            if (pricingMode === 'DISCOUNTED') {
+                if (discountType === 'FIXED') {
+                    sellingPrice = Math.max(0, marketPrice - discountValue);
+                } else if (discountType === 'PERCENTAGE') {
+                    sellingPrice = Math.max(0, marketPrice - (marketPrice * (discountValue / 100)));
+                }
+            }
+
+            const productCost = parseFloat(document.getElementById('simProductCost') ? document.getElementById('simProductCost').value : 0) || 0.0;
+            const minProfit = parseFloat(document.getElementById('simMinProfit') ? document.getElementById('simMinProfit').value : 0) || 0.0;
+            const opReserve = parseFloat(document.getElementById('simOpReserve') ? document.getElementById('simOpReserve').value : 0) || 0.0;
+            const procReserve = parseFloat(document.getElementById('simProcReserve') ? document.getElementById('simProcReserve').value : 0) || 0.0;
+            const refundReserve = parseFloat(document.getElementById('simRefundReserve') ? document.getElementById('simRefundReserve').value : 0) || 0.0;
+            const taxReserve = parseFloat(document.getElementById('simTaxReserve') ? document.getElementById('simTaxReserve').value : 0) || 0.0;
+            const otherReserve = parseFloat(document.getElementById('simOtherReserve') ? document.getElementById('simOtherReserve').value : 0) || 0.0;
+            const safetyBuffer = parseFloat(document.getElementById('simSafetyBuffer') ? document.getElementById('simSafetyBuffer').value : 0) || 0.0;
+
+            const directRate = parseFloat(document.getElementById('simDirectRate') ? document.getElementById('simDirectRate').value : 0) || 0.0;
+            const binaryVolume = parseFloat(document.getElementById('simBinaryVolume') ? document.getElementById('simBinaryVolume').value : 0) || 0.0;
+            const maxLevels = parseInt(document.getElementById('simMaxLevels') ? document.getElementById('simMaxLevels').value : 7) || 7;
+            const binaryRate = parseFloat(document.getElementById('simBinaryRate') ? document.getElementById('simBinaryRate').value : 0) || 0.0;
+
+            // Minor unit calculations
+            const sellingPriceCents = Math.round(sellingPrice * 100);
+            const costCents = Math.round(productCost * 100);
+            const grossProfitCents = sellingPriceCents - costCents;
+            const grossProfit = grossProfitCents / 100;
+
+            const grossMarginPercent = sellingPriceCents > 0 
+                ? ((grossProfitCents / sellingPriceCents) * 100).toFixed(1) 
+                : '0.0';
+
+            const protectedAmtCents = Math.round((minProfit + opReserve + procReserve + refundReserve + taxReserve + otherReserve) * 100);
+            const protectedAmount = protectedAmtCents / 100;
+
+            const netBudgetCents = grossProfitCents - protectedAmtCents;
+            const netBudget = netBudgetCents / 100;
+
+            const bufferCents = Math.round(safetyBuffer * 100);
+            const effectiveBudgetCents = netBudgetCents - bufferCents;
+            const effectiveBudget = effectiveBudgetCents / 100;
+
+            const directCommCents = Math.round(sellingPriceCents * (directRate / 100));
+            const directComm = directCommCents / 100;
+
+            const binaryCommPerMemberCents = Math.round(Math.round(binaryVolume * 100) * (binaryRate / 100));
+            const binaryCommPerMember = binaryCommPerMemberCents / 100;
+
+            const maxBinaryExposureCents = binaryCommPerMemberCents * maxLevels;
+            const maxBinaryExposure = maxBinaryExposureCents / 100;
+
+            const maxTotalExposureCents = directCommCents + maxBinaryExposureCents;
+            const maxTotalExposure = maxTotalExposureCents / 100;
+
+            const remainingMarginCents = effectiveBudgetCents - maxTotalExposureCents;
+            const remainingMargin = remainingMarginCents / 100;
+
+            // Safe Binary Rate Calculation (Always round DOWN)
+            const remainingBinaryBudgetCents = Math.max(0, effectiveBudgetCents - directCommCents);
+            let maxSafeBinaryRate = 0.0;
+            if (remainingBinaryBudgetCents > 0 && maxLevels > 0 && binaryVolume > 0) {
+                const maxBinaryPerLevelCents = remainingBinaryBudgetCents / maxLevels;
+                const rawRate = (maxBinaryPerLevelCents / Math.round(binaryVolume * 100)) * 100;
+                maxSafeBinaryRate = Math.floor(rawRate * 100) / 100;
+            }
+
+            // Determine status
+            let status = 'SAFE';
+            let blockReason = '';
+
+            if (productCost > sellingPrice) {
+                status = 'BLOCKED';
+                blockReason = `Product cost (LKR ${productCost.toFixed(2)}) exceeds selling price (LKR ${sellingPrice.toFixed(2)}).`;
+            } else if (grossProfit <= 0) {
+                status = 'BLOCKED';
+                blockReason = `Gross profit is non-positive (LKR ${grossProfit.toFixed(2)}).`;
+            } else if (effectiveBudget <= 0) {
+                status = 'BLOCKED';
+                blockReason = `Effective commission budget is zero or negative (LKR ${effectiveBudget.toFixed(2)}). Reserves and costs exceed gross profit.`;
+            } else if (directComm > effectiveBudget) {
+                status = 'BLOCKED';
+                const excess = directComm - effectiveBudget;
+                blockReason = `Direct commission (LKR ${directComm.toFixed(2)}) exceeds effective budget (LKR ${effectiveBudget.toFixed(2)}) by LKR ${excess.toFixed(2)}.`;
+            } else if (maxTotalExposure > effectiveBudget) {
+                status = 'BLOCKED';
+                const excess = maxTotalExposure - effectiveBudget;
+                blockReason = `Maximum total commission exposure (LKR ${maxTotalExposure.toFixed(2)}) exceeds effective budget (LKR ${effectiveBudget.toFixed(2)}) by LKR ${excess.toFixed(2)}.`;
+            } else if (remainingMargin < 500.00) {
+                status = 'WARNING';
+                blockReason = `Product economics are safe, but remaining company margin (LKR ${remainingMargin.toFixed(2)}) is below the recommended threshold of LKR 500.00.`;
+            }
+
+            // Update UI Elements
+            if (document.getElementById('simDispRevenue')) {
+                document.getElementById('simDispRevenue').textContent = `LKR ${sellingPrice.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispCost').textContent = `LKR ${productCost.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispGrossProfit').textContent = `LKR ${grossProfit.toLocaleString('en-LK', { minimumFractionDigits: 2 })} (${grossMarginPercent}%)`;
+                document.getElementById('simDispProtectedAmt').textContent = `LKR ${protectedAmount.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispNetBudget').textContent = `LKR ${netBudget.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispEffectiveBudget').textContent = `LKR ${effectiveBudget.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispDirectComm').textContent = `LKR ${directComm.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispBinaryPerMember').textContent = `LKR ${binaryCommPerMember.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispMaxBinaryExposure').textContent = `LKR ${maxBinaryExposure.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispTotalExposure').textContent = `LKR ${maxTotalExposure.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispRemainingMargin').textContent = `LKR ${remainingMargin.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simMaxSafeRateDisplay').textContent = `${maxSafeBinaryRate.toFixed(2)}%`;
+
+                const cardBox = document.getElementById('simSafetyCardBox');
+                const badge = document.getElementById('simSafetyBadge');
+                const banner = document.getElementById('simReasonBanner');
+                const reasonText = document.getElementById('simReasonText');
+
+                badge.textContent = status;
+                cardBox.className = `safety-card ${status.toLowerCase()}`;
+
+                if (status === 'SAFE') {
+                    badge.style.color = 'var(--brand-green-light)';
+                    cardBox.style.borderLeftColor = 'var(--brand-green-light)';
+                    banner.style.display = 'none';
+                } else if (status === 'WARNING') {
+                    badge.style.color = 'var(--brand-orange)';
+                    cardBox.style.borderLeftColor = 'var(--brand-orange)';
+                    banner.style.display = 'block';
+                    banner.style.background = 'rgba(244, 123, 32, 0.12)';
+                    banner.style.border = '1px solid rgba(244, 123, 32, 0.3)';
+                    banner.style.color = 'var(--brand-orange)';
+                    reasonText.innerHTML = `⚠️ <strong>Margin Warning:</strong> ${blockReason}`;
+                } else {
+                    badge.style.color = 'var(--ph-red)';
+                    cardBox.style.borderLeftColor = 'var(--ph-red)';
+                    banner.style.display = 'block';
+                    banner.style.background = 'rgba(225, 45, 57, 0.12)';
+                    banner.style.border = '1px solid rgba(225, 45, 57, 0.3)';
+                    banner.style.color = 'var(--ph-red)';
+                    reasonText.innerHTML = `⛔ <strong>BLOCKED:</strong> ${blockReason}`;
+                }
+
+                // Render Level-by-Level Exposure Breakdown
+                const tbody = document.getElementById('simLevelBreakdownTableBody');
+                let tableHTML = '';
+                let cumulativeBinaryExposure = 0;
+
+                for (let lvl = 1; lvl <= maxLevels; lvl++) {
+                    cumulativeBinaryExposure += binaryCommPerMember;
+                    const totalExposureAtLevel = directComm + cumulativeBinaryExposure;
+                    const budgetLeftAtLevel = effectiveBudget - totalExposureAtLevel;
+                    const isOver = budgetLeftAtLevel < 0;
+
+                    tableHTML += `
+                        <tr style="${isOver ? 'background: rgba(225,45,57,0.08);' : ''}">
+                            <td><strong>Level ${lvl}</strong></td>
+                            <td>${lvl} Member${lvl > 1 ? 's' : ''}</td>
+                            <td>LKR ${binaryCommPerMember.toFixed(2)}</td>
+                            <td style="font-weight: 700; color: ${isOver ? 'var(--ph-red)' : 'var(--text-primary)'}">
+                                LKR ${cumulativeBinaryExposure.toFixed(2)}
+                            </td>
+                            <td style="font-weight: 700; color: ${isOver ? 'var(--ph-red)' : 'var(--brand-green-light)'}">
+                                ${budgetLeftAtLevel >= 0 ? 'LKR ' + budgetLeftAtLevel.toFixed(2) : '- LKR ' + Math.abs(budgetLeftAtLevel).toFixed(2) + ' (EXCEEDED)'}
+                            </td>
+                        </tr>
+                    `;
+                }
+                tbody.innerHTML = tableHTML;
+            }
+        }
+
+        function autoCalculateSafeCommission() {
+            runEconomicsSimulation();
+            const safeRateText = document.getElementById('simMaxSafeRateDisplay').textContent;
+            const safeRate = parseFloat(safeRateText) || 0.0;
+            document.getElementById('simBinaryRate').value = safeRate;
+            runEconomicsSimulation();
+            showToast(`⚡ Auto-applied Maximum Safe Binary Rate: <strong>${safeRate.toFixed(2)}%</strong> (SAFE Status Guaranteed)`);
+        }
+
+        // Run load on start
+        document.addEventListener('DOMContentLoaded', () => {
+            initCoursesList();
+            loadBankReceiptsTable();
+            renderRegisteredUsers(); // Initial load of registered users
+            setTimeout(loadSystemSettings, 300);
+            setTimeout(runEconomicsSimulation, 400);
+        });
+    </script>
+</body>
+</html>

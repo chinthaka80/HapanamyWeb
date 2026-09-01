@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Admin Payout Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
+        }
+        .container-box {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .payout-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .payout-table th, .payout-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 13.5px;
+        }
+        .payout-table th {
+            font-weight: 800;
+            color: var(--brand-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-box">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">👑 Admin Payout Panel (Withdrawals)</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px;">සාමාජිකයින් විසින් ඉල්ලා ඇති මුදල් ලබාගැනීම් (Withdrawals) පරීක්ෂා කර බැංකු හුවමාරුව සිදුකර ගෙවීම් අවසන් කරන්න.</p>
+
+        <table class="payout-table">
+            <thead>
+                <tr>
+                    <th>පරිශීලකයා (User ID)</th>
+                    <th>ඉල්ලුම් කළ ප්‍රමාණය (Amount)</th>
+                    <th>තත්ත්වය (Status)</th>
+                    <th>දිනය (Requested At)</th>
+                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                </tr>
+            </thead>
+            <tbody id="payoutPendingList">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted);">ලැබී ඇති මුදල් ලබාගැනීමේ ඉල්ලීම් කිසිවක් නැත (No pending withdrawal requests).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 25px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            <a href="dashboard.html" style="color: var(--brand-orange); text-decoration: none;">← Dashboard එකට යන්න</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function fetchPendingWithdrawals() {
+            try {
+                const response = await fetch('/api/admin/withdrawals/pending', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById('payoutPendingList');
+
+                if (!data.pending || data.pending.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">ගෙවීමට බලාපොරොත්තුවන Withdrawal ඉල්ලීම් කිසිවක් නැත.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.pending.forEach(req => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><code>${req.user_id}</code></td>
+                        <td><strong style="color: var(--brand-gold);">LKR ${req.amount.toFixed(2)}</strong></td>
+                        <td><span class="status-badge status-pending" style="font-size: 11px; padding: 4px 10px;">${req.status}</span></td>
+                        <td>${new Date(req.created_at).toLocaleDateString()}</td>
+                        <td style="text-align: center; display: flex; justify-content: center; gap: 10px;">
+                            <button onclick="reviewRequest('${req.id}', 'APPROVED')" style="background: #28a745; color: white; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Approve</button>
+                            <button onclick="markAsPaid('${req.id}')" style="background: var(--brand-gold); color: white; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Mark Paid</button>
+                            <button onclick="reviewRequest('${req.id}', 'REJECTED')" style="background: #dc3545; color: white; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Reject</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function reviewRequest(requestId, action) {
+            let notes = '';
+            if (action === 'REJECTED') {
+                notes = prompt('ප්‍රතික්ෂේප කිරීමට හේතුව ඇතුළත් කරන්න (Enter Rejection Reason):');
+                if (notes === null) return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/withdrawals/review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ requestId, action, notes })
+                });
+
+                if (response.ok) {
+                    alert('🎉 Request status updated successfully!');
+                    fetchPendingWithdrawals();
+                } else {
+                    const data = await response.json();
+                    alert('❌ review error: ' + data.error);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        async function markAsPaid(requestId) {
+            const confirmPay = confirm('හුවමාරුව අවසන් කර මෙය ගෙවා අවසන් (PAID) ලෙස සලකුණු කිරීමට අවශ්‍යද?');
+            if (!confirmPay) return;
+
+            try {
+                const response = await fetch('/api/admin/withdrawals/pay', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ requestId })
+                });
+
+                if (response.ok) {
+                    alert('🎉 Payout marked as PAID successfully!');
+                    fetchPendingWithdrawals();
+                } else {
+                    const data = await response.json();
+                    alert('❌ Payout error: ' + data.error);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        fetchPendingWithdrawals();
+    </script>
+</body>
+</html>

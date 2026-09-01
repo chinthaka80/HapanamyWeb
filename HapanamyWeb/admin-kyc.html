@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="si">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy - Admin KYC Review Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <style>
+        body {
+            font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            padding: 40px 20px;
+        }
+        .container-box {
+            width: 100%;
+            max-width: 900px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 40px;
+            margin: 0 auto;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+        .kyc-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .kyc-table th, .kyc-table td {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-color);
+            text-align: left;
+            font-size: 13.5px;
+        }
+        .kyc-table th {
+            font-weight: 800;
+            color: var(--brand-gold);
+        }
+    </style>
+</head>
+<body>
+    <div class="container-box">
+        <h2 style="font-size: 26px; font-weight: 900; margin-bottom: 8px;">👑 Admin KYC Review Panel</h2>
+        <p style="color: var(--text-secondary); font-size: 13.5px;">ලියාපදිංචි සාමාජිකයින්ගේ අනන්‍යතා පත්‍ර (NIC/Passport) පරීක්ෂා කර අනුමත කිරීම හෝ ප්‍රතික්ෂේප කිරීම සිදු කරන්න.</p>
+
+        <table class="kyc-table">
+            <thead>
+                <tr>
+                    <th>පරිශීලකයා (User ID)</th>
+                    <th>NIC / Passport</th>
+                    <th>ලේඛනය (Document)</th>
+                    <th>ලියාපදිංචි දිනය (Submitted At)</th>
+                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                </tr>
+            </thead>
+            <tbody id="kycPendingList">
+                <tr>
+                    <td colspan="5" style="text-align: center; color: var(--text-muted);">පැමිණි KYC අයදුම්පත් කිසිවක් නැත (No pending KYC requests).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p style="margin-top: 25px; text-align: center; font-size: 13.5px; font-weight: 700;">
+            <a href="dashboard.html" style="color: var(--brand-orange); text-decoration: none;">← Dashboard එකට යන්න</a>
+        </p>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('auth_token');
+        if (!token) window.location.href = 'login.html';
+
+        async function fetchPendingKyc() {
+            try {
+                const response = await fetch('/api/admin/kyc/pending', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                const tbody = document.getElementById('kycPendingList');
+                
+                if (!data.pending || data.pending.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 20px;">අනුමත කිරීමට බලාපොරොත්තුවන KYC අයදුම්පත් කිසිවක් නැත.</td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                data.pending.forEach(kyc => {
+                    const tr = document.createElement('tr');
+                    
+                    const filename = kyc.document_url.split('/').pop();
+                    const secureDocUrl = `/api/kyc/document?filename=${encodeURIComponent(filename)}`;
+
+                    tr.innerHTML = `
+                        <td><code>${kyc.user_id}</code></td>
+                        <td><strong>${kyc.nic_passport}</strong></td>
+                        <td><a href="${secureDocUrl}" target="_blank" style="color: var(--brand-orange); font-weight: 700;">👁️ View Document</a></td>
+                        <td>${new Date(kyc.created_at).toLocaleString()}</td>
+                        <td style="text-align: center; display: flex; justify-content: center; gap: 10px;">
+                            <button onclick="reviewKyc('${kyc.id}', 'VERIFIED')" style="background: #28a745; color: white; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Approve</button>
+                            <button onclick="reviewKyc('${kyc.id}', 'REJECTED')" style="background: #dc3545; color: white; padding: 6px 12px; border: none; border-radius: 6px; font-weight: 700; cursor: pointer;">Reject</button>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function reviewKyc(kycId, action) {
+            let notes = '';
+            if (action === 'REJECTED') {
+                notes = prompt('ප්‍රතික්ෂේප කිරීමට හේතුව ඇතුළත් කරන්න (Enter Rejection Reason):');
+                if (notes === null) return; // User cancelled
+            }
+
+            try {
+                const response = await fetch('/api/admin/kyc/review', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ kycId, action, notes })
+                });
+
+                if (response.ok) {
+                    alert('🎉 KYC තත්ත්වය සාර්ථකව යාවත්කාලීන කරන ලදී!');
+                    fetchPendingKyc();
+                } else {
+                    const data = await response.json();
+                    alert('❌ review error: ' + data.error);
+                }
+            } catch (err) {
+                alert('❌ Error: ' + err.message);
+            }
+        }
+
+        fetchPendingKyc();
+    </script>
+</body>
+</html>
