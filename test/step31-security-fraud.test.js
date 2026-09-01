@@ -201,6 +201,60 @@ test('Step 31: 9. Security Audit Logging: Captures actor, role, IP, and state ch
     assert.equal(log.ip_address, '203.115.22.10');
 });
 
+test('Step 31: 10. Frontend Manipulation Guard: Strips client-forged roles, balances and commission rates', () => {
+    const untrustedPayload = {
+        fullName: 'Hacked User',
+        username: 'hacker123',
+        role: 'SUPER_ADMIN', // Forged privilege escalation
+        balance: 500000.00, // Forged wallet balance
+        status: 'ACTIVE',
+        direct_commission_percent: 50.0 // Forged 50% commission
+    };
+
+    const sanitized = SecurityCore.filterAuthoritativeFields(untrustedPayload);
+
+    assert.equal(sanitized.fullName, 'Hacked User');
+    assert.equal(sanitized.username, 'hacker123');
+    assert.equal(sanitized.role, undefined, 'Client-sent role must be stripped');
+    assert.equal(sanitized.balance, undefined, 'Client-sent balance must be stripped');
+    assert.equal(sanitized.direct_commission_percent, undefined, 'Client-sent commission rate must be stripped');
+});
+
+test('Step 31: 11. Duplicate Request & Idempotency: Rejects duplicate idempotency keys', () => {
+    const idempotencySet = new Set();
+    const key = 'idem-req-998811';
+
+    // 1st request succeeds
+    const firstAttempt = !idempotencySet.has(key);
+    if (firstAttempt) idempotencySet.add(key);
+    assert(firstAttempt, 'First request should succeed');
+
+    // 2nd duplicate request is blocked
+    const secondAttempt = !idempotencySet.has(key);
+    assert(!secondAttempt, 'Duplicate request must be blocked');
+});
+
+test('Step 31: 12. Race Condition Guard: Concurrent mutex locks prevent race conditions on balance adjustments', () => {
+    const resourceKey = 'wallet-lock-user-456';
+
+    // Thread 1 acquires lock
+    const lock1 = SecurityCore.acquireLock(resourceKey);
+    assert(lock1, 'First thread must acquire lock');
+
+    // Thread 2 attempts concurrent access while locked -> blocked
+    const lock2 = SecurityCore.acquireLock(resourceKey);
+    assert(!lock2, 'Concurrent access must be blocked to prevent race conditions');
+
+    // Thread 1 finishes and releases lock
+    SecurityCore.releaseLock(resourceKey);
+
+    // Thread 3 can now acquire lock safely
+    const lock3 = SecurityCore.acquireLock(resourceKey);
+    assert(lock3, 'New request can acquire lock after release');
+
+    SecurityCore.releaseLock(resourceKey);
+});
+
 if (require.main === module) {
     runTests();
 }

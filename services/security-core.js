@@ -64,6 +64,39 @@ const SecurityCore = {
     failedLoginTracker: new Map(),
     passwordResetTokens: new Map(),
     active2FASessions: new Map(),
+    processingLocks: new Set(),
+
+    /**
+     * Attempts to acquire an atomic mutex lock for an identifier (e.g. wallet transaction, payment approval).
+     * Returns true if lock acquired, false if already locked.
+     */
+    acquireLock(resourceKey) {
+        if (!resourceKey) return true;
+        if (this.processingLocks.has(resourceKey)) {
+            return false; // Already locked by another concurrent process
+        }
+        this.processingLocks.add(resourceKey);
+        return true;
+    },
+
+    /**
+     * Releases an acquired mutex lock.
+     */
+    releaseLock(resourceKey) {
+        if (!resourceKey) return;
+        this.processingLocks.delete(resourceKey);
+    },
+
+    /**
+     * Strips client-manipulated fields (e.g., role, balance, commission_rates, status) to prevent frontend tampering.
+     */
+    filterAuthoritativeFields(clientPayload = {}, forbiddenKeys = ['role', 'balance', 'status', 'is_admin', 'commission_rate', 'price', 'direct_commission_percent']) {
+        const sanitized = { ...clientPayload };
+        forbiddenKeys.forEach(k => {
+            delete sanitized[k];
+        });
+        return sanitized;
+    },
 
     // ========================================================
     // 1. AUTHENTICATION & LOGIN RATE LIMITING
