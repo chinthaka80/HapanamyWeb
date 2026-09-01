@@ -42,6 +42,7 @@ require('./step27-admin-dashboard.test');
 require('./step28-reports-analytics.test');
 require('./step29-refund-cancellation.test');
 require('./step30-commission-volume-reversal.test');
+require('./step31-security-fraud.test');
 
 // Run
 runTests();
