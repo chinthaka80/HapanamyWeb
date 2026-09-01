@@ -169,15 +169,12 @@ async function dbGetAffiliateStats(userSlug) {
             // Seed stats globally if user is new
             if (error && error.code === 'PGRST116') { // PGRST116 means row not found
                 let seedStats = { user_slug: userSlug, clicks: 0, sales: 0, total_earnings: 0, trend_feb: 0, trend_mar: 0, trend_apr: 0, trend_may: 0, trend_jun: 0, trend_jul: 0 };
-                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
-                    seedStats = { user_slug: userSlug, clicks: 1248, sales: 12, total_earnings: 23790, trend_feb: 4200, trend_mar: 8500, trend_apr: 12000, trend_may: 9800, trend_jun: 16500, trend_jul: 23790 };
-                }
                 await supabaseClient.from('affiliate_stats').insert([seedStats]);
                 return {
                     clicks: seedStats.clicks,
                     sales: seedStats.sales,
                     total_earnings: seedStats.total_earnings,
-                    trend: { Feb: seedStats.trend_feb, Mar: seedStats.trend_mar, Apr: seedStats.trend_apr, May: seedStats.trend_may, Jun: seedStats.trend_jun, Jul: seedStats.trend_jul }
+                    trend: { Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0, Jul: 0 }
                 };
             }
             console.warn('Supabase query failed, falling back to LocalStorage:', error);
@@ -189,21 +186,12 @@ async function dbGetAffiliateStats(userSlug) {
     // LocalStorage fallback
     let stats = JSON.parse(localStorage.getItem('affiliate_stats_' + userSlug));
     if (!stats) {
-        if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
-            stats = {
-                clicks: 1248,
-                sales: 12,
-                total_earnings: 23790,
-                trend: { Feb: 4200, Mar: 8500, Apr: 12000, May: 9800, Jun: 16500, Jul: 23790 }
-            };
-        } else {
-            stats = {
-                clicks: 0,
-                sales: 0,
-                total_earnings: 0,
-                trend: { Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0, Jul: 0 }
-            };
-        }
+        stats = {
+            clicks: 0,
+            sales: 0,
+            total_earnings: 0,
+            trend: { Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0, Jul: 0 }
+        };
         localStorage.setItem('affiliate_stats_' + userSlug, JSON.stringify(stats));
     }
     return stats;

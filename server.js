@@ -937,7 +937,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/referrals/my-links
     if (req.method === 'GET' && pathname === '/api/referrals/my-links') {
         const authUser = getAuthenticatedUser(req);
-        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'kasun_t';
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'Hiru';
 
         const links = ReferralService.generateReferralLinks(username);
         const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
@@ -967,7 +967,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/referrals/analytics
     if (req.method === 'GET' && pathname === '/api/referrals/analytics') {
         const authUser = getAuthenticatedUser(req);
-        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'kasun_t';
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'Hiru';
         const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
 
         sendJSON(res, 200, { success: true, stats });

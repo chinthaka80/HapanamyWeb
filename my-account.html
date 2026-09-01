@@ -721,7 +721,7 @@
                 <div class="account-panel" id="panel-links">
                     <div class="admin-table-box" style="padding: 24px;">
                         <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px;">ඔබේ පොදු අනුබද්ධිත සබැඳිය (Your Main Referral Link)</h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ මිලදී ගන්නා සියලුම ගනුදෙනු සඳහා ඔබට 15% සෘජු කොමිස් සහ මට්ටම් 5 කින් නිෂ්ක්‍රීය ආදායම් ලැබෙනු ඇත.</p>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ ලියාපදිංචි වන සාමාජිකයින්ගේ ගනුදෙනු සඳහා ඔබට 8% සෘජු කොමිස් සහ 7% Binary Volume කොමිස් හිමිවේ.</p>
                         
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="mainReferralLinkVal" readonly value="https://hapanamy.lk/register?ref=Hiru" style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px;">
@@ -742,7 +742,7 @@
                         <div class="admin-table-box" style="border-left: 5px solid #10B981; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                                 <span style="font-weight: 800; font-size: 14.5px; color: #10B981;">👈 LEFT Leg Team (වම් ශාඛාව)</span>
-                                <span style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Volume: LKR 0.00</span>
+                                <span id="leftLegVolText" style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
                             <div id="leftLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
                                 නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
@@ -753,7 +753,7 @@
                         <div class="admin-table-box" style="border-left: 5px solid #F59E0B; box-shadow: 0 4px 10px rgba(245,158,11,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                                 <span style="font-weight: 800; font-size: 14.5px; color: #F59E0B;">👉 RIGHT Leg Team (දකුණු ශාඛාව)</span>
-                                <span style="font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">Volume: LKR 0.00</span>
+                                <span id="rightLegVolText" style="font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
                             <div id="rightLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
                                 නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
@@ -765,10 +765,10 @@
                     <div class="admin-table-box" style="border-left: 5px solid #6366F1; box-shadow: 0 4px 10px rgba(99,102,241,0.05);">
                         <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                             <span style="font-weight: 800; font-size: 14.5px; color: #6366F1;">👥 Direct Referrals (8% Direct Commission)</span>
-                            <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">0 Direct Members</span>
+                            <span id="directCountText" style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">0 Direct Members</span>
                         </div>
                         <div id="level1DownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
-                            ඔබගේ Direct Referral Link හරහා ලියාපදිංචි වන සාමාජිකයින් මෙහි දැක්වේ.
+                            තවමත් සෘජු සාමාජිකයින් නොමැත. ඔබගේ Referral Link එක බෙදාගන්න.
                         </div>
                     </div>
                 </div>
@@ -792,7 +792,7 @@
 
                                 <div class="form-group" style="margin-top: 15px;">
                                     <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details) *</label>
-                                    <textarea id="payoutBankDetails" required placeholder="Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch" rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <textarea id="payoutBankDetails" required placeholder="Hiru, Commercial Bank, Acc: 8010294851, Maharagama Branch" rows="3" style="width: 100%;"></textarea>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" style="width: 100%;">ඉල්ලීම යොමු කරන්න (Request Bank Payout)</button>
@@ -975,109 +975,63 @@
             });
         }
 
-        // Load dynamically referred downline members grouped into layers (Levels 1 to 5)
+        // Load dynamically referred binary team and direct referrals
         function loadDynamicDownlines() {
             const userSlug = getActiveUserSlug();
             
-            // Seed mock network for kasun_t / affiliate if not set yet
-            if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
-                if (!localStorage.getItem('referred_users_kasun_t') && !localStorage.getItem('referred_users_affiliate')) {
-                    localStorage.setItem('referred_users_' + userSlug, JSON.stringify([
-                        { name: 'සඳුනි පෙරේරා', email: 'sanduni@hapanamy.lk', phone: '0771234567', date: '2026-06-01' },
-                        { name: 'නිමල් සිරි', email: 'nimal@hapanamy.lk', phone: '0777654321', date: '2026-06-15' }
-                    ]));
-                    localStorage.setItem('referred_users_sanduni', JSON.stringify([
-                        { name: 'රුවන් බණ්ඩාර', email: 'ruwan@hapanamy.lk', phone: '0711112222', date: '2026-06-10' },
-                        { name: 'කවීන් සිල්වා', email: 'kaveen@hapanamy.lk', phone: '0722223333', date: '2026-06-12' }
-                    ]));
-                    localStorage.setItem('referred_users_ruwan', JSON.stringify([
-                        { name: 'ප්‍රියන්ත කුමාර', email: 'priyantha@hapanamy.lk', phone: '0755556666', date: '2026-06-20' }
-                    ]));
-                    localStorage.setItem('referred_users_priyantha', JSON.stringify([
-                        { name: 'දිල්හානි ජයවර්ධන', email: 'dilhani@hapanamy.lk', phone: '0788889999', date: '2026-06-25' }
-                    ]));
-                    localStorage.setItem('referred_users_dilhani', JSON.stringify([
-                        { name: 'තිළිණ පෙරේරා', email: 'thilina@hapanamy.lk', phone: '0700001111', date: '2026-07-01' }
-                    ]));
+            // Containers
+            const l1Container = document.getElementById('level1DownlinesList');
+            const leftContainer = document.getElementById('leftLegDownlinesList');
+            const rightContainer = document.getElementById('rightLegDownlinesList');
+            const directCountEl = document.getElementById('directCountText');
+            const leftVolEl = document.getElementById('leftLegVolText');
+            const rightVolEl = document.getElementById('rightLegVolText');
+
+            const directMembers = JSON.parse(localStorage.getItem('referred_users_' + userSlug)) || [];
+            
+            if (l1Container) {
+                if (directMembers.length === 0) {
+                    l1Container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">තවමත් සෘජු සාමාජිකයින් නොමැත (0 Direct Members).</div>`;
+                } else {
+                    l1Container.innerHTML = '';
+                    directMembers.forEach(m => {
+                        l1Container.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Direct Referral (8%)', (m.amount || 0) * 0.08);
+                    });
                 }
             }
 
-            // Get containers
-            const l1Container = document.getElementById('level1DownlinesList');
-            const l2Container = document.getElementById('level2DownlinesList');
-            const l3Container = document.getElementById('level3DownlinesList');
-            const l4Container = document.getElementById('level4DownlinesList');
-            const l5Container = document.getElementById('level5DownlinesList');
+            if (directCountEl) {
+                directCountEl.textContent = `${directMembers.length} Direct Members`;
+            }
 
-            if (!l1Container || !l2Container || !l3Container || !l4Container || !l5Container) return;
+            // Left leg team
+            const leftMembers = directMembers.filter(m => m.position === 'left' || m.leg === 'left');
+            if (leftContainer) {
+                if (leftMembers.length === 0) {
+                    leftContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">වම් ශාඛාවේ නව සාමාජිකයින් නොමැත (0 Members).</div>`;
+                } else {
+                    leftContainer.innerHTML = '';
+                    leftMembers.forEach(m => {
+                        leftContainer.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Left Leg Team', (m.volume || 0));
+                    });
+                }
+            }
 
-            // Clear all containers
-            l1Container.innerHTML = '';
-            l2Container.innerHTML = '';
-            l3Container.innerHTML = '';
-            l4Container.innerHTML = '';
-            l5Container.innerHTML = '';
+            // Right leg team
+            const rightMembers = directMembers.filter(m => m.position === 'right' || m.leg === 'right');
+            if (rightContainer) {
+                if (rightMembers.length === 0) {
+                    rightContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">දකුණු ශාඛාවේ නව සාමාජිකයින් නොමැත (0 Members).</div>`;
+                } else {
+                    rightContainer.innerHTML = '';
+                    rightMembers.forEach(m => {
+                        rightContainer.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Right Leg Team', (m.volume || 0));
+                    });
+                }
+            }
 
-            // Helper to get slug from email/username
-            const getSlug = (email) => {
-                return (email || '').split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
-            };
-
-            // Traversal queues
-            // Level 1
-            const l1Members = JSON.parse(localStorage.getItem('referred_users_' + userSlug)) || [];
-            l1Members.forEach(m => {
-                l1Container.innerHTML += createMemberHTML(m.name, 'Direct Referral', 1500); // Direct referral commission L1
-            });
-
-            // Level 2
-            const l2Members = [];
-            l1Members.forEach(m1 => {
-                const slug1 = getSlug(m1.email);
-                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug1)) || [];
-                referrals.forEach(m2 => {
-                    l2Members.push(m2);
-                    l2Container.innerHTML += createMemberHTML(m2.name, 'Referred by ' + m1.name, 450); // L2 commission
-                });
-            });
-
-            // Level 3
-            const l3Members = [];
-            l2Members.forEach(m2 => {
-                const slug2 = getSlug(m2.email);
-                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug2)) || [];
-                referrals.forEach(m3 => {
-                    l3Members.push(m3);
-                    l3Container.innerHTML += createMemberHTML(m3.name, 'Referred by ' + m2.name, 250); // L3 commission
-                });
-            });
-
-            // Level 4
-            const l4Members = [];
-            l3Members.forEach(m3 => {
-                const slug3 = getSlug(m3.email);
-                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug3)) || [];
-                referrals.forEach(m4 => {
-                    l4Members.push(m4);
-                    l4Container.innerHTML += createMemberHTML(m4.name, 'Referred by ' + m3.name, 150); // L4 commission
-                });
-            });
-
-            // Level 5
-            l4Members.forEach(m4 => {
-                const slug4 = getSlug(m4.email);
-                const referrals = JSON.parse(localStorage.getItem('referred_users_' + slug4)) || [];
-                referrals.forEach(m5 => {
-                    l5Container.innerHTML += createMemberHTML(m5.name, 'Referred by ' + m4.name, 100); // L5 commission
-                });
-            });
-
-            // Show empty state messages if no members exist in levels
-            checkEmptyState(l1Container, 'Level 1');
-            checkEmptyState(l2Container, 'Level 2');
-            checkEmptyState(l3Container, 'Level 3');
-            checkEmptyState(l4Container, 'Level 4');
-            checkEmptyState(l5Container, 'Level 5');
+            if (leftVolEl) leftVolEl.textContent = `Volume: LKR 0.00`;
+            if (rightVolEl) rightVolEl.textContent = `Volume: LKR 0.00`;
         }
 
         function createMemberHTML(name, subtext, commission) {
@@ -1089,15 +1043,6 @@
                     </div>
                     <div style="color:var(--brand-green-light); font-weight:700;">+ රු. ${commission.toLocaleString()}</div>
                 </div>`;
-        }
-
-        function checkEmptyState(container, levelName) {
-            if (container.children.length === 0) {
-                container.innerHTML = `
-                    <div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">
-                        මෙම මට්ටමේ (Level) සාමාජිකයින් කිසිවෙක් තවමත් නැත.
-                    </div>`;
-            }
         }
 
         // Save profile

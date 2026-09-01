@@ -709,39 +709,9 @@
                                     <th style="text-align: center;">ක්‍රියාව (Actions)</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody id="adminAffiliatesLeaderboardBody">
                                 <tr>
-                                    <td><strong>කසුන් තාරක</strong></td>
-                                    <td><code>hapanamy.lk/?ref=kasun_t</code></td>
-                                    <td>14 Sales</td>
-                                    <td>12 Members</td>
-                                    <td style="color: var(--brand-green-light); font-weight: 700;">රු. 65,490.00</td>
-                                    <td><span class="badge-status active">Gold Partner</span></td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('කසුන් තාරක')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>සඳුනි පෙරේරා</strong></td>
-                                    <td><code>hapanamy.lk/?ref=sanduni_p</code></td>
-                                    <td>8 Sales</td>
-                                    <td>5 Members</td>
-                                    <td style="color: var(--brand-green-light); font-weight: 700;">රු. 32,840.00</td>
-                                    <td><span class="badge-status active">Silver Partner</span></td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('සඳුනි පෙරේරා')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><strong>නිපුන් රණසිංහ</strong></td>
-                                    <td><code>hapanamy.lk/?ref=nipun_r</code></td>
-                                    <td>5 Sales</td>
-                                    <td>2 Members</td>
-                                    <td style="color: var(--brand-green-light); font-weight: 700;">රු. 18,340.00</td>
-                                    <td><span class="badge-status active">Bronze Partner</span></td>
-                                    <td style="text-align: center;">
-                                        <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('නිපුන් රණසිංහ')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
-                                    </td>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">නව විකුණුම් සිදු වූ පසු අනුබද්ධිත නායකයින් මෙහි ස්වයංක්‍රීයව දිස්වේ (No sales recorded yet - 0).</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -815,29 +785,15 @@
                                 </tr>
                             </thead>
                             <tbody id="bankReceiptsTableBody">
-                                <!-- Injected dynamically from localStorage -->
                                 <tr>
-                                    <td>#10440</td>
-                                    <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">TXN-DEP-8422-X7Y9</td>
-                                    <td><strong>රුවන් කුමාර (Ruwan Kumara)</strong><br><span style="font-size: 11px; color: var(--text-muted);">ruwan@gmail.com | 0778899123</span></td>
-                                    <td>Titan Elite Trading Academy</td>
-                                    <td>LKR 19,900</td>
-                                    <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Mock Slip</span></td>
-                                    <td>
-                                        <div style="display: flex; gap: 8px;">
-                                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '#10440', 'Ruwan Kumara', 19,900, 'Titan Elite Trading Academy')">Approve</button>
-                                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this)">Reject</button>
-                                        </div>
-                                    </td>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">තහවුරු කිරීමට නව බැංකු තැන්පතු රිසිට්පත් නොමැත (No pending bank slips).</td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <!-- TAB 5: SYSTEM SETTINGS -->
-                <!-- TAB 4.5: DAILY SALES & COMMISSION REPORTS -->
-                                <!-- TAB 4.5: DAILY SALES & COMMISSION REPORTS (5 SUB-SECTIONS) -->
+                <!-- TAB 4.5: DAILY SALES & COMMISSION REPORTS (5 SUB-SECTIONS) -->
                 <div class="admin-panel" id="panel-reports">
                     <!-- GLOBAL TRANSACTION ID AUDIT SEARCH BAR -->
                     <div style="background-color: var(--bg-surface); padding: 20px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 25px;">
@@ -881,28 +837,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>#10432</td>
-                                        <td>2026-08-04</td>
-                                        <td>Kasun Tharaka</td>
-                                        <td><strong>Crypto Trading SMC ICT</strong></td>
-                                        <td style="font-weight:700;">රු. 7,920.00</td>
-                                        <td><span class="badge-status active">Paid</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#10431</td>
-                                        <td>2026-08-04</td>
-                                        <td>Kavinda Perera</td>
-                                        <td><strong>Trading E-Book Guide</strong></td>
-                                        <td style="font-weight:700;">රු. 3,992.00</td>
-                                        <td><span class="badge-status active">Paid</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>#10430</td>
-                                        <td>2026-08-03</td>
-                                        <td>Nalin Silva</td>
-                                        <td><strong>AI Mastery Program</strong></td>
-                                        <td style="font-weight:700;">රු. 7,200.00</td>
-                                        <td><span class="badge-status active">Paid</span></td>
+                                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 25px;">නව ඇණවුම් ලියාපදිංචි වූ පසු මෙහි දිස්වේ (No sales recorded yet - 0).</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -915,15 +850,15 @@
                         <div class="admin-stats-grid" style="margin-bottom: 25px;">
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-orange);">
                                 <div class="admin-stat-label">Trading Academy Enrollments</div>
-                                <div class="admin-stat-val">120 Students</div>
+                                <div class="admin-stat-val">0 Students</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-gold);">
                                 <div class="admin-stat-label">AI Mastery Enrollments</div>
-                                <div class="admin-stat-val">85 Students</div>
+                                <div class="admin-stat-val">0 Students</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
                                 <div class="admin-stat-label">Astrology Bhaskara Enrollments</div>
-                                <div class="admin-stat-val">45 Students</div>
+                                <div class="admin-stat-val">0 Students</div>
                             </div>
                         </div>
                         <div class="admin-table-box">
@@ -940,20 +875,20 @@
                                     <tr>
                                         <td><strong>Titan Elite Trading Academy</strong></td>
                                         <td>රු. 7,920</td>
-                                        <td>120 Sales</td>
-                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 950,400.00</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
                                     </tr>
                                     <tr>
                                         <td><strong>AI Mastery Course</strong></td>
                                         <td>රු. 7,200</td>
-                                        <td>85 Sales</td>
-                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 612,000.00</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
                                     </tr>
                                     <tr>
                                         <td><strong>Bhaskara Astrology - භාස්කර</strong></td>
                                         <td>රු. 2,241</td>
-                                        <td>45 Sales</td>
-                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 100,845.00</td>
+                                        <td>0 Sales</td>
+                                        <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -976,25 +911,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>#10432</td>
-                                        <td>NamoBudhdhaya</td>
-                                        <td>Level 1 (Direct)</td>
-                                        <td>15%</td>
-                                        <td style="font-weight:700; color: var(--brand-orange);">රු. 1,188.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#10432</td>
-                                        <td>Sanduni Perera</td>
-                                        <td>Level 2 (Indirect)</td>
-                                        <td>10%</td>
-                                        <td style="font-weight:700; color: var(--brand-orange);">රු. 792.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>#10431</td>
-                                        <td>Kasun Tharaka</td>
-                                        <td>Level 1 (Direct)</td>
-                                        <td>15%</td>
-                                        <td style="font-weight:700; color: var(--brand-orange);">රු. 598.80</td>
+                                        <td colspan="5" style="text-align: center; color: var(--text-muted); padding: 25px;">කොමිස් ගනුදෙනු කිසිවක් නොමැත (No commission splits recorded yet - 0).</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1007,15 +924,15 @@
                         <div class="admin-stats-grid" style="margin-bottom: 25px;">
                             <div class="admin-stat-card green" style="border-bottom-color: var(--brand-green-light);">
                                 <div class="admin-stat-label">මුළු දළ ආදායම (Gross Inflow)</div>
-                                <div class="admin-stat-val">රු. 1,663,245.00</div>
+                                <div class="admin-stat-val">රු. 0.00</div>
                             </div>
                             <div class="admin-stat-card orange" style="border-bottom-color: var(--brand-orange);">
                                 <div class="admin-stat-label">මුළු ගෙවූ කොමිස් (Commissions Paid)</div>
-                                <div class="admin-stat-val">රු. 648,665.55</div>
+                                <div class="admin-stat-val">රු. 0.00</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-gold);">
                                 <div class="admin-stat-label">ශුද්ධ ලාභ ශේෂය (Net Revenue)</div>
-                                <div class="admin-stat-val" style="color:var(--brand-gold);">රු. 1,014,579.45</div>
+                                <div class="admin-stat-val" style="color:var(--brand-gold);">රු. 0.00</div>
                             </div>
                         </div>
                         <div class="admin-table-box">
@@ -1031,16 +948,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td>2026-08-04</td>
-                                        <td><span style="color:var(--brand-green-light); font-weight:700;">INFLOW</span></td>
-                                        <td>Course Sale HNB Bank Receipt #10432</td>
-                                        <td style="font-weight:700; color:var(--brand-green-light);">+ රු. 7,920.00</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2026-08-04</td>
-                                        <td><span style="color:var(--ph-red); font-weight:700;">OUTFLOW</span></td>
-                                        <td>Affiliate Withdrawal paid to Sanduni Perera</td>
-                                        <td style="font-weight:700; color:var(--ph-red);">- රු. 5,000.00</td>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 25px;">මූල්‍ය වාර්තා කිසිවක් නොමැත (No financial transactions recorded yet - 0).</td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -1053,11 +961,11 @@
                         <div class="admin-stats-grid" style="margin-bottom: 25px;">
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
                                 <div class="admin-stat-label">සක්‍රීය සාමාජිකයින් (Active Members)</div>
-                                <div class="admin-stat-val" style="color:var(--brand-green-light);">193 Members</div>
+                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Hiru)</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--ph-red);">
                                 <div class="admin-stat-label">අක්‍රීය සාමාජිකයින් (Inactive Members)</div>
-                                <div class="admin-stat-val" style="color:var(--ph-red);">46 Members</div>
+                                <div class="admin-stat-val" style="color:var(--ph-red);">0 Members</div>
                             </div>
                         </div>
                         <div class="admin-table-box">
@@ -1421,23 +1329,16 @@
             const tbody = document.getElementById('bankReceiptsTableBody');
             if (!tbody) return;
 
-            // Start with baseline static mockup rows
-            let rowsHtml = `
-                <tr>
-                    <td>#10440</td>
-                    <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">TXN-DEP-8422-X7Y9</td>
-                    <td><strong>රුවන් කුමාර (Ruwan Kumara)</strong><br><span style="font-size: 11px; color: var(--text-muted);">ruwan@gmail.com | 0778899123</span></td>
-                    <td>Titan Elite Trading Academy</td>
-                    <td>LKR 19,900</td>
-                    <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Mock Slip</span></td>
-                    <td>
-                        <div style="display: flex; gap: 8px;">
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '#10440', 'Ruwan Kumara', 19900, 'Titan Elite Trading Academy')">Approve</button>
-                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this)">Reject</button>
-                        </div>
-                    </td>
-                </tr>`;
+            if (list.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">තහවුරු කිරීමට නව බැංකු තැන්පතු රිසිට්පත් නොමැත (No pending bank slips).</td>
+                    </tr>
+                `;
+                return;
+            }
 
+            let rowsHtml = '';
             // Append dynamic slips
             list.forEach((item, index) => {
                 const badgeClass = item.status.toLowerCase().includes('pending') ? 'pending' : 'paid';
@@ -1448,7 +1349,7 @@
                         </div>`
                     : `<span class="badge-status ${badgeClass}">${item.status}</span>`;
 
-                rowsHtml = `
+                rowsHtml += `
                     <tr>
                         <td>${item.orderId}</td>
                         <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode}</td>
@@ -1457,17 +1358,17 @@
                         <td>LKR ${item.amount.toLocaleString()}</td>
                         <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Slip Image</span></td>
                         <td>${actionButtons}</td>
-                    </tr>` + rowsHtml;
+                    </tr>`;
             });
             tbody.innerHTML = rowsHtml;
         }
 
         // Approve manual bank order receipt and distribute commissions
         function approveBankOrder(btn, orderId, userName, amount, courseName, queueIndex = -1) {
-            // 1. Calculate unilevel commissions (Total MLM Payout = 39%)
-            const commDirect = amount * 0.15; // 15% Direct sale commission
+            // 1. Calculate Binary MLM Direct Commission (8%)
+            const commDirect = amount * 0.08;
             
-            let referrerCode = 'kasun_t';
+            let referrerCode = 'Hiru';
 
             // 2. Save approved status to queue and unlock course for student
             if (queueIndex !== -1) {
@@ -1475,7 +1376,7 @@
                 const item = slipsQueue[queueIndex];
                 if (item) {
                     item.status = 'Approved & Activated';
-                    referrerCode = item.referrer || 'kasun_t';
+                    referrerCode = item.referrer || 'Hiru';
                     
                     // Unlock the specific courses/ebooks dynamically for the buyer
                     const userEmail = item.email || 'student@hapanamy.lk';
@@ -1491,9 +1392,6 @@
 
             // Sync MLM payout ledger for the specific referrer
             let currentBalance = parseFloat(localStorage.getItem('affiliate_balance_' + referrerCode) || '0');
-            if (referrerCode === 'kasun_t' && localStorage.getItem('affiliate_balance_kasun_t') === null) {
-                currentBalance = 23790; // Seed default balance for admin's mock partner
-            }
             localStorage.setItem('affiliate_balance_' + referrerCode, (currentBalance + commDirect).toString());
 
             // 3. Update table UI row
@@ -1503,10 +1401,13 @@
             }
 
             // 4. Update Admin sales revenue metrics
-            let currentRev = parseFloat(document.getElementById('reportPeriodSales').textContent.replace(/[^0-9]/g, '')) || 11912;
-            document.getElementById('reportPeriodSales').textContent = 'රු. ' + (currentRev + amount).toLocaleString();
+            const repEl = document.getElementById('reportPeriodSales');
+            if (repEl) {
+                let currentRev = parseFloat(repEl.textContent.replace(/[^0-9]/g, '')) || 0;
+                repEl.textContent = 'රු. ' + (currentRev + amount).toLocaleString();
+            }
 
-            showToast(`✅ <strong>ඇණවුම අනුමතයි!</strong> ${courseName} සඳහා රු. ${amount.toLocaleString()} ක ගෙවීම සාර්ථකව තහවුරු විය. මට්ටම් 5 කට කොමිස් මුදල් බෙදා හරින ලදී.`);
+            showToast(`✅ <strong>ඇණවුම අනුමතයි!</strong> ${courseName} සඳහා රු. ${amount.toLocaleString()} ක ගෙවීම සාර්ථකව තහවුරු විය.`);
             loadBankReceiptsTable();
         }
 

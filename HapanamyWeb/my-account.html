@@ -960,107 +960,75 @@
             });
         }
 
-        // Load dynamically referred downline members grouped into layers (Levels 1 to 5)
+        // Load dynamically referred binary team and direct referrals
         function loadDynamicDownlines() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
-            const myRefCode = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'kasun_t';
+            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Hiru' };
+            const myRefCode = profile.name ? profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'hiru';
             
             // Containers
             const l1Container = document.getElementById('level1DownlinesList');
-            const l2Container = document.getElementById('level2DownlinesList');
-            const l3Container = document.getElementById('level3DownlinesList');
-            const l4Container = document.getElementById('level4DownlinesList');
-            const l5Container = document.getElementById('level5DownlinesList');
+            const leftContainer = document.getElementById('leftLegDownlinesList');
+            const rightContainer = document.getElementById('rightLegDownlinesList');
+            const directCountEl = document.getElementById('directCountText');
+            const leftVolEl = document.getElementById('leftLegVolText');
+            const rightVolEl = document.getElementById('rightLegVolText');
 
-            if (!l1Container || !l2Container) return;
+            const directMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
+            
+            if (l1Container) {
+                if (directMembers.length === 0) {
+                    l1Container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">තවමත් සෘජු සාමාජිකයින් නොමැත (0 Direct Members).</div>`;
+                } else {
+                    l1Container.innerHTML = '';
+                    directMembers.forEach(m => {
+                        l1Container.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Direct Referral (8%)', (m.amount || 0) * 0.08);
+                    });
+                }
+            }
 
-            // Load baseline mock data
-            l1Container.innerHTML = `
+            if (directCountEl) {
+                directCountEl.textContent = `${directMembers.length} Direct Members`;
+            }
+
+            // Left leg team
+            const leftMembers = directMembers.filter(m => m.position === 'left' || m.leg === 'left');
+            if (leftContainer) {
+                if (leftMembers.length === 0) {
+                    leftContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">වම් ශාඛාවේ නව සාමාජිකයින් නොමැත (0 Members).</div>`;
+                } else {
+                    leftContainer.innerHTML = '';
+                    leftMembers.forEach(m => {
+                        leftContainer.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Left Leg Team', (m.volume || 0));
+                    });
+                }
+            }
+
+            // Right leg team
+            const rightMembers = directMembers.filter(m => m.position === 'right' || m.leg === 'right');
+            if (rightContainer) {
+                if (rightMembers.length === 0) {
+                    rightContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">දකුණු ශාඛාවේ නව සාමාජිකයින් නොමැත (0 Members).</div>`;
+                } else {
+                    rightContainer.innerHTML = '';
+                    rightMembers.forEach(m => {
+                        rightContainer.innerHTML += createMemberHTML(m.name || m.username || 'Member', 'Right Leg Team', (m.volume || 0));
+                    });
+                }
+            }
+
+            if (leftVolEl) leftVolEl.textContent = `Volume: LKR 0.00`;
+            if (rightVolEl) rightVolEl.textContent = `Volume: LKR 0.00`;
+        }
+
+        function createMemberHTML(name, subtext, commission) {
+            return `
                 <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
                     <div>
-                        <div class="network-member-name" style="font-weight:700;">සඳුනි පෙරේරා (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">3 Sales generated</div>
+                        <div class="network-member-name" style="font-weight:700;">${name}</div>
+                        <div style="font-size:11px; color:var(--text-muted);">${subtext}</div>
                     </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 3,500.00</div>
-                </div>
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">නිමල් සිරි (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
-                    </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>
+                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. ${commission.toLocaleString()}</div>
                 </div>`;
-
-            l2Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">රුවන් බණ්ඩාර</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 1,200.00</div>
-                </div>
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">කවීන් සිල්වා</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by සඳුනි | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 350.00</div>
-                </div>`;
-
-            l3Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">ප්‍රියන්ත කුමාර</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by රුවන් | L3 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 240.00</div>
-                </div>`;
-
-            l4Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">දිල්හානි ජයවර්ධන</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by ප්‍රියන්ත | L4 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>
-                </div>`;
-
-            l5Container.innerHTML = `
-                <div class="network-member-item" style="display:flex; justify-content:space-between; padding:12px 0;">
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">තිළිණ පෙරේරා</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by දිල්හානි | L5 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 300.00</div>
-                </div>`;
-
-            // Load dynamically signed up users from local storage
-            const dynamicMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
-            dynamicMembers.forEach(member => {
-                // 1. Direct referral (Level 1)
-                const div1 = document.createElement('div');
-                div1.className = 'network-member-item';
-                div1.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
-                div1.innerHTML = `
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">${member.name} (Direct Referral)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">0 Sales generated</div>
-                    </div>
-                    <div style="color:var(--brand-green-light); font-weight:700;">+ රු. 0.00</div>`;
-                l1Container.insertBefore(div1, l1Container.firstChild);
-
-                // 2. Simulate an indirect referral under this user (Level 2) to show unilevel flow
-                const div2 = document.createElement('div');
-                div2.className = 'network-member-item';
-                div2.style.cssText = 'display:flex; justify-content:space-between; border-bottom:1px solid var(--border-color); padding:12px 0;';
-                div2.innerHTML = `
-                    <div>
-                        <div class="network-member-name" style="font-weight:700;">${member.name}'s Referral (Indirect)</div>
-                        <div style="font-size:11px; color:var(--text-muted);">Referred by ${member.name.split(' ')[0]} | L2 Split active</div>
-                    </div>
-                    <div style="color:var(--brand-orange); font-weight:700;">+ රු. 0.00</div>`;
-                l2Container.insertBefore(div2, l2Container.firstChild);
-            });
         }
 
         // Save profile
