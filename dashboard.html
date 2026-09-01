@@ -664,6 +664,157 @@
             animation: fadeIn 0.25s ease;
         }
 
+        .modal-dialog-large {
+            max-width: 680px;
+        }
+
+        /* Product Store Styles */
+        .store-filter-bar {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 12px;
+            margin-bottom: 24px;
+        }
+
+        .store-filter-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .store-filter-btn:hover, .store-filter-btn.active {
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            color: #FFFFFF;
+            border-color: transparent;
+        }
+
+        .product-store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .store-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .store-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--brand-gold);
+        }
+
+        .store-card-img-wrap {
+            position: relative;
+            width: 100%;
+            height: 160px;
+            background: #0B1D33;
+        }
+
+        .store-card-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .store-card-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--brand-orange);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .store-card-category {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            background: rgba(11, 29, 51, 0.85);
+            backdrop-filter: blur(4px);
+            color: var(--brand-gold);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 10.5px;
+            font-weight: 700;
+        }
+
+        .store-card-body {
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .store-card-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .store-card-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .store-card-pricing {
+            margin-top: auto;
+            padding-top: 10px;
+            border-top: 1px dashed var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 12px;
+        }
+
+        .store-price-val {
+            font-size: 17px;
+            font-weight: 900;
+            color: var(--brand-gold);
+        }
+
+        .store-price-orig {
+            font-size: 12px;
+            text-decoration: line-through;
+            color: var(--text-muted);
+            margin-left: 6px;
+        }
+
+        .store-card-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
         /* Mobile Bottom Nav */
         .mobile-bottom-nav {
             display: none;
@@ -794,9 +945,17 @@
                     <span class="member-nav-icon">🔗</span>
                     <span>Referral Links (සබැඳි)</span>
                 </li>
+                <li class="member-nav-link" onclick="switchMemberTab('buy-products')" id="nav-buy-products">
+                    <span class="member-nav-icon">🛒</span>
+                    <span>Buy Products (මිලදී ගන්න)</span>
+                </li>
                 <li class="member-nav-link" onclick="switchMemberTab('products')" id="nav-products">
                     <span class="member-nav-icon">📚</span>
-                    <span>My Courses (පාඨමාලා)</span>
+                    <span>My Courses (මගේ පාඨමාලා)</span>
+                </li>
+                <li class="member-nav-link" onclick="switchMemberTab('orders')" id="nav-orders">
+                    <span class="member-nav-icon">📦</span>
+                    <span>My Orders (ඇණවුම් / Slips)</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('financial')" id="nav-financial">
                     <span class="member-nav-icon">💳</span>
@@ -1138,12 +1297,42 @@
                     </div>
                 </div>
 
-                <!-- TAB 6: PRODUCTS & MASTERCLASSES -->
+                <!-- TAB 6: BUY PRODUCTS (COURSE STORE) -->
+                <div class="tab-panel" id="panel-buy-products">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            <span>🛒 පාඨමාලා සහ නිෂ්පාදන මිලදී ගැනීමේ මධ්‍යස්ථානය (Buy Products)</span>
+                            <span class="badge-pill badge-qualified" id="availableProductsCount">14 Courses Available</span>
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
+                            ඔබේ Online ව්‍යාපාරික හා ඉපැයීම් හැකියාවන් වර්ධනය කරගැනීමට අවශ්‍ය පාඨමාලාව පහසුවෙන් තෝරාගෙන සෘජු බැංකු තැන්පතු මගින් ක්ෂණිකව මිලදී ගන්න.
+                        </p>
+
+                        <!-- Filter Chips -->
+                        <div class="store-filter-bar">
+                            <button class="store-filter-btn active" onclick="filterStoreCatalog('ALL', this)">🌟 සියල්ල (All Courses)</button>
+                            <button class="store-filter-btn" onclick="filterStoreCatalog('Social Media', this)">📱 Social Media</button>
+                            <button class="store-filter-btn" onclick="filterStoreCatalog('Trading', this)">📈 Trading & Crypto</button>
+                            <button class="store-filter-btn" onclick="filterStoreCatalog('AI & Tech', this)">🤖 AI & Technology</button>
+                            <button class="store-filter-btn" onclick="filterStoreCatalog('E-Book', this)">📘 E-Books & Guides</button>
+                        </div>
+
+                        <!-- Dynamic Product Grid -->
+                        <div class="product-store-grid" id="buyProductsGrid">
+                            <!-- Loaded dynamically via /api/member/products -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 7: PRODUCTS & MASTERCLASSES -->
                 <div class="tab-panel" id="panel-products">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>📚 Purchased & Active Masterclasses</span>
-                            <span class="badge-pill badge-qualified" id="purchasedProductsCount">0 Active Courses</span>
+                            <span>📚 මගේ සක්‍රිය සහ මිලදී ගත් පාඨමාලා (My Enrolled Courses)</span>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="btn-action-sm btn-primary-action" onclick="switchMemberTab('buy-products')">🛒 + Buy New Course</button>
+                                <span class="badge-pill badge-qualified" id="purchasedProductsCount">0 Active Courses</span>
+                            </div>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr; gap: 20px;" id="purchasedProductsContainer">
@@ -1152,7 +1341,37 @@
                     </div>
                 </div>
 
-                <!-- TAB 7: FINANCIAL & WALLET LEDGER -->
+                <!-- TAB 8: MY ORDERS / PAYMENT SLIPS -->
+                <div class="tab-panel" id="panel-orders">
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-title">
+                            <span>📦 මගේ ඇණවුම් සහ ගෙවීම් ඉතිහාසය (My Orders & Payment Slips)</span>
+                            <button class="btn-action-sm btn-primary-action" onclick="switchMemberTab('buy-products')">🛒 New Order</button>
+                        </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබ විසින් යොමු කරන ලද බැංකු තැන්පතු රිසිට්පත් සහ ඒවායේ සත්‍යාපන තත්ත්වයන්.</p>
+
+                        <div style="overflow-x: auto;">
+                            <table class="custom-table" id="myOrdersTable">
+                                <thead>
+                                    <tr>
+                                        <th>Order Number</th>
+                                        <th>Course / Product</th>
+                                        <th>Amount (LKR)</th>
+                                        <th>Bank Ref & Date</th>
+                                        <th>Payment Slip</th>
+                                        <th>Status</th>
+                                        <th>Admin Verification</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TAB 9: FINANCIAL & WALLET LEDGER -->
                 <div class="tab-panel" id="panel-financial">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
@@ -1208,6 +1427,139 @@
         </main>
     </div>
 
+    <!-- PRODUCT DETAILS MODAL -->
+    <div class="modal-backdrop" id="productDetailsModal">
+        <div class="modal-dialog modal-dialog-large">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <div>
+                    <span class="badge-pill badge-active" id="modalProdCategory" style="margin-bottom: 6px;">Social Media</span>
+                    <h3 style="font-size: 19px; font-weight: 800; color: var(--text-primary);" id="modalProdTitle">Course Title</h3>
+                </div>
+                <button onclick="closeProductDetailsModal()" style="background:none; border:none; color:var(--text-muted); font-size: 24px; cursor:pointer;">✕</button>
+            </div>
+            
+            <div style="max-height: 70vh; overflow-y: auto; padding-right: 5px;">
+                <img id="modalProdImage" src="" alt="Course Banner" style="width: 100%; border-radius: 12px; max-height: 220px; object-fit: cover; margin-bottom: 16px; border: 1px solid var(--border-color);">
+                
+                <p id="modalProdDesc" style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 18px;"></p>
+                
+                <h4 style="font-size: 14.5px; font-weight: 800; color: var(--brand-gold); margin-bottom: 8px;">🎯 ඔබ ඉගෙන ගන්නා ප්‍රධාන කරුණු (What You Will Learn):</h4>
+                <ul id="modalProdBenefits" style="padding-left: 20px; font-size: 13px; color: var(--text-primary); line-height: 1.7; margin-bottom: 18px;"></ul>
+
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 18px; display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px;">
+                    <div>
+                        <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 700;">කාලසීමාව (DURATION)</div>
+                        <div style="font-size: 13px; font-weight: 700;" id="modalProdDuration">4 Weeks</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 700;">පිවිසුම (ACCESS TYPE)</div>
+                        <div style="font-size: 13px; font-weight: 700;" id="modalProdAccess">Lifetime Access</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 10.5px; color: var(--text-muted); font-weight: 700;">මොඩියුල ගණන (MODULES)</div>
+                        <div style="font-size: 13px; font-weight: 700;" id="modalProdModules">8 Modules</div>
+                    </div>
+                </div>
+
+                <div style="background: rgba(240, 179, 35, 0.06); border: 1px dashed var(--brand-gold); border-radius: 12px; padding: 16px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                    <div>
+                        <div style="font-size: 11.5px; color: var(--text-muted);">ගෙවිය යුතු අවසන් මුදල (Final Selling Price):</div>
+                        <div style="display: flex; align-items: baseline; gap: 10px;">
+                            <span style="font-size: 22px; font-weight: 900; color: var(--brand-gold);" id="modalProdPrice">LKR 7,425.00</span>
+                            <span style="font-size: 13px; text-decoration: line-through; color: var(--text-muted);" id="modalProdOriginalPrice">LKR 9,900.00</span>
+                        </div>
+                    </div>
+                    <div id="modalActionContainer">
+                        <!-- Dynamic Buy Now button -->
+                    </div>
+                </div>
+
+                <p style="font-size: 11px; color: var(--text-muted); text-align: center;">🛡️ Hapanamy 100% Secure Bank Transfer & 14-Day Money Back Guarantee Policy</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- IN-DASHBOARD CHECKOUT MODAL -->
+    <div class="modal-backdrop" id="productCheckoutModal">
+        <div class="modal-dialog modal-dialog-large">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: var(--text-primary);">🛍️ පාඨමාලා මිලදී ගැනීම සහ ගෙවීම (Checkout)</h3>
+                <button onclick="closeProductCheckoutModal()" style="background:none; border:none; color:var(--text-muted); font-size: 22px; cursor:pointer;">✕</button>
+            </div>
+
+            <form onsubmit="handlePaymentSlipSubmit(event)" style="max-height: 75vh; overflow-y: auto; padding-right: 5px;">
+                <input type="hidden" id="chkProductId">
+                <input type="hidden" id="chkOrderNumber">
+
+                <!-- 1. Order Summary Card -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <span style="font-size: 11.5px; color: var(--text-muted); font-weight: 700;">ORDER NUMBER: <strong id="chkOrderDisplay" style="color: var(--brand-orange);">ORD-XXXX</strong></span>
+                        <span class="badge-pill badge-active">BANK TRANSFER</span>
+                    </div>
+                    <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary); margin-bottom: 4px;" id="chkCourseTitle">Course Name</h4>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; border-top: 1px dashed var(--border-color); padding-top: 8px;">
+                        <span style="font-size: 13px; font-weight: 600;">ගෙවිය යුතු මුළු මුදල (Amount to Deposit):</span>
+                        <span style="font-size: 18px; font-weight: 900; color: var(--brand-gold);" id="chkAmountDisplay">LKR 7,425.00</span>
+                    </div>
+                </div>
+
+                <!-- 2. Company Bank Details -->
+                <div style="background: linear-gradient(135deg, rgba(240,179,35,0.06), rgba(244,123,32,0.03)); border: 1px solid rgba(240,179,35,0.3); border-radius: 12px; padding: 14px; margin-bottom: 16px;">
+                    <div style="font-size: 12.5px; font-weight: 800; color: var(--brand-gold); margin-bottom: 8px;">🏦 සමාගමේ නිල බැංකු ගිණුම් විස්තර (Company Bank Accounts):</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr; gap: 8px;" id="companyBanksContainer">
+                        <!-- Loaded dynamically -->
+                    </div>
+                    <p style="font-size: 11px; color: var(--text-muted); margin-top: 8px; margin-bottom: 0;">⚠️ කරුණාකර නිවැරදි මුදල තැන්පත් කර රිසිට්පත (Bank Slip / Online Transfer Screenshot) පහතින් upload කරන්න.</p>
+                </div>
+
+                <!-- 3. Slip Upload Form -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                    <div>
+                        <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 4px;">තැන්පත් කළ දිනය (Transfer Date) *</label>
+                        <input type="date" class="ref-input-field" id="slipTransferDate" required style="width:100%;">
+                    </div>
+                    <div>
+                        <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 4px;">බැංකු රිෆරන්ස් අංකය (Bank Ref / CEFT) *</label>
+                        <input type="text" class="ref-input-field" id="slipBankRef" required placeholder="e.g. CEFT-984210" style="width:100%;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 12px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 4px;">තැන්පත් කළ මුදල (Amount Paid LKR) *</label>
+                    <input type="number" class="ref-input-field" id="slipAmountPaid" required readonly style="width:100%; font-weight: 800; color: var(--brand-gold);">
+                </div>
+
+                <!-- File Drop Zone -->
+                <div style="margin-bottom: 16px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 4px;">බැංකු රිසිට්පත (Payment Slip / Screenshot) *</label>
+                    <div id="slipDropArea" onclick="document.getElementById('slipFileInput').click()" style="border: 2px dashed var(--border-color); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; background: var(--bg-main); transition: 0.2s;">
+                        <div id="slipUploadPrompt">
+                            <div style="font-size: 26px; margin-bottom: 4px;">📁</div>
+                            <div style="font-size: 12.5px; font-weight: 700; color: var(--text-primary);">රිසිට්පත තෝරන්න (Select or Drag Slip)</div>
+                            <div style="font-size: 10.5px; color: var(--text-muted); margin-top: 2px;">JPG, PNG, JPEG, PDF (උපරිම 5MB)</div>
+                        </div>
+                        <div id="slipFilePreview" style="display:none; margin-top: 8px;">
+                            <img id="slipPreviewImg" src="" alt="Slip Preview" style="max-height: 120px; border-radius: 6px; border: 1px solid var(--border-color); margin-bottom: 4px;">
+                            <div id="slipFileName" style="font-size: 11.5px; font-weight: 700; color: var(--brand-green);"></div>
+                        </div>
+                    </div>
+                    <input type="file" id="slipFileInput" accept="image/jpeg,image/png,image/jpg,application/pdf" style="display:none;" onchange="handleSlipFileSelect(event)">
+                </div>
+
+                <div style="margin-bottom: 18px;">
+                    <label style="font-size: 11.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 4px;">සටහන (Optional Note)</label>
+                    <input type="text" class="ref-input-field" id="slipNotes" placeholder="ගෙවීම පිළිබඳ අමතර සටහනක් ඇත්නම්..." style="width:100%;">
+                </div>
+
+                <button type="submit" id="btnSubmitPaymentSlip" class="btn-action-sm btn-primary-action" style="width: 100%; padding: 14px; justify-content: center; font-size: 14.5px; font-weight: 800;">
+                    🚀 රිසිට්පත යොමු කරන්න (Submit Payment for Approval)
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- WITHDRAWAL MODAL -->
     <div class="modal-backdrop" id="withdrawModal">
         <div class="modal-dialog">
@@ -1245,17 +1597,17 @@
             <span>📊</span>
             <span>Home</span>
         </div>
-        <div class="mobile-nav-item" onclick="switchMemberTab('earnings')" id="mob-earnings">
-            <span>💰</span>
-            <span>Earnings</span>
+        <div class="mobile-nav-item" onclick="switchMemberTab('buy-products')" id="mob-buy-products">
+            <span>🛒</span>
+            <span>Store</span>
         </div>
-        <div class="mobile-nav-item" onclick="switchMemberTab('network')" id="mob-network">
-            <span>🌿</span>
-            <span>Tree</span>
+        <div class="mobile-nav-item" onclick="switchMemberTab('products')" id="mob-products">
+            <span>📚</span>
+            <span>Courses</span>
         </div>
-        <div class="mobile-nav-item" onclick="switchMemberTab('referrals')" id="mob-referrals">
-            <span>👥</span>
-            <span>Team</span>
+        <div class="mobile-nav-item" onclick="switchMemberTab('orders')" id="mob-orders">
+            <span>📦</span>
+            <span>Orders</span>
         </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('financial')" id="mob-financial">
             <span>💳</span>
@@ -1300,7 +1652,9 @@
                 'network': 'ද්විමය ජාලය (Binary Network Tree)',
                 'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
                 'links': 'ප්‍රවර්ධන සබැඳි (Referral Link Tools)',
-                'products': 'පාඨමාලා (Masterclasses & Courses)',
+                'buy-products': 'පාඨමාලා මිලදී ගැනීම (Buy Products & Courses)',
+                'products': 'මගේ පාඨමාලා (My Enrolled Courses)',
+                'orders': 'මගේ ඇණවුම් සහ ගෙවීම් (My Orders & Payment Slips)',
                 'financial': 'මූල්‍ය ලෙජරය (Double-Entry Wallet Ledger)'
             };
 
@@ -1310,12 +1664,22 @@
                 'network': '🌿',
                 'referrals': '👥',
                 'links': '🔗',
+                'buy-products': '🛒',
                 'products': '📚',
+                'orders': '📦',
                 'financial': '💳'
             };
 
             document.getElementById('topbarSectionTitle').textContent = sectionTitles[tabId] || 'Member Dashboard';
             document.getElementById('topbarSectionIcon').textContent = sectionIcons[tabId] || '📊';
+
+            if (tabId === 'buy-products') {
+                loadBuyProductsStore();
+            } else if (tabId === 'orders') {
+                loadMyOrders();
+            } else if (tabId === 'products') {
+                loadMyProducts();
+            }
         }
 
         // Toast
@@ -1352,6 +1716,475 @@
 
         function closeWithdrawModal() {
             document.getElementById('withdrawModal').style.display = 'none';
+        }
+
+        let storeProductsCache = [];
+        let uploadedSlipBase64 = null;
+
+        // Store & Catalog Functions
+        async function loadBuyProductsStore() {
+            const grid = document.getElementById('buyProductsGrid');
+            const countEl = document.getElementById('availableProductsCount');
+            if (!grid) return;
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/member/products', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.products) {
+                        storeProductsCache = data.products;
+                        renderStoreCards(storeProductsCache);
+                        if (countEl) countEl.textContent = `${storeProductsCache.length} Courses Available`;
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.log('Store API fallback active...');
+            }
+
+            // Fallback: Default products catalog
+            renderStoreCards(getDefaultCatalogWithStatus());
+        }
+
+        function renderStoreCards(products) {
+            const grid = document.getElementById('buyProductsGrid');
+            if (!grid) return;
+            if (!products || products.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding:40px; color:var(--text-muted);">දැනට මිලදී ගැනීමට පාඨමාලා නොමැත (No courses available).</div>`;
+                return;
+            }
+
+            grid.innerHTML = '';
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = 'store-card';
+                card.setAttribute('data-category', p.category || 'All');
+
+                const savingsBadge = p.discount_percent > 0 ? `<div class="store-card-badge">-${p.discount_percent}% OFF</div>` : '';
+                const origPriceDisplay = p.original_price > p.selling_price ? `<span class="store-price-orig">LKR ${Number(p.original_price).toLocaleString()}</span>` : '';
+                
+                let buyBtnMarkup = '';
+                if (p.is_purchased) {
+                    buyBtnMarkup = `<button class="btn-action-sm" style="background:var(--brand-green); color:white; font-weight:700; border:none;" onclick="switchMemberTab('products')">✓ Owned (Open)</button>`;
+                } else if (p.is_pending) {
+                    buyBtnMarkup = `<button class="btn-action-sm" style="background:var(--brand-orange); color:white; font-weight:700; border:none;" onclick="switchMemberTab('orders')">⏳ Under Review</button>`;
+                } else {
+                    buyBtnMarkup = `<button class="btn-action-sm btn-primary-action" onclick="startProductCheckout('${p.id}')">🛒 Buy Now</button>`;
+                }
+
+                card.innerHTML = `
+                    <div class="store-card-img-wrap">
+                        <img src="${p.image_url || 'assets/facebook_course_banner.jpg'}" alt="${p.title}" class="store-card-img" onerror="this.src='assets/social_media_masterclass_banner.jpg'">
+                        ${savingsBadge}
+                        <div class="store-card-category">${p.category || 'Course'}</div>
+                    </div>
+                    <div class="store-card-body">
+                        <h4 class="store-card-title">${p.title || p.name}</h4>
+                        <p class="store-card-desc">${p.description || 'Master practical skills with live sessions & materials.'}</p>
+                        
+                        <div class="store-card-pricing">
+                            <div>
+                                <span class="store-price-val">LKR ${Number(p.selling_price || p.price).toLocaleString()}</span>
+                                ${origPriceDisplay}
+                            </div>
+                            <span style="font-size: 11px; color: var(--text-muted); font-weight: 600;">💎 Vol: ${Number(p.binary_volume || p.selling_price).toLocaleString()}</span>
+                        </div>
+
+                        <div class="store-card-actions">
+                            <button class="btn-action-sm" style="background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary);" onclick="openProductDetailsModal('${p.id}')">👁️ Details</button>
+                            ${buyBtnMarkup}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterStoreCatalog(category, btn) {
+            document.querySelectorAll('.store-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            const cards = document.querySelectorAll('.store-card');
+            cards.forEach(card => {
+                const cardCat = card.getAttribute('data-category') || '';
+                if (category === 'ALL' || cardCat.toLowerCase().includes(category.toLowerCase())) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // Product Details Modal
+        async function openProductDetailsModal(productId) {
+            let product = storeProductsCache.find(p => p.id === productId);
+            if (!product) {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                try {
+                    const res = await fetch('/api/member/products/' + productId, {
+                        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        product = data.product;
+                    }
+                } catch (e) {}
+            }
+
+            if (!product) {
+                const defs = getDefaultCatalogWithStatus();
+                product = defs.find(d => d.id === productId) || defs[0];
+            }
+
+            document.getElementById('modalProdTitle').textContent = product.title || product.name;
+            document.getElementById('modalProdCategory').textContent = product.category || 'Course';
+            document.getElementById('modalProdImage').src = product.image_url || 'assets/facebook_course_banner.jpg';
+            document.getElementById('modalProdDesc').textContent = product.description || 'Master practical skills with live sessions & materials.';
+            document.getElementById('modalProdDuration').textContent = product.duration || '4 Weeks Intensive';
+            document.getElementById('modalProdAccess').textContent = product.access_type || 'Lifetime Access';
+            document.getElementById('modalProdModules').textContent = (product.modules_count || 8) + ' Modules';
+            document.getElementById('modalProdPrice').textContent = `LKR ${Number(product.selling_price || product.price).toLocaleString()}.00`;
+            document.getElementById('modalProdOriginalPrice').textContent = product.original_price > product.selling_price ? `LKR ${Number(product.original_price).toLocaleString()}.00` : '';
+
+            const benefitsUl = document.getElementById('modalProdBenefits');
+            benefitsUl.innerHTML = '';
+            const benefitsList = (product.benefits && product.benefits.length > 0) ? product.benefits : [
+                'Live Zoom Classroom & Recording Archive',
+                'Comprehensive Resource Downloads & Templates',
+                'Direct Instructor Mentorship & Q&A Support',
+                'Official Certificate of Masterclass Completion'
+            ];
+            benefitsList.forEach(b => {
+                const li = document.createElement('li');
+                li.textContent = b;
+                benefitsUl.appendChild(li);
+            });
+
+            const actionContainer = document.getElementById('modalActionContainer');
+            if (product.is_purchased) {
+                actionContainer.innerHTML = `<button class="btn-action-sm" style="background:var(--brand-green); color:white; padding:12px 24px; font-weight:800; border:none;" onclick="closeProductDetailsModal(); switchMemberTab('products');">✓ Already Owned (Open Classroom)</button>`;
+            } else if (product.is_pending) {
+                actionContainer.innerHTML = `<button class="btn-action-sm" style="background:var(--brand-orange); color:white; padding:12px 24px; font-weight:800; border:none;" onclick="closeProductDetailsModal(); switchMemberTab('orders');">⏳ Verification Pending</button>`;
+            } else {
+                actionContainer.innerHTML = `<button class="btn-action-sm btn-primary-action" style="padding:12px 24px; font-weight:800;" onclick="closeProductDetailsModal(); startProductCheckout('${product.id}');">🛒 Buy Now (මිලදී ගන්න) →</button>`;
+            }
+
+            document.getElementById('productDetailsModal').style.display = 'flex';
+        }
+
+        function closeProductDetailsModal() {
+            document.getElementById('productDetailsModal').style.display = 'none';
+        }
+
+        // In-Dashboard Checkout Modal
+        async function startProductCheckout(productId) {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/member/checkout', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ productId })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.checkoutSession) {
+                        openCheckoutModalWithSession(data.checkoutSession);
+                        return;
+                    }
+                } else {
+                    const errData = await res.json();
+                    if (errData && errData.error) {
+                        showMemberToast('⚠️ ' + errData.error);
+                        if (errData.error.includes('already own')) switchMemberTab('products');
+                        else if (errData.error.includes('pending payment')) switchMemberTab('orders');
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            // Local fallback session
+            let product = storeProductsCache.find(p => p.id === productId);
+            if (!product) {
+                const defs = getDefaultCatalogWithStatus();
+                product = defs.find(d => d.id === productId) || defs[0];
+            }
+
+            const fallbackSession = {
+                order_number: 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
+                product_id: product.id,
+                product_name: product.title || product.name,
+                selling_price: product.selling_price || product.price,
+                company_banks: [
+                    { bank_name: 'Hatton National Bank (HNB)', account_name: 'HAPANAMY ENTERPRISES (PVT) LTD', account_number: '081020048921', branch: 'Maharagama', is_primary: true },
+                    { bank_name: 'Commercial Bank of Ceylon', account_name: 'HAPANAMY ENTERPRISES (PVT) LTD', account_number: '1000849201', branch: 'Nugegoda', is_primary: false }
+                ]
+            };
+            openCheckoutModalWithSession(fallbackSession);
+        }
+
+        function openCheckoutModalWithSession(session) {
+            document.getElementById('chkProductId').value = session.product_id;
+            document.getElementById('chkOrderNumber').value = session.order_number;
+            document.getElementById('chkOrderDisplay').textContent = session.order_number;
+            document.getElementById('chkCourseTitle').textContent = session.product_name;
+            document.getElementById('chkAmountDisplay').textContent = `LKR ${Number(session.selling_price).toLocaleString()}.00`;
+            document.getElementById('slipAmountPaid').value = session.selling_price;
+            document.getElementById('slipTransferDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('slipBankRef').value = '';
+            document.getElementById('slipNotes').value = '';
+
+            // Reset File Uploader
+            uploadedSlipBase64 = null;
+            document.getElementById('slipFileInput').value = '';
+            document.getElementById('slipUploadPrompt').style.display = 'block';
+            document.getElementById('slipFilePreview').style.display = 'none';
+
+            // Populate Company Banks
+            const banksContainer = document.getElementById('companyBanksContainer');
+            if (banksContainer && session.company_banks) {
+                banksContainer.innerHTML = '';
+                session.company_banks.forEach(b => {
+                    const bCard = document.createElement('div');
+                    bCard.style = 'background:var(--bg-main); border:1px solid var(--border-color); border-radius:8px; padding:10px 14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;';
+                    bCard.innerHTML = `
+                        <div>
+                            <div style="font-size:12px; font-weight:800; color:var(--text-primary);">${b.bank_name} (${b.branch})</div>
+                            <div style="font-size:11.5px; color:var(--text-muted);">Acc Name: <strong>${b.account_name}</strong></div>
+                            <div style="font-size:13px; font-weight:800; color:var(--brand-gold);">Acc: <code>${b.account_number}</code></div>
+                        </div>
+                        <button type="button" class="btn-action-sm" onclick="copyTextToClip('${b.account_number}', 'Acc Number Copied!')" style="font-size:11px; padding:6px 12px;">📋 Copy Acc</button>
+                    `;
+                    banksContainer.appendChild(bCard);
+                });
+            }
+
+            document.getElementById('productCheckoutModal').style.display = 'flex';
+        }
+
+        function closeProductCheckoutModal() {
+            document.getElementById('productCheckoutModal').style.display = 'none';
+        }
+
+        function copyTextToClip(text, msg) {
+            navigator.clipboard.writeText(text).then(() => {
+                showMemberToast('📋 <strong>' + msg + '</strong> (' + text + ')');
+            });
+        }
+
+        function handleSlipFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                showMemberToast('⚠️ File size exceeds 5MB limit. Please upload a smaller image or PDF.');
+                event.target.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedSlipBase64 = e.target.result;
+                document.getElementById('slipUploadPrompt').style.display = 'none';
+                document.getElementById('slipFilePreview').style.display = 'block';
+                document.getElementById('slipFileName').textContent = '✓ ' + file.name;
+
+                if (file.type.startsWith('image/')) {
+                    document.getElementById('slipPreviewImg').src = e.target.result;
+                    document.getElementById('slipPreviewImg').style.display = 'inline-block';
+                } else {
+                    document.getElementById('slipPreviewImg').style.display = 'none';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function handlePaymentSlipSubmit(event) {
+            event.preventDefault();
+            const btnSubmit = document.getElementById('btnSubmitPaymentSlip');
+            const productId = document.getElementById('chkProductId').value;
+            const orderNumber = document.getElementById('chkOrderNumber').value;
+            const bankReference = document.getElementById('slipBankRef').value.trim();
+            const transferDate = document.getElementById('slipTransferDate').value;
+            const amount = parseFloat(document.getElementById('slipAmountPaid').value);
+            const notes = document.getElementById('slipNotes').value.trim();
+
+            if (!bankReference) {
+                showMemberToast('⚠️ කරුණාකර බැංකු රිෆරන්ස් අංකය (Bank Reference / CEFT) ඇතුළත් කරන්න.');
+                return;
+            }
+
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = '⏳ යොමු කරමින් පවතී (Submitting)...';
+
+            const payload = {
+                productId,
+                orderNumber,
+                bankReference,
+                transferDate,
+                amount,
+                slipUrl: uploadedSlipBase64 || 'storage/private/slips/sample-slip.jpg',
+                notes
+            };
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/member/payments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showMemberToast(`🎉 <strong>ගෙවීම් රිසිට්පත යොමු විය!</strong> ඇණවුම් අංකය: ${data.orderNumber || orderNumber}. Admin අනුමැතියෙන් පසු පාඨමාලාව සක්‍රිය වේ.`);
+                    closeProductCheckoutModal();
+                    switchMemberTab('orders');
+                    loadLiveDashboard();
+                    return;
+                } else {
+                    const err = await res.json();
+                    showMemberToast('❌ ' + (err.error || 'Payment submission failed.'));
+                }
+            } catch (e) {
+                console.log('Using local order queue fallback...');
+            }
+
+            // Local fallback persistence in case offline
+            const localOrders = JSON.parse(localStorage.getItem('member_orders_queue')) || [];
+            localOrders.push({
+                order_number: orderNumber,
+                product_id: productId,
+                product_name: document.getElementById('chkCourseTitle').textContent,
+                amount: amount,
+                bank_reference: bankReference,
+                transfer_date: transferDate,
+                slip_url: uploadedSlipBase64 || 'assets/sample-slip.jpg',
+                status: 'PENDING',
+                created_at: new Date().toISOString()
+            });
+            localStorage.setItem('member_orders_queue', JSON.stringify(localOrders));
+
+            showMemberToast(`🎉 <strong>ගෙවීම් රිසිට්පත යොමු විය!</strong> ඇණවුම් අංකය: ${orderNumber}. Admin අනුමැතියෙන් පසු පාඨමාලාව සක්‍රිය වේ.`);
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = '🚀 රිසිට්පත යොමු කරන්න (Submit Payment for Approval)';
+            closeProductCheckoutModal();
+            switchMemberTab('orders');
+            loadLiveDashboard();
+        }
+
+        // Load My Orders
+        async function loadMyOrders() {
+            const tbody = document.querySelector('#myOrdersTable tbody');
+            if (!tbody) return;
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/member/orders', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.orders) {
+                        renderOrdersTable(data.orders);
+                        return;
+                    }
+                }
+            } catch (err) {}
+
+            // Fallback
+            const localOrders = JSON.parse(localStorage.getItem('member_orders_queue')) || [];
+            renderOrdersTable(localOrders);
+        }
+
+        function renderOrdersTable(orders) {
+            const tbody = document.querySelector('#myOrdersTable tbody');
+            if (!tbody) return;
+            if (!orders || orders.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                            ඔබ තවමත් කිසිදු ඇණවුමක් හෝ ගෙවීමක් සිදු කර නොමැත (No orders placed yet).<br>
+                            <button class="btn-action-sm btn-primary-action" style="margin-top: 12px;" onclick="switchMemberTab('buy-products')">🛒 Browse Courses & Buy</button>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            orders.forEach(o => {
+                const tr = document.createElement('tr');
+                const dt = o.transfer_date ? new Date(o.transfer_date).toLocaleDateString() : '2026-09-01';
+                const amtStr = `LKR ${Number(o.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                let statusBadge = '';
+                if (o.status === 'APPROVED' || o.status === 'ACTIVE' || o.status === 'PAID') {
+                    statusBadge = '<span class="badge-pill badge-qualified">● APPROVED</span>';
+                } else if (o.status === 'REJECTED') {
+                    statusBadge = '<span class="badge-pill badge-rejected" style="background:#EF5350; color:white;">● REJECTED</span>';
+                } else {
+                    statusBadge = '<span class="badge-pill badge-active" style="background:var(--brand-orange); color:white;">⏳ PENDING REVIEW</span>';
+                }
+
+                const slipLink = o.slip_url ? `<a href="${o.slip_url}" target="_blank" style="color:var(--brand-gold); font-weight:700;">👁️ View Slip</a>` : '<span style="color:var(--text-muted);">Uploaded</span>';
+                const adminNotes = o.admin_notes ? `<span style="font-size:12px; color:var(--text-muted);">${o.admin_notes}</span>` : '<span style="color:var(--text-muted); font-size:11px;">Verification in progress</span>';
+
+                tr.innerHTML = `
+                    <td><code>${o.order_number || o.id || 'ORD-GEN'}</code></td>
+                    <td><strong>${o.product_name || 'Course'}</strong></td>
+                    <td style="font-weight: 800; color: var(--brand-gold);">${amtStr}</td>
+                    <td><code>${o.bank_reference || 'REF-N/A'}</code><div style="font-size:11px; color:var(--text-muted);">${dt}</div></td>
+                    <td>${slipLink}</td>
+                    <td>${statusBadge}</td>
+                    <td>${adminNotes}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Load My Products
+        async function loadMyProducts() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                const res = await fetch('/api/member/my-products', {
+                    headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.myProducts) {
+                        renderPurchasedProducts(data.myProducts);
+                        return;
+                    }
+                }
+            } catch (err) {}
+        }
+
+        function getDefaultCatalogWithStatus() {
+            return [
+                { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', original_price: 9900, selling_price: 7425, discount_percent: 25, duration: '4 Weeks', access_type: 'Lifetime Access', image_url: 'assets/facebook_course_banner.jpg', description: 'Facebook Pages monetization, Reels bonus, and viral monetization framework.' },
+                { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', original_price: 5000, selling_price: 4500, discount_percent: 10, duration: '2 Weeks', access_type: 'Lifetime Access', image_url: 'assets/tiktok_course_banner.jpg', description: 'TikTok Creativity Program Beta and organic scaling.' },
+                { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', original_price: 9900, selling_price: 7425, discount_percent: 25, duration: '4 Weeks', access_type: 'Lifetime Access', image_url: 'assets/youtube_course_banner.jpg', description: 'Faceless YouTube automation, SEO, and AdSense scaling.' },
+                { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', original_price: 19990, selling_price: 15992, discount_percent: 20, duration: '6 Weeks', access_type: 'VIP Lifetime Access', image_url: 'assets/social_media_masterclass_banner.jpg', description: 'All-in-one digital agency and high-income skills blueprint.' },
+                { id: 'forex-course', category: 'Trading', title: '🟢 Beginner – Forex Trading Course (Online Zoom)', original_price: 9900, selling_price: 7920, discount_percent: 20, duration: '3 Weeks', access_type: 'Lifetime Access', image_url: 'assets/forex_course_banner.jpg', description: 'Technical analysis, risk management, and live trade execution.' },
+                { id: 'crypto-course', category: 'Trading', title: '🟠 Beginner – Crypto Trading Course (Online Zoom)', original_price: 9900, selling_price: 7920, discount_percent: 20, duration: '3 Weeks', access_type: 'Lifetime Access', image_url: 'assets/crypto_course_banner.jpg', description: 'Binance & Bybit spot and futures profitable trading.' },
+                { id: 'options-course', category: 'Trading', title: '🔵 Intermediate – Options Trading Course (Online Zoom)', original_price: 9900, selling_price: 7920, discount_percent: 20, duration: '3 Weeks', access_type: 'Lifetime Access', image_url: 'assets/options_course_banner.jpg', description: 'Call/Put options strategies and defined-risk hedging.' },
+                { id: 'titan-elite', category: 'Trading', title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)', original_price: 24900, selling_price: 19900, discount_percent: 20, duration: '8 Weeks', access_type: 'VIP Prop Firm Pass', image_url: 'assets/advanced_trading_banner.jpg', description: 'Institutional Order Flow, Fair Value Gaps, and Prop Firm Passing.' },
+                { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', original_price: 6500, selling_price: 5200, discount_percent: 20, duration: '2 Weeks', access_type: 'Lifetime Access', image_url: 'assets/ai_video_course_banner.jpg', description: 'Runway Gen-3, Midjourney, and commercial video creation.' },
+                { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', original_price: 18750, selling_price: 15000, discount_percent: 20, duration: '6 Weeks', access_type: 'VIP AI Access', image_url: 'assets/ai_mastery_banner.jpg', description: 'Advanced AI Agents, custom GPTs, and automated workflows.' },
+                { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', original_price: 9000, selling_price: 7200, discount_percent: 20, duration: '4 Weeks', access_type: 'Lifetime Access', image_url: 'assets/coding_course_banner.jpg', description: 'HTML5, CSS3, JavaScript, and freelance web creation.' },
+                { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', original_price: 4990, selling_price: 3992, discount_percent: 20, duration: 'E-Book PDF', access_type: 'Instant Download', image_url: 'assets/ebooks_banner.jpg', description: '180+ page color guide with pattern cheatsheets.' },
+                { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', original_price: 6990, selling_price: 5592, discount_percent: 20, duration: 'E-Book PDF', access_type: 'Instant Download', image_url: 'assets/motivation_ebook_banner.jpg', description: 'Financial discipline, mindset, and peak performance.' },
+                { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', original_price: 2500, selling_price: 2000, discount_percent: 20, duration: 'Notion Database', access_type: 'Instant Download', image_url: 'assets/ai_prompts_ebook_banner.jpg', description: '1,000+ copy-paste prompts for AI mastery.' }
+            ];
         }
 
         // Dynamic Table Renderers
@@ -1463,7 +2296,7 @@
                 container.innerHTML = `
                     <div style="background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 14px; padding: 30px; text-align: center;">
                         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත (No purchased courses yet).</p>
-                        <a href="index.html#courses" class="btn-action-sm btn-primary-action" style="text-decoration: none; padding: 10px 20px;">පාඨමාලා නාමාවලිය බලන්න (Explore Courses) →</a>
+                        <button class="btn-action-sm btn-primary-action" onclick="switchMemberTab('buy-products')" style="padding: 10px 20px;">පාඨමාලා නාමාවලිය බලන්න (Browse Course Store) →</button>
                     </div>
                 `;
                 return;
@@ -1471,19 +2304,27 @@
             container.innerHTML = '';
             products.forEach(p => {
                 const div = document.createElement('div');
-                div.style = 'background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;';
+                div.style = 'background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;';
                 const dt = p.activated_at ? new Date(p.activated_at).toLocaleDateString() : '2026-09-01';
                 const priceStr = `LKR ${Number(p.selling_price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 
+                let statusBadge = `<span class="badge-pill badge-qualified">● ${p.status || 'ACTIVATED & READY'}</span>`;
+                let actionBtn = `<a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="padding: 12px 24px; text-decoration: none;">Enter Online Classroom 🎥</a>`;
+
+                if (p.status === 'PENDING') {
+                    statusBadge = `<span class="badge-pill badge-active" style="background:var(--brand-orange); color:white;">⏳ Verification Pending</span>`;
+                    actionBtn = `<button class="btn-action-sm" onclick="switchMemberTab('orders')" style="padding: 10px 20px; background:var(--bg-surface); border:1px solid var(--border-color);">Track Order 📦</button>`;
+                }
+
                 div.innerHTML = `
                     <div>
                         <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">${p.product_name || 'Masterclass'}</h3>
                         <p style="font-size: 13px; color: var(--text-muted);">මිලදී ගත් දිනය: ${dt} | Selling Price: ${priceStr}</p>
                         <div style="margin-top: 8px;">
-                            <span class="badge-pill badge-qualified">● ${p.status || 'ACTIVATED & READY'}</span>
+                            ${statusBadge}
                         </div>
                     </div>
-                    <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="padding: 12px 24px; text-decoration: none;">Enter Online Classroom 🎥</a>
+                    ${actionBtn}
                 `;
                 container.appendChild(div);
             });
@@ -1606,6 +2447,7 @@
                         const data = await res.json();
                         if (data && data.profile) {
                             applyDashboardData(data);
+                            loadBuyProductsStore();
                             return;
                         }
                     }
@@ -1619,7 +2461,9 @@
             renderWithdrawalHistory(JSON.parse(localStorage.getItem('payout_requests_queue')) || []);
             renderDirectReferrals([]);
             renderPurchasedProducts([]);
+            renderOrdersTable(JSON.parse(localStorage.getItem('member_orders_queue')) || []);
             renderBinaryTreeVisualizer(null);
+            loadBuyProductsStore();
         }
 
         function applyLocalUserProfile(user) {

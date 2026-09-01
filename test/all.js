@@ -51,6 +51,8 @@ require('./step35-public-auth-foundation.test');
 require('./backup-restore.test');
 require('./step36-live-login-register-flow.test');
 require('./deployment-verification.test');
+require('./step37-member-product-purchase-center.test');
 
 // Run
 runTests();
+

@@ -54,33 +54,417 @@ const mockBankAccounts = [
 ];
 const mockAuditLogs = [];
 
+const mockCompanyBankDetails = [
+    {
+        id: 'bank-hnb-1',
+        bank_name: 'Hatton National Bank (HNB)',
+        account_name: 'HAPANAMY ENTERPRISES (PVT) LTD',
+        account_number: '081020048921',
+        branch: 'Maharagama',
+        currency: 'LKR',
+        is_primary: true
+    },
+    {
+        id: 'bank-com-2',
+        bank_name: 'Commercial Bank of Ceylon',
+        account_name: 'HAPANAMY ENTERPRISES (PVT) LTD',
+        account_number: '1000849201',
+        branch: 'Nugegoda',
+        currency: 'LKR',
+        is_primary: false
+    }
+];
+
 const mockProducts = [
     {
-        id: 'prod-fb-mon',
-        name: 'Facebook Monetisation Course',
+        id: 'facebook-course',
         code: 'FB-MON',
-        description: 'Learn to monetize Facebook Pages smartly.',
+        name: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
         category: 'Social Media',
-        price: 7450.00,
-        binary_volume: 7450.00,
+        original_price: 9900.00,
+        discount_price: 7425.00,
+        price: 7425.00,
+        selling_price: 7425.00,
+        product_cost: 1500.00,
+        binary_volume: 7425.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
-        image_url: 'assets/fb-mon.jpg',
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/facebook_course_banner.jpg',
         course_url: 'https://hapanamy.lk/courses/fb-mon',
+        duration: '4 Weeks (8 Live Zoom Sessions)',
+        access_type: 'Lifetime Access + Recording Archive',
+        description: 'Facebook Pages monetization, Reels bonus program, in-stream ads, and copyright-safe viral growth strategies.',
+        benefits: [
+            'Facebook In-Stream Ads & Stars Setup',
+            'Viral Reel Editing & Content Automation',
+            'Copyright Safety & Policy Compliance',
+            'Live Q&A Support with Top Instructors'
+        ],
+        modules_count: 8,
         status: 'ACTIVE'
     },
     {
-        id: 'prod-social-master',
-        name: 'Social Media Income Masterclass',
-        code: 'SOC-MASTER',
-        description: 'Complete digital agency & high-income skills blueprint.',
-        category: 'Income Masterclass',
-        price: 27500.00,
-        binary_volume: 27500.00,
+        id: 'tiktok-course',
+        code: 'TIK-MON',
+        name: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        category: 'Social Media',
+        original_price: 5000.00,
+        discount_price: 4500.00,
+        price: 4500.00,
+        selling_price: 4500.00,
+        product_cost: 900.00,
+        binary_volume: 4500.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
-        image_url: 'assets/social_media_banner.jpg',
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/tiktok_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/tiktok-mon',
+        duration: '2 Weeks (4 Live Zoom Sessions)',
+        access_type: 'Lifetime Access',
+        description: 'TikTok Creativity Program Beta, TikTok Shop Affiliate, and organic viral scaling framework.',
+        benefits: [
+            'TikTok US/UK Account Creation & Verification',
+            'Creativity Program Beta Payout Strategies',
+            'Affiliate Product Sourcing & High-Converting Videos'
+        ],
+        modules_count: 5,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'youtube-course',
+        code: 'YT-MON',
+        name: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        category: 'Social Media',
+        original_price: 9900.00,
+        discount_price: 7425.00,
+        price: 7425.00,
+        selling_price: 7425.00,
+        product_cost: 1500.00,
+        binary_volume: 7425.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/youtube_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/youtube-mon',
+        duration: '4 Weeks (8 Live Zoom Sessions)',
+        access_type: 'Lifetime Access + Niche Blueprints',
+        description: 'Faceless YouTube automation, SEO ranking, high RPM niches, and AdSense approval acceleration.',
+        benefits: [
+            'High RPM Niche Selection Guide',
+            'AI Scripting & Voiceover Automation',
+            'Fast 4,000 Watch Hours & 1,000 Subs Growth'
+        ],
+        modules_count: 8,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'social-media-masterclass',
+        code: 'SOC-MASTER',
+        name: '🚀 Social Media Income Masterclass 2026',
+        title: '🚀 Social Media Income Masterclass 2026',
+        category: 'Social Media',
+        original_price: 19990.00,
+        discount_price: 15992.00,
+        price: 15992.00,
+        selling_price: 15992.00,
+        product_cost: 2500.00,
+        binary_volume: 15992.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/social_media_masterclass_banner.jpg',
         course_url: 'https://hapanamy.lk/courses/soc-master',
+        duration: '6 Weeks Masterclass',
+        access_type: 'VIP Lifetime Access + Agency Kit',
+        description: 'Complete digital marketing agency, personal branding, and multi-channel monetization masterclass.',
+        benefits: [
+            'All-in-one FB, TikTok, IG, and YouTube Mastery',
+            'High-ticket client acquisition scripts',
+            'Official Masterclass Completion Certificate'
+        ],
+        modules_count: 14,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'forex-course',
+        code: 'FX-BEG',
+        name: '🟢 Beginner – Forex Trading Course (Online Zoom)',
+        title: '🟢 Beginner – Forex Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/forex_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/forex-beg',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access + MT4/MT5 Setup',
+        description: 'From candlestick basics to risk management and profitable trading psychology.',
+        benefits: [
+            'Live Market Analysis & Execution',
+            'Proper Lot Sizing & Risk Calculator',
+            'VIP Trading Signal Group Access (1 Month)'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'crypto-course',
+        code: 'CRYPTO-BEG',
+        name: '🟠 Beginner – Crypto Trading Course (Online Zoom)',
+        title: '🟠 Beginner – Crypto Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/crypto_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/crypto-beg',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access + Spot/Futures Guides',
+        description: 'Binance, Bybit spot & futures trading, wallet security, and on-chain analysis.',
+        benefits: [
+            'Exchange Setup & P2P Deposit/Withdrawal Guide',
+            'Futures Leverage Risk Mitigation',
+            'Altcoin Gem Research Blueprint'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'options-course',
+        code: 'OPT-INT',
+        name: '🔵 Intermediate – Options Trading Course (Online Zoom)',
+        title: '🔵 Intermediate – Options Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/options_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/options-int',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access',
+        description: 'Call/Put options strategies, implied volatility, spreads, and hedging techniques.',
+        benefits: [
+            'Options Greeks Decoded (Delta, Theta, Gamma)',
+            'Defined-Risk Spreads Strategy',
+            'Deribit & US Options Practice Setup'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'titan-elite',
+        code: 'SMC-ADV',
+        name: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)',
+        title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)',
+        category: 'Trading',
+        original_price: 24900.00,
+        discount_price: 19900.00,
+        price: 19900.00,
+        selling_price: 19900.00,
+        product_cost: 3000.00,
+        binary_volume: 19900.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/advanced_trading_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/smc-adv',
+        duration: '8 Weeks Intensive',
+        access_type: 'Lifetime Access + Prop Firm Strategy',
+        description: 'Smart Money Concepts, Order Blocks, Liquidity Sweeps, Fair Value Gaps, and Prop Firm Passing system.',
+        benefits: [
+            'Institutional Order Flow & FVG Identification',
+            'Prop Firm Funded Account Blueprint ($50k - $200k)',
+            'Weekly Live Market Breakdown Webinars'
+        ],
+        modules_count: 16,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-video-course',
+        code: 'AI-VID',
+        name: '🎬 AI Video Generation Masterclass 2026',
+        title: '🎬 AI Video Generation Masterclass 2026',
+        category: 'AI & Tech',
+        original_price: 6500.00,
+        discount_price: 5200.00,
+        price: 5200.00,
+        selling_price: 5200.00,
+        product_cost: 1000.00,
+        binary_volume: 5200.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_video_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/ai-video',
+        duration: '2 Weeks (4 Sessions)',
+        access_type: 'Lifetime Access + Tool Prompts',
+        description: 'Runway Gen-3, Midjourney, Kling, ElevenLabs voice cloning, and AI film creation.',
+        benefits: [
+            'Cinematic Prompt Engineering for Video',
+            'Hyper-Realistic AI Avatars & Voice Syncing',
+            'Commercial Video Production for Clients'
+        ],
+        modules_count: 5,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-mastery-course',
+        code: 'AI-MAST',
+        name: '🤖 AI Mastery Program 2026',
+        title: '🤖 AI Mastery Program 2026',
+        category: 'AI & Tech',
+        original_price: 18750.00,
+        discount_price: 15000.00,
+        price: 15000.00,
+        selling_price: 15000.00,
+        product_cost: 2500.00,
+        binary_volume: 15000.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_mastery_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/ai-mastery',
+        duration: '6 Weeks Comprehensive',
+        access_type: 'VIP Lifetime Access + AI Toolkit',
+        description: 'Advanced ChatGPT prompting, custom GPTs, AI agent workflows, and productivity automation.',
+        benefits: [
+            'Building Custom AI Agents & Workflows',
+            'Automating Business Operations with AI',
+            'Certificate in Applied Artificial Intelligence'
+        ],
+        modules_count: 12,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'coding-course',
+        code: 'CODE-WEB',
+        name: '💻 Coding & Web Development Masterclass 2026',
+        title: '💻 Coding & Web Development Masterclass 2026',
+        category: 'AI & Tech',
+        original_price: 9000.00,
+        discount_price: 7200.00,
+        price: 7200.00,
+        selling_price: 7200.00,
+        product_cost: 1500.00,
+        binary_volume: 7200.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/coding_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/coding-web',
+        duration: '4 Weeks (8 Sessions)',
+        access_type: 'Lifetime Access + Source Codes',
+        description: 'HTML5, CSS3, JavaScript, modern responsive website design, and web app deployment.',
+        benefits: [
+            'Building 3 Real-World Portfolio Websites',
+            'Hosting, Domains & SSL Configuration',
+            'Freelance Web Development Client Starter Kit'
+        ],
+        modules_count: 8,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'trading-ebook',
+        code: 'EB-TRD',
+        name: '📘 Trading A to Z – Master E-Book 2026',
+        title: '📘 Trading A to Z – Master E-Book 2026',
+        category: 'E-Book',
+        original_price: 4990.00,
+        discount_price: 3992.00,
+        price: 3992.00,
+        selling_price: 3992.00,
+        product_cost: 500.00,
+        binary_volume: 3992.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ebooks_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/trading-ebook',
+        duration: 'Digital E-Book (PDF Instant Download)',
+        access_type: 'Instant Digital PDF Download',
+        description: 'Comprehensive 180+ page color trading guide with chart patterns, indicators, and cheat sheets.',
+        benefits: [
+            'Printable High-Resolution Chart Pattern Cheatsheets',
+            'Risk Management Rules Reference',
+            'Free Lifetime Updates as Market Evolves'
+        ],
+        modules_count: 1,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'motivation-ebook',
+        code: 'EB-MOT',
+        name: '📖 Motivation & Self-Development Master E-Book 2026',
+        title: '📖 Motivation & Self-Development Master E-Book 2026',
+        category: 'E-Book',
+        original_price: 6990.00,
+        discount_price: 5592.00,
+        price: 5592.00,
+        selling_price: 5592.00,
+        product_cost: 500.00,
+        binary_volume: 5592.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/motivation_ebook_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/motivation-ebook',
+        duration: 'Digital E-Book (PDF Instant Download)',
+        access_type: 'Instant Digital PDF Download',
+        description: 'Mindset mastery, financial discipline, habit transformation, and high-performance habits.',
+        benefits: [
+            'Daily Habit Tracker Printable Worksheets',
+            'Goal Setting Framework & Action Planner'
+        ],
+        modules_count: 1,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-prompts-ebook',
+        code: 'EB-PRM',
+        name: '📘 AI Prompts & Templates Ultimate Collection 2026',
+        title: '📘 AI Prompts & Templates Ultimate Collection 2026',
+        category: 'E-Book',
+        original_price: 2500.00,
+        discount_price: 2000.00,
+        price: 2000.00,
+        selling_price: 2000.00,
+        product_cost: 300.00,
+        binary_volume: 2000.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_prompts_ebook_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/ai-prompts',
+        duration: 'Digital E-Book + Copy-Paste Notion Template',
+        access_type: 'Instant Digital Download',
+        description: 'Over 1,000+ battle-tested AI prompts for copywriting, coding, trading analysis, and image design.',
+        benefits: [
+            'Categorized Notion Database with Copy-Paste Prompts',
+            'Regularly Updated with New AI Models'
+        ],
+        modules_count: 1,
         status: 'ACTIVE'
     }
 ];
@@ -88,11 +472,11 @@ const mockProducts = [
 const mockProductSnapshots = [
     {
         id: 'snap-soc-1',
-        product_id: 'prod-social-master',
-        product_name: 'Social Media Income Masterclass',
-        selling_price: 27500.00,
+        product_id: 'social-media-masterclass',
+        product_name: 'Social Media Income Masterclass 2026',
+        selling_price: 15992.00,
         product_cost: 2500.00,
-        binary_volume: 27500.00,
+        binary_volume: 15992.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
         max_binary_qualified_levels: 7,
@@ -1390,6 +1774,339 @@ const server = http.createServer(async (req, res) => {
         KycService.logAction(mockAuditLogs, authUser.id, 'DEPOSIT_SUBMITTED', 'payment_deposits', depositId, null, deposit);
 
         sendJSON(res, 201, { success: true, purchaseId });
+        return;
+    }
+
+    // ========================================================
+    // MEMBER PRODUCT PURCHASE CENTER API ROUTER
+    // ========================================================
+
+    // GET /api/member/company-bank-details
+    if (req.method === 'GET' && pathname === '/api/member/company-bank-details') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+        sendJSON(res, 200, { success: true, bankDetails: mockCompanyBankDetails });
+        return;
+    }
+
+    // GET /api/member/products
+    if (req.method === 'GET' && pathname === '/api/member/products') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+
+        const enrichedProducts = mockProducts.filter(p => p.status === 'ACTIVE').map(p => {
+            const hasActivePurchase = userPurchases.some(up => up.product_id === p.id && up.status === 'ACTIVE');
+            const hasPendingPurchase = userPurchases.some(up => up.product_id === p.id && up.status === 'PENDING') ||
+                userDeposits.some(d => (d.product_id === p.id || userPurchases.some(up => up.id === d.purchase_id && up.product_id === p.id)) && d.status === 'PENDING');
+
+            let accessStatus = 'AVAILABLE';
+            if (hasActivePurchase) accessStatus = 'ACTIVE';
+            else if (hasPendingPurchase) accessStatus = 'PENDING';
+
+            return {
+                id: p.id,
+                code: p.code,
+                name: p.name || p.title,
+                title: p.title || p.name,
+                category: p.category,
+                price: p.selling_price || p.price,
+                original_price: p.original_price || p.price,
+                discount_price: p.discount_price || p.selling_price || p.price,
+                selling_price: p.selling_price || p.price,
+                savings: (p.original_price && p.original_price > (p.selling_price || p.price)) ? (p.original_price - (p.selling_price || p.price)) : 0,
+                discount_percent: (p.original_price && p.original_price > (p.selling_price || p.price)) ? Math.round(((p.original_price - (p.selling_price || p.price)) / p.original_price) * 100) : 0,
+                binary_volume: p.binary_volume || p.selling_price || p.price,
+                duration: p.duration || 'Comprehensive Lifetime Access',
+                access_type: p.access_type || 'Lifetime Access',
+                description: p.description,
+                benefits: p.benefits || [],
+                modules_count: p.modules_count || 6,
+                image_url: p.image_url,
+                is_purchased: hasActivePurchase,
+                is_pending: hasPendingPurchase,
+                can_buy: !hasActivePurchase && !hasPendingPurchase,
+                access_status: accessStatus
+            };
+        });
+
+        sendJSON(res, 200, { success: true, products: enrichedProducts });
+        return;
+    }
+
+    // GET /api/member/products/:id
+    if (req.method === 'GET' && pathname.startsWith('/api/member/products/')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const productId = pathname.replace('/api/member/products/', '').trim();
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+        const hasActivePurchase = userPurchases.some(up => up.product_id === product.id && up.status === 'ACTIVE');
+        const hasPendingPurchase = userPurchases.some(up => up.product_id === product.id && up.status === 'PENDING') ||
+            userDeposits.some(d => (d.product_id === product.id || userPurchases.some(up => up.id === d.purchase_id && up.product_id === product.id)) && d.status === 'PENDING');
+
+        sendJSON(res, 200, {
+            success: true,
+            product: {
+                ...product,
+                is_purchased: hasActivePurchase,
+                is_pending: hasPendingPurchase,
+                can_buy: !hasActivePurchase && !hasPendingPurchase,
+                refund_policy: '14-Day Money Back Guarantee under standard usage terms'
+            }
+        });
+        return;
+    }
+
+    // POST /api/member/checkout
+    if (req.method === 'POST' && pathname === '/api/member/checkout') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId } = body;
+
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        // Duplicate purchase guard
+        const hasActive = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'ACTIVE');
+        if (hasActive) {
+            sendJSON(res, 400, { error: 'You already own this course with active lifetime access.' });
+            return;
+        }
+
+        const hasPending = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'PENDING') ||
+            mockPaymentDeposits.some(d => d.user_id === authUser.id && d.product_id === product.id && d.status === 'PENDING');
+        if (hasPending) {
+            sendJSON(res, 400, { error: 'You already have a pending payment verification for this course.' });
+            return;
+        }
+
+        const orderNumber = 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        sendJSON(res, 200, {
+            success: true,
+            checkoutSession: {
+                order_number: orderNumber,
+                product_id: product.id,
+                product_name: product.name || product.title,
+                selling_price: product.selling_price || product.price,
+                original_price: product.original_price || product.price,
+                member_id: authUser.id,
+                member_name: authUser.full_name || authUser.username,
+                member_email: authUser.email,
+                company_banks: mockCompanyBankDetails
+            }
+        });
+        return;
+    }
+
+    // POST /api/member/payments
+    if (req.method === 'POST' && pathname === '/api/member/payments') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId, orderNumber, bankReference, transferDate, amount, slipUrl, notes } = body;
+
+        if (!productId || !bankReference || !amount || parseFloat(amount) <= 0) {
+            sendJSON(res, 400, { error: 'Product, Bank Reference, and Valid Amount are required.' });
+            return;
+        }
+
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Selected product is invalid.' });
+            return;
+        }
+
+        // Duplicate Reference Guard
+        const cleanRef = SecurityCore.sanitizeInput(bankReference).trim();
+        const duplicateRef = mockPaymentDeposits.some(d => d.bank_reference.toLowerCase() === cleanRef.toLowerCase());
+        if (duplicateRef) {
+            sendJSON(res, 400, { error: 'This payment reference code has already been submitted.' });
+            return;
+        }
+
+        // Duplicate Active/Pending Purchase Guard
+        const alreadyActive = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'ACTIVE');
+        if (alreadyActive) {
+            sendJSON(res, 400, { error: 'You already own this course with active access.' });
+            return;
+        }
+
+        const purchaseId = 'purch-' + Math.random().toString(36).substr(2, 9);
+        const purchase = {
+            id: purchaseId,
+            order_number: orderNumber || ('ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase()),
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            price_paid: parseFloat(amount),
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        const depositId = 'dep-' + Math.random().toString(36).substr(2, 9);
+        const deposit = {
+            id: depositId,
+            order_number: purchase.order_number,
+            purchase_id: purchaseId,
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            amount: parseFloat(amount),
+            bank_reference: cleanRef,
+            transfer_date: transferDate || new Date().toISOString().split('T')[0],
+            slip_url: slipUrl || 'storage/private/slips/sample-slip.jpg',
+            status: 'PENDING',
+            notes: SecurityCore.sanitizeInput(notes || ''),
+            created_at: new Date().toISOString()
+        };
+
+        mockProductPurchases.push(purchase);
+        mockPaymentDeposits.push(deposit);
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'PAYMENT_SUBMITTED', 'payment_deposits', depositId, null, {
+            order_number: purchase.order_number,
+            product_id: product.id,
+            amount: deposit.amount,
+            bank_reference: deposit.bank_reference
+        });
+
+        sendJSON(res, 201, {
+            success: true,
+            orderNumber: purchase.order_number,
+            depositId: depositId,
+            message: 'Your payment has been submitted successfully and is awaiting verification.'
+        });
+        return;
+    }
+
+    // GET /api/member/orders
+    if (req.method === 'GET' && pathname === '/api/member/orders') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+        const orders = userDeposits.map(d => {
+            const purch = mockProductPurchases.find(p => p.id === d.purchase_id) || {};
+            const prod = mockProducts.find(p => p.id === d.product_id || p.id === purch.product_id) || {};
+            return {
+                id: d.id,
+                order_number: d.order_number || purch.order_number || ('ORD-' + d.id.substring(4, 10).toUpperCase()),
+                product_id: d.product_id || purch.product_id,
+                product_name: prod.name || prod.title || d.product_name || purch.product_name || 'Masterclass',
+                amount: d.amount || purch.price_paid || prod.selling_price || 0,
+                bank_reference: d.bank_reference,
+                transfer_date: d.transfer_date || d.created_at,
+                slip_url: d.slip_url,
+                status: d.status,
+                admin_notes: d.notes || null,
+                reviewed_at: d.reviewed_at || null,
+                created_at: d.created_at
+            };
+        }).reverse();
+
+        sendJSON(res, 200, { success: true, orders });
+        return;
+    }
+
+    // GET /api/member/orders/:id
+    if (req.method === 'GET' && pathname.startsWith('/api/member/orders/')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const orderRef = pathname.replace('/api/member/orders/', '').trim();
+        const deposit = mockPaymentDeposits.find(d => (d.id === orderRef || d.order_number === orderRef) && d.user_id === authUser.id);
+        if (!deposit) {
+            sendJSON(res, 404, { error: 'Order not found.' });
+            return;
+        }
+
+        const purch = mockProductPurchases.find(p => p.id === deposit.purchase_id) || {};
+        const prod = mockProducts.find(p => p.id === deposit.product_id || p.id === purch.product_id) || {};
+
+        sendJSON(res, 200, {
+            success: true,
+            order: {
+                id: deposit.id,
+                order_number: deposit.order_number || purch.order_number || ('ORD-' + deposit.id.substring(4, 10).toUpperCase()),
+                product_id: deposit.product_id || purch.product_id,
+                product_name: prod.name || prod.title || deposit.product_name || 'Masterclass',
+                category: prod.category || 'Course',
+                amount: deposit.amount || purch.price_paid || 0,
+                bank_reference: deposit.bank_reference,
+                transfer_date: deposit.transfer_date || deposit.created_at,
+                slip_url: deposit.slip_url,
+                status: deposit.status,
+                admin_notes: deposit.notes || null,
+                reviewed_at: deposit.reviewed_at || null,
+                created_at: deposit.created_at
+            }
+        });
+        return;
+    }
+
+    // GET /api/member/my-products
+    if (req.method === 'GET' && pathname === '/api/member/my-products') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const myProducts = userPurchases.map(p => {
+            const prod = mockProducts.find(mp => mp.id === p.product_id) || {};
+            return {
+                purchase_id: p.id,
+                order_number: p.order_number || ('ORD-' + p.id.substring(6).toUpperCase()),
+                product_id: p.product_id,
+                product_name: p.product_name || prod.name || prod.title || 'Masterclass',
+                category: prod.category || 'Education',
+                selling_price: p.price_paid || prod.selling_price || 0,
+                image_url: prod.image_url || 'assets/facebook_course_banner.jpg',
+                status: p.status,
+                activated_at: p.activated_at || p.created_at,
+                classroom_url: prod.course_url || 'student-dashboard.html'
+            };
+        }).reverse();
+
+        sendJSON(res, 200, { success: true, myProducts });
         return;
     }
 
