@@ -51,7 +51,7 @@ function createAdminDashboardTestContext() {
 
     const walletLedger = [
         { id: 'tx-1', user_id: 'u-sponsor-1', type: 'DIRECT_COMMISSION', amount: 2200.00, status: 'COMPLETED', created_at: new Date().toISOString() },
-        { id: 'tx-2', user_id: 'u-root', type: 'BINARY_COMMISSION', amount: 1650.00, status: 'COMPLETED', created_at: new Date().toISOString() }
+        { id: 'tx-2', user_id: 'u-root', type: 'BINARY_COMMISSION', amount: 1925.00, status: 'COMPLETED', created_at: new Date().toISOString() }
     ];
 
     const volumeLedger = [
@@ -114,12 +114,12 @@ test('Step 27: 2. Financial Metrics: Authoritative snapshot-driven revenue, cost
     assert.equal(res.financial_summary.total_product_cost, 31500.00);
     // Gross Profit = 82,500 - 31,500 = 51,000
     assert.equal(res.financial_summary.total_gross_profit, 51000.00);
-    // Commission Paid = 2,200 + 1,650 = 3,850
-    assert.equal(res.financial_summary.total_commission_paid, 3850.00);
+    // Commission Paid = 2,200 + 1,925 = 4,125
+    assert.equal(res.financial_summary.total_commission_paid, 4125.00);
     // Commission / Payout Pending = 2,000
     assert.equal(res.financial_summary.total_commission_pending, 2000.00);
-    // Net Company Margin = 51,000 - 3,850 = 47,150
-    assert.equal(res.financial_summary.company_net_margin_estimate, 47150.00);
+    // Net Company Margin = 51,000 - 4,125 = 46,875
+    assert.equal(res.financial_summary.company_net_margin_estimate, 46875.00);
 });
 
 test('Step 27: 3. Network Metrics: Aggregates network volume and ranks top growing sponsors', () => {
@@ -202,7 +202,7 @@ test('Step 27: 6. Large Dataset Stress Handling: Processes thousands of entries 
 
     assert(res.success);
     assert.equal(res.overview.total_members, 504);
-    assert.equal(res.financial_summary.total_commission_paid, 53850.00);
+    assert.equal(res.financial_summary.total_commission_paid, 54125.00);
 });
 
 if (require.main === module) {

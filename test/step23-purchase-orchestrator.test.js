@@ -12,7 +12,7 @@ function createOrchestratorTestContext() {
         product_cost: 10500,
         min_company_profit: 2000,
         direct_commission_rate: 8.00,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         binary_volume: 27500,
         max_binary_qualified_levels: 7,
         status: 'ACTIVE'
@@ -120,9 +120,10 @@ test('Step 23: 1. Normal Purchase Orchestration: Snapshot, Volume, Direct Commis
     assert.equal(directEntry.user_id, 'u-sponsor');
     assert.equal(directEntry.eligible_amount, 2200.00);
 
-    // Verify Binary Commission (6% of Rs. 27,500 = Rs. 1,650.00 to u-sponsor and u-root)
+    // Verify Binary Commission (7% of Rs. 27,500 = Rs. 1,925.00 to u-sponsor and u-root)
     const binaryEntries = ctx.commissionLedger.filter(c => c.type === 'BINARY');
     assert(binaryEntries.length >= 1);
+    assert.equal(binaryEntries[0].eligible_amount, 1925.00);
 
     // Verify Volume Ledger
     assert(ctx.volumeLedger.length > 0);
@@ -200,7 +201,7 @@ test('Step 23: 3. Economics Firewall Guard: BLOCKED snapshot grants access but p
         product_cost: 9500,
         minimum_company_profit: 2000,
         direct_commission_rate: 8.00,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         economics_status: 'BLOCKED'
     };
 

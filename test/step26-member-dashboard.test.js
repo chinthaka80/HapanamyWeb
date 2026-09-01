@@ -10,7 +10,7 @@ function createDashboardTestContext() {
         name: 'Social Media Income Masterclass',
         selling_price: 27500,
         binary_volume: 27500,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         direct_commission_rate: 8.00,
         max_binary_qualified_levels: 7,
         status: 'ACTIVE'

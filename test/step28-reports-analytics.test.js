@@ -10,7 +10,7 @@ function createReportingTestContext() {
         selling_price: 27500.00,
         product_cost: 2500.00,
         binary_volume: 27500.00,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         direct_commission_rate: 8.00,
         status: 'ACTIVE'
     };
@@ -52,7 +52,7 @@ function createReportingTestContext() {
     const walletLedger = [
         { id: 'tx-1', user_id: 'u-sponsor', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 0, balance_after: 2200, status: 'COMPLETED', created_at: '2026-08-05T11:05:00Z' },
         { id: 'tx-2', user_id: 'u-sponsor', type: 'DIRECT_COMMISSION', amount: 2200.00, balance_before: 2200, balance_after: 4400, status: 'COMPLETED', created_at: '2026-08-10T14:05:00Z' },
-        { id: 'tx-3', user_id: 'u-admin', type: 'BINARY_COMMISSION', amount: 1650.00, balance_before: 0, balance_after: 1650, status: 'COMPLETED', created_at: '2026-08-10T14:10:00Z' }
+        { id: 'tx-3', user_id: 'u-admin', type: 'BINARY_COMMISSION', amount: 1925.00, balance_before: 0, balance_after: 1925, status: 'COMPLETED', created_at: '2026-08-10T14:10:00Z' }
     ];
 
     const volumeLedger = [
@@ -100,14 +100,14 @@ test('Step 28: 1. Financial Report: Authoritative Revenue, Cost, Profit & Ledger
     assert.equal(rep.summary.total_product_cost, 7500.00);
     // Gross Profit = 82,500 - 7,500 = 75,000
     assert.equal(rep.summary.total_gross_profit, 75000.00);
-    // Commission Paid = 2,200 + 2,200 + 1,650 = 6,050
-    assert.equal(rep.summary.commission_paid, 6050.00);
+    // Commission Paid = 2,200 + 2,200 + 1,925 = 6,325
+    assert.equal(rep.summary.commission_paid, 6325.00);
     // Commission Pending = 2,000 withdrawal
     assert.equal(rep.summary.commission_pending, 2000.00);
-    // Liability = 6,050 + 2,000 = 8,050
-    assert.equal(rep.summary.commission_liability, 8050.00);
-    // Company Margin = 75,000 - 6,050 = 68,950
-    assert.equal(rep.summary.company_margin_estimate, 68950.00);
+    // Liability = 6,325 + 2,000 = 8,325
+    assert.equal(rep.summary.commission_liability, 8325.00);
+    // Company Margin = 75,000 - 6,325 = 68,675
+    assert.equal(rep.summary.company_margin_estimate, 68675.00);
 
     // Product breakdown
     assert.equal(rep.product_sales.length, 1);
@@ -134,9 +134,9 @@ test('Step 28: 2. MLM Report: Binary Volume, Direct Referrals, Qualification Sta
     assert.equal(rep.binary_volume.total_right_volume, 55000.00);
     assert.equal(rep.direct_referrals_stats.total_sponsorship_links, 3);
     assert.equal(rep.qualification_statistics.total_evaluated, 4);
-    assert.equal(rep.qualified_upline_payouts.total_binary_commissions_paid, 1650.00);
+    assert.equal(rep.qualified_upline_payouts.total_binary_commissions_paid, 1925.00);
 
-    // Top Earners: Kasun Leader (u-sponsor) earned 4,400, Administrator (u-admin) earned 1,650
+    // Top Earners: Kasun Leader (u-sponsor) earned 4,400, Administrator (u-admin) earned 1,925
     assert.equal(rep.top_earners[0].user_id, 'u-sponsor');
     assert.equal(rep.top_earners[0].total_earnings, 4400.00);
 });

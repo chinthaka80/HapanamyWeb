@@ -278,7 +278,7 @@ const SimulationEngine = {
             });
             totalDirectCommissions += effectiveDirectPayout;
 
-            // Distribute 7-Tier Qualified Upline Binary Commissions (6% each)
+            // Distribute 7-Tier Qualified Upline Binary Commissions (7% each)
             const buyerNode = network.binaryNodes.find(n => n.user_id === buyer.id);
             if (buyerNode && buyerNode.path) {
                 const uplineIds = buyerNode.path.split('/').reverse(); // Nearest upline first

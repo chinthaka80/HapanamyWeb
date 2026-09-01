@@ -25,10 +25,10 @@ function createReversalTestContext() {
     const walletLedger = [
         // Direct commission to sponsor (Rs. 2,200)
         { id: 'tx-dir-1', user_id: 'u-sponsor', type: 'DIRECT_COMMISSION', amount: 2200.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:00:00Z' },
-        // Binary commissions to 3 uplines (Rs. 1,650 each)
-        { id: 'tx-bin-1', user_id: 'u-upline-1', type: 'BINARY_COMMISSION', amount: 1650.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:01:00Z' },
-        { id: 'tx-bin-2', user_id: 'u-upline-2', type: 'BINARY_COMMISSION', amount: 1650.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:02:00Z' },
-        { id: 'tx-bin-3', user_id: 'u-upline-3', type: 'BINARY_COMMISSION', amount: 1650.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:03:00Z' }
+        // Binary commissions to 3 uplines (Rs. 1,925 each)
+        { id: 'tx-bin-1', user_id: 'u-upline-1', type: 'BINARY_COMMISSION', amount: 1925.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:01:00Z' },
+        { id: 'tx-bin-2', user_id: 'u-upline-2', type: 'BINARY_COMMISSION', amount: 1925.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:02:00Z' },
+        { id: 'tx-bin-3', user_id: 'u-upline-3', type: 'BINARY_COMMISSION', amount: 1925.00, reference_id: 'purch-30-main', status: 'COMPLETED', created_at: '2026-08-01T10:03:00Z' }
     ];
 
     // Binary volume entries for purchase 'purch-30-main'
@@ -222,7 +222,7 @@ test('Step 30: 5. Multiple Qualified Uplines: Reverses all upline commissions an
     ['u-upline-1', 'u-upline-2', 'u-upline-3'].forEach(uplineId => {
         const rev = ctx.walletLedger.find(tx => tx.user_id === uplineId && tx.type === 'COMMISSION_REVERSAL');
         assert(rev, `Compensating reversal for ${uplineId} must exist`);
-        assert.equal(rev.amount, -1650.00);
+        assert.equal(rev.amount, -1925.00);
     });
 });
 

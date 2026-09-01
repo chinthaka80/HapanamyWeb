@@ -11,7 +11,7 @@ function createRefundTestContext() {
         selling_price: 27500.00,
         product_cost: 2500.00,
         binary_volume: 27500.00,
-        binary_commission_rate: 6.00,
+        binary_commission_rate: 7.00,
         direct_commission_rate: 8.00,
         status: 'ACTIVE'
     };
@@ -47,7 +47,7 @@ function createRefundTestContext() {
         // Direct commission to sponsor
         { id: 'tx-comm-dir', user_id: 'u-sponsor', type: 'DIRECT_COMMISSION', amount: 2200.00, reference_id: 'purch-ref-101', status: 'COMPLETED', created_at: new Date().toISOString() },
         // Binary commission to root
-        { id: 'tx-comm-bin', user_id: 'u-root', type: 'BINARY_COMMISSION', amount: 1650.00, reference_id: 'purch-ref-101', status: 'COMPLETED', created_at: new Date().toISOString() }
+        { id: 'tx-comm-bin', user_id: 'u-root', type: 'BINARY_COMMISSION', amount: 1925.00, reference_id: 'purch-ref-101', status: 'COMPLETED', created_at: new Date().toISOString() }
     ];
 
     const volumeLedger = [
@@ -224,7 +224,7 @@ test('Step 29: 6. Complete Refund Lifecycle: REQUESTED -> UNDER_REVIEW -> APPROV
     assert(sponsorReversal, 'Compensating reversal for sponsor must exist');
     assert.equal(sponsorReversal.amount, -2200.00);
     assert(adminReversal, 'Compensating reversal for binary commission must exist');
-    assert.equal(adminReversal.amount, -1650.00);
+    assert.equal(adminReversal.amount, -1925.00);
 
     // Verify Compensating Volume Reversals created
     const volumeReversal = ctx.volumeLedger.find(v => v.type === 'REVERSAL');
