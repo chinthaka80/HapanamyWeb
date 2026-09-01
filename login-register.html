@@ -341,13 +341,13 @@
                 <div class="form-panel active" id="loginPanel">
                     <form onsubmit="handleAuthSubmit(event, 'login')">
                         <div class="form-group">
-                            <input type="text" id="loginEmail" required placeholder=" ">
-                            <label for="loginEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                            <label for="loginEmail">විද්‍යුත් තැපෑල හෝ පරිශීලක නාමය (Email / Username)</label>
+                            <input type="text" id="loginEmail" required placeholder="ඔබගේ ඊමේල් හෝ Username ඇතුළත් කරන්න">
                         </div>
                         
                         <div class="form-group">
-                            <input type="password" id="loginPassword" required placeholder=" ">
                             <label for="loginPassword">මුරපදය (Password)</label>
+                            <input type="password" id="loginPassword" required placeholder="ඔබගේ මුරපදය ඇතුළත් කරන්න">
                         </div>
 
                         <div class="remember-forgot">
@@ -365,28 +365,28 @@
                 <div class="form-panel" id="registerPanel">
                     <form onsubmit="handleAuthSubmit(event, 'register')">
                         <div class="form-group">
-                            <input type="text" id="regName" required placeholder=" ">
                             <label for="regName">සම්පූර්ණ නම (Full Name)</label>
+                            <input type="text" id="regName" required placeholder="ඔබගේ සම්පූර්ණ නම">
                         </div>
 
                         <div class="form-group">
-                            <input type="email" id="regEmail" required placeholder=" ">
                             <label for="regEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                            <input type="email" id="regEmail" required placeholder="name@example.com">
                         </div>
 
                         <div class="form-group">
-                            <input type="tel" id="regPhone" required placeholder=" ">
                             <label for="regPhone">දුරකථන අංකය (Phone Number)</label>
+                            <input type="tel" id="regPhone" required placeholder="07XXXXXXXX">
                         </div>
                         
                         <div class="form-group">
-                            <input type="text" id="regAddress" required placeholder=" ">
                             <label for="regAddress">ලිපිනය / නගරය (Address / City)</label>
+                            <input type="text" id="regAddress" required placeholder="ඔබගේ ලිපිනය">
                         </div>
 
                         <div class="form-group" style="margin-bottom: 12px;">
-                            <input type="password" id="regPassword" required placeholder=" " oninput="checkPasswordStrength(this.value)">
                             <label for="regPassword">මුරපදය (Password)</label>
+                            <input type="password" id="regPassword" required placeholder="ශක්තිමත් මුරපදයක් ඇතුළත් කරන්න" oninput="checkPasswordStrength(this.value)">
                         </div>
                         <div id="pswStrength" style="font-size: 11px; font-weight: 700; margin-bottom: 18px; transition: 0.2s; color: var(--text-muted); display: none; text-align: left; padding-left: 5px;"></div>
 
@@ -404,12 +404,12 @@
                         <!-- Hidden inputs for Affiliate extra details -->
                         <div class="extra-fields" id="affiliateFields">
                             <div class="form-group">
-                                <input type="text" id="regReferral" placeholder=" ">
                                 <label for="regReferral">ප්‍රවර්ධන කේතය (Referral Code - Optional)</label>
+                                <input type="text" id="regReferral" placeholder="Sponsor code">
                             </div>
                             <div class="form-group">
-                                <input type="text" id="regBank" placeholder=" ">
                                 <label for="regBank">බැංකු ගිණුම් විස්තර (Bank & Account Number for payouts)</label>
+                                <input type="text" id="regBank" placeholder="Bank Name & Account No">
                             </div>
                         </div>
 
@@ -427,8 +427,8 @@
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6;">ඔබගේ ගිණුමට සම්බන්ධ ඊමේල් ලිපිනය ඇතුළත් කරන්න. එවිට අප ඔබට මුරපදය නැවත සැකසීමට සබැඳියක් (Reset Link) එවනු ඇත.</p>
             <form onsubmit="handleForgotPasswordSubmit(event)">
                 <div class="form-group" style="margin-bottom: 25px;">
-                    <input type="email" id="forgotEmail" required placeholder=" ">
                     <label for="forgotEmail">විද්‍යුත් තැපෑල (Email Address)</label>
+                    <input type="email" id="forgotEmail" required placeholder="name@example.com">
                 </div>
                 <div style="display: flex; gap: 10px;">
                     <button type="submit" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight: 700;">Reset Link යොමු කරන්න</button>

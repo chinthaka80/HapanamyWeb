@@ -112,14 +112,19 @@
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
+            text-align: left;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-secondary);
+            display: block !important;
+            position: static !important;
+            transform: none !important;
+            margin-bottom: 8px !important;
+            font-size: 13.5px !important;
+            font-weight: 700 !important;
+            color: var(--text-secondary) !important;
+            pointer-events: auto !important;
         }
 
         .form-input-wrap {
