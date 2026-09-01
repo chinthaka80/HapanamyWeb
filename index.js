@@ -1864,43 +1864,27 @@ function initCalculator() {
         // Social Media: FB, YT, TikTok
         // AI: Video, Mastery, Coding
         
-        // Let's assume the user does direct sales.
-        // Direct Sales Earnings (15% direct rate)
-        const directEbookCommission = ebooksSold * avgEbookDirectComm;
-        const directCoursesCommission = (tradingSold + socialSold + aiSold) * avgCourseDirectComm;
-        const directCommissionTotal = directEbookCommission + directCoursesCommission;
-
-        // Total sales volume created
+        // Total direct sales volume created
         const totalSalesVolume = (ebooksSold * avgEbookPrice) + ((tradingSold + socialSold + aiSold) * avgCoursePrice);
 
-        // Multi-level Passive Income Simulation
-        // Let's assume the user has a small downline team.
-        // Tier 2 (Upline Layer 1): 10% commission. Let's estimate they have team members doing 1.5x the user's sales.
-        // Tier 3 (Upline Layer 2): 5% commission. Let's estimate team members doing 2x the user's sales.
-        // Tier 4 (Upline Layer 3): 3% commission. Let's estimate team members doing 3x the user's sales.
-        // 5-Layer Unilevel downline sales volumes simulations
-        const layer1SalesVolume = totalSalesVolume * 0.8; 
-        const layer2SalesVolume = totalSalesVolume * 0.6;
-        const layer3SalesVolume = totalSalesVolume * 0.4;
-        const layer4SalesVolume = totalSalesVolume * 0.3;
-        const layer5SalesVolume = totalSalesVolume * 0.2;
+        // Direct Sales Earnings (8% direct rate)
+        const directCommissionTotal = totalSalesVolume * 0.08;
 
-        const layer1Comm = layer1SalesVolume * 0.10; // 10%
-        const layer2Comm = layer2SalesVolume * 0.05; // 5%
-        const layer3Comm = layer3SalesVolume * 0.03; // 3%
-        const layer4Comm = layer4SalesVolume * 0.03; // 3%
-        const layer5Comm = layer5SalesVolume * 0.03; // 3%
+        // Binary Team Volume & 7% Binary Matching Commission
+        // Estimated dual-leg team volume generated from left & right network
+        const leftLegVolume = totalSalesVolume * 1.8;
+        const rightLegVolume = totalSalesVolume * 1.5;
+        const weakerLegVolume = Math.min(leftLegVolume, rightLegVolume);
+        const binaryCommission = weakerLegVolume * 0.07; // 7% binary matching
 
-        const teamPassiveIncome = layer1Comm + layer2Comm + layer3Comm + layer4Comm + layer5Comm;
-
-        // Total Monthly Earnings = Direct Sales + Team Passive Income
-        const totalMonthlyEarnings = directCommissionTotal + teamPassiveIncome;
+        // Daily cap enforcement (LKR 30,000 / day -> LKR 900,000 / month)
+        const totalMonthlyEarnings = Math.min(900000, directCommissionTotal + binaryCommission);
         const annualProjection = totalMonthlyEarnings * 12;
 
         // Format and render numbers
         monthlyEarningsEl.textContent = 'රු. ' + Math.round(totalMonthlyEarnings).toLocaleString();
         annualEarningsEl.textContent = 'රු. ' + Math.round(annualProjection).toLocaleString();
-        totalSalesVolumeEl.textContent = 'රු. ' + Math.round(totalSalesVolume + layer1SalesVolume + layer2SalesVolume + layer3SalesVolume + layer4SalesVolume + layer5SalesVolume).toLocaleString();
+        totalSalesVolumeEl.textContent = 'රු. ' + Math.round(totalSalesVolume + leftLegVolume + rightLegVolume).toLocaleString();
 
         // Financial Level Indicator (Status Level)
         let status = 'Bronze Partner';

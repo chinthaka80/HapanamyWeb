@@ -1189,46 +1189,17 @@
                             <input type="text" id="merchantId" value="1210234" required placeholder="Merchant ID">
                         </div>
                         
-                        <div class="form-group" style="margin-top: 15px;">
+                        <div class="form-group" style="margin-top: 15px; margin-bottom: 25px;">
                             <label for="merchantSecret">PayHere Merchant Secret *</label>
                             <input type="password" id="merchantSecret" value="••••••••••••••••••••" required placeholder="Merchant Secret">
                         </div>
 
-                        <h3 style="margin-top: 40px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">👥 Multi-Tier Commissions Structure</h3>
-                        
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                            <div class="form-group">
-                                <label for="directComm">Direct Sale rate (%) *</label>
-                                <input type="number" id="directComm" value="8" min="0" max="100" required placeholder="8">
-                            </div>
-                            <div class="form-group">
-                                <label for="l1Comm">Upline L1 Commission (%) *</label>
-                                <input type="number" id="l1Comm" value="7" min="0" max="100" required placeholder="7">
-                            </div>
+                        <div style="background: rgba(13, 148, 136, 0.08); border: 1px solid rgba(13, 148, 136, 0.25); border-radius: 10px; padding: 20px; margin-bottom: 25px;">
+                            <h4 style="color: var(--brand-teal); margin-bottom: 8px; font-size: 15px;">🌿 Active Binary MLM Plan (ද්විමය සැලැස්ම)</h4>
+                            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 12px;">පද්ධතියේ නිල වශයෙන් ක්‍රියාත්මක වන්නේ <strong>Binary MLM ආකෘතිය</strong> පමණි (Direct 8% + Binary 7% + Daily Cap LKR 30,000).</p>
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
-                            <div class="form-group">
-                                <label for="l2Comm">Upline L2 Commission (%) *</label>
-                                <input type="number" id="l2Comm" value="7" min="0" max="100" required placeholder="7">
-                            </div>
-                            <div class="form-group">
-                                <label for="l3Comm">Upline L3 Commission (%) *</label>
-                                <input type="number" id="l3Comm" value="7" min="0" max="100" required placeholder="7">
-                            </div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
-                            <div class="form-group">
-                                <label for="l4Comm">Upline L4 Commission (%) *</label>
-                                <input type="number" id="l4Comm" value="7" min="0" max="100" required placeholder="7">
-                            </div>
-                            <div class="form-group">
-                                <label for="l5Comm">Upline L5 Commission (%) *</label>
-                                <input type="number" id="l5Comm" value="7" min="0" max="100" required placeholder="7">
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn btn-primary" style="width: 100%; border: none;" onclick="saveSystemSettings()">Save System Settings</button>
+                        <button type="button" class="btn btn-primary" style="width: 100%; border: none;" onclick="saveSystemSettings()">💾 Save Gateway Settings</button>
                     </div>
                 </div>
 
@@ -1851,37 +1822,30 @@
         // Load saved configurations
         function loadSystemSettings() {
             const settings = JSON.parse(localStorage.getItem('hapanamy_settings')) || {
-                direct: 15, l1: 10, l2: 5, l3: 3, l4: 3, l5: 3, sandbox: true,
-                merchantId: '1210234', merchantSecret: 'secret_hash_code_12345'
+                sandbox: true,
+                merchantId: '1210234',
+                merchantSecret: 'secret_hash_code_12345'
             };
 
-            document.getElementById('directComm').value = settings.direct;
-            document.getElementById('l1Comm').value = settings.l1;
-            document.getElementById('l2Comm').value = settings.l2;
-            document.getElementById('l3Comm').value = settings.l3;
-            document.getElementById('l4Comm').value = settings.l4;
-            document.getElementById('l5Comm').value = settings.l5;
-            document.getElementById('sandboxMode').checked = settings.sandbox;
-            document.getElementById('merchantId').value = settings.merchantId || '1210234';
-            document.getElementById('merchantSecret').value = settings.merchantSecret || '••••••••••••••••••••';
+            const sbox = document.getElementById('sandboxMode');
+            const mId = document.getElementById('merchantId');
+            const mSec = document.getElementById('merchantSecret');
+
+            if (sbox) sbox.checked = settings.sandbox !== undefined ? settings.sandbox : true;
+            if (mId) mId.value = settings.merchantId || '1210234';
+            if (mSec) mSec.value = settings.merchantSecret || '••••••••••••••••••••';
         }
 
         // Save global configurations
         function saveSystemSettings() {
-            const direct = document.getElementById('directComm').value;
-            const l1 = document.getElementById('l1Comm').value;
-            const l2 = document.getElementById('l2Comm').value;
-            const l3 = document.getElementById('l3Comm').value;
-            const l4 = document.getElementById('l4Comm').value;
-            const l5 = document.getElementById('l5Comm').value;
-            const sandbox = document.getElementById('sandboxMode').checked;
-            const merchantId = document.getElementById('merchantId').value;
-            const merchantSecret = document.getElementById('merchantSecret').value;
+            const sandbox = document.getElementById('sandboxMode') ? document.getElementById('sandboxMode').checked : true;
+            const merchantId = document.getElementById('merchantId') ? document.getElementById('merchantId').value : '1210234';
+            const merchantSecret = document.getElementById('merchantSecret') ? document.getElementById('merchantSecret').value : '••••••••••••••••••••';
 
-            const config = { direct, l1, l2, l3, l4, l5, sandbox, merchantId, merchantSecret };
+            const config = { sandbox, merchantId, merchantSecret };
             localStorage.setItem('hapanamy_settings', JSON.stringify(config));
 
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> Direct: ' + direct + '%, L1: ' + l1 + '%, L2: ' + l2 + '%, L3: ' + l3 + '%, L4: ' + l4 + '%, L5: ' + l5 + '%. (Sandbox: ' + (sandbox ? 'ON' : 'OFF') + ')');
+            showToast('💾 <strong>ගෙවීම් සැකසුම් සුරකින ලදී!</strong> PayHere Merchant ID: ' + merchantId + ' (Sandbox: ' + (sandbox ? 'ON' : 'OFF') + ')');
         }
 
         // ==================== BLOG POST MANAGEMENT ====================

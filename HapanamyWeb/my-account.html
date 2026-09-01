@@ -718,67 +718,47 @@
                     </div>
                 </div>
 
-                <!-- 4. MY TEAM PANEL (5 MLM LAYERS STRUCTURE) -->
+                <!-- 4. MY BINARY TEAM & NETWORK (DUAL-LEG STRUCTURE) -->
                 <div class="account-panel" id="panel-network">
-                    <div style="background-color: var(--bg-surface); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; gap: 15px; align-items: center;">
-                        <input type="text" id="downlineSearchInput" oninput="filterDownlineNetwork()" placeholder="🔍 Search team member by name..." style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
+                    <div style="background-color: var(--bg-surface); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <input type="text" id="downlineSearchInput" oninput="filterDownlineNetwork()" placeholder="🔍 Search team member by name or username..." style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
                     </div>
 
-                    <div style="display: flex; flex-direction: column; gap: 20px;">
-                        <!-- Level 1 Card: Direct Referrals -->
-                        <div class="admin-table-box" style="border-left: 5px solid #B9E769; box-shadow: 0 4px 10px rgba(185,231,105,0.05);">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                        <!-- Left Team Card -->
+                        <div class="admin-table-box" style="border-left: 5px solid #10B981; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
-                                <span style="font-weight: 800; font-size: 14.5px; color: #B9E769;">👥 Layer 01 (Direct Team) - 10% Commission</span>
-                                <span style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Active Volume: රු. 35,000</span>
+                                <span style="font-weight: 800; font-size: 14.5px; color: #10B981;">👈 LEFT Leg Team (වම් ශාඛාව)</span>
+                                <span style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
-                            <div id="level1DownlinesList" style="padding: 10px 20px;">
-                                <!-- Injected dynamically -->
+                            <div id="leftLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                                නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
                             </div>
                         </div>
 
-                        <!-- Level 2 Card: Indirect Referrals -->
-                        <div class="admin-table-box" style="border-left: 5px solid #3182CE; box-shadow: 0 4px 10px rgba(49,130,206,0.05);">
+                        <!-- Right Team Card -->
+                        <div class="admin-table-box" style="border-left: 5px solid #F59E0B; box-shadow: 0 4px 10px rgba(245,158,11,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
-                                <span style="font-weight: 800; font-size: 14.5px; color: #3182CE;">👥 Layer 02 (Indirect Team L2) - 5% Commission</span>
-                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 24,000</span>
+                                <span style="font-weight: 800; font-size: 14.5px; color: #F59E0B;">👉 RIGHT Leg Team (දකුණු ශාඛාව)</span>
+                                <span style="font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
-                            <div id="level2DownlinesList" style="padding: 10px 20px;">
-                                <!-- Injected dynamically -->
+                            <div id="rightLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                                නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Level 3 Card: Indirect Referrals -->
-                        <div class="admin-table-box" style="border-left: 5px solid #F0B323; box-shadow: 0 4px 10px rgba(240,179,35,0.05);">
-                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
-                                <span style="font-weight: 800; font-size: 14.5px; color: #F0B323;">👥 Layer 03 (Indirect Team L3) - 3% Commission</span>
-                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 12,000</span>
-                            </div>
-                            <div id="level3DownlinesList" style="padding: 10px 20px;">
-                                <!-- Injected dynamically -->
-                            </div>
+                    <!-- Direct Referrals Card -->
+                    <div class="admin-table-box" style="border-left: 5px solid #6366F1; box-shadow: 0 4px 10px rgba(99,102,241,0.05);">
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
+                            <span style="font-weight: 800; font-size: 14.5px; color: #6366F1;">👥 Direct Referrals (8% Direct Commission)</span>
+                            <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">0 Direct Members</span>
                         </div>
-
-                        <!-- Level 4 Card: Indirect Referrals -->
-                        <div class="admin-table-box" style="border-left: 5px solid #9F7AEA; box-shadow: 0 4px 10px rgba(159,122,234,0.05);">
-                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
-                                <span style="font-weight: 800; font-size: 14.5px; color: #9F7AEA;">👥 Layer 04 (Indirect Team L4) - 3% Commission</span>
-                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 8,000</span>
-                            </div>
-                            <div id="level4DownlinesList" style="padding: 10px 20px;">
-                                <!-- Injected dynamically -->
-                            </div>
+                        <div id="level1DownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
+                            ඔබගේ Direct Referral Link හරහා ලියාපදිංචි වන සාමාජිකයින් මෙහි දැක්වේ.
                         </div>
-
-                        <!-- Level 5 Card: Indirect Referrals -->
-                        <div class="admin-table-box" style="border-left: 5px solid #ED64A6; box-shadow: 0 4px 10px rgba(237,100,166,0.05);">
-                            <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
-                                <span style="font-weight: 800; font-size: 14.5px; color: #ED64A6;">👥 Layer 05 (Indirect Team L5) - 3% Commission</span>
-                                <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">Active Volume: රු. 5,000</span>
-                            </div>
-                            <div id="level5DownlinesList" style="padding: 10px 20px;">
-                                <!-- Injected dynamically -->
-                            </div>
-                        </div>
+                    </div>
+                </div>
                     </div>
                 </div>
 
