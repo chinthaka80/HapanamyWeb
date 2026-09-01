@@ -47,6 +47,39 @@ async function dbAddUser(user) {
     return true;
 }
 
+async function dbUpdateUser(email, updates) {
+    if (supabaseClient) {
+        try {
+            await supabaseClient.from('registered_users').update(updates).eq('email', email);
+        } catch (e) {
+            console.error('Supabase update user crash:', e);
+        }
+    }
+    let users = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+    users = users.map(u => {
+        if (u.email === email || (u.name && u.name === email)) {
+            return { ...u, ...updates };
+        }
+        return u;
+    });
+    localStorage.setItem('hapanamy_registered_users', JSON.stringify(users));
+    return true;
+}
+
+async function dbDeleteUser(email) {
+    if (supabaseClient) {
+        try {
+            await supabaseClient.from('registered_users').delete().eq('email', email);
+        } catch (e) {
+            console.error('Supabase delete user crash:', e);
+        }
+    }
+    let users = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+    users = users.filter(u => u.email !== email && u.name !== email);
+    localStorage.setItem('hapanamy_registered_users', JSON.stringify(users));
+    return true;
+}
+
 // ==================== BANK ORDERS / SLIPS ====================
 async function dbGetOrders() {
     if (supabaseClient) {

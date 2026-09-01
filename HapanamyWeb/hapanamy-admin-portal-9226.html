@@ -1131,17 +1131,18 @@
                         <table class="admin-table">
                             <thead>
                                 <tr>
-                                    <th>සාමාජිකයා (Name)</th>
-                                    <th>ඊමේල් (Email)</th>
+                                    <th>සාමාජිකයා (Partner Name)</th>
+                                    <th>ඊමේල් / Username</th>
                                     <th>කාර්යභාරය (Role)</th>
+                                    <th>තත්ත්වය (Status)</th>
                                     <th>දුරකථනය (Phone)</th>
-                                    <th>ලියාපදිංචි වූ දිනය (Date Registered)</th>
-                                    <th style="text-align: center;">ක්‍රියාව (Actions)</th>
+                                    <th>දිනය (Date Registered)</th>
+                                    <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
                                 </tr>
                             </thead>
                             <tbody id="registeredUsersTableBody">
                                 <tr>
-                                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
+                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2072,7 +2073,7 @@
                 document.getElementById('crudProductSafetyBuffer').value = '500';
                 document.getElementById('crudProductDirectPercent').value = '8';
                 document.getElementById('crudProductBinaryVolume').value = '7450';
-                document.getElementById('crudProductMaxLevels').value = '7';
+                document.getElementById('crudProductMaxLevels').value = '1';
                 document.getElementById('crudProductCommissionMode').value = 'MANUAL';
                 document.getElementById('crudProductBinaryPercent').value = '7';
                 document.getElementById('crudProductImg').value = 'assets/trading_banner.jpg';
@@ -2105,7 +2106,7 @@
                     
                     document.getElementById('crudProductDirectPercent').value = c.directCommissionRate !== undefined ? c.directCommissionRate : 8.0;
                     document.getElementById('crudProductBinaryVolume').value = c.binaryVolume !== undefined ? c.binaryVolume : (c.price || 0);
-                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 7;
+                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 1;
                     document.getElementById('crudProductCommissionMode').value = c.commissionMode || 'MANUAL';
                     document.getElementById('crudProductBinaryPercent').value = c.binaryCommissionRate !== undefined ? c.binaryCommissionRate : 7.0;
                     document.getElementById('crudProductImg').value = c.image || 'assets/trading_banner.jpg';
@@ -2602,7 +2603,7 @@
                 if (users.length === 0) {
                     tableBody.innerHTML = `
                         <tr>
-                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
                         </tr>
                     `;
                     return;
@@ -2618,23 +2619,36 @@
                     const name = user.name || 'N/A';
                     const email = user.email || 'N/A';
                     const role = user.role || 'student';
+                    const status = user.status || 'Active';
                     const phone = user.phone || 'N/A';
                     const date = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
                     
                     const roleBadge = role === 'admin' 
                         ? '<span class="badge-status" style="background-color: rgba(240, 179, 35, 0.15); color: var(--brand-gold);">Admin</span>' 
                         : (role === 'affiliate' 
-                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate</span>' 
+                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate Partner</span>' 
                             : '<span class="badge-status" style="background: rgba(40, 167, 69, 0.15) !important; color: #28a745 !important; border-color: #28a745 !important;">Student</span>');
                     
+                    const statusBadge = status === 'Active'
+                        ? '<span class="badge-status paid">Active</span>'
+                        : (status === 'Pending' || status === 'Pending Approval'
+                            ? '<span class="badge-status pending">Pending Approval</span>'
+                            : '<span class="badge-status" style="background:rgba(239,83,80,0.15); color:#EF5350; border-color:#EF5350;">Suspended</span>');
+
                     tr.innerHTML = `
                         <td><strong>${name}</strong></td>
                         <td><code>${email}</code></td>
                         <td>${roleBadge}</td>
+                        <td>${statusBadge}</td>
                         <td>${phone}</td>
                         <td>${date}</td>
                         <td style="text-align: center;">
-                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
+                            <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+                                <button class="btn btn-primary" onclick="approveRegisteredUser('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer;">✅ Approve</button>
+                                <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
+                                <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
+                                <button class="btn btn-secondary" onclick="deleteRegisteredUserAccount('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--ph-red); color: var(--ph-red); cursor:pointer;">🗑️ Delete</button>
+                            </div>
                         </td>
                     `;
                     tableBody.appendChild(tr);
@@ -2643,9 +2657,33 @@
                 console.error('Error rendering registered users:', err);
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="6" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
+                        <td colspan="7" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
                     </tr>
                 `;
+            }
+        }
+
+        async function approveRegisteredUser(email, name) {
+            await dbUpdateUser(email, { status: 'Active' });
+            showToast(`✅ Partner <strong>${name}</strong> successfully approved & activated!`);
+            renderRegisteredUsers();
+        }
+
+        async function toggleRegisteredUserStatus(email, name) {
+            const users = await dbGetUsers();
+            const u = users.find(x => x.email === email || x.name === email);
+            const currentStatus = (u && u.status) ? u.status : 'Active';
+            const newStatus = (currentStatus === 'Active' ? 'Suspended' : 'Active');
+            await dbUpdateUser(email, { status: newStatus });
+            showToast(`🔄 Partner <strong>${name}</strong> status changed to <strong>${newStatus}</strong>.`);
+            renderRegisteredUsers();
+        }
+
+        async function deleteRegisteredUserAccount(email, name) {
+            if (confirm(`🗑️ Are you sure you want to remove user "${name}"?`)) {
+                await dbDeleteUser(email);
+                showToast(`🗑️ User account <strong>${name}</strong> removed.`);
+                renderRegisteredUsers();
             }
         }
 
