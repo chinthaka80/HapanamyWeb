@@ -91,11 +91,12 @@ const EarningsCapEngine = {
 
         for (const entry of commissionLedger) {
             if (entry.user_id !== userId) continue;
-            if (entry.status !== 'APPROVED' && entry.status !== 'PARTIAL_CAPPED') continue;
+            if (entry.status !== 'APPROVED' && entry.status !== 'PARTIAL_CAPPED' && entry.status !== 'COMPLETED') continue;
 
             const entryType = (entry.type || '').toUpperCase();
             if (commissionType && entryType !== commissionType.toUpperCase()) continue;
-            if (!commissionType && includedTypes && !includedTypes.includes(entryType)) continue;
+            const isIncluded = !includedTypes || includedTypes.some(t => entryType === t || entryType === `${t}_COMMISSION`);
+            if (!commissionType && !isIncluded) continue;
 
             const entryDate = entry.created_at ? new Date(entry.created_at) : new Date();
             const { dayKey: entryDay, monthKey: entryMonth } = this.getDateKeys(entryDate);

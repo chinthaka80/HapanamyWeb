@@ -37,6 +37,7 @@ require('./step22-payment-verification.test');
 require('./step23-purchase-orchestrator.test');
 require('./step24-withdrawal-system.test');
 require('./step25-kyc-verification.test');
+require('./step26-member-dashboard.test');
 
 // Run
 runTests();
