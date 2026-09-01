@@ -22,7 +22,7 @@ const AdminDashboardService = require('./services/admin-dashboard-service');
 const NotificationEngine = require('./services/notification-engine');
 const ReversalEngine = require('./services/reversal-engine');
 const SimulationEngine = require('./services/simulation-engine');
-const ProductService = require('./services/product-service');
+const PurchaseOrchestrator = require('./services/purchase-orchestrator');
 
 const PORT = 3000;
 
