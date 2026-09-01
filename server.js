@@ -1577,106 +1577,148 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
-    // REFUND & REVERSAL SYSTEM REST ENDPOINTS (PHASE 12)
+    // REFUND & CANCELLATION ENGINE REST ENDPOINTS (STEP 29)
     // ========================================================
 
     // POST /api/refund/request
     if (req.method === 'POST' && pathname === '/api/refund/request') {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized.' });
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
             return;
         }
 
         const body = await parseRequestBody(req);
-        const { purchaseId } = body;
+        const { purchaseId, reason, usageTelemetry } = body;
 
         if (!purchaseId) {
             sendJSON(res, 400, { error: 'PurchaseId is required.' });
             return;
         }
 
-        const purchase = mockProductPurchases.find(p => p.id === purchaseId && p.user_id === authUser.id);
-        const check = RefundService.checkEligibility(purchase);
-        if (!check.eligible) {
-            sendJSON(res, 400, { error: check.error });
-            return;
+        try {
+            const result = RefundService.requestRefund({
+                userId: authUser.id,
+                purchaseId,
+                reason,
+                purchases: mockProductPurchases,
+                refundRequests: mockRefundRequests,
+                usageTelemetry,
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 201, result);
+        } catch (err) {
+            sendJSON(res, 400, { error: err.message });
         }
-
-        const refId = 'refund-' + Math.random().toString(36).substr(2, 9);
-        const refundRequest = {
-            id: refId,
-            purchase_id: purchaseId,
-            user_id: authUser.id,
-            status: 'PENDING',
-            created_at: new Date().toISOString()
-        };
-
-        mockRefundRequests.push(refundRequest);
-        KycService.logAction(mockAuditLogs, authUser.id, 'REFUND_REQUESTED', 'refund_requests', refId);
-
-        sendJSON(res, 201, { success: true, refundRequest });
         return;
     }
 
-    // GET /api/admin/refunds/pending (Admin only)
-    if (req.method === 'GET' && pathname === '/api/admin/refunds/pending') {
+    // POST /api/refund/cancel
+    if (req.method === 'POST' && pathname === '/api/refund/cancel') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
-            sendJSON(res, 403, { error: 'Access Denied.' });
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
             return;
         }
 
-        const pending = mockRefundRequests.filter(r => r.status === 'PENDING');
-        sendJSON(res, 200, { pending });
+        const body = await parseRequestBody(req);
+        const { refundId } = body;
+
+        if (!refundId) {
+            sendJSON(res, 400, { error: 'RefundId is required.' });
+            return;
+        }
+
+        try {
+            const result = RefundService.cancelRefundRequest({
+                refundId,
+                userId: authUser.id,
+                refundRequests: mockRefundRequests,
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 200, result);
+        } catch (err) {
+            sendJSON(res, 400, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/admin/refunds (Admin only)
+    if (req.method === 'GET' && (pathname === '/api/admin/refunds' || pathname === '/api/admin/refunds/pending')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        sendJSON(res, 200, { refund_requests: mockRefundRequests });
         return;
     }
 
     // POST /api/admin/refunds/review (Admin only)
     if (req.method === 'POST' && pathname === '/api/admin/refunds/review') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
 
         const body = await parseRequestBody(req);
-        const { refundId, action } = body; // action is 'APPROVED' or 'REJECTED'
+        const { refundId, action, rejectionReason } = body; // action: 'START_REVIEW', 'APPROVE', 'REJECT'
 
-        if (!refundId || !action || !['APPROVED', 'REJECTED'].includes(action)) {
+        if (!refundId || !action) {
             sendJSON(res, 400, { error: 'RefundId and action are required.' });
             return;
         }
 
-        const refIdx = mockRefundRequests.findIndex(r => r.id === refundId);
-        if (refIdx === -1) {
-            sendJSON(res, 404, { error: 'Refund request not found.' });
+        try {
+            const result = RefundService.reviewRefundRequest({
+                refundId,
+                action,
+                reviewerId: authUser.id,
+                rejectionReason,
+                refundRequests: mockRefundRequests,
+                auditLogs: mockAuditLogs
+            });
+            sendJSON(res, 200, result);
+        } catch (err) {
+            sendJSON(res, 400, { error: err.message });
+        }
+        return;
+    }
+
+    // POST /api/admin/refunds/execute (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/refunds/execute') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
 
-        const refObj = mockRefundRequests[refIdx];
-        mockRefundRequests[refIdx].status = action === 'APPROVED' ? 'COMPLETED' : 'REJECTED';
+        const body = await parseRequestBody(req);
+        const { refundId, bankPayoutReference } = body;
 
-        if (action === 'APPROVED') {
-            const purchIdx = mockProductPurchases.findIndex(p => p.id === refObj.purchase_id);
-            if (purchIdx !== -1) {
-                mockProductPurchases[purchIdx].status = 'REFUNDED';
-                mockProductPurchases[purchIdx].refunded_at = new Date().toISOString();
-
-                // Reverse commissions referencing original purchase
-                CommissionCore.reverseCommission(refObj.purchase_id, mockWalletLedger);
-
-                // Reverse volume referencing original purchase
-                VolumeLedger.reverseVolume(refObj.purchase_id, mockBinaryNodes, mockVolumeLedger);
-
-                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_REFUNDED', 'product_purchases', refObj.purchase_id);
-            }
+        if (!refundId) {
+            sendJSON(res, 400, { error: 'RefundId is required.' });
+            return;
         }
 
-        const auditAction = action === 'APPROVED' ? 'REFUND_APPROVED' : 'REFUND_REJECTED';
-        KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'refund_requests', refundId);
-
-        sendJSON(res, 200, { success: true, message: `Refund request updated to ${action}.` });
+        try {
+            const result = RefundService.executeRefundWorkflow({
+                refundId,
+                actorId: authUser.id,
+                refundRequests: mockRefundRequests,
+                purchases: mockProductPurchases,
+                walletLedger: mockWalletLedger,
+                volumeLedger: mockVolumeLedger,
+                binaryNodes: mockBinaryNodes,
+                auditLogs: mockAuditLogs,
+                bankPayoutReference
+            });
+            sendJSON(res, 200, result);
+        } catch (err) {
+            sendJSON(res, 400, { error: err.message });
+        }
         return;
     }
 

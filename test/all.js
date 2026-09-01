@@ -40,6 +40,7 @@ require('./step25-kyc-verification.test');
 require('./step26-member-dashboard.test');
 require('./step27-admin-dashboard.test');
 require('./step28-reports-analytics.test');
+require('./step29-refund-cancellation.test');
 
 // Run
 runTests();
