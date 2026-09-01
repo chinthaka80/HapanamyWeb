@@ -46,6 +46,7 @@ require('./step31-security-fraud.test');
 require('./step32-notification-engine.test');
 require('./step33-simulation-load-testing.test');
 require('./step34-production-readiness.test');
+require('./e2e-user-journey.test');
 
 // Run
 runTests();

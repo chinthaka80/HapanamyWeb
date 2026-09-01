@@ -253,6 +253,7 @@ const WalletService = {
             type: 'WITHDRAWAL_PAID',
             amount,
             direction: 'DEBIT',
+            allowNegative: true,
             referenceType: 'WITHDRAWAL',
             referenceId: withdrawalId,
             idempotencyKey: `tx-wd-paid-${withdrawalId}`,
