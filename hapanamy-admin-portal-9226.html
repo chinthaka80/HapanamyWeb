@@ -489,6 +489,10 @@
                     <span class="admin-nav-icon">📚</span>
                     <span>Course Products</span>
                 </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('simulator')" id="nav-simulator">
+                    <span class="admin-nav-icon">🧮</span>
+                    <span>Economics Simulator</span>
+                </li>
                 <li class="admin-nav-link" onclick="switchAdminTab('affiliates')" id="nav-affiliates">
                     <span class="admin-nav-icon">👥</span>
                     <span>Affiliate Partners</span>
@@ -852,6 +856,244 @@
                                 </div>
                             </div>
                         </form>
+                    </div>
+                </div>
+
+                <!-- TAB 2.5: PRODUCT ECONOMICS SIMULATOR -->
+                <div class="admin-panel" id="panel-simulator" style="display:none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+                        <div>
+                            <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 4px;">🧮 Product Economics & Commission Simulator</h2>
+                            <p style="font-size: 13px; color: var(--text-muted); margin: 0;">Real-time financial simulation engine for calculating profit margins, commission safety budgets, and binary exposures.</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="button" class="btn" onclick="autoCalculateSafeCommission()" style="background: linear-gradient(135deg, var(--brand-gold), var(--brand-orange)); color: #102A43; font-weight: 800; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(244, 123, 32, 0.25);">
+                                <span>⚡</span>
+                                <span>CALCULATE SAFE COMMISSION</span>
+                            </button>
+                            <button type="button" class="btn btn-secondary" onclick="resetSimulatorDefaults()" style="padding: 10px 16px; border-radius: 8px; cursor: pointer; border: 1px solid var(--border-color); color: var(--text-primary);">
+                                🔄 Reset Defaults
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px;">
+                        <!-- Left Column: Simulator Inputs -->
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Card 1: Pricing & Product Cost -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>🏷️</span>
+                                    <span>1. Product Pricing & Base Cost</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMarketPrice" oninput="runEconomicsSimulation()" value="10000" placeholder=" ">
+                                        <label for="simMarketPrice">Market Price (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <select id="simPricingMode" onchange="toggleSimulatorDiscountFields(); runEconomicsSimulation();" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="FIXED">FIXED</option>
+                                            <option value="DISCOUNTED">DISCOUNTED</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div id="simDiscountGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <select id="simDiscountType" onchange="runEconomicsSimulation()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                            <option value="NONE">NONE</option>
+                                            <option value="FIXED">FIXED AMOUNT</option>
+                                            <option value="PERCENTAGE">PERCENTAGE</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simDiscountValue" oninput="runEconomicsSimulation()" value="0" placeholder=" ">
+                                        <label for="simDiscountValue">Discount Value</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 10px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simSellingPrice" oninput="runEconomicsSimulation()" value="7450" placeholder=" ">
+                                        <label for="simSellingPrice">Selling Price (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simProductCost" oninput="runEconomicsSimulation()" value="2000" placeholder=" ">
+                                        <label for="simProductCost">Product Cost (LKR)</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Company Protection Reserves & Buffers -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>🛡️</span>
+                                    <span>2. Company Profit Reserves & Buffers</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMinProfit" oninput="runEconomicsSimulation()" value="1000" placeholder=" ">
+                                        <label for="simMinProfit">Min Profit (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simOpReserve" oninput="runEconomicsSimulation()" value="500" placeholder=" ">
+                                        <label for="simOpReserve">Operating Cost (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simProcReserve" oninput="runEconomicsSimulation()" value="150" placeholder=" ">
+                                        <label for="simProcReserve">Payment Processing (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simRefundReserve" oninput="runEconomicsSimulation()" value="200" placeholder=" ">
+                                        <label for="simRefundReserve">Refund Risk (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simTaxReserve" oninput="runEconomicsSimulation()" value="300" placeholder=" ">
+                                        <label for="simTaxReserve">Tax Reserve (LKR)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simOtherReserve" oninput="runEconomicsSimulation()" value="100" placeholder=" ">
+                                        <label for="simOtherReserve">Other Reserve (LKR)</label>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 0;">
+                                    <input type="number" id="simSafetyBuffer" oninput="runEconomicsSimulation()" value="500" placeholder=" ">
+                                    <label for="simSafetyBuffer">Commission Safety Buffer (LKR)</label>
+                                </div>
+                            </div>
+
+                            <!-- Card 3: Commission Configuration -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 15px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                    <span>⚙️</span>
+                                    <span>3. Commission Configuration</span>
+                                </h3>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simDirectRate" oninput="runEconomicsSimulation()" value="8" step="0.1" placeholder=" ">
+                                        <label for="simDirectRate">Direct Comm (%)</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simBinaryVolume" oninput="runEconomicsSimulation()" value="7450" placeholder=" ">
+                                        <label for="simBinaryVolume">Binary Volume (BV)</label>
+                                    </div>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 0;">
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simMaxLevels" oninput="runEconomicsSimulation()" value="7" min="1" max="15" placeholder=" ">
+                                        <label for="simMaxLevels">Max Qualified Levels</label>
+                                    </div>
+                                    <div class="form-group" style="margin-bottom: 0;">
+                                        <input type="number" id="simBinaryRate" oninput="runEconomicsSimulation()" value="7" step="0.1" placeholder=" ">
+                                        <label for="simBinaryRate">Binary Comm Rate (%)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Live Output & Exposure Analysis -->
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <!-- Card 1: Safety & Profitability Dashboard Card -->
+                            <div id="simSafetyCardBox" class="safety-card safe" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-left: 6px solid var(--brand-green-light); border-radius: 12px; padding: 22px; box-shadow: var(--card-shadow);">
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+                                    <div>
+                                        <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; display: block;">PROFITABILITY STATUS</span>
+                                        <span id="simSafetyBadge" style="font-size: 22px; font-weight: 900; letter-spacing: 0.5px; color: var(--brand-green-light);">SAFE</span>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <span style="font-size: 11px; color: var(--text-muted); display: block;">MAX SAFE BINARY RATE</span>
+                                        <span id="simMaxSafeRateDisplay" style="font-size: 20px; font-weight: 900; color: var(--brand-gold);">0.00%</span>
+                                    </div>
+                                </div>
+
+                                <div id="simReasonBanner" style="display: none; padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 12.5px; font-weight: 600; line-height: 1.4;">
+                                    <span id="simReasonText"></span>
+                                </div>
+
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px; margin-bottom: 16px;">
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Revenue (Selling Price)</span>
+                                        <strong id="simDispRevenue" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Product Cost</span>
+                                        <strong id="simDispCost" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Gross Profit (Margin %)</span>
+                                        <strong id="simDispGrossProfit" style="color: var(--brand-green-light); font-size: 15px;">LKR 0.00 (0%)</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Protected Company Amt</span>
+                                        <strong id="simDispProtectedAmt" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Net Commission Budget</span>
+                                        <strong id="simDispNetBudget" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Effective Comm Budget</span>
+                                        <strong id="simDispEffectiveBudget" style="color: var(--brand-gold); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Direct Commission</span>
+                                        <strong id="simDispDirectComm" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                    <div style="background: rgba(255,255,255,0.02); padding: 10px 12px; border-radius: 8px;">
+                                        <span style="color: var(--text-muted); font-size: 11.5px; display: block;">Binary / Member</span>
+                                        <strong id="simDispBinaryPerMember" style="color: var(--text-primary); font-size: 15px;">LKR 0.00</strong>
+                                    </div>
+                                </div>
+
+                                <div style="border-top: 1px dashed var(--border-color); padding-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                    <div>
+                                        <span style="font-size: 11.5px; color: var(--text-muted); display: block;">Max Total Exposure</span>
+                                        <span id="simDispTotalExposure" style="font-size: 17px; font-weight: 800; color: var(--text-primary);">LKR 0.00</span>
+                                    </div>
+                                    <div>
+                                        <span style="font-size: 11.5px; color: var(--text-muted); display: block;">Remaining Company Margin</span>
+                                        <span id="simDispRemainingMargin" style="font-size: 17px; font-weight: 800; color: var(--brand-green-light);">LKR 0.00</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: Binary Level-by-Level Cumulative Exposure Table -->
+                            <div class="admin-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; box-shadow: var(--card-shadow);">
+                                <h3 style="font-size: 15px; color: var(--brand-gold); margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+                                    <span>📊 Binary Exposure Breakdown (Levels 1 to 7+)</span>
+                                    <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Max Exposure: <strong id="simDispMaxBinaryExposure" style="color:var(--text-primary);">LKR 0.00</strong></span>
+                                </h3>
+
+                                <div class="admin-table-box" style="margin-bottom: 0; border-radius: 8px;">
+                                    <table class="admin-table" style="font-size: 12.5px;">
+                                        <thead>
+                                            <tr>
+                                                <th>Level</th>
+                                                <th>Recipients</th>
+                                                <th>Payout / Recipient</th>
+                                                <th>Cumulative Exposure</th>
+                                                <th>Budget Left</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="simLevelBreakdownTableBody">
+                                            <!-- Dynamically rendered -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
@@ -2139,6 +2381,9 @@
             if (tabId === 'affiliates') {
                 renderRegisteredUsers();
             }
+            if (tabId === 'simulator') {
+                runEconomicsSimulation();
+            }
 
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
@@ -2150,12 +2395,13 @@
             const headerTitles = {
                 'dashboard': 'Admin Dashboard (Overview)',
                 'courses': 'WooCommerce Course Catalog',
+                'simulator': 'Product Economics & Commission Simulator',
                 'affiliates': 'Affiliate Partners Directory',
                 'payouts': 'Commissions & Payout Management',
                 'reports': 'Daily Sales & Commission Reports',
                 'settings': 'Global System & Gateway Config',
                 'blog': 'Hapanamy.lk Blog Post Manager',
-                    'receipts': 'Manual Bank Slip Approvals'
+                'receipts': 'Manual Bank Slip Approvals'
             };
             document.getElementById('adminHeaderTitle').textContent = headerTitles[tabId];
         }
@@ -2543,12 +2789,233 @@
             alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
         }
 
+        // ========================================================
+        // PRODUCT ECONOMICS REAL-TIME SIMULATOR (STEP 10)
+        // ========================================================
+        function toggleSimulatorDiscountFields() {
+            const mode = document.getElementById('simPricingMode').value;
+            const discountGroup = document.getElementById('simDiscountGroup');
+            if (mode === 'DISCOUNTED') {
+                discountGroup.style.display = 'grid';
+            } else {
+                discountGroup.style.display = 'none';
+            }
+        }
+
+        function resetSimulatorDefaults() {
+            document.getElementById('simMarketPrice').value = '10000';
+            document.getElementById('simPricingMode').value = 'FIXED';
+            document.getElementById('simDiscountType').value = 'NONE';
+            document.getElementById('simDiscountValue').value = '0';
+            document.getElementById('simSellingPrice').value = '7450';
+            document.getElementById('simProductCost').value = '2000';
+            document.getElementById('simMinProfit').value = '1000';
+            document.getElementById('simOpReserve').value = '500';
+            document.getElementById('simProcReserve').value = '150';
+            document.getElementById('simRefundReserve').value = '200';
+            document.getElementById('simTaxReserve').value = '300';
+            document.getElementById('simOtherReserve').value = '100';
+            document.getElementById('simSafetyBuffer').value = '500';
+            document.getElementById('simDirectRate').value = '8';
+            document.getElementById('simBinaryVolume').value = '7450';
+            document.getElementById('simMaxLevels').value = '7';
+            document.getElementById('simBinaryRate').value = '7';
+
+            toggleSimulatorDiscountFields();
+            runEconomicsSimulation();
+            showToast('🔄 Simulator reset to default values.');
+        }
+
+        function runEconomicsSimulation() {
+            const pricingMode = document.getElementById('simPricingMode') ? document.getElementById('simPricingMode').value : 'FIXED';
+            const marketPrice = parseFloat(document.getElementById('simMarketPrice') ? document.getElementById('simMarketPrice').value : 0) || 0.0;
+            const discountType = document.getElementById('simDiscountType') ? document.getElementById('simDiscountType').value : 'NONE';
+            const discountValue = parseFloat(document.getElementById('simDiscountValue') ? document.getElementById('simDiscountValue').value : 0) || 0.0;
+            let configuredPrice = parseFloat(document.getElementById('simSellingPrice') ? document.getElementById('simSellingPrice').value : 0) || 0.0;
+
+            let sellingPrice = configuredPrice;
+            if (pricingMode === 'DISCOUNTED') {
+                if (discountType === 'FIXED') {
+                    sellingPrice = Math.max(0, marketPrice - discountValue);
+                } else if (discountType === 'PERCENTAGE') {
+                    sellingPrice = Math.max(0, marketPrice - (marketPrice * (discountValue / 100)));
+                }
+            }
+
+            const productCost = parseFloat(document.getElementById('simProductCost') ? document.getElementById('simProductCost').value : 0) || 0.0;
+            const minProfit = parseFloat(document.getElementById('simMinProfit') ? document.getElementById('simMinProfit').value : 0) || 0.0;
+            const opReserve = parseFloat(document.getElementById('simOpReserve') ? document.getElementById('simOpReserve').value : 0) || 0.0;
+            const procReserve = parseFloat(document.getElementById('simProcReserve') ? document.getElementById('simProcReserve').value : 0) || 0.0;
+            const refundReserve = parseFloat(document.getElementById('simRefundReserve') ? document.getElementById('simRefundReserve').value : 0) || 0.0;
+            const taxReserve = parseFloat(document.getElementById('simTaxReserve') ? document.getElementById('simTaxReserve').value : 0) || 0.0;
+            const otherReserve = parseFloat(document.getElementById('simOtherReserve') ? document.getElementById('simOtherReserve').value : 0) || 0.0;
+            const safetyBuffer = parseFloat(document.getElementById('simSafetyBuffer') ? document.getElementById('simSafetyBuffer').value : 0) || 0.0;
+
+            const directRate = parseFloat(document.getElementById('simDirectRate') ? document.getElementById('simDirectRate').value : 0) || 0.0;
+            const binaryVolume = parseFloat(document.getElementById('simBinaryVolume') ? document.getElementById('simBinaryVolume').value : 0) || 0.0;
+            const maxLevels = parseInt(document.getElementById('simMaxLevels') ? document.getElementById('simMaxLevels').value : 7) || 7;
+            const binaryRate = parseFloat(document.getElementById('simBinaryRate') ? document.getElementById('simBinaryRate').value : 0) || 0.0;
+
+            // Minor unit calculations
+            const sellingPriceCents = Math.round(sellingPrice * 100);
+            const costCents = Math.round(productCost * 100);
+            const grossProfitCents = sellingPriceCents - costCents;
+            const grossProfit = grossProfitCents / 100;
+
+            const grossMarginPercent = sellingPriceCents > 0 
+                ? ((grossProfitCents / sellingPriceCents) * 100).toFixed(1) 
+                : '0.0';
+
+            const protectedAmtCents = Math.round((minProfit + opReserve + procReserve + refundReserve + taxReserve + otherReserve) * 100);
+            const protectedAmount = protectedAmtCents / 100;
+
+            const netBudgetCents = grossProfitCents - protectedAmtCents;
+            const netBudget = netBudgetCents / 100;
+
+            const bufferCents = Math.round(safetyBuffer * 100);
+            const effectiveBudgetCents = netBudgetCents - bufferCents;
+            const effectiveBudget = effectiveBudgetCents / 100;
+
+            const directCommCents = Math.round(sellingPriceCents * (directRate / 100));
+            const directComm = directCommCents / 100;
+
+            const binaryCommPerMemberCents = Math.round(Math.round(binaryVolume * 100) * (binaryRate / 100));
+            const binaryCommPerMember = binaryCommPerMemberCents / 100;
+
+            const maxBinaryExposureCents = binaryCommPerMemberCents * maxLevels;
+            const maxBinaryExposure = maxBinaryExposureCents / 100;
+
+            const maxTotalExposureCents = directCommCents + maxBinaryExposureCents;
+            const maxTotalExposure = maxTotalExposureCents / 100;
+
+            const remainingMarginCents = effectiveBudgetCents - maxTotalExposureCents;
+            const remainingMargin = remainingMarginCents / 100;
+
+            // Safe Binary Rate Calculation (Always round DOWN)
+            const remainingBinaryBudgetCents = Math.max(0, effectiveBudgetCents - directCommCents);
+            let maxSafeBinaryRate = 0.0;
+            if (remainingBinaryBudgetCents > 0 && maxLevels > 0 && binaryVolume > 0) {
+                const maxBinaryPerLevelCents = remainingBinaryBudgetCents / maxLevels;
+                const rawRate = (maxBinaryPerLevelCents / Math.round(binaryVolume * 100)) * 100;
+                maxSafeBinaryRate = Math.floor(rawRate * 100) / 100;
+            }
+
+            // Determine status
+            let status = 'SAFE';
+            let blockReason = '';
+
+            if (productCost > sellingPrice) {
+                status = 'BLOCKED';
+                blockReason = `Product cost (LKR ${productCost.toFixed(2)}) exceeds selling price (LKR ${sellingPrice.toFixed(2)}).`;
+            } else if (grossProfit <= 0) {
+                status = 'BLOCKED';
+                blockReason = `Gross profit is non-positive (LKR ${grossProfit.toFixed(2)}).`;
+            } else if (effectiveBudget <= 0) {
+                status = 'BLOCKED';
+                blockReason = `Effective commission budget is zero or negative (LKR ${effectiveBudget.toFixed(2)}). Reserves and costs exceed gross profit.`;
+            } else if (directComm > effectiveBudget) {
+                status = 'BLOCKED';
+                const excess = directComm - effectiveBudget;
+                blockReason = `Direct commission (LKR ${directComm.toFixed(2)}) exceeds effective budget (LKR ${effectiveBudget.toFixed(2)}) by LKR ${excess.toFixed(2)}.`;
+            } else if (maxTotalExposure > effectiveBudget) {
+                status = 'BLOCKED';
+                const excess = maxTotalExposure - effectiveBudget;
+                blockReason = `Maximum total commission exposure (LKR ${maxTotalExposure.toFixed(2)}) exceeds effective budget (LKR ${effectiveBudget.toFixed(2)}) by LKR ${excess.toFixed(2)}.`;
+            } else if (remainingMargin < 500.00) {
+                status = 'WARNING';
+                blockReason = `Product economics are safe, but remaining company margin (LKR ${remainingMargin.toFixed(2)}) is below the recommended threshold of LKR 500.00.`;
+            }
+
+            // Update UI Elements
+            if (document.getElementById('simDispRevenue')) {
+                document.getElementById('simDispRevenue').textContent = `LKR ${sellingPrice.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispCost').textContent = `LKR ${productCost.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispGrossProfit').textContent = `LKR ${grossProfit.toLocaleString('en-LK', { minimumFractionDigits: 2 })} (${grossMarginPercent}%)`;
+                document.getElementById('simDispProtectedAmt').textContent = `LKR ${protectedAmount.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispNetBudget').textContent = `LKR ${netBudget.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispEffectiveBudget').textContent = `LKR ${effectiveBudget.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispDirectComm').textContent = `LKR ${directComm.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispBinaryPerMember').textContent = `LKR ${binaryCommPerMember.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispMaxBinaryExposure').textContent = `LKR ${maxBinaryExposure.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispTotalExposure').textContent = `LKR ${maxTotalExposure.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simDispRemainingMargin').textContent = `LKR ${remainingMargin.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`;
+                document.getElementById('simMaxSafeRateDisplay').textContent = `${maxSafeBinaryRate.toFixed(2)}%`;
+
+                const cardBox = document.getElementById('simSafetyCardBox');
+                const badge = document.getElementById('simSafetyBadge');
+                const banner = document.getElementById('simReasonBanner');
+                const reasonText = document.getElementById('simReasonText');
+
+                badge.textContent = status;
+                cardBox.className = `safety-card ${status.toLowerCase()}`;
+
+                if (status === 'SAFE') {
+                    badge.style.color = 'var(--brand-green-light)';
+                    cardBox.style.borderLeftColor = 'var(--brand-green-light)';
+                    banner.style.display = 'none';
+                } else if (status === 'WARNING') {
+                    badge.style.color = 'var(--brand-orange)';
+                    cardBox.style.borderLeftColor = 'var(--brand-orange)';
+                    banner.style.display = 'block';
+                    banner.style.background = 'rgba(244, 123, 32, 0.12)';
+                    banner.style.border = '1px solid rgba(244, 123, 32, 0.3)';
+                    banner.style.color = 'var(--brand-orange)';
+                    reasonText.innerHTML = `⚠️ <strong>Margin Warning:</strong> ${blockReason}`;
+                } else {
+                    badge.style.color = 'var(--ph-red)';
+                    cardBox.style.borderLeftColor = 'var(--ph-red)';
+                    banner.style.display = 'block';
+                    banner.style.background = 'rgba(225, 45, 57, 0.12)';
+                    banner.style.border = '1px solid rgba(225, 45, 57, 0.3)';
+                    banner.style.color = 'var(--ph-red)';
+                    reasonText.innerHTML = `⛔ <strong>BLOCKED:</strong> ${blockReason}`;
+                }
+
+                // Render Level-by-Level Exposure Breakdown
+                const tbody = document.getElementById('simLevelBreakdownTableBody');
+                let tableHTML = '';
+                let cumulativeBinaryExposure = 0;
+
+                for (let lvl = 1; lvl <= maxLevels; lvl++) {
+                    cumulativeBinaryExposure += binaryCommPerMember;
+                    const totalExposureAtLevel = directComm + cumulativeBinaryExposure;
+                    const budgetLeftAtLevel = effectiveBudget - totalExposureAtLevel;
+                    const isOver = budgetLeftAtLevel < 0;
+
+                    tableHTML += `
+                        <tr style="${isOver ? 'background: rgba(225,45,57,0.08);' : ''}">
+                            <td><strong>Level ${lvl}</strong></td>
+                            <td>${lvl} Member${lvl > 1 ? 's' : ''}</td>
+                            <td>LKR ${binaryCommPerMember.toFixed(2)}</td>
+                            <td style="font-weight: 700; color: ${isOver ? 'var(--ph-red)' : 'var(--text-primary)'}">
+                                LKR ${cumulativeBinaryExposure.toFixed(2)}
+                            </td>
+                            <td style="font-weight: 700; color: ${isOver ? 'var(--ph-red)' : 'var(--brand-green-light)'}">
+                                ${budgetLeftAtLevel >= 0 ? 'LKR ' + budgetLeftAtLevel.toFixed(2) : '- LKR ' + Math.abs(budgetLeftAtLevel).toFixed(2) + ' (EXCEEDED)'}
+                            </td>
+                        </tr>
+                    `;
+                }
+                tbody.innerHTML = tableHTML;
+            }
+        }
+
+        function autoCalculateSafeCommission() {
+            runEconomicsSimulation();
+            const safeRateText = document.getElementById('simMaxSafeRateDisplay').textContent;
+            const safeRate = parseFloat(safeRateText) || 0.0;
+            document.getElementById('simBinaryRate').value = safeRate;
+            runEconomicsSimulation();
+            showToast(`⚡ Auto-applied Maximum Safe Binary Rate: <strong>${safeRate.toFixed(2)}%</strong> (SAFE Status Guaranteed)`);
+        }
+
         // Run load on start
         document.addEventListener('DOMContentLoaded', () => {
             initCoursesList();
             loadBankReceiptsTable();
             renderRegisteredUsers(); // Initial load of registered users
             setTimeout(loadSystemSettings, 300);
+            setTimeout(runEconomicsSimulation, 400);
         });
     </script>
 </body>
