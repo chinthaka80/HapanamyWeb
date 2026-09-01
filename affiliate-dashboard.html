@@ -649,19 +649,19 @@
                     <div class="affiliate-stats-grid">
                         <div class="affiliate-stat-card">
                             <div class="affiliate-stat-label" data-translate="stat_direct_sales">Direct Sales Income</div>
-                            <div class="affiliate-stat-val">රු. 18,340.00</div>
+                            <div class="affiliate-stat-val" id="affStatDirectSales">රු. 0.00</div>
                         </div>
                         <div class="affiliate-stat-card gold">
                             <div class="affiliate-stat-label" data-translate="stat_passive_sales">Passive Team Income</div>
-                            <div class="affiliate-stat-val">රු. 5,450.00</div>
+                            <div class="affiliate-stat-val" id="affStatPassiveSales">රු. 0.00</div>
                         </div>
                         <div class="affiliate-stat-card green">
                             <div class="affiliate-stat-label" data-translate="stat_clicks">Total Referrals Clicks</div>
-                            <div class="affiliate-stat-val">148 Clicks</div>
+                            <div class="affiliate-stat-val" id="affStatClicks">0 Clicks</div>
                         </div>
                         <div class="affiliate-stat-card navy">
                             <div class="affiliate-stat-label" data-translate="stat_total_conversions">Direct Conversions</div>
-                            <div class="affiliate-stat-val">12 Sales</div>
+                            <div class="affiliate-stat-val" id="affStatConversions">0 Sales</div>
                         </div>
                     </div>
 
@@ -898,13 +898,13 @@
                             
                             <div style="margin-bottom: 20px; background-color: rgba(185, 231, 105, 0.08); padding: 15px; border-radius: 8px; border: 1px dashed var(--brand-green-light);">
                                 <span style="font-size: 12px; color: var(--text-muted); display: block;" data-translate="payout_withdrawable">ගෙවිය හැකි මුළු කොමිස් ශේෂය (Withdrawable Balance)</span>
-                                <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 23,790.00</span>
+                                <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 0.00</span>
                             </div>
 
                             <form id="payoutRequestForm" onsubmit="submitPayoutRequest(event)">
                                 <div class="form-group" style="margin-bottom: 20px;">
                                     <label for="payoutAmountInput">ලබා ගැනීමට අවශ්‍ය මුදල (Amount LKR) *</label>
-                                    <input type="number" id="payoutAmountInput" required min="1000" max="23790" placeholder="1000" style="width: 100%;">
+                                    <input type="number" id="payoutAmountInput" required min="1000" placeholder="1000" style="width: 100%;">
                                 </div>
 
                                 <div class="form-group" style="margin-bottom: 25px;">
