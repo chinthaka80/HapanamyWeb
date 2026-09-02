@@ -138,6 +138,8 @@ test('Step 39: 7. Enterprise Security Headers Completeness', () => {
     assert.equal(headers['X-XSS-Protection'], '1; mode=block');
     assert.equal(headers['Referrer-Policy'], 'strict-origin-when-cross-origin');
     assert.ok(headers['Content-Security-Policy'].includes("default-src 'self'"));
+    assert.ok(headers['Content-Security-Policy'].includes("youtube-nocookie.com"), 'CSP must allow youtube-nocookie.com video embeds');
+    assert.ok(headers['Content-Security-Policy'].includes("youtube.com"), 'CSP must allow youtube.com video embeds');
     assert.ok(headers['Strict-Transport-Security'].includes('max-age=31536000'));
 });
 
