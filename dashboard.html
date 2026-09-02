@@ -1019,8 +1019,8 @@
                     <span>My Profile</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('network')" id="nav-network">
-                    <span class="member-nav-icon">🌐</span>
-                    <span>My Network</span>
+                    <span class="member-nav-icon">👥</span>
+                    <span>My Partners</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('referrals')" id="nav-referrals">
                     <span class="member-nav-icon">🔗</span>
@@ -1225,11 +1225,11 @@
 
                     <!-- QUICK SUMMARY PREVIEWS -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                        <!-- Binary Quick Stats -->
+                        <!-- Partner Network Quick Stats -->
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">
-                                <span>🌿 Binary Team Volume</span>
-                                <button class="btn-action-sm" onclick="switchMemberTab('network')">View Tree →</button>
+                                <span>👥 Partner Team Volume</span>
+                                <button class="btn-action-sm" onclick="switchMemberTab('network')">Partner List →</button>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 15px; background: var(--bg-main); border-radius: 12px;">
                                 <div>
@@ -1334,61 +1334,72 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: BINARY NETWORK & TREE -->
+                <!-- TAB 3: MY PARTNERS & NETWORK LIST -->
                 <div class="tab-panel" id="panel-network">
-                    <div class="dashboard-card">
+                    <div class="dashboard-card" style="margin-bottom: 24px;">
                         <div class="dashboard-card-title">
-                            <span>🌐 ද්විමය ජාල ව්‍යුහය (Binary Network & Tree Structure)</span>
-                            <span class="badge-pill badge-qualified" id="treeQualStatus">★ QUALIFIED STATUS</span>
+                            <span>👥 මගේ සහකරු ලැයිස්තුව (My Partners & Network Members)</span>
+                            <span class="badge-pill badge-qualified" id="partnerTotalCount">0 Partners</span>
                         </div>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">
+                            ඔබ යටතේ ලියාපදිංචි වී ඇති සියලුම Direct සහ Network සහකරුවන්ගේ සක්‍රීය තත්ත්වය, Leg පිහිටීම සහ උපයාගත් කොමිස් විස්තර පහත දැක්වේ.
+                        </p>
 
-                        <div class="binary-summary-grid">
+                        <!-- Partner Summary Metrics Grid -->
+                        <div class="binary-summary-grid" style="margin-bottom: 24px;">
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">LEFT Team Members</div>
+                                <div class="binary-sum-card-title">👈 LEFT Team Partners</div>
                                 <div class="binary-sum-card-val" id="treeLeftCount">0</div>
+                                <div style="font-size: 11px; color: var(--brand-gold); margin-top: 4px;" id="treeLeftVol">LKR 0.00 Vol</div>
                             </div>
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">RIGHT Team Members</div>
+                                <div class="binary-sum-card-title">👉 RIGHT Team Partners</div>
                                 <div class="binary-sum-card-val" id="treeRightCount">0</div>
+                                <div style="font-size: 11px; color: var(--brand-gold); margin-top: 4px;" id="treeRightVol">LKR 0.00 Vol</div>
                             </div>
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">LEFT Lifetime Volume</div>
-                                <div class="binary-sum-card-val" id="treeLeftVol">LKR 0.00</div>
+                                <div class="binary-sum-card-title">★ Qualified Partners</div>
+                                <div class="binary-sum-card-val" id="partnerQualCount">0</div>
+                                <div style="font-size: 11px; color: var(--brand-green); margin-top: 4px;">Active Binary Earners</div>
                             </div>
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">RIGHT Lifetime Volume</div>
-                                <div class="binary-sum-card-val" id="treeRightVol">LKR 0.00</div>
+                                <div class="binary-sum-card-title">💰 Direct Commission (8%)</div>
+                                <div class="binary-sum-card-val" id="partnerDirectCommEarned">LKR 0.00</div>
+                                <div style="font-size: 11px; color: var(--brand-orange); margin-top: 4px;">Total from Directs</div>
                             </div>
                         </div>
 
-                        <!-- Interactive Binary Tree Visualizer -->
-                        <div class="tree-viewport">
-                            <!-- Root Node -->
-                            <div class="tree-node-card root-node">
-                                <div style="font-size: 11px; font-weight: 700; color: var(--brand-orange);">👑 YOU (ROOT)</div>
-                                <div style="font-weight: 800; font-size: 15px;" id="treeRootName">Hiru</div>
-                                <div style="font-size: 11px; color: var(--text-muted);" id="treeRootUser">@Hiru</div>
-                                <div style="margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--brand-green);">L: 0.00 | R: 0.00</div>
+                        <!-- Partner Search & Filter Controls -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 18px;">
+                            <div style="flex: 1; min-width: 240px;">
+                                <input type="text" id="partnerFilterSearch" placeholder="🔍 සහකරුවෙකු සොයන්න (Search by name or username)..." oninput="filterPartnerTable()" style="width: 100%; padding: 10px 14px; background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none;">
                             </div>
-
-                            <!-- Level 1 Branches -->
-                            <div class="tree-branches-row">
-                                <!-- Left Child -->
-                                <div class="tree-node-card active-leg">
-                                    <div style="font-size: 10px; font-weight: 700; color: var(--brand-green);">👈 LEFT LEG</div>
-                                    <div style="font-weight: 800; font-size: 14px;" id="treeLeftChildName">Nimal Silva</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">@nimal_s</div>
-                                    <div style="font-size: 11px; color: var(--brand-gold); font-weight: 700; margin-top: 4px;">Vol: LKR 27,500.00</div>
-                                </div>
-
-                                <!-- Right Child -->
-                                <div class="tree-node-card active-leg">
-                                    <div style="font-size: 10px; font-weight: 700; color: var(--brand-green);">👉 RIGHT LEG</div>
-                                    <div style="font-weight: 800; font-size: 14px;" id="treeRightChildName">Sunil Kumar</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">@sunil_k</div>
-                                    <div style="font-size: 11px; color: var(--brand-gold); font-weight: 700; margin-top: 4px;">Vol: LKR 27,500.00</div>
-                                </div>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap;" id="partnerFilterButtons">
+                                <button class="store-filter-btn active" onclick="filterPartnerByLeg('ALL', this)">🌟 සියල්ල (All)</button>
+                                <button class="store-filter-btn" onclick="filterPartnerByLeg('LEFT', this)">👈 Left Leg</button>
+                                <button class="store-filter-btn" onclick="filterPartnerByLeg('RIGHT', this)">👉 Right Leg</button>
+                                <button class="store-filter-btn" onclick="filterPartnerByLeg('ACTIVE', this)">● Active Products</button>
                             </div>
+                        </div>
+
+                        <!-- Full Partner List Table -->
+                        <div style="overflow-x: auto;">
+                            <table class="custom-table" id="partnerNetworkTable">
+                                <thead>
+                                    <tr>
+                                        <th>Partner Member</th>
+                                        <th>Username</th>
+                                        <th>Placement Leg</th>
+                                        <th>Registration Date</th>
+                                        <th>Qualification Status</th>
+                                        <th>Product / Course Access</th>
+                                        <th>Direct Commission (8%)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Injected dynamically via JS -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -2033,7 +2044,7 @@
             const sectionTitles = {
                 'overview': 'සාමාජික පාලන පුවරුව (Member Dashboard)',
                 'profile': 'මගේ ගිණුම් විස්තර (My Profile & Identity)',
-                'network': 'ද්විමය ජාලය (Binary Network Tree)',
+                'network': 'මගේ සහකරු ලැයිස්තුව (My Partners & Network Members)',
                 'referrals': 'සෘජු යොමුකිරීම් සහ සබැඳි (My Referrals & Links)',
                 'buy-products': 'පාඨමාලා මිලදී ගැනීම (Buy Products & Courses)',
                 'products': 'මගේ පාඨමාලා (My Enrolled Courses)',
@@ -2049,7 +2060,7 @@
             const sectionIcons = {
                 'overview': '🏠',
                 'profile': '👤',
-                'network': '🌐',
+                'network': '👥',
                 'referrals': '🔗',
                 'buy-products': '🛒',
                 'products': '📚',
@@ -2722,21 +2733,117 @@
             });
         }
 
-        function renderBinaryTreeVisualizer(treeData) {
-            const leftName = document.getElementById('treeLeftChildName');
-            const rightName = document.getElementById('treeRightChildName');
+        let globalPartnersList = [];
+        let currentPartnerLegFilter = 'ALL';
+
+        function renderPartnerNetworkList(partners) {
+            globalPartnersList = partners || [];
+            const totalCountBadge = document.getElementById('partnerTotalCount');
+            const qualCountBadge = document.getElementById('partnerQualCount');
+            const commEarnedBadge = document.getElementById('partnerDirectCommEarned');
+
+            if (totalCountBadge) totalCountBadge.textContent = `${globalPartnersList.length} Partners`;
+
+            let qualCount = 0;
+            let totalComm = 0;
+            globalPartnersList.forEach(p => {
+                if (p.qualification_status === 'QUALIFIED' || p.has_active_purchase) {
+                    qualCount++;
+                }
+                if (p.direct_commission_earned) {
+                    totalComm += Number(p.direct_commission_earned);
+                } else if (p.has_active_purchase && p.purchase_amount) {
+                    totalComm += Number(p.purchase_amount) * 0.08;
+                }
+            });
+
+            if (qualCountBadge) qualCountBadge.textContent = `${qualCount} Members`;
+            if (commEarnedBadge) commEarnedBadge.textContent = `LKR ${totalComm.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+            filterPartnerTable();
+        }
+
+        function filterPartnerByLeg(leg, btn) {
+            currentPartnerLegFilter = leg;
+            document.querySelectorAll('#partnerFilterButtons .store-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            filterPartnerTable();
+        }
+
+        function filterPartnerTable() {
+            const tbody = document.querySelector('#partnerNetworkTable tbody');
+            if (!tbody) return;
+
+            const searchInput = document.getElementById('partnerFilterSearch');
+            const searchVal = searchInput ? searchInput.value.toLowerCase().trim() : '';
             
-            if (treeData && treeData.left_child) {
-                if (leftName) leftName.textContent = treeData.left_child.name || 'Member';
-            } else {
-                if (leftName) leftName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Left Slot</span>';
+            let filtered = globalPartnersList.filter(p => {
+                const name = (p.full_name || p.name || '').toLowerCase();
+                const u = (p.username || '').toLowerCase();
+                const matchesSearch = !searchVal || name.includes(searchVal) || u.includes(searchVal);
+
+                let matchesLeg = true;
+                if (currentPartnerLegFilter === 'LEFT') {
+                    matchesLeg = (p.tree_position || '').toUpperCase() === 'LEFT';
+                } else if (currentPartnerLegFilter === 'RIGHT') {
+                    matchesLeg = (p.tree_position || '').toUpperCase() === 'RIGHT';
+                } else if (currentPartnerLegFilter === 'ACTIVE') {
+                    matchesLeg = Boolean(p.has_active_purchase);
+                }
+
+                return matchesSearch && matchesLeg;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                            සහකරුවන් හමු නොවීය (No partners found matching criteria).
+                        </td>
+                    </tr>
+                `;
+                return;
             }
 
-            if (treeData && treeData.right_child) {
-                if (rightName) rightName.textContent = treeData.right_child.name || 'Member';
-            } else {
-                if (rightName) rightName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Right Slot</span>';
-            }
+            tbody.innerHTML = '';
+            filtered.forEach(p => {
+                const tr = document.createElement('tr');
+                const dt = p.join_date ? new Date(p.join_date).toLocaleDateString() : '2026-09-01';
+                const posUpper = (p.tree_position || 'AUTO').toUpperCase();
+                const posClass = posUpper === 'LEFT' ? 'badge-active' : 'badge-qualified';
+                const qualClass = p.qualification_status === 'QUALIFIED' ? 'badge-qualified' : 'badge-active';
+                const prodStatus = p.has_active_purchase 
+                    ? '<span style="color: var(--brand-green); font-weight: 700;">● ACTIVE (Unlocked)</span>' 
+                    : '<span style="color: var(--text-muted);">FREE (Rs. 0.00)</span>';
+                
+                const commAmt = p.direct_commission_earned 
+                    ? `LKR ${Number(p.direct_commission_earned).toLocaleString(undefined, {minimumFractionDigits: 2})}` 
+                    : (p.has_active_purchase && p.purchase_amount ? `LKR ${(Number(p.purchase_amount) * 0.08).toLocaleString(undefined, {minimumFractionDigits: 2})}` : 'LKR 0.00');
+
+                const initial = (p.full_name || p.name || 'M')[0].toUpperCase();
+
+                tr.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="sidebar-avatar" style="width: 32px; height: 32px; font-size: 12px; min-width: 32px;">${initial}</div>
+                            <div>
+                                <strong>${p.full_name || p.name || 'Partner Member'}</strong>
+                            </div>
+                        </div>
+                    </td>
+                    <td><code>@${p.username || ''}</code></td>
+                    <td><span class="badge-pill ${posClass}">${posUpper}</span></td>
+                    <td>${dt}</td>
+                    <td><span class="badge-pill ${qualClass}">${p.qualification_status || 'REGISTERED'}</span></td>
+                    <td>${prodStatus}</td>
+                    <td style="font-weight: 700; color: var(--brand-orange);">${commAmt}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderBinaryTreeVisualizer(treeData) {
+            // Backward-compatible stub
         }
 
         async function handleWithdrawSubmit(e) {
@@ -2852,9 +2959,9 @@
             renderWalletLedger([]);
             renderWithdrawalHistory(JSON.parse(localStorage.getItem('payout_requests_queue')) || []);
             renderDirectReferrals([]);
+            renderPartnerNetworkList([]);
             renderPurchasedProducts([]);
             renderOrdersTable(JSON.parse(localStorage.getItem('member_orders_queue')) || []);
-            renderBinaryTreeVisualizer(null);
             loadBuyProductsStore();
         }
 
@@ -2993,12 +3100,10 @@
             }
             if (data.direct_referrals) {
                 renderDirectReferrals(data.direct_referrals.list);
+                renderPartnerNetworkList(data.direct_referrals.list);
             }
             if (data.products) {
                 renderPurchasedProducts(data.products.list);
-            }
-            if (data.binary_network) {
-                renderBinaryTreeVisualizer(data.binary_network);
             }
         }
 
