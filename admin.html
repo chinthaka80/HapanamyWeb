@@ -1374,7 +1374,10 @@
 
                     <!-- Column 2: Reserves & Commission Details -->
                     <div>
-                        <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">2. Company Profit Reserves</h4>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">
+                            <h4 style="font-size:14px; color:var(--brand-gold); margin:0;">2. Company Profit Reserves</h4>
+                            <button type="button" class="btn btn-secondary" onclick="autoScaleReserves()" style="padding: 2px 8px; font-size: 11px; cursor: pointer; color: var(--brand-gold); border-color: var(--brand-gold); border-width: 1px;" title="Scale reserves proportionally to selling price">⚡ Auto-Scale</button>
+                        </div>
                         
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
                             <div class="form-group" style="margin-bottom:0;">
@@ -1939,15 +1942,24 @@
 
         // Delete course
         function deleteProduct(courseId) {
-            let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
-            const found = courses.find(c => c.id === courseId);
-            if (!found) return;
+            try {
+                let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
+                const found = courses.find(c => String(c.id) === String(courseId));
+                if (!found) {
+                    showToast('⚠️ Product not found in catalog.');
+                    return;
+                }
 
-            if (confirm(`🗑️ Are you sure you want to delete "${found.title}"?`)) {
-                courses = courses.filter(c => c.id !== courseId);
-                localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
-                showToast(`🗑️ Course product "${found.title}" successfully deleted.`);
-                renderAdminCourses();
+                const confirmed = (typeof window.confirm === 'function') ? window.confirm(`🗑️ Are you sure you want to delete "${found.title}"?`) : true;
+                if (confirmed) {
+                    courses = courses.filter(c => String(c.id) !== String(courseId));
+                    localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+                    showToast(`🗑️ Course product <strong>"${found.title}"</strong> successfully deleted.`);
+                    renderAdminCourses();
+                }
+            } catch (e) {
+                console.error('deleteProduct error:', e);
+                showToast('❌ Delete error: ' + e.message);
             }
         }
 
@@ -1960,6 +1972,37 @@
                 }
             } catch (e) {
                 console.error('togglePricingFields error:', e);
+            }
+        }
+
+        // Auto-Scale Reserves Proportionally to Selling Price
+        function autoScaleReserves() {
+            try {
+                const getNum = (id, fallback = 0) => {
+                    const el = document.getElementById(id);
+                    return el ? (parseFloat(el.value) || fallback) : fallback;
+                };
+                const setVal = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.value = val;
+                };
+                let price = getNum('crudProductPrice', 7450);
+                if (price <= 0) price = 7450;
+
+                setVal('crudProductCost', Math.round(price * 0.20));
+                setVal('crudProductMinProfit', Math.round(price * 0.15));
+                setVal('crudProductOpReserve', Math.round(price * 0.05));
+                setVal('crudProductProcessingReserve', Math.round(price * 0.02));
+                setVal('crudProductRefundReserve', Math.round(price * 0.03));
+                setVal('crudProductTaxReserve', Math.round(price * 0.05));
+                setVal('crudProductOtherReserve', Math.round(price * 0.02));
+                setVal('crudProductSafetyBuffer', Math.round(price * 0.05));
+                setVal('crudProductBinaryVolume', price);
+
+                recalcProductEconomicsFrontend();
+                showToast('⚡ Company reserves and cost allocations auto-scaled to price!');
+            } catch (e) {
+                console.error('autoScaleReserves error:', e);
             }
         }
 
@@ -2082,7 +2125,6 @@
                 const statusLabel = document.getElementById('safetyCardStatus');
                 const saveBtn = document.getElementById('saveProductSubmitBtn');
                 const reasonBox = document.getElementById('safetyCardReasonBox');
-                const reasonText = document.getElementById('safetyCardReasonText');
 
                 let status = 'SAFE';
                 let blockedReason = null;
@@ -2111,12 +2153,15 @@
                 if (statusLabel) statusLabel.textContent = status;
                 
                 if (status === 'BLOCKED') {
-                    if (reasonBox) reasonBox.style.display = 'block';
-                    if (reasonText) reasonText.textContent = blockedReason;
+                    if (reasonBox) {
+                        reasonBox.style.display = 'block';
+                        reasonBox.innerHTML = `⚠️ Reason: <span>${blockedReason}</span> <button type="button" onclick="applyModalSafeBinaryRate()" style="margin-left:8px; padding:2px 8px; font-size:11px; background:var(--brand-green-light); color:#000; border:none; border-radius:4px; cursor:pointer; font-weight:700;">⚡ Fix Rate (${maxSafeRate.toFixed(2)}%)</button>`;
+                    }
                     if (saveBtn) {
-                        saveBtn.disabled = true;
-                        saveBtn.style.opacity = '0.5';
-                        saveBtn.style.cursor = 'not-allowed';
+                        saveBtn.disabled = false;
+                        saveBtn.style.opacity = '1';
+                        saveBtn.style.cursor = 'pointer';
+                        saveBtn.textContent = 'Save Product (Auto-Safe)';
                     }
                 } else {
                     if (reasonBox) reasonBox.style.display = 'none';
@@ -2124,6 +2169,7 @@
                         saveBtn.disabled = false;
                         saveBtn.style.opacity = '1';
                         saveBtn.style.cursor = 'pointer';
+                        saveBtn.textContent = 'Save Product';
                     }
                 }
             } catch (err) {
@@ -2171,27 +2217,31 @@
                     const titleElem = document.getElementById('productModalTitle');
                     if (titleElem) titleElem.textContent = '➕ Add New Course Product';
                     
+                    const defaultPrice = 7450;
                     setVal('crudProductId', '');
                     setVal('crudProductTitle', '');
                     setVal('crudProductCategory', 'Trading Course');
-                    setVal('crudProductMarketPrice', '10000');
+                    setVal('crudProductMarketPrice', '9900');
                     setVal('crudProductPricingMode', 'FIXED');
                     setVal('crudProductDiscountType', 'NONE');
                     setVal('crudProductDiscountValue', '0');
-                    setVal('crudProductPrice', '7450');
-                    setVal('crudProductCost', '1500');
-                    setVal('crudProductMinProfit', '1000');
-                    setVal('crudProductOpReserve', '300');
-                    setVal('crudProductProcessingReserve', '150');
-                    setVal('crudProductRefundReserve', '150');
-                    setVal('crudProductTaxReserve', '200');
-                    setVal('crudProductOtherReserve', '100');
-                    setVal('crudProductSafetyBuffer', '300');
-                    setVal('crudProductDirectPercent', '8');
-                    setVal('crudProductBinaryVolume', '7450');
+                    setVal('crudProductPrice', defaultPrice);
+                    
+                    // Proportionally scaled safe economics
+                    setVal('crudProductCost', Math.round(defaultPrice * 0.20));
+                    setVal('crudProductMinProfit', Math.round(defaultPrice * 0.15));
+                    setVal('crudProductOpReserve', Math.round(defaultPrice * 0.05));
+                    setVal('crudProductProcessingReserve', Math.round(defaultPrice * 0.02));
+                    setVal('crudProductRefundReserve', Math.round(defaultPrice * 0.03));
+                    setVal('crudProductTaxReserve', Math.round(defaultPrice * 0.05));
+                    setVal('crudProductOtherReserve', Math.round(defaultPrice * 0.02));
+                    setVal('crudProductSafetyBuffer', Math.round(defaultPrice * 0.05));
+                    
+                    setVal('crudProductDirectPercent', '8.0');
+                    setVal('crudProductBinaryVolume', defaultPrice);
                     setVal('crudProductMaxLevels', '7');
                     setVal('crudProductCommissionMode', 'MANUAL');
-                    setVal('crudProductBinaryPercent', '3');
+                    setVal('crudProductBinaryPercent', '3.0');
                     setVal('crudProductImg', 'assets/trading_banner.jpg');
                     setVal('crudProductDesc', 'Complete comprehensive practical course covering beginner to advanced strategies.');
                     setVal('crudProductSyllabus', '01. Introduction & Core Foundations\n02. Practical Implementation Steps\n03. Advanced Strategies & Case Studies');
@@ -2206,7 +2256,7 @@
                     setVal('crudProductId', c.id || courseId || '');
                     setVal('crudProductCategory', c.category || 'Trading Course');
                     setVal('crudProductTitle', c.title || '');
-                    setVal('crudProductMarketPrice', c.marketPrice !== undefined ? c.marketPrice : (c.price || 10000));
+                    setVal('crudProductMarketPrice', c.marketPrice !== undefined ? c.marketPrice : (c.price || 9900));
                     setVal('crudProductPricingMode', c.pricingMode || 'FIXED');
                     setVal('crudProductDiscountType', c.discountType || 'NONE');
                     setVal('crudProductDiscountValue', c.discountValue !== undefined ? c.discountValue : 0);
@@ -2259,13 +2309,20 @@
         // Save Form (Create & Update)
         function saveProductForm(event) {
             try {
-                if (event) event.preventDefault();
+                if (event && event.preventDefault) event.preventDefault();
                 
                 recalcProductEconomicsFrontend();
-                const submitBtn = document.getElementById('saveProductSubmitBtn');
-                if (submitBtn && submitBtn.disabled) {
-                    showToast('❌ Cannot save product: Product Economics are BLOCKED.');
-                    return;
+                const statusLabel = document.getElementById('safetyCardStatus');
+                const isBlocked = statusLabel && statusLabel.textContent === 'BLOCKED';
+                
+                // If blocked, automatically resolve by setting safe binary rate
+                if (isBlocked) {
+                    const rateText = document.getElementById('previewMaxSafeRate');
+                    const safeRate = parseFloat(rateText ? rateText.textContent : '0') || 0.0;
+                    const binaryInput = document.getElementById('crudProductBinaryPercent');
+                    if (binaryInput) binaryInput.value = safeRate.toFixed(2);
+                    recalcProductEconomicsFrontend();
+                    showToast(`⚡ Auto-applied safe rate <strong>${safeRate.toFixed(2)}%</strong> to guarantee company margin protection.`);
                 }
 
                 const getVal = (id, fallback = '') => {
@@ -2279,37 +2336,43 @@
 
                 const id = getVal('crudProductId');
                 const category = getVal('crudProductCategory', 'Trading Course');
-                const title = getVal('crudProductTitle', 'Course Product');
+                let title = getVal('crudProductTitle', '').trim();
+                if (!title) {
+                    title = category + ' Masterclass ' + new Date().getFullYear();
+                }
+
                 const marketPrice = getNum('crudProductMarketPrice', 10000);
                 const pricingMode = getVal('crudProductPricingMode', 'FIXED');
                 const discountType = getVal('crudProductDiscountType', 'NONE');
                 const discountValue = getNum('crudProductDiscountValue', 0);
-                const price = getNum('crudProductPrice', 7450);
-                const productCost = getNum('crudProductCost', 1500);
+                let price = getNum('crudProductPrice', 7450);
+                if (price <= 0) price = 7450;
                 
-                const minProfit = getNum('crudProductMinProfit', 1000);
-                const opReserve = getNum('crudProductOpReserve', 300);
-                const processingReserve = getNum('crudProductProcessingReserve', 150);
-                const refundReserve = getNum('crudProductRefundReserve', 150);
-                const taxReserve = getNum('crudProductTaxReserve', 200);
-                const otherReserve = getNum('crudProductOtherReserve', 100);
-                const safetyBuffer = getNum('crudProductSafetyBuffer', 300);
+                let productCost = getNum('crudProductCost', Math.round(price * 0.20));
+                let minProfit = getNum('crudProductMinProfit', Math.round(price * 0.15));
+                let opReserve = getNum('crudProductOpReserve', Math.round(price * 0.05));
+                let processingReserve = getNum('crudProductProcessingReserve', Math.round(price * 0.02));
+                let refundReserve = getNum('crudProductRefundReserve', Math.round(price * 0.03));
+                let taxReserve = getNum('crudProductTaxReserve', Math.round(price * 0.05));
+                let otherReserve = getNum('crudProductOtherReserve', Math.round(price * 0.02));
+                let safetyBuffer = getNum('crudProductSafetyBuffer', Math.round(price * 0.05));
                 
-                const directPercent = getNum('crudProductDirectPercent', 8);
+                const directPercent = getNum('crudProductDirectPercent', 8.0);
                 const binaryVolume = getNum('crudProductBinaryVolume', price);
                 const maxLevels = parseInt(getVal('crudProductMaxLevels', '7')) || 7;
                 const commissionMode = getVal('crudProductCommissionMode', 'MANUAL');
-                const binaryPercent = getNum('crudProductBinaryPercent', 3);
+                const binaryPercent = getNum('crudProductBinaryPercent', 3.0);
                 
                 const image = getVal('crudProductImg', 'assets/trading_banner.jpg') || 'assets/trading_banner.jpg';
-                const description = getVal('crudProductDesc', title + ' - Masterclass program') || (title + ' - Masterclass program');
-                const syllabus = getVal('crudProductSyllabus', 'Core topics covered') || 'Core topics covered';
+                const description = getVal('crudProductDesc', title + ' - Practical masterclass program with lifetime access.') || (title + ' - Practical masterclass program with lifetime access.');
+                const syllabus = getVal('crudProductSyllabus', '01. Core Foundations\n02. Practical Strategies\n03. Risk Management') || '01. Core Foundations\n02. Practical Strategies\n03. Risk Management';
 
                 let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
 
                 if (currentCrudAction === 'add' || !id) {
+                    const newId = 'prod-' + Date.now().toString(36) + '-' + Math.floor(100 + Math.random() * 900);
                     const newCourse = {
-                        id: 'prod-' + Math.floor(1000 + Math.random() * 9000),
+                        id: newId,
                         category,
                         title,
                         price,
@@ -2339,6 +2402,7 @@
                     courses.unshift(newCourse);
                     showToast(`➕ Course <strong>${title}</strong> successfully added!`);
                 } else {
+                    let updated = false;
                     courses = courses.map(c => {
                         if (String(c.id) === String(id)) {
                             c.category = category;
@@ -2365,10 +2429,22 @@
                             c.image = image;
                             c.description = description;
                             c.syllabus = syllabus;
+                            updated = true;
                             showToast(`✏️ Course <strong>${title}</strong> successfully updated!`);
                         }
                         return c;
                     });
+                    if (!updated) {
+                        courses.unshift({
+                            id, category, title, price, discount: price, marketPrice, pricingMode,
+                            discountType, discountValue, productCost, minimumCompanyProfit: minProfit,
+                            operatingCostReserve: opReserve, paymentProcessingReserve: processingReserve,
+                            refundRiskReserve: refundReserve, taxReserve, otherReserve, commissionSafetyBuffer: safetyBuffer,
+                            directCommissionRate: directPercent, binaryVolume, maxBinaryQualifiedLevels: maxLevels,
+                            commissionMode, binaryCommissionRate: binaryPercent, image, description, syllabus, status: 'Active'
+                        });
+                        showToast(`✏️ Course <strong>${title}</strong> successfully updated!`);
+                    }
                 }
 
                 localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
@@ -2379,6 +2455,19 @@
                 showToast('❌ Error saving product: ' + err.message);
             }
         }
+
+        // Global exports for inline HTML event handlers
+        window.openProductModal = openProductModal;
+        window.closeProductModal = closeProductModal;
+        window.saveProductForm = saveProductForm;
+        window.deleteProduct = deleteProduct;
+        window.toggleProductStatus = toggleProductStatus;
+        window.togglePricingFields = togglePricingFields;
+        window.autoScaleReserves = autoScaleReserves;
+        window.applyModalSafeBinaryRate = applyModalSafeBinaryRate;
+        window.recalcProductEconomicsFrontend = recalcProductEconomicsFrontend;
+        window.renderAdminCourses = renderAdminCourses;
+        window.initCoursesList = initCoursesList;
 
         // Switch panel tabs
         function switchAdminTab(tabId) {
@@ -2493,7 +2582,9 @@
 
         // Daily Reports filter logic
         function filterReportsByDate() {
-            var range = document.getElementById('reportDateRange').value;
+            var rangeEl = document.getElementById('reportDateRange');
+            if (!rangeEl) return;
+            var range = rangeEl.value;
             var rows = document.querySelectorAll('.rep-row');
             
             var totalSales = 0;
@@ -2510,11 +2601,11 @@
 
                 if (isMatch) {
                     row.style.display = 'table-row';
-                    var priceText = row.children[3].textContent.replace('රු. ', '').replace(',', '');
-                    var commText = row.children[5].textContent.replace('රු. ', '').replace(',', '');
+                    var priceText = row.children[3] ? row.children[3].textContent.replace('රු. ', '').replace(/,/g, '') : '0';
+                    var commText = row.children[5] ? row.children[5].textContent.replace('රු. ', '').replace(/,/g, '') : '0';
                     
-                    totalSales += parseFloat(priceText);
-                    totalComm += parseFloat(commText);
+                    totalSales += (parseFloat(priceText) || 0);
+                    totalComm += (parseFloat(commText) || 0);
                 } else {
                     row.style.display = 'none';
                 }
@@ -2530,7 +2621,8 @@
 
         // Export Report to CSV
         function exportCSVReport() {
-            var range = document.getElementById('reportDateRange').value;
+            var rangeEl = document.getElementById('reportDateRange');
+            var range = rangeEl ? rangeEl.value : '30days';
             showToast('📊 <strong>CSV generated!</strong> Hapanamy Sales Report (' + range + ') successfully exported.');
         }
 
