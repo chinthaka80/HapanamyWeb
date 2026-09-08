@@ -846,8 +846,9 @@
                                     <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 60px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
                                 </div>
                                 <div style="display:flex; flex-direction:column; justify-content:flex-end;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center; gap: 8px;">
                                         <span style="font-size:12px; color:var(--text-muted);">Max Safe Binary Rate: <strong id="previewMaxSafeRate" style="color:var(--text-primary);">0.00%</strong></span>
+                                        <button type="button" class="btn btn-secondary" onclick="applyModalSafeBinaryRate()" style="padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--brand-green-light); border-color: var(--brand-green-light); border-width: 1px;">⚡ Apply Safe Rate</button>
                                     </div>
                                     <div style="display: flex; gap: 10px;">
                                         <button type="submit" id="saveProductSubmitBtn" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight:700;">Save Product</button>
@@ -1816,26 +1817,62 @@
         // Dynamic Products Database initial setup
         function initCoursesList() {
             let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
-            if (!courses) {
-                courses = [
-                    { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' },
-                    { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
-                    { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
-                    { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
-                    { id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 0, discount: 0, image: 'assets/social_media_growth_banner.jpg', status: 'Active' },
-                    { id: 'forex-course', category: 'Trading Course', title: '🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/forex_course_banner.jpg', status: 'Active' },
-                    { id: 'crypto-course', category: 'Trading Course', title: '🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/crypto_course_banner.jpg', status: 'Active' },
-                    { id: 'options-course', category: 'Trading Course', title: '🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/options_course_banner.jpg', status: 'Active' },
-                    { id: 'titan-elite', category: 'Trading Course', title: '🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)', price: 24900, discount: 19900, image: 'assets/advanced_trading_banner.jpg', status: 'Active' },
-                    { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', price: 6500, discount: 5200, image: 'assets/ai_video_course_banner.jpg', status: 'Active' },
-                    { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', price: 18750, discount: 15000, image: 'assets/ai_mastery_banner.jpg', status: 'Active' },
-                    { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', price: 9000, discount: 7200, image: 'assets/coding_course_banner.jpg', status: 'Active' },
-                    { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', price: 4990, discount: 3992, image: 'assets/ebooks_banner.jpg', status: 'Active' },
-                    { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', price: 6990, discount: 5592, image: 'assets/motivation_ebook_banner.jpg', status: 'Active' },
-                    { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
-                ];
-                localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
+            const defaultCourses = [
+                { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' },
+                { id: 'tiktok-course', category: 'Social Media', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 5000, discount: 4500, image: 'assets/tiktok_course_banner.jpg', status: 'Active' },
+                { id: 'youtube-course', category: 'Social Media', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/youtube_course_banner.jpg', status: 'Active' },
+                { id: 'social-media-masterclass', category: 'Social Media', title: '🚀 Social Media Income Masterclass 2026', price: 19990, discount: 15992, image: 'assets/social_media_masterclass_banner.jpg', status: 'Active' },
+                { id: 'social-media-growth', category: 'Services', title: '🚀 Hapanamy Social Media Growth & Management', price: 15000, discount: 12000, image: 'assets/social_media_growth_banner.jpg', status: 'Active' },
+                { id: 'forex-course', category: 'Trading Course', title: '🟢 Beginner – Forex Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/forex_course_banner.jpg', status: 'Active' },
+                { id: 'crypto-course', category: 'Trading Course', title: '🟠 Beginner – Crypto Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/crypto_course_banner.jpg', status: 'Active' },
+                { id: 'options-course', category: 'Trading Course', title: '🔵 Intermediate – Options Trading Course (Online Zoom - Practical Course)', price: 9900, discount: 7920, image: 'assets/options_course_banner.jpg', status: 'Active' },
+                { id: 'titan-elite', category: 'Trading Course', title: '🔴 Professional – Advanced Institutional Trading Masterclass (SMC / ICT)', price: 24900, discount: 19900, image: 'assets/advanced_trading_banner.jpg', status: 'Active' },
+                { id: 'ai-video-course', category: 'AI & Tech', title: '🎬 AI Video Generation Masterclass 2026', price: 6500, discount: 5200, image: 'assets/ai_video_course_banner.jpg', status: 'Active' },
+                { id: 'ai-mastery-course', category: 'AI & Tech', title: '🤖 AI Mastery Program 2026', price: 18750, discount: 15000, image: 'assets/ai_mastery_banner.jpg', status: 'Active' },
+                { id: 'coding-course', category: 'AI & Tech', title: '💻 Coding & Web Development Masterclass 2026', price: 9000, discount: 7200, image: 'assets/coding_course_banner.jpg', status: 'Active' },
+                { id: 'trading-ebook', category: 'E-Book', title: '📘 Trading A to Z – Master E-Book 2026', price: 4990, discount: 3992, image: 'assets/ebooks_banner.jpg', status: 'Active' },
+                { id: 'motivation-ebook', category: 'E-Book', title: '📖 Motivation & Self-Development Master E-Book 2026', price: 6990, discount: 5592, image: 'assets/motivation_ebook_banner.jpg', status: 'Active' },
+                { id: 'ai-prompts-ebook', category: 'E-Book', title: '📘 AI Prompts & Templates Ultimate Collection 2026', price: 2500, discount: 2000, image: 'assets/ai_prompts_ebook_banner.jpg', status: 'Active' }
+            ];
+
+            if (!courses || !Array.isArray(courses) || courses.length === 0) {
+                courses = defaultCourses;
             }
+
+            // Ensure all courses have complete and safe economics definitions
+            courses = courses.map(c => {
+                const price = Number(c.price) || 7450;
+                return {
+                    id: c.id || ('prod-' + Math.floor(1000 + Math.random() * 9000)),
+                    category: c.category || 'Trading Course',
+                    title: c.title || 'Course Product',
+                    price: price,
+                    discount: c.discount !== undefined ? Number(c.discount) : price,
+                    marketPrice: c.marketPrice !== undefined ? Number(c.marketPrice) : price,
+                    pricingMode: c.pricingMode || 'FIXED',
+                    discountType: c.discountType || 'NONE',
+                    discountValue: c.discountValue !== undefined ? Number(c.discountValue) : 0,
+                    productCost: c.productCost !== undefined ? Number(c.productCost) : Math.round(price * 0.20),
+                    minimumCompanyProfit: c.minimumCompanyProfit !== undefined ? Number(c.minimumCompanyProfit) : Math.round(price * 0.15),
+                    operatingCostReserve: c.operatingCostReserve !== undefined ? Number(c.operatingCostReserve) : Math.round(price * 0.05),
+                    paymentProcessingReserve: c.paymentProcessingReserve !== undefined ? Number(c.paymentProcessingReserve) : Math.round(price * 0.02),
+                    refundRiskReserve: c.refundRiskReserve !== undefined ? Number(c.refundRiskReserve) : Math.round(price * 0.03),
+                    taxReserve: c.taxReserve !== undefined ? Number(c.taxReserve) : Math.round(price * 0.05),
+                    otherReserve: c.otherReserve !== undefined ? Number(c.otherReserve) : Math.round(price * 0.02),
+                    commissionSafetyBuffer: c.commissionSafetyBuffer !== undefined ? Number(c.commissionSafetyBuffer) : Math.round(price * 0.05),
+                    directCommissionRate: c.directCommissionRate !== undefined ? Number(c.directCommissionRate) : 8.0,
+                    binaryVolume: c.binaryVolume !== undefined ? Number(c.binaryVolume) : price,
+                    maxBinaryQualifiedLevels: c.maxBinaryQualifiedLevels !== undefined ? Number(c.maxBinaryQualifiedLevels) : 7,
+                    commissionMode: c.commissionMode || 'MANUAL',
+                    binaryCommissionRate: c.binaryCommissionRate !== undefined ? Number(c.binaryCommissionRate) : 3.0,
+                    image: c.image || 'assets/trading_banner.jpg',
+                    description: c.description || (c.title + ' - Complete step-by-step masterclass with practical assignments and lifetime support.'),
+                    syllabus: c.syllabus || '01. Fundamentals & Strategy Introduction\n02. Technical Breakdown & Practical Framework\n03. Risk Management & Profit Optimization\n04. Live Mastermind & Q&A Session',
+                    status: c.status || 'Active'
+                };
+            });
+
+            localStorage.setItem('hapanamy_courses_list', JSON.stringify(courses));
             renderAdminCourses();
         }
 
@@ -1846,20 +1883,27 @@
             if (!tbody) return;
 
             tbody.innerHTML = '';
+            if (courses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; padding:30px; color:var(--text-muted);">No products found in catalog. Click "+ Add New Products" to create one.</td></tr>`;
+                return;
+            }
+
             courses.forEach(c => {
                 const tr = document.createElement('tr');
+                const priceNum = Number(c.price) || 0;
+                const discountNum = Number(c.discount) || priceNum;
                 tr.innerHTML = `
-                    <td><img src="${c.image}" style="width:45px; height:30px; object-fit:cover; border-radius:4px; border:1px solid var(--border-color);"></td>
-                    <td>${c.category}</td>
+                    <td><img src="${c.image || 'assets/trading_banner.jpg'}" style="width:45px; height:30px; object-fit:cover; border-radius:4px; border:1px solid var(--border-color);" onerror="this.src='assets/logo.jpg'"></td>
+                    <td>${c.category || 'Trading Course'}</td>
                     <td><strong>${c.title}</strong></td>
-                    <td class="text-right">රු. ${c.price.toLocaleString()}</td>
-                    <td class="text-right" style="color:var(--brand-orange); font-weight:700;">රු. ${c.discount.toLocaleString()}</td>
-                    <td><span class="badge-status ${c.status === 'Active' ? 'paid' : 'pending'}">${c.status}</span></td>
+                    <td class="text-right">රු. ${priceNum.toLocaleString()}</td>
+                    <td class="text-right" style="color:var(--brand-orange); font-weight:700;">රු. ${discountNum.toLocaleString()}</td>
+                    <td><span class="badge-status ${c.status === 'Active' ? 'paid' : 'pending'}">${c.status || 'Active'}</span></td>
                     <td>
                         <div style="display:flex; gap:6px; justify-content:center;">
-                            <button class="btn btn-secondary" onclick="openProductModal('edit', '${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px;">✏️ Edit</button>
-                            <button class="btn btn-secondary" onclick="toggleProductStatus('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--brand-gold); border-color:var(--brand-gold);">🔄 Toggle</button>
-                            <button class="btn btn-secondary" onclick="deleteProduct('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--ph-red); border-color:var(--ph-red);">🗑️ Delete</button>
+                            <button type="button" class="btn btn-secondary" onclick="openProductModal('edit', '${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px;">✏️ Edit</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleProductStatus('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--brand-gold); border-color:var(--brand-gold);">🔄 Toggle</button>
+                            <button type="button" class="btn btn-secondary" onclick="deleteProduct('${c.id}')" style="padding:4px 8px; font-size:11px; cursor:pointer; border-width:1px; color:var(--ph-red); border-color:var(--ph-red);">🗑️ Delete</button>
                         </div>
                     </td>
                 `;
@@ -2047,11 +2091,22 @@
             }
         }
 
+        function applyModalSafeBinaryRate() {
+            recalcProductEconomicsFrontend();
+            const safeRateText = document.getElementById('previewMaxSafeRate').textContent;
+            const safeRate = parseFloat(safeRateText) || 0.0;
+            document.getElementById('crudProductBinaryPercent').value = safeRate.toFixed(2);
+            document.getElementById('crudProductCommissionMode').value = 'MANUAL';
+            recalcProductEconomicsFrontend();
+            showToast(`⚡ Auto-applied Maximum Safe Binary Rate: <strong>${safeRate.toFixed(2)}%</strong> (SAFE Status Guaranteed)`);
+        }
+
         // Open CRUD modal
         let currentCrudAction = 'add';
         function openProductModal(action, courseId = '') {
             currentCrudAction = action;
-            document.getElementById('productCrudModal').style.display = 'flex';
+            const modal = document.getElementById('productCrudModal');
+            if (modal) modal.style.display = 'flex';
             
             if (action === 'add') {
                 document.getElementById('productModalTitle').textContent = '➕ Add New Course Product';
@@ -2063,39 +2118,39 @@
                 document.getElementById('crudProductDiscountType').value = 'NONE';
                 document.getElementById('crudProductDiscountValue').value = '0';
                 document.getElementById('crudProductPrice').value = '7450';
-                document.getElementById('crudProductCost').value = '2000';
+                document.getElementById('crudProductCost').value = '1500';
                 document.getElementById('crudProductMinProfit').value = '1000';
-                document.getElementById('crudProductOpReserve').value = '500';
+                document.getElementById('crudProductOpReserve').value = '300';
                 document.getElementById('crudProductProcessingReserve').value = '150';
-                document.getElementById('crudProductRefundReserve').value = '200';
-                document.getElementById('crudProductTaxReserve').value = '300';
+                document.getElementById('crudProductRefundReserve').value = '150';
+                document.getElementById('crudProductTaxReserve').value = '200';
                 document.getElementById('crudProductOtherReserve').value = '100';
-                document.getElementById('crudProductSafetyBuffer').value = '500';
+                document.getElementById('crudProductSafetyBuffer').value = '300';
                 document.getElementById('crudProductDirectPercent').value = '8';
                 document.getElementById('crudProductBinaryVolume').value = '7450';
-                document.getElementById('crudProductMaxLevels').value = '1';
+                document.getElementById('crudProductMaxLevels').value = '7';
                 document.getElementById('crudProductCommissionMode').value = 'MANUAL';
-                document.getElementById('crudProductBinaryPercent').value = '7';
+                document.getElementById('crudProductBinaryPercent').value = '3';
                 document.getElementById('crudProductImg').value = 'assets/trading_banner.jpg';
-                document.getElementById('crudProductDesc').value = '';
-                document.getElementById('crudProductSyllabus').value = '';
+                document.getElementById('crudProductDesc').value = 'Complete comprehensive course covering beginner to advanced strategies.';
+                document.getElementById('crudProductSyllabus').value = '01. Introduction & Core Foundations\n02. Practical Implementation Steps\n03. Advanced Strategies & Case Studies';
             } else {
                 document.getElementById('productModalTitle').textContent = '✏️ Edit Course Details';
                 const courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
-                const c = courses.find(item => item.id === courseId);
+                const c = courses.find(item => String(item.id) === String(courseId));
                 if (c) {
-                    const price = c.price || 0;
+                    const price = Number(c.price) || 7450;
                     document.getElementById('crudProductId').value = c.id;
                     document.getElementById('crudProductCategory').value = c.category || 'Trading Course';
                     document.getElementById('crudProductTitle').value = c.title || '';
                     
-                    document.getElementById('crudProductMarketPrice').value = c.marketPrice !== undefined ? c.marketPrice : (c.price || 0);
+                    document.getElementById('crudProductMarketPrice').value = c.marketPrice !== undefined ? c.marketPrice : (c.price || 10000);
                     document.getElementById('crudProductPricingMode').value = c.pricingMode || 'FIXED';
                     document.getElementById('crudProductDiscountType').value = c.discountType || 'NONE';
                     document.getElementById('crudProductDiscountValue').value = c.discountValue || 0;
-                    document.getElementById('crudProductPrice').value = c.price || 0;
+                    document.getElementById('crudProductPrice').value = c.price !== undefined ? c.price : 7450;
                     
-                    document.getElementById('crudProductCost').value = c.productCost !== undefined ? c.productCost : Math.round(price * 0.3);
+                    document.getElementById('crudProductCost').value = c.productCost !== undefined ? c.productCost : Math.round(price * 0.20);
                     document.getElementById('crudProductMinProfit').value = c.minimumCompanyProfit !== undefined ? c.minimumCompanyProfit : Math.round(price * 0.15);
                     document.getElementById('crudProductOpReserve').value = c.operatingCostReserve !== undefined ? c.operatingCostReserve : Math.round(price * 0.05);
                     document.getElementById('crudProductProcessingReserve').value = c.paymentProcessingReserve !== undefined ? c.paymentProcessingReserve : Math.round(price * 0.02);
@@ -2105,13 +2160,13 @@
                     document.getElementById('crudProductSafetyBuffer').value = c.commissionSafetyBuffer !== undefined ? c.commissionSafetyBuffer : Math.round(price * 0.05);
                     
                     document.getElementById('crudProductDirectPercent').value = c.directCommissionRate !== undefined ? c.directCommissionRate : 8.0;
-                    document.getElementById('crudProductBinaryVolume').value = c.binaryVolume !== undefined ? c.binaryVolume : (c.price || 0);
-                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 1;
+                    document.getElementById('crudProductBinaryVolume').value = c.binaryVolume !== undefined ? c.binaryVolume : price;
+                    document.getElementById('crudProductMaxLevels').value = c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 7;
                     document.getElementById('crudProductCommissionMode').value = c.commissionMode || 'MANUAL';
-                    document.getElementById('crudProductBinaryPercent').value = c.binaryCommissionRate !== undefined ? c.binaryCommissionRate : 7.0;
+                    document.getElementById('crudProductBinaryPercent').value = c.binaryCommissionRate !== undefined ? c.binaryCommissionRate : 3.0;
                     document.getElementById('crudProductImg').value = c.image || 'assets/trading_banner.jpg';
-                    document.getElementById('crudProductDesc').value = c.description || '';
-                    document.getElementById('crudProductSyllabus').value = c.syllabus || '';
+                    document.getElementById('crudProductDesc').value = c.description || (c.title + ' - Complete step-by-step masterclass with practical assignments.');
+                    document.getElementById('crudProductSyllabus').value = c.syllabus || '01. Fundamentals & Strategy Introduction\n02. Technical Breakdown & Practical Framework\n03. Risk Management & Profit Optimization';
                 }
             }
             togglePricingFields();
@@ -2119,8 +2174,23 @@
         }
 
         function closeProductModal() {
-            document.getElementById('productCrudModal').style.display = 'none';
+            const modal = document.getElementById('productCrudModal');
+            if (modal) modal.style.display = 'none';
         }
+
+        // Close modal on click outside box or escape key
+        document.addEventListener('click', (e) => {
+            const modal = document.getElementById('productCrudModal');
+            if (modal && e.target === modal) {
+                closeProductModal();
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeProductModal();
+            }
+        });
 
         // Save Form (Create & Update)
         function saveProductForm(event) {
@@ -2128,7 +2198,7 @@
             
             recalcProductEconomicsFrontend();
             const submitBtn = document.getElementById('saveProductSubmitBtn');
-            if (submitBtn.disabled) {
+            if (submitBtn && submitBtn.disabled) {
                 showToast('❌ Cannot save product: Product Economics are BLOCKED.');
                 return;
             }
@@ -2157,9 +2227,9 @@
             const commissionMode = document.getElementById('crudProductCommissionMode').value;
             const binaryPercent = parseFloat(document.getElementById('crudProductBinaryPercent').value || 0);
             
-            const image = document.getElementById('crudProductImg').value;
-            const description = document.getElementById('crudProductDesc').value;
-            const syllabus = document.getElementById('crudProductSyllabus').value;
+            const image = document.getElementById('crudProductImg').value || 'assets/trading_banner.jpg';
+            const description = document.getElementById('crudProductDesc').value || (title + ' - Masterclass program');
+            const syllabus = document.getElementById('crudProductSyllabus').value || 'Core topics covered';
 
             let courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
 
@@ -2192,11 +2262,11 @@
                     syllabus,
                     status: 'Active'
                 };
-                courses.push(newCourse);
+                courses.unshift(newCourse);
                 showToast(`➕ Course <strong>${title}</strong> successfully added!`);
             } else {
                 courses = courses.map(c => {
-                    if (c.id === id) {
+                    if (String(c.id) === String(id)) {
                         c.category = category;
                         c.title = title;
                         c.price = price;
@@ -2242,9 +2312,14 @@
             panels.forEach(p => p.classList.remove('active'));
             
             // Set active class
-            document.getElementById(`nav-${tabId}`).classList.add('active');
-            document.getElementById(`panel-${tabId}`).classList.add('active');
+            const navElem = document.getElementById(`nav-${tabId}`);
+            if (navElem) navElem.classList.add('active');
+            const panelElem = document.getElementById(`panel-${tabId}`);
+            if (panelElem) panelElem.classList.add('active');
             
+            if (tabId === 'courses') {
+                renderAdminCourses();
+            }
             if (tabId === 'blog') {
                 renderAdminBlogArticles();
             }
@@ -2253,6 +2328,12 @@
             }
             if (tabId === 'simulator') {
                 runEconomicsSimulation();
+            }
+            if (tabId === 'reports') {
+                if (typeof loadDailyReport === 'function') loadDailyReport();
+            }
+            if (tabId === 'settings') {
+                if (typeof loadSystemSettings === 'function') loadSystemSettings();
             }
 
             // Sync mobile tab icons
@@ -2273,7 +2354,9 @@
                 'blog': 'Hapanamy.lk Blog Post Manager',
                 'receipts': 'Manual Bank Slip Approvals'
             };
-            document.getElementById('adminHeaderTitle').textContent = headerTitles[tabId];
+            if (headerTitles[tabId]) {
+                document.getElementById('adminHeaderTitle').textContent = headerTitles[tabId];
+            }
         }
 
         // Toast alert helper
