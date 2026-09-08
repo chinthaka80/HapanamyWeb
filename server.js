@@ -15,6 +15,7 @@ const ProductEconomicsCalculator = require('./services/product-economics-calcula
 const ProductCommissionValidator = require('./services/product-commission-validator');
 const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
 const ProductSnapshotService = require('./services/product-snapshot-service');
+const ProductEconomicsService = require('./services/product-economics-service');
 const ReferralService = require('./services/referral-service');
 const QualificationEngine = require('./services/qualification-engine');
 const MemberDashboardService = require('./services/member-dashboard-service');
@@ -57,6 +58,21 @@ const mockAuditLogs = [];
 const mockEconomicsVersions = [];
 const mockFinancialAuditLogs = [];
 const mockEconomicsSnapshots = [];
+let mockEconomicsDefaults = {
+    tax_percent: 5.00,
+    hosting_cost_fixed: 100.00,
+    staff_cost_fixed: 300.00,
+    marketing_cost_fixed: 400.00,
+    refund_reserve_percent: 3.00,
+    support_cost_fixed: 100.00,
+    operational_cost_fixed: 150.00,
+    payment_processing_fixed: 0.00,
+    profit_reserve_percent: 15.00,
+    direct_commission_percent: 8.00,
+    binary_commission_percent: 7.00,
+    maximum_qualified_uplines: 7,
+    updated_at: new Date().toISOString()
+};
 
 const mockCompanyBankDetails = [
     {
@@ -1610,38 +1626,59 @@ const server = http.createServer(async (req, res) => {
         const targetStatus = status || 'ACTIVE';
         if (targetStatus === 'ACTIVE') {
             // 1. Check basic economics block conditions first
-            if (validation.status === 'BLOCKED' || !validation.allowed) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    safety_status: 'UNSAFE',
-                    blocked_reason: validation.blocked_reason,
-                    shortfall: validation.shortfall,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    requested_binary_rate: pricing.binary_commission_rate,
-                    calculated: econCalc.calculated
-                });
-                return;
-            }
+            const isOverridden = Boolean(body.admin_override && body.override_reason);
+            if (!isOverridden) {
+                if (validation.status === 'BLOCKED' || !validation.allowed) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        requested_binary_rate: pricing.binary_commission_rate,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
 
-            // 2. Check manual commission limits second
-            if (pricing.commission_mode === 'MANUAL' && pricing.binary_commission_rate > maxSafeRate) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    safety_status: 'UNSAFE',
-                    blocked_reason: `Manual binary commission rate ${pricing.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
-                    requested_binary_rate: pricing.binary_commission_rate,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    difference: Math.round((pricing.binary_commission_rate - maxSafeRate) * 100) / 100,
-                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    calculated: econCalc.calculated
+                // 2. Check manual commission limits second
+                if (pricing.commission_mode === 'MANUAL' && pricing.binary_commission_rate > maxSafeRate) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: `Manual binary commission rate ${pricing.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                        requested_binary_rate: pricing.binary_commission_rate,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        difference: Math.round((pricing.binary_commission_rate - maxSafeRate) * 100) / 100,
+                        expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
+            } else {
+                // Log financial override audit event
+                mockFinancialAuditLogs.push({
+                    id: 'faudit-ovr-' + Math.random().toString(36).substr(2, 9),
+                    admin_id: authUser.id,
+                    action: 'FINANCIAL_OVERRIDE_ACTIVATION',
+                    entity_type: 'products',
+                    entity_id: 'pending',
+                    details: {
+                        reason: body.override_reason,
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall
+                    },
+                    ip_address: req.socket.remoteAddress || '127.0.0.1',
+                    created_at: new Date().toISOString()
                 });
-                return;
             }
         }
 
@@ -1831,38 +1868,59 @@ const server = http.createServer(async (req, res) => {
         const targetStatus = status !== undefined ? status : currentProduct.status;
         if (targetStatus === 'ACTIVE') {
             // 1. Check basic economics block conditions first
-            if (validation.status === 'BLOCKED' || !validation.allowed) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    safety_status: 'UNSAFE',
-                    blocked_reason: validation.blocked_reason,
-                    shortfall: validation.shortfall,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    requested_binary_rate: merged.binary_commission_rate,
-                    calculated: econCalc.calculated
-                });
-                return;
-            }
+            const isOverridden = Boolean(body.admin_override && body.override_reason);
+            if (!isOverridden) {
+                if (validation.status === 'BLOCKED' || !validation.allowed) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        requested_binary_rate: merged.binary_commission_rate,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
 
-            // 2. Check manual commission limits second
-            if (merged.commission_mode === 'MANUAL' && merged.binary_commission_rate > maxSafeRate) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    safety_status: 'UNSAFE',
-                    blocked_reason: `Manual binary commission rate ${merged.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
-                    requested_binary_rate: merged.binary_commission_rate,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    difference: Math.round((merged.binary_commission_rate - maxSafeRate) * 100) / 100,
-                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    calculated: econCalc.calculated
+                // 2. Check manual commission limits second
+                if (merged.commission_mode === 'MANUAL' && merged.binary_commission_rate > maxSafeRate) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: `Manual binary commission rate ${merged.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                        requested_binary_rate: merged.binary_commission_rate,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        difference: Math.round((merged.binary_commission_rate - maxSafeRate) * 100) / 100,
+                        expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
+            } else {
+                // Log financial override audit event
+                mockFinancialAuditLogs.push({
+                    id: 'faudit-ovr-' + Math.random().toString(36).substr(2, 9),
+                    admin_id: authUser.id,
+                    action: 'FINANCIAL_OVERRIDE_ACTIVATION',
+                    entity_type: 'products',
+                    entity_id: id,
+                    details: {
+                        reason: body.override_reason,
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall
+                    },
+                    ip_address: req.socket.remoteAddress || '127.0.0.1',
+                    created_at: new Date().toISOString()
                 });
-                return;
             }
         }
 
@@ -2011,6 +2069,165 @@ const server = http.createServer(async (req, res) => {
         sendJSON(res, 200, {
             success: true,
             simulation
+        });
+        return;
+    }
+
+    // POST /api/admin/products/stress-test (Admin only — Stress Test & Simulation Engine)
+    if (req.method === 'POST' && pathname === '/api/admin/products/stress-test') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const calculated = ProductEconomicsCalculator.calculate(body);
+        const validation = ProductCommissionValidator.validate(calculated);
+
+        sendJSON(res, 200, {
+            success: true,
+            revenue: calculated.calculated.selling_price,
+            total_costs: calculated.calculated.total_operating_cost,
+            profit_reserve: calculated.calculated.company_profit_reserve,
+            commission_pool: calculated.calculated.commission_pool,
+            direct_commission: calculated.calculated.direct_commission_amount,
+            maximum_binary_exposure: calculated.calculated.maximum_binary_exposure,
+            maximum_total_commission: calculated.calculated.maximum_total_commission_exposure,
+            safety_margin: calculated.calculated.commission_safety_margin,
+            commission_utilization: calculated.calculated.commission_pool_utilization,
+            financial_status: validation.financial_status,
+            safety_status: validation.safety_status,
+            stress_test_result: validation.stress_test_result,
+            is_viable: validation.is_viable,
+            calculated: calculated.calculated,
+            validation
+        });
+        return;
+    }
+
+    // GET /api/admin/settings/product-economics-defaults (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/settings/product-economics-defaults') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        sendJSON(res, 200, {
+            success: true,
+            defaults: mockEconomicsDefaults
+        });
+        return;
+    }
+
+    // POST /api/admin/settings/product-economics-defaults (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/settings/product-economics-defaults') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        mockEconomicsDefaults = {
+            ...mockEconomicsDefaults,
+            tax_percent: body.tax_percent !== undefined ? parseFloat(body.tax_percent) : mockEconomicsDefaults.tax_percent,
+            hosting_cost_fixed: body.hosting_cost_fixed !== undefined ? parseFloat(body.hosting_cost_fixed) : mockEconomicsDefaults.hosting_cost_fixed,
+            staff_cost_fixed: body.staff_cost_fixed !== undefined ? parseFloat(body.staff_cost_fixed) : mockEconomicsDefaults.staff_cost_fixed,
+            marketing_cost_fixed: body.marketing_cost_fixed !== undefined ? parseFloat(body.marketing_cost_fixed) : mockEconomicsDefaults.marketing_cost_fixed,
+            refund_reserve_percent: body.refund_reserve_percent !== undefined ? parseFloat(body.refund_reserve_percent) : mockEconomicsDefaults.refund_reserve_percent,
+            support_cost_fixed: body.support_cost_fixed !== undefined ? parseFloat(body.support_cost_fixed) : mockEconomicsDefaults.support_cost_fixed,
+            operational_cost_fixed: body.operational_cost_fixed !== undefined ? parseFloat(body.operational_cost_fixed) : mockEconomicsDefaults.operational_cost_fixed,
+            payment_processing_fixed: body.payment_processing_fixed !== undefined ? parseFloat(body.payment_processing_fixed) : mockEconomicsDefaults.payment_processing_fixed,
+            profit_reserve_percent: body.profit_reserve_percent !== undefined ? parseFloat(body.profit_reserve_percent) : mockEconomicsDefaults.profit_reserve_percent,
+            direct_commission_percent: body.direct_commission_percent !== undefined ? parseFloat(body.direct_commission_percent) : mockEconomicsDefaults.direct_commission_percent,
+            binary_commission_percent: body.binary_commission_percent !== undefined ? parseFloat(body.binary_commission_percent) : mockEconomicsDefaults.binary_commission_percent,
+            maximum_qualified_uplines: body.maximum_qualified_uplines !== undefined ? parseInt(body.maximum_qualified_uplines) : mockEconomicsDefaults.maximum_qualified_uplines,
+            updated_by: authUser.id,
+            updated_at: new Date().toISOString()
+        };
+
+        mockFinancialAuditLogs.push({
+            id: 'faudit-def-' + Math.random().toString(36).substr(2, 9),
+            admin_id: authUser.id,
+            action: 'ECONOMICS_DEFAULTS_UPDATED',
+            entity_type: 'settings',
+            entity_id: 'product-economics-defaults',
+            details: mockEconomicsDefaults,
+            ip_address: req.socket.remoteAddress || '127.0.0.1',
+            created_at: new Date().toISOString()
+        });
+
+        sendJSON(res, 200, {
+            success: true,
+            message: 'Product economics defaults updated successfully.',
+            defaults: mockEconomicsDefaults
+        });
+        return;
+    }
+
+    // GET /api/admin/reports/product-economics (Admin only — Section 32 Report)
+    if (req.method === 'GET' && pathname === '/api/admin/reports/product-economics') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const statusFilter = (urlObj.searchParams.get('status') || '').toLowerCase();
+
+        const reportRows = mockProducts.map(prod => {
+            const calc = ProductEconomicsCalculator.calculate(prod);
+            const val = ProductCommissionValidator.validate(calc);
+            const calculated = calc.calculated;
+
+            const isReviewRequired = Boolean(!prod.product_cost && !prod.tax_percent && !prod.minimum_company_profit);
+
+            return {
+                id: prod.id,
+                product: prod.name || prod.title,
+                code: prod.code,
+                selling_price: calculated.selling_price,
+                product_cost: calculated.product_cost,
+                company_costs: calculated.total_operating_cost,
+                profit_reserve: calculated.company_profit_reserve,
+                commission_pool: calculated.commission_pool,
+                direct_commission: calculated.direct_commission_amount,
+                max_binary_exposure: calculated.maximum_binary_exposure,
+                total_commission_exposure: calculated.maximum_total_commission_exposure,
+                safety_margin: calculated.commission_safety_margin,
+                utilization_percent: calculated.commission_pool_utilization,
+                status: val.financial_status,
+                financial_status: val.financial_status,
+                safety_status: val.safety_status,
+                product_status: prod.status || 'ACTIVE',
+                economics_review_required: isReviewRequired,
+                economics_version: prod.economics_version || 'v1.0'
+            };
+        });
+
+        let filteredRows = reportRows;
+        if (statusFilter === 'safe') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'SAFE');
+        } else if (statusFilter === 'warning') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'WARNING');
+        } else if (statusFilter === 'not_viable' || statusFilter === 'not-viable' || statusFilter === 'unsafe') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'NOT_VIABLE' || r.financial_status === 'BLOCKED');
+        } else if (statusFilter === 'review_required' || statusFilter === 'review-required') {
+            filteredRows = reportRows.filter(r => r.economics_review_required);
+        } else if (statusFilter === 'active') {
+            filteredRows = reportRows.filter(r => r.product_status === 'ACTIVE');
+        } else if (statusFilter === 'inactive') {
+            filteredRows = reportRows.filter(r => r.product_status === 'INACTIVE');
+        }
+
+        sendJSON(res, 200, {
+            success: true,
+            filter: statusFilter || 'all',
+            total_count: filteredRows.length,
+            products: filteredRows
         });
         return;
     }

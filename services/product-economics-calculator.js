@@ -55,50 +55,85 @@ const ProductEconomicsCalculator = {
 
         // 3. The 7 Business Cost Allocations & Reserves
         // A. Taxes
-        const taxCostCents = resolveCostCents(input.tax_percent, input.tax_fixed_amount || input.tax_amount, input.tax_reserve);
+        const taxCostCents = resolveCostCents(
+            input.tax_rate !== undefined ? input.tax_rate : input.tax_percent,
+            input.tax_amount !== undefined ? input.tax_amount : (input.tax_fixed_amount || input.tax_fixed),
+            input.tax_reserve
+        );
         
         // B. Hosting Cost
-        const hostingCostCents = resolveCostCents(input.hosting_cost_percent, input.hosting_cost_fixed || input.hosting_cost_per_sale, null);
+        const hostingCostCents = resolveCostCents(
+            input.hosting_cost_rate !== undefined ? input.hosting_cost_rate : input.hosting_cost_percent,
+            input.hosting_cost_amount !== undefined ? input.hosting_cost_amount : (input.hosting_cost_fixed || input.hosting_cost_per_sale),
+            null
+        );
         
         // C. Staff Cost
-        const staffCostCents = resolveCostCents(input.staff_cost_percent, input.staff_cost_fixed || input.staff_cost_per_sale, null);
+        const staffCostCents = resolveCostCents(
+            input.staff_cost_rate !== undefined ? input.staff_cost_rate : input.staff_cost_percent,
+            input.staff_cost_amount !== undefined ? input.staff_cost_amount : (input.staff_cost_fixed || input.staff_cost_per_sale),
+            null
+        );
         
         // D. Marketing Cost
-        const marketingCostCents = resolveCostCents(input.marketing_cost_percent, input.marketing_cost_fixed || input.marketing_cost_per_sale, input.other_reserve);
+        const marketingCostCents = resolveCostCents(
+            input.marketing_cost_rate !== undefined ? input.marketing_cost_rate : input.marketing_cost_percent,
+            input.marketing_cost_amount !== undefined ? input.marketing_cost_amount : (input.marketing_cost_fixed || input.marketing_cost_per_sale),
+            input.other_reserve
+        );
         
         // E. Refund Reserve (e.g. 5% = Rs. 1,375 on Rs. 27,500)
-        const refundReserveCents = resolveCostCents(input.refund_reserve_percent, input.refund_reserve_fixed || input.refund_reserve_amount, input.refund_risk_reserve);
+        const refundReserveCents = resolveCostCents(
+            input.refund_reserve_rate !== undefined ? input.refund_reserve_rate : input.refund_reserve_percent,
+            input.refund_reserve_amount !== undefined ? input.refund_reserve_amount : (input.refund_reserve_fixed || input.refund_reserve_per_sale),
+            input.refund_risk_reserve
+        );
         
         // F. Customer Support Cost
-        const supportCostCents = resolveCostCents(input.support_cost_percent, input.support_cost_fixed || input.support_cost_per_sale, null);
+        const supportCostCents = resolveCostCents(
+            input.support_cost_rate !== undefined ? input.support_cost_rate : input.support_cost_percent,
+            input.support_cost_amount !== undefined ? input.support_cost_amount : (input.support_cost_fixed || input.support_cost_per_sale),
+            null
+        );
         
-        // G. Operational Cost (payment processing, software, compliance, etc.)
-        const legacyOpTotal = ((parseFloat(input.operating_cost_reserve || 0)) + (parseFloat(input.payment_processing_reserve || 0)));
-        const operationalCostCents = resolveCostCents(input.operational_cost_percent, input.operational_cost_fixed || input.operational_cost_per_sale, legacyOpTotal > 0 ? legacyOpTotal : null);
+        // G. Operational Cost (software, compliance, administration, etc.)
+        const operationalCostCents = resolveCostCents(
+            input.operational_cost_rate !== undefined ? input.operational_cost_rate : input.operational_cost_percent,
+            input.operational_cost_amount !== undefined ? input.operational_cost_amount : (input.operational_cost_fixed || input.operational_cost_per_sale),
+            input.operating_cost_reserve
+        );
+
+        // H. Payment Processing Cost (gateway fees, CEFT/bank charges)
+        const paymentProcessingCostCents = resolveCostCents(
+            input.payment_processing_rate !== undefined ? input.payment_processing_rate : input.payment_processing_percent,
+            input.payment_processing_amount !== undefined ? input.payment_processing_amount : (input.payment_processing_fixed || input.payment_processing_per_sale),
+            input.payment_processing_reserve
+        );
 
         // Optional Safety Buffer
         const safetyBufferCents = Math.round((parseFloat(input.commission_safety_buffer || 0.00)) * 100);
 
-        // Total Operating & Reserve Cost
+        // Total Operating & Reserve Cost (All Company Cost Allocations)
         const totalOperatingCostCents = taxCostCents +
             hostingCostCents +
             staffCostCents +
             marketingCostCents +
             refundReserveCents +
             supportCostCents +
-            operationalCostCents;
+            operationalCostCents +
+            paymentProcessingCostCents;
 
         // 4. Available Contribution
         const availableContributionCents = grossContributionCents - totalOperatingCostCents;
 
         // 5. Company Profit Reserve
         let companyProfitReserveCents = 0;
-        if (input.profit_reserve_type === 'PERCENTAGE' || input.company_profit_reserve_percent > 0) {
-            const pct = parseFloat(input.company_profit_reserve_percent || input.profit_reserve_percent || 0);
+        if (input.profit_reserve_type === 'PERCENTAGE' || input.company_profit_reserve_percent > 0 || (input.profit_reserve_rate !== undefined && input.profit_reserve_rate > 0 && input.profit_reserve_type !== 'FIXED')) {
+            const pct = parseFloat(input.company_profit_reserve_percent || input.profit_reserve_percent || input.profit_reserve_rate || 0);
             const baseForProfit = (input.profit_reserve_base === 'SELLING_PRICE') ? sellingPriceCents : Math.max(0, availableContributionCents);
             companyProfitReserveCents = Math.round(baseForProfit * (pct / 100));
-        } else if (input.profit_reserve_fixed !== undefined || input.minimum_company_profit !== undefined || input.company_profit_reserve_amount !== undefined) {
-            const fixedAmt = parseFloat(input.profit_reserve_fixed !== undefined ? input.profit_reserve_fixed : (input.minimum_company_profit !== undefined ? input.minimum_company_profit : input.company_profit_reserve_amount));
+        } else if (input.profit_reserve_fixed !== undefined || input.minimum_company_profit !== undefined || input.company_profit_reserve_amount !== undefined || input.profit_reserve_amount !== undefined) {
+            const fixedAmt = parseFloat(input.profit_reserve_fixed !== undefined ? input.profit_reserve_fixed : (input.minimum_company_profit !== undefined ? input.minimum_company_profit : (input.company_profit_reserve_amount !== undefined ? input.company_profit_reserve_amount : input.profit_reserve_amount)));
             companyProfitReserveCents = Math.round((fixedAmt || 0) * 100);
         }
 
@@ -121,7 +156,7 @@ const ProductEconomicsCalculator = {
         const binaryCommissionPerRecipientCents = Math.round(binaryVolumeCents * (binaryCommissionRate / 100));
 
         // 9. Maximum 7 Qualified Levels Binary Liability
-        const maxBinaryQualifiedLevels = parseInt(input.max_binary_qualified_levels !== undefined ? input.max_binary_qualified_levels : 7);
+        const maxBinaryQualifiedLevels = parseInt(input.max_binary_qualified_levels !== undefined ? input.max_binary_qualified_levels : (input.maximum_qualified_uplines !== undefined ? input.maximum_qualified_uplines : 7));
         const maxBinaryLiabilityCents = binaryCommissionPerRecipientCents * maxBinaryQualifiedLevels;
 
         // 10. Total Maximum Commission Liability
@@ -141,19 +176,22 @@ const ProductEconomicsCalculator = {
             commissionUtilizationPercent = 999.99;
         }
 
+        let financialStatus = 'SAFE';
         let safetyStatus = 'SAFE';
         let safetyMessage = 'Product commission structure is economically safe.';
-        if (sellingPriceCents <= 0 || productCostCents > sellingPriceCents || availableContributionCents <= 0 || maxTotalCommissionLiabilityCents > commissionPoolCents) {
+        if (sellingPriceCents <= 0 || productCostCents > sellingPriceCents || availableContributionCents <= 0 || commissionPoolCents <= 0 || maxTotalCommissionLiabilityCents > commissionPoolCents) {
+            financialStatus = 'NOT_VIABLE';
             safetyStatus = 'UNSAFE';
             safetyMessage = shortfallCents > 0 
                 ? `Maximum commission liability exceeds safe commission pool by LKR ${(shortfallCents / 100).toFixed(2)}.` 
                 : 'Insufficient contribution margin to support operations and commissions.';
-        } else if (commissionUtilizationPercent > 80.00) {
+        } else if (commissionUtilizationPercent > 80.00 || remainingContributionCents < 50000) {
+            financialStatus = 'WARNING';
             safetyStatus = 'WARNING';
             safetyMessage = `Commission capacity is near limit (${commissionUtilizationPercent}% utilization).`;
         }
 
-        // 13. Profit Margins
+        // 13. Profit Margins & Profitability Percentages (Section 18)
         const grossMarginPercentage = sellingPriceCents > 0 
             ? Math.round((availableContributionCents / sellingPriceCents) * 10000) / 100 
             : 0.00;
@@ -166,7 +204,13 @@ const ProductEconomicsCalculator = {
             ? Math.round((maxTotalCommissionLiabilityCents / sellingPriceCents) * 10000) / 100 
             : 0.00;
 
-        // 14. Versioning
+        const calcPercentOfRevenue = (amtCents) => sellingPriceCents > 0 ? Math.round((amtCents / sellingPriceCents) * 10000) / 100 : 0.00;
+
+        // 14. Stress-Test Result Diagnostics (Section 17)
+        const companyProfitReserveProtected = (availableContributionCents >= companyProfitReserveCents);
+        const commissionFullyCovered = (maxTotalCommissionLiabilityCents <= commissionPoolCents);
+
+        // 15. Versioning
         const economicsVersion = input.economics_version || 'v1.0';
 
         return {
@@ -184,6 +228,7 @@ const ProductEconomicsCalculator = {
                 refund_reserve: refundReserveCents / 100,
                 support_cost: supportCostCents / 100,
                 operational_cost: operationalCostCents / 100,
+                payment_processing_cost: paymentProcessingCostCents / 100,
                 total_operating_cost: totalOperatingCostCents / 100,
 
                 // Contribution & Pool
@@ -199,15 +244,45 @@ const ProductEconomicsCalculator = {
                 binary_commission_rate: binaryCommissionRate,
                 binary_commission_per_recipient: binaryCommissionPerRecipientCents / 100,
                 max_binary_qualified_levels: maxBinaryQualifiedLevels,
+                maximum_qualified_uplines: maxBinaryQualifiedLevels,
                 max_binary_liability: maxBinaryLiabilityCents / 100,
+                maximum_binary_exposure: maxBinaryLiabilityCents / 100,
                 max_total_commission_liability: maxTotalCommissionLiabilityCents / 100,
+                maximum_total_commission_exposure: maxTotalCommissionLiabilityCents / 100,
 
                 // Safety & Margin
                 remaining_contribution: remainingContributionCents / 100,
+                commission_safety_margin: remainingContributionCents / 100,
                 shortfall: shortfallCents / 100,
+                potential_shortfall: shortfallCents / 100,
                 commission_utilization_percentage: commissionUtilizationPercent,
+                commission_pool_utilization: commissionUtilizationPercent,
+                financial_status: financialStatus,
                 safety_status: safetyStatus,
                 safety_message: safetyMessage,
+                is_viable: (financialStatus !== 'NOT_VIABLE'),
+                is_safe: (financialStatus === 'SAFE'),
+
+                // Profitability Percentages (Section 18)
+                product_cost_percent: calcPercentOfRevenue(productCostCents),
+                tax_percent: calcPercentOfRevenue(taxCostCents),
+                hosting_cost_percent: calcPercentOfRevenue(hostingCostCents),
+                staff_cost_percent: calcPercentOfRevenue(staffCostCents),
+                marketing_cost_percent: calcPercentOfRevenue(marketingCostCents),
+                refund_reserve_percent: calcPercentOfRevenue(refundReserveCents),
+                support_cost_percent: calcPercentOfRevenue(supportCostCents),
+                operational_cost_percent: calcPercentOfRevenue(operationalCostCents),
+                payment_processing_percent: calcPercentOfRevenue(paymentProcessingCostCents),
+                profit_reserve_percent: calcPercentOfRevenue(companyProfitReserveCents),
+                commission_exposure_percent: commissionLiabilityPercentage,
+                safety_margin_percent: calcPercentOfRevenue(remainingContributionCents),
+
+                // Stress-Test Result Diagnostics (Section 17)
+                stress_test_result: {
+                    company_profit_reserve_protected: companyProfitReserveProtected ? 'YES' : 'NO',
+                    commission_fully_covered: commissionFullyCovered ? 'YES' : 'NO',
+                    potential_shortfall: shortfallCents / 100
+                },
 
                 // Percentage Indicators
                 gross_margin_percentage: grossMarginPercentage,

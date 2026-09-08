@@ -64,6 +64,25 @@ CREATE TABLE settings (
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+-- Global Product Economics Defaults Table (Section 26)
+CREATE TABLE product_economics_defaults (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    tax_percent DECIMAL(5, 2) NOT NULL DEFAULT 5.00,
+    hosting_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 100.00,
+    staff_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 300.00,
+    marketing_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 400.00,
+    refund_reserve_percent DECIMAL(5, 2) NOT NULL DEFAULT 3.00,
+    support_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 100.00,
+    operational_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 150.00,
+    payment_processing_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    profit_reserve_percent DECIMAL(5, 2) NOT NULL DEFAULT 15.00,
+    direct_commission_percent DECIMAL(5, 2) NOT NULL DEFAULT 8.00,
+    binary_commission_percent DECIMAL(5, 2) NOT NULL DEFAULT 7.00,
+    maximum_qualified_uplines INTEGER NOT NULL DEFAULT 7,
+    updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 -- ========================================================
 -- 2. SPONSORS & BINARY NETWORK DOMAINS
 -- ========================================================

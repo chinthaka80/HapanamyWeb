@@ -56,6 +56,7 @@ require('./step38-final-product-purchase-center-e2e.test');
 require('./step39-enterprise-security-hardening.test');
 require('./step40-adsense-monetization.test');
 require('./step41-product-economics-engine.test');
+require('./step42-product-economics-validation-engine.test');
 
 // Run
 runTests();

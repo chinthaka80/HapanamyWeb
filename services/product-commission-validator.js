@@ -112,12 +112,17 @@ const ProductCommissionValidator = {
             : 0.00;
 
         const safetyStatus = status === 'BLOCKED' ? 'UNSAFE' : status;
+        const financialStatus = status === 'BLOCKED' ? 'NOT_VIABLE' : status;
+        const statusLabel = status === 'BLOCKED' ? 'NOT COMMISSION VIABLE' : (status === 'WARNING' ? 'WARNING' : 'SAFE');
 
         return {
             status, // 'SAFE' | 'WARNING' | 'BLOCKED'
+            financial_status: financialStatus, // 'SAFE' | 'WARNING' | 'NOT_VIABLE'
+            status_label: statusLabel,
             safety_status: safetyStatus, // 'SAFE' | 'WARNING' | 'UNSAFE'
             economics_status: safetyStatus,
             is_safe: allowed,
+            is_viable: allowed,
             is_unsafe: !allowed,
             allowed,
             blocked_reason: blockedReason,
@@ -127,6 +132,11 @@ const ProductCommissionValidator = {
             risk_reasons: riskReasons,
             reasons: riskReasons, // Backward compatibility alias
             economics: calculated,
+            stress_test_result: calculated.stress_test_result || {
+                company_profit_reserve_protected: (availableContribution >= companyProfitReserve) ? 'YES' : 'NO',
+                commission_fully_covered: (maxTotalExposure <= commissionPool) ? 'YES' : 'NO',
+                potential_shortfall: shortfall
+            },
             recommended_actions: recommendedActions,
             maximum_safe_binary_rate: maxSafeBinaryRate
         };
