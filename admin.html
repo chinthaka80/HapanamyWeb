@@ -31,6 +31,13 @@
             align-items: center;
             justify-content: center;
             z-index: 999999;
+            pointer-events: auto !important;
+            opacity: 1 !important;
+        }
+        .modal-overlay.open {
+            display: flex !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
         }
         .modal-box {
             background-color: var(--bg-surface);
@@ -43,6 +50,15 @@
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+            pointer-events: auto !important;
+            transform: none !important;
+            opacity: 1 !important;
+        }
+        .modal-box input,
+        .modal-box select,
+        .modal-box textarea,
+        .modal-box button {
+            pointer-events: auto !important;
         }
 
         /* Specific Admin layout */
@@ -1297,8 +1313,9 @@
                     <div>
                         <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">1. Product Details & Cost</h4>
                         
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <select id="crudProductCategory" required style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductCategory" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">කාණ්ඩය (Category)</label>
+                            <select id="crudProductCategory" required style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
                                 <option value="Trading Course">Trading Course</option>
                                 <option value="AI & Tech">AI & Tech</option>
                                 <option value="Social Media">Social Media</option>
@@ -1308,49 +1325,51 @@
                             </select>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input type="text" id="crudProductTitle" required placeholder=" ">
-                            <label for="crudProductTitle">නිෂ්පාදන නම (Course Title)</label>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductTitle" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පාඨමාලා නම (Course Title)</label>
+                            <input type="text" id="crudProductTitle" required placeholder="Enter course product title..." style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
 
-                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <input type="number" id="crudProductMarketPrice" oninput="recalcProductEconomicsFrontend()" value="10000" placeholder=" ">
-                                <label for="crudProductMarketPrice">Market Price (LKR)</label>
+                                <label for="crudProductMarketPrice" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Market Price (LKR)</label>
+                                <input type="number" id="crudProductMarketPrice" oninput="recalcProductEconomicsFrontend()" value="10000" placeholder="10000" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <select id="crudProductPricingMode" onchange="togglePricingFields(); recalcProductEconomicsFrontend();" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                <label for="crudProductPricingMode" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Pricing Mode</label>
+                                <select id="crudProductPricingMode" onchange="togglePricingFields(); recalcProductEconomicsFrontend();" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
                                     <option value="FIXED">FIXED</option>
                                     <option value="DISCOUNTED">DISCOUNTED</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div id="discountFieldsGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                        <div id="discountFieldsGroup" style="display: none; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
                             <div class="form-group" style="margin-bottom: 0;">
-                                <select id="crudProductDiscountType" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                <label for="crudProductDiscountType" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Discount Type</label>
+                                <select id="crudProductDiscountType" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
                                     <option value="NONE">NONE</option>
                                     <option value="FIXED">FIXED AMOUNT</option>
                                     <option value="PERCENTAGE">PERCENTAGE</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-bottom: 0;">
-                                <input type="number" id="crudProductDiscountValue" oninput="recalcProductEconomicsFrontend()" value="0" placeholder=" ">
-                                <label for="crudProductDiscountValue">Discount Value</label>
+                                <label for="crudProductDiscountValue" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Discount Value</label>
+                                <input type="number" id="crudProductDiscountValue" oninput="recalcProductEconomicsFrontend()" value="0" placeholder="0" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input type="number" id="crudProductPrice" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
-                            <label for="crudProductPrice">Final Selling Price (LKR)</label>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductPrice" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Final Selling Price (LKR)</label>
+                            <input type="number" id="crudProductPrice" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder="7450" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input type="number" id="crudProductCost" required oninput="recalcProductEconomicsFrontend()" value="1500" placeholder=" ">
-                            <label for="crudProductCost">නිෂ්පාදන පිරිවැය (Product Cost LKR)</label>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductCost" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">නිෂ්පාදන පිරිවැය (Product Cost LKR)</label>
+                            <input type="number" id="crudProductCost" required oninput="recalcProductEconomicsFrontend()" value="1500" placeholder="1500" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
 
-                        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                        <div style="background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px; margin-bottom:12px; font-size:12px; border:1px solid rgba(255,255,255,0.05);">
                             <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span>Gross Profit:</span>
                                 <strong id="previewGrossProfit">LKR 0.00</strong>
@@ -1361,14 +1380,14 @@
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom: 15px;">
-                            <input type="text" id="crudProductImg" required placeholder=" " value="assets/trading_banner.jpg">
-                            <label for="crudProductImg">පින්තූර ලිපිනය (Product Banner Image Path)</label>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductImg" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පින්තූර ලිපිනය (Banner Image Path)</label>
+                            <input type="text" id="crudProductImg" required placeholder="assets/trading_banner.jpg" value="assets/trading_banner.jpg" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
                         
-                        <div style="margin-bottom: 15px; text-align: left;">
-                            <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විස්තරය (Description)</label>
-                            <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 50px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                        <div class="form-group" style="margin-bottom: 12px;">
+                            <label for="crudProductDesc" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පාඨමාලා විස්තරය (Description)</label>
+                            <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 50px; padding: 8px 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical; box-sizing:border-box;"></textarea>
                         </div>
                     </div>
 
@@ -1379,45 +1398,45 @@
                             <button type="button" class="btn btn-secondary" onclick="autoScaleReserves()" style="padding: 2px 8px; font-size: 11px; cursor: pointer; color: var(--brand-gold); border-color: var(--brand-gold); border-width: 1px;" title="Scale reserves proportionally to selling price">⚡ Auto-Scale</button>
                         </div>
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductMinProfit" oninput="recalcProductEconomicsFrontend()" value="1000" placeholder=" ">
-                                <label for="crudProductMinProfit">Min Profit (LKR)</label>
+                                <label for="crudProductMinProfit" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Min Profit (LKR)</label>
+                                <input type="number" id="crudProductMinProfit" oninput="recalcProductEconomicsFrontend()" value="1000" placeholder="1000" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductOpReserve" oninput="recalcProductEconomicsFrontend()" value="300" placeholder=" ">
-                                <label for="crudProductOpReserve">Op Cost Reserve</label>
-                            </div>
-                        </div>
-
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
-                            <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductProcessingReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder=" ">
-                                <label for="crudProductProcessingReserve">Pay Processing Reserve</label>
-                            </div>
-                            <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductRefundReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder=" ">
-                                <label for="crudProductRefundReserve">Refund Risk Reserve</label>
+                                <label for="crudProductOpReserve" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Op Cost Reserve</label>
+                                <input type="number" id="crudProductOpReserve" oninput="recalcProductEconomicsFrontend()" value="300" placeholder="300" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductTaxReserve" oninput="recalcProductEconomicsFrontend()" value="200" placeholder=" ">
-                                <label for="crudProductTaxReserve">Tax Reserve</label>
+                                <label for="crudProductProcessingReserve" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Pay Processing</label>
+                                <input type="number" id="crudProductProcessingReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder="150" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductOtherReserve" oninput="recalcProductEconomicsFrontend()" value="100" placeholder=" ">
-                                <label for="crudProductOtherReserve">Other Reserve</label>
+                                <label for="crudProductRefundReserve" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Refund Reserve</label>
+                                <input type="number" id="crudProductRefundReserve" oninput="recalcProductEconomicsFrontend()" value="150" placeholder="150" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom:15px;">
-                            <input type="number" id="crudProductSafetyBuffer" oninput="recalcProductEconomicsFrontend()" value="300" placeholder=" ">
-                            <label for="crudProductSafetyBuffer">Commission Safety Buffer (LKR)</label>
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="crudProductTaxReserve" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Tax Reserve</label>
+                                <input type="number" id="crudProductTaxReserve" oninput="recalcProductEconomicsFrontend()" value="200" placeholder="200" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
+                            </div>
+                            <div class="form-group" style="margin-bottom:0;">
+                                <label for="crudProductOtherReserve" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Other Reserve</label>
+                                <input type="number" id="crudProductOtherReserve" oninput="recalcProductEconomicsFrontend()" value="100" placeholder="100" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
+                            </div>
                         </div>
 
-                        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label for="crudProductSafetyBuffer" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Commission Safety Buffer (LKR)</label>
+                            <input type="number" id="crudProductSafetyBuffer" oninput="recalcProductEconomicsFrontend()" value="300" placeholder="300" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
+                        </div>
+
+                        <div style="background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px; margin-bottom:12px; font-size:12px; border:1px solid rgba(255,255,255,0.05);">
                             <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
                                 <span>Protected Company Amount:</span>
                                 <strong id="previewProtectedAmount">LKR 0.00</strong>
@@ -1437,36 +1456,37 @@
                     <div>
                         <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">3. MLM settings</h4>
                         
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductDirectPercent" required oninput="recalcProductEconomicsFrontend()" value="8" step="0.1" placeholder=" ">
-                                <label for="crudProductDirectPercent">Direct Comm (%)</label>
+                                <label for="crudProductDirectPercent" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Direct Comm (%)</label>
+                                <input type="number" id="crudProductDirectPercent" required oninput="recalcProductEconomicsFrontend()" value="8" step="0.1" placeholder="8" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductBinaryVolume" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder=" ">
-                                <label for="crudProductBinaryVolume">Binary Volume (BV)</label>
+                                <label for="crudProductBinaryVolume" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Binary Volume (BV)</label>
+                                <input type="number" id="crudProductBinaryVolume" required oninput="recalcProductEconomicsFrontend()" value="7450" placeholder="7450" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                         </div>
 
-                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:15px;">
+                        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
-                                <input type="number" id="crudProductMaxLevels" required oninput="recalcProductEconomicsFrontend()" value="7" placeholder=" ">
-                                <label for="crudProductMaxLevels">Max Binary Tiers</label>
+                                <label for="crudProductMaxLevels" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Max Binary Tiers</label>
+                                <input type="number" id="crudProductMaxLevels" required oninput="recalcProductEconomicsFrontend()" value="7" placeholder="7" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                             </div>
                             <div class="form-group" style="margin-bottom:0;">
-                                <select id="crudProductCommissionMode" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:10px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px;">
+                                <label for="crudProductCommissionMode" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Mode</label>
+                                <select id="crudProductCommissionMode" onchange="recalcProductEconomicsFrontend()" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
                                     <option value="MANUAL">MANUAL</option>
                                     <option value="AUTO_SAFE">AUTO_SAFE</option>
                                 </select>
                             </div>
                         </div>
 
-                        <div class="form-group" style="margin-bottom:15px;">
-                            <input type="number" id="crudProductBinaryPercent" required oninput="recalcProductEconomicsFrontend()" value="3" step="0.1" placeholder=" ">
-                            <label for="crudProductBinaryPercent">Binary Commission (%)</label>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <label for="crudProductBinaryPercent" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Binary Commission (%)</label>
+                            <input type="number" id="crudProductBinaryPercent" required oninput="recalcProductEconomicsFrontend()" value="3" step="0.1" placeholder="3" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
 
-                        <div style="background:rgba(255,255,255,0.02); padding:10px; border-radius:8px; margin-bottom:15px; font-size:12px;">
+                        <div style="background:rgba(255,255,255,0.02); padding:8px 12px; border-radius:8px; margin-bottom:12px; font-size:12px; border:1px solid rgba(255,255,255,0.05);">
                             <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
                                 <span>Direct Comm Amount:</span>
                                 <strong id="previewDirectCommAmount">LKR 0.00</strong>
@@ -1486,13 +1506,13 @@
                         </div>
 
                         <!-- SAFETY CARD PREVIEW -->
-                        <div id="safetyCardBox" class="safety-card safe" style="padding:15px; border-radius:10px; margin-bottom:15px; border-left:5px solid; font-size:12px;">
+                        <div id="safetyCardBox" class="safety-card safe" style="padding:12px; border-radius:10px; margin-bottom:12px; border-left:5px solid; font-size:12px;">
                             <style>
                                 .safety-card.safe { background: rgba(185, 231, 105, 0.1); border-left-color: var(--brand-green-light); color: var(--brand-green-light); }
                                 .safety-card.warning { background: rgba(244, 123, 32, 0.1); border-left-color: var(--brand-orange); color: var(--brand-orange); }
                                 .safety-card.blocked { background: rgba(229, 62, 62, 0.1); border-left-color: var(--ph-red); color: var(--ph-red); }
                             </style>
-                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:8px;">
+                            <div style="display:flex; justify-content:space-between; font-weight:800; font-size:14px; margin-bottom:6px;">
                                 <span>ECONOMICS:</span>
                                 <span id="safetyCardStatus">SAFE</span>
                             </div>
@@ -1520,10 +1540,10 @@
                     </div>
                 </div>
 
-                <div style="margin-bottom: 20px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap:20px;">
+                <div style="margin-bottom: 15px; text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap:20px;">
                     <div>
-                        <label style="font-size: 11px; color: var(--text-muted); display: block; margin-bottom: 3px;">පාඨමාලා විෂය නිර්දේශය (Syllabus - line per topic)</label>
-                        <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 60px; padding: 8px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical;"></textarea>
+                        <label for="crudProductSyllabus" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පාඨමාලා විෂය නිර්දේශය (Syllabus - line per topic)</label>
+                        <textarea id="crudProductSyllabus" required placeholder="Topic 01&#10;Topic 02&#10;Topic 03" style="width: 100%; min-height: 60px; padding: 8px 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical; box-sizing:border-box;"></textarea>
                     </div>
                     <div style="display:flex; flex-direction:column; justify-content:flex-end;">
                         <div style="display:flex; justify-content:space-between; margin-bottom:10px; align-items:center; gap: 8px;">
@@ -1531,8 +1551,8 @@
                             <button type="button" class="btn btn-secondary" onclick="applyModalSafeBinaryRate()" style="padding: 4px 10px; font-size: 11px; cursor: pointer; color: var(--brand-green-light); border-color: var(--brand-green-light); border-width: 1px;">⚡ Apply Safe Rate</button>
                         </div>
                         <div style="display: flex; gap: 10px;">
-                            <button type="submit" id="saveProductSubmitBtn" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight:700;">Save Product</button>
-                            <button type="button" class="btn btn-secondary" style="padding: 12px; cursor: pointer; border-width:1px;" onclick="closeProductModal()">Cancel</button>
+                            <button type="submit" id="saveProductSubmitBtn" class="btn btn-primary" style="flex-grow: 1; border: none; padding: 12px; cursor: pointer; font-weight:700; border-radius:8px;">Save Product</button>
+                            <button type="button" class="btn btn-secondary" style="padding: 12px 20px; cursor: pointer; border-width:1px; border-radius:8px;" onclick="closeProductModal()">Cancel</button>
                         </div>
                     </div>
                 </div>
@@ -2204,9 +2224,11 @@
                     console.error('productCrudModal element not found!');
                     return;
                 }
+                modal.classList.add('open');
                 modal.style.display = 'flex';
                 modal.style.visibility = 'visible';
                 modal.style.opacity = '1';
+                modal.style.pointerEvents = 'auto';
                 
                 const setVal = (id, val) => {
                     const el = document.getElementById(id);
@@ -2289,7 +2311,12 @@
 
         function closeProductModal() {
             const modal = document.getElementById('productCrudModal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+                modal.style.visibility = 'hidden';
+                modal.style.pointerEvents = 'none';
+            }
         }
 
         // Close modal on click outside box or escape key
