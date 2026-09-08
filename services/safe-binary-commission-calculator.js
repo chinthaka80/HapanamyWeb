@@ -15,8 +15,8 @@ const SafeBinaryCommissionRateCalculator = {
 
         const effectiveBudget = calculated.effective_commission_budget;
         const directCommAmount = calculated.direct_commission_amount;
-        const binaryVolume = input.binary_volume || 0;
-        const maxLevels = parseInt(input.max_binary_qualified_levels || 7);
+        const binaryVolume = calculated.binary_volume || input.binary_volume || calculated.selling_price || 0;
+        const maxLevels = parseInt(calculated.max_binary_qualified_levels || input.max_binary_qualified_levels || 7);
 
         const remainingBinaryBudget = effectiveBudget - directCommAmount;
         if (remainingBinaryBudget <= 0 || binaryVolume <= 0 || maxLevels <= 0) {

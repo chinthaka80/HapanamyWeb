@@ -272,11 +272,13 @@ const ProductService = {
 
         const totalPotentialCommissionExposure = calc.calculated.max_total_commission_exposure;
         const allowedProfitMargin = calc.calculated.gross_profit;
-        const isSafe = val.status === 'ALLOW' && totalPotentialCommissionExposure <= allowedProfitMargin;
+        const isSafe = val.allowed && totalPotentialCommissionExposure <= (calc.calculated.commission_pool + calc.calculated.direct_commission_amount);
 
         return {
             status: val.status,
-            is_safe: isSafe,
+            safety_status: val.safety_status,
+            is_safe: val.allowed,
+            allowed: val.allowed,
             selling_price: calc.calculated.selling_price,
             product_cost: calc.source.product_cost || 0,
             gross_profit: allowedProfitMargin,
@@ -286,7 +288,12 @@ const ProductService = {
             total_binary_exposure: calc.calculated.max_binary_commission_exposure,
             total_possible_commission_exposure: totalPotentialCommissionExposure,
             company_net_margin_protected: calc.calculated.remaining_company_margin,
-            errors: val.reasons || []
+            shortfall: val.shortfall,
+            maximum_safe_binary_rate: val.maximum_safe_binary_rate,
+            warnings: val.warnings || [],
+            errors: val.risk_reasons || [],
+            calculated: calc.calculated,
+            validation: val
         };
     },
 

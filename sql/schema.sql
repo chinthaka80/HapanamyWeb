@@ -111,6 +111,31 @@ CREATE TABLE products (
     discount_type VARCHAR(50) NOT NULL DEFAULT 'NONE' CHECK (discount_type IN ('FIXED', 'PERCENTAGE', 'NONE')),
     discount_value DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (discount_value >= 0.00),
     product_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (product_cost >= 0.00),
+    
+    -- 7 Discrete Cost Allocations (Percentage or Fixed)
+    tax_type VARCHAR(20) NOT NULL DEFAULT 'PERCENTAGE' CHECK (tax_type IN ('PERCENTAGE', 'FIXED')),
+    tax_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (tax_percent >= 0.00),
+    tax_fixed_amount DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (tax_fixed_amount >= 0.00),
+    hosting_cost_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (hosting_cost_percent >= 0.00),
+    hosting_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (hosting_cost_fixed >= 0.00),
+    staff_cost_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (staff_cost_percent >= 0.00),
+    staff_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (staff_cost_fixed >= 0.00),
+    marketing_cost_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (marketing_cost_percent >= 0.00),
+    marketing_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (marketing_cost_fixed >= 0.00),
+    refund_reserve_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (refund_reserve_percent >= 0.00),
+    refund_reserve_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (refund_reserve_fixed >= 0.00),
+    support_cost_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (support_cost_percent >= 0.00),
+    support_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (support_cost_fixed >= 0.00),
+    operational_cost_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (operational_cost_percent >= 0.00),
+    operational_cost_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (operational_cost_fixed >= 0.00),
+
+    -- Company Profit Reserve
+    profit_reserve_type VARCHAR(20) NOT NULL DEFAULT 'FIXED' CHECK (profit_reserve_type IN ('PERCENTAGE', 'FIXED')),
+    profit_reserve_percent DECIMAL(5, 2) NOT NULL DEFAULT 0.00 CHECK (profit_reserve_percent >= 0.00),
+    profit_reserve_fixed DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (profit_reserve_fixed >= 0.00),
+    profit_reserve_base VARCHAR(30) NOT NULL DEFAULT 'AVAILABLE_CONTRIBUTION' CHECK (profit_reserve_base IN ('AVAILABLE_CONTRIBUTION', 'SELLING_PRICE')),
+
+    -- Legacy Reserves Compatibility Aliases
     minimum_company_profit DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (minimum_company_profit >= 0.00),
     operating_cost_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (operating_cost_reserve >= 0.00),
     payment_processing_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (payment_processing_reserve >= 0.00),
@@ -118,18 +143,34 @@ CREATE TABLE products (
     tax_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (tax_reserve >= 0.00),
     other_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (other_reserve >= 0.00),
     commission_safety_buffer DECIMAL(15, 2) NOT NULL DEFAULT 0.00 CHECK (commission_safety_buffer >= 0.00),
+    
+    -- Multilevel Commission Configuration
     binary_volume DECIMAL(15, 2) NOT NULL CHECK (binary_volume >= 0.00),
     direct_commission_percent DECIMAL(5, 2) NOT NULL CHECK (direct_commission_percent BETWEEN 0.00 AND 100.00), -- Represents direct_commission_rate in percentage
     binary_commission_percent DECIMAL(5, 2) NOT NULL CHECK (binary_commission_percent BETWEEN 0.00 AND 100.00), -- Represents binary_commission_rate in percentage
     max_binary_qualified_levels INTEGER NOT NULL DEFAULT 7 CHECK (max_binary_qualified_levels >= 0),
     commission_mode VARCHAR(50) NOT NULL DEFAULT 'MANUAL' CHECK (commission_mode IN ('MANUAL', 'AUTO_SAFE')),
-    economics_status VARCHAR(50) NOT NULL DEFAULT 'DRAFT' CHECK (economics_status IN ('DRAFT', 'SAFE', 'WARNING', 'BLOCKED')),
+    
+    -- Economics Versioning & Status
+    economics_version VARCHAR(20) NOT NULL DEFAULT 'v1.0',
+    economics_status VARCHAR(50) NOT NULL DEFAULT 'DRAFT' CHECK (economics_status IN ('DRAFT', 'SAFE', 'WARNING', 'UNSAFE', 'BLOCKED')),
     validation_status VARCHAR(50) NOT NULL DEFAULT 'PENDING' CHECK (validation_status IN ('PENDING', 'VALIDATED', 'FAILED')),
     blocked_reason TEXT,
     image_url VARCHAR(512),
     course_url VARCHAR(512),
     status VARCHAR(50) NOT NULL DEFAULT 'ACTIVE' CHECK (status IN ('ACTIVE', 'INACTIVE')),
     deleted_at TIMESTAMPTZ, -- Soft delete support
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Product Economics Versions Table (Audit & History Tracking)
+CREATE TABLE product_economics_versions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    version_label VARCHAR(20) NOT NULL, -- e.g. 'v1.0', 'v1.1'
+    configuration JSONB NOT NULL,
+    calculated_economics JSONB NOT NULL,
+    created_by UUID REFERENCES users(id) ON DELETE SET NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
@@ -158,25 +199,46 @@ CREATE TABLE payment_deposits (
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Product Economics Snapshots Table (Immutable Historical Record for Commission Integrity)
+-- Product Economics Snapshots Table (Immutable 25-Field Historical Record for Commission Integrity)
 CREATE TABLE product_economics_snapshots (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     purchase_id UUID UNIQUE NOT NULL REFERENCES product_purchases(id) ON DELETE RESTRICT,
     product_id UUID NOT NULL REFERENCES products(id) ON DELETE RESTRICT,
     product_name VARCHAR(255) NOT NULL,
+    selling_price DECIMAL(15, 2) NOT NULL,
+    product_cost DECIMAL(15, 2) NOT NULL,
+    tax_amount DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    hosting_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    staff_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    marketing_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    refund_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    support_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    operational_cost DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    available_contribution DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    company_profit_reserve DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+    commission_pool DECIMAL(15, 2) NOT NULL,
+    direct_commission_rate DECIMAL(5, 2) NOT NULL,
+    direct_commission_amount DECIMAL(15, 2) NOT NULL,
+    binary_commission_rate DECIMAL(5, 2) NOT NULL,
+    binary_matched_volume DECIMAL(15, 2) NOT NULL,
+    binary_commission_per_level DECIMAL(15, 2) NOT NULL,
+    qualified_levels_paid INTEGER NOT NULL DEFAULT 7,
+    maximum_binary_liability DECIMAL(15, 2) NOT NULL,
+    actual_binary_commission_paid DECIMAL(15, 2) NOT NULL,
+    remaining_contribution DECIMAL(15, 2) NOT NULL,
+    economics_version VARCHAR(20) NOT NULL DEFAULT 'v1.0',
+    calculation_timestamp TIMESTAMPTZ NOT NULL,
+    
+    -- Legacy compatibility aliases
     market_price DECIMAL(15, 2) NOT NULL,
     discount_type VARCHAR(50) NOT NULL,
     discount_value DECIMAL(15, 2) NOT NULL,
-    selling_price DECIMAL(15, 2) NOT NULL,
-    product_cost DECIMAL(15, 2) NOT NULL,
     gross_profit DECIMAL(15, 2) NOT NULL,
     protected_company_amount DECIMAL(15, 2) NOT NULL,
     net_commission_budget DECIMAL(15, 2) NOT NULL,
     effective_commission_budget DECIMAL(15, 2) NOT NULL,
     commission_safety_buffer DECIMAL(15, 2) NOT NULL,
     binary_volume DECIMAL(15, 2) NOT NULL,
-    direct_commission_rate DECIMAL(5, 2) NOT NULL,
-    binary_commission_rate DECIMAL(5, 2) NOT NULL,
     max_binary_qualified_levels INTEGER NOT NULL,
     commission_mode VARCHAR(50) NOT NULL,
     economics_status VARCHAR(50) NOT NULL,
@@ -297,6 +359,18 @@ CREATE TABLE audit_logs (
     entity_id UUID,
     old_values JSONB,
     new_values JSONB,
+    ip_address VARCHAR(50),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+-- Dedicated Financial & Economics Audit Logs Table
+CREATE TABLE financial_audit_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    admin_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    action VARCHAR(100) NOT NULL, -- e.g. 'PRODUCT_ECONOMICS_EDIT', 'COMMISSION_PAYOUT'
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id VARCHAR(100),
+    details JSONB NOT NULL,
     ip_address VARCHAR(50),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
