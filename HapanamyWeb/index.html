@@ -115,13 +115,10 @@
     <!-- Top Info Bar -->
     <div class="top-bar">
         <div class="container top-bar-content">
-            <div class="top-bar-left">
-                <span>🔥 15% සෘජු Affiliate කොමිස් මුදලක් (Direct Commission) | සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</span>
-            </div>
-            <div class="top-bar-right">
-                <a href="mailto:info@hapanamy.lk">info@hapanamy.lk</a>
+            <div class="top-promo-text">
+                <span class="promo-highlight">🔥 15% Direct Affiliate Commission</span>
                 <span class="bar-separator">|</span>
-                <a href="tel:+94726090050">+94 72 609 0050</a>
+                <span>Connect • Learn • Grow • Earn</span>
             </div>
         </div>
     </div>
@@ -129,11 +126,11 @@
     <!-- Header & Navigation -->
     <header class="header">
         <div class="container header-container">
-            <a href="#" class="logo" ondblclick="window.location.href='login.html?access=admin'" title="Hapanamy Portal">
+            <a href="index.html" class="logo" title="Hapanamy.lk">
                 <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
                 <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
-                    <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan">Connect • Learn • Grow • Earn</span>
                 </div>
             </a>
             
@@ -141,21 +138,19 @@
                 <a href="#home" class="nav-link active" data-translate="nav_home">Home</a>
                 <a href="#courses" class="nav-link" data-translate="nav_courses">Courses</a>
                 <a href="#affiliate" class="nav-link" data-translate="nav_affiliate">Affiliate</a>
-                <a href="dashboard.html" class="nav-link" id="navDashboardLink" style="color: var(--brand-gold); font-weight: 700;">Dashboard</a>
                 <a href="#calculator" class="nav-link" data-translate="nav_calculator">Earnings Calculator</a>
                 <a href="#testimonials" class="nav-link" data-translate="nav_testimonials">Testimonials</a>
                 <a href="blog.html" target="_blank" class="nav-link">Blog</a>
-                <a href="#contact" class="nav-link" data-translate="nav_contact">Contact</a>
+                <a href="#contact" class="nav-link" data-translate="nav_contact">Contact Us</a>
                 <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
-                    <a href="login.html" style="padding: 10px; border-radius: 10px; border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-weight: 700; text-align: center; background: rgba(255,255,255,0.05);">🔐 LOGIN</a>
-                    <a href="register.html" style="padding: 10px; border-radius: 10px; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: white; text-decoration: none; font-weight: 800; text-align: center;">🚀 REGISTER FREE (Rs. 0)</a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;">🚀 REGISTER FREE</a>
                 </div>
             </nav>
 
             <div class="header-actions">
                 <!-- Language Switcher Toggle -->
-                <button class="lang-toggle" id="langToggleBtn" aria-label="Toggle Language" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
-                    EN
+                <button class="lang-toggle" id="langToggleBtn" aria-label="Toggle Language">
+                    SIN
                 </button>
                 <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
                     <!-- Moon Icon (Dark Mode default representation) -->
@@ -163,10 +158,7 @@
                     <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                 </button>
                 <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
-                    <a href="login.html" class="cta-btn" id="headerLoginBtn" style="text-decoration:none; padding:8px 16px; border-radius:20px; font-weight:700; font-size:13px; border:1px solid var(--border-color); color:var(--text-primary); display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.05);">
-                        <span>🔐 LOGIN</span>
-                    </a>
-                    <a href="register.html" class="cta-btn" id="headerRegisterBtn" style="text-decoration:none; padding:8px 18px; border-radius:20px; font-weight:800; font-size:13px; background:linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color:white; display:inline-flex; align-items:center; gap:5px; box-shadow:0 4px 15px rgba(244,123,32,0.35);">
+                    <a href="register.html" class="header-register-btn" id="headerRegisterBtn">
                         <span>🚀 REGISTER FREE</span>
                     </a>
                 </div>

@@ -3333,10 +3333,10 @@ function syncNavAuthState() {
             const dashLink = isAdmin ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
 
             authBtnContainer.innerHTML = `
-                <a href="${dashLink}" class="cta-btn" style="text-decoration:none; padding:8px 18px; border-radius:20px; font-weight:800; font-size:13px; background:linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color:white; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 15px rgba(244,123,32,0.35);">
+                <a href="${dashLink}" class="header-register-btn">
                     <span>👤 My Dashboard</span>
                 </a>
-                <button onclick="handleGlobalLogout()" class="cta-btn" style="background:rgba(239,68,68,0.1); border:1px solid rgba(239,68,68,0.3); color:#ff7675; padding:7px 14px; border-radius:20px; font-size:12.5px; font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:5px;">
+                <button onclick="handleGlobalLogout()" class="header-register-btn" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; box-shadow:none; cursor:pointer;">
                     <span>🚪 Logout</span>
                 </button>
             `;

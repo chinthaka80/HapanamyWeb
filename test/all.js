@@ -60,6 +60,7 @@ require('./step42-product-economics-validation-engine.test');
 require('./step43-auth-security-audit.test');
 require('./step44-mlm-network-engine.test');
 require('./step46-sales-team-ui-verification.test');
+require('./step47-header-cleanup-verification.test');
 
 // Run
 runTests();
