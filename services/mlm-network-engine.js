@@ -316,7 +316,7 @@ const MLMNetworkEngine = {
 
             // 6. Direct Commission Calculation
             const sponsorLink = sponsors.find(s => s.user_id === buyerId);
-            const sponsorId = sponsorLink ? sponsorLink.sponsor_id : null;
+            const sponsorId = sponsorLink ? sponsorLink.sponsor_id : (buyer ? buyer.sponsor_id : null);
 
             if (sponsorId) {
                 const directCommIdempotencyKey = `comm-direct-${orderId}-${sponsorId}`;
@@ -522,8 +522,23 @@ const MLMNetworkEngine = {
     /**
      * Phase 23: Dashboard Queries
      */
-    getMemberNetwork(userId, context = {}) {
-        const { binaryNodes = [], users = [], purchases = [], volumeLedger = [], sponsors = [] } = context;
+    getMemberNetwork(userId, context = {}, maybeNodes = []) {
+        let users = [];
+        let binaryNodes = [];
+        let purchases = [];
+        let volumeLedger = [];
+        let sponsors = [];
+        if (Array.isArray(context)) {
+            users = context;
+            binaryNodes = Array.isArray(maybeNodes) ? maybeNodes : [];
+        } else {
+            users = context.users || [];
+            binaryNodes = context.binaryNodes || [];
+            purchases = context.purchases || [];
+            volumeLedger = context.volumeLedger || [];
+            sponsors = context.sponsors || [];
+        }
+
         const tree = PlacementEngine.buildTreeHierarchy(userId, binaryNodes, users, purchases, volumeLedger, 4);
         const directs = PlacementEngine.getDirectReferrals(userId, sponsors, users, purchases, binaryNodes);
         const volumeSummary = VolumeLedger.getVolumeSummary(userId, volumeLedger);
@@ -536,8 +551,8 @@ const MLMNetworkEngine = {
         };
     },
 
-    getMemberCommissions(userId, context = {}) {
-        const { commissionLedger = [] } = context;
+    getMemberCommissions(userId, context = []) {
+        const commissionLedger = Array.isArray(context) ? context : (context.commissionLedger || []);
         const userComms = commissionLedger.filter(c => c.user_id === userId || c.beneficiary_member_id === userId);
         return {
             user_id: userId,
@@ -546,19 +561,29 @@ const MLMNetworkEngine = {
         };
     },
 
-    getMemberWallet(userId, context = {}) {
-        const { walletLedger = [] } = context;
+    getMemberWallet(userId, context = []) {
+        const walletLedger = Array.isArray(context) ? context : (context.walletLedger || []);
         const balances = WalletService.getWalletBalances(userId, walletLedger);
         const transactions = walletLedger.filter(tx => tx.user_id === userId);
         return {
             user_id: userId,
+            available_balance: balances.available_balance,
             balances,
             recent_transactions: transactions.slice(-20)
         };
     },
 
-    getMemberEarningsSummary(userId, context = {}) {
-        const { commissionLedger = [], walletLedger = [] } = context;
+    getMemberEarningsSummary(userId, context = {}, maybeWallet = []) {
+        let commissionLedger = [];
+        let walletLedger = [];
+        if (Array.isArray(context)) {
+            commissionLedger = context;
+            walletLedger = Array.isArray(maybeWallet) ? maybeWallet : [];
+        } else {
+            commissionLedger = context.commissionLedger || [];
+            walletLedger = context.walletLedger || [];
+        }
+
         const userComms = commissionLedger.filter(c => (c.user_id === userId || c.beneficiary_member_id === userId) && c.status === 'APPROVED');
         
         let directEarned = 0;

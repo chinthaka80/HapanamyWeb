@@ -734,8 +734,8 @@ const server = http.createServer(async (req, res) => {
     // AUTHENTICATION & REGISTRATION API ROUTER (PHASE 3)
     // ========================================================
 
-    // POST /api/auth/register (STEP 15)
-    if (req.method === 'POST' && pathname === '/api/auth/register') {
+    // POST /api/auth/register and /api/register (STEP 15)
+    if (req.method === 'POST' && (pathname === '/api/auth/register' || pathname === '/api/register')) {
         const body = await parseRequestBody(req);
 
         const result = AuthService.registerMember(body, {
@@ -760,8 +760,8 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // POST /api/auth/login (STEP 31 Rate Limiting & Lockout Protected)
-    if (req.method === 'POST' && pathname === '/api/auth/login') {
+    // POST /api/auth/login and /api/login (STEP 31 Rate Limiting & Lockout Protected)
+    if (req.method === 'POST' && (pathname === '/api/auth/login' || pathname === '/api/login')) {
         const body = await parseRequestBody(req);
         const identifier = body.identifier || body.email;
         const password = body.password;
@@ -3523,6 +3523,96 @@ const server = http.createServer(async (req, res) => {
                 walletLedger: mockWalletLedger
             });
             sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/dashboard (Unified Member Dashboard API)
+    if (req.method === 'GET' && pathname === '/api/member/dashboard') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const user = mockUsers.find(u => u.id === authUser.id) || authUser;
+            const wallet = MLMNetworkEngine.getMemberWallet(authUser.id, { walletLedger: mockWalletLedger });
+            const earnings = MLMNetworkEngine.getMemberEarningsSummary(authUser.id, {
+                commissionLedger: mockCommissionTransactions,
+                walletLedger: mockWalletLedger
+            });
+            const network = MLMNetworkEngine.getMemberNetwork(authUser.id, {
+                binaryNodes: mockBinaryNodes,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors
+            });
+            const kyc = mockKycDocs.find(k => k.user_id === authUser.id);
+            const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id || p.buyer_id === authUser.id);
+            const userWithdrawals = mockWithdrawalRequests.filter(w => w.user_id === authUser.id);
+
+            const volSummary = VolumeLedger.getVolumeSummary(authUser.id, mockVolumeLedger);
+
+            const host = req.headers.host || 'hapanamy.lk';
+            const protocol = req.headers['x-forwarded-proto'] || 'https';
+            const baseOrigin = `${protocol}://${host}`;
+            const refCode = user.referral_code || user.username || 'Hiru';
+
+            const dashboardPayload = {
+                success: true,
+                profile: {
+                    id: user.id,
+                    full_name: user.full_name || user.name || 'Member',
+                    username: user.username || 'member',
+                    email: user.email,
+                    role: user.role || 'member',
+                    account_status: user.status || 'ACTIVE',
+                    qualification_status: user.qualification_status || 'QUALIFIED',
+                    kyc_status: kyc ? kyc.status : 'PENDING'
+                },
+                earnings: {
+                    today_earnings: 0.00,
+                    month_earnings: earnings.total_earned,
+                    total_earned: earnings.total_earned,
+                    available_balance: wallet.available_balance,
+                    pending_balance: earnings.pending_balance,
+                    total_withdrawn: earnings.paid_balance,
+                    withdrawal_hold_balance: earnings.withdrawal_hold_balance
+                },
+                binary_network: {
+                    left_team_count: network.tree && network.tree.left ? 1 : 0,
+                    right_team_count: network.tree && network.tree.right ? 1 : 0,
+                    left_volume_lifetime: volSummary.lifetime_left_volume,
+                    right_volume_lifetime: volSummary.lifetime_right_volume,
+                    left_volume_current: volSummary.current_left_volume,
+                    right_volume_current: volSummary.current_right_volume,
+                    weaker_leg: volSummary.weaker_leg,
+                    tree: network.tree
+                },
+                referral_tools: {
+                    left_link: `${baseOrigin}/register?ref=${encodeURIComponent(refCode)}&position=left`,
+                    right_link: `${baseOrigin}/register?ref=${encodeURIComponent(refCode)}&position=right`,
+                    general_link: `${baseOrigin}/register?ref=${encodeURIComponent(refCode)}`
+                },
+                financial_activity: {
+                    recent_transactions: wallet.recent_transactions,
+                    withdrawal_history: userWithdrawals
+                },
+                direct_referrals: {
+                    count: network.direct_referrals ? network.direct_referrals.length : 0,
+                    list: network.direct_referrals || []
+                },
+                products: {
+                    count: userPurchases.length,
+                    list: userPurchases
+                }
+            };
+
+            sendJSON(res, 200, dashboardPayload);
         } catch (err) {
             sendJSON(res, 500, { error: err.message });
         }
