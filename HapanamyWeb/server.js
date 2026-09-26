@@ -15,6 +15,7 @@ const ProductEconomicsCalculator = require('./services/product-economics-calcula
 const ProductCommissionValidator = require('./services/product-commission-validator');
 const SafeBinaryCommissionRateCalculator = require('./services/safe-binary-commission-calculator');
 const ProductSnapshotService = require('./services/product-snapshot-service');
+const ProductEconomicsService = require('./services/product-economics-service');
 const ReferralService = require('./services/referral-service');
 const QualificationEngine = require('./services/qualification-engine');
 const MemberDashboardService = require('./services/member-dashboard-service');
@@ -35,7 +36,8 @@ const MIME_TYPES = {
     '.png': 'image/png',
     '.gif': 'image/gif',
     '.svg': 'image/svg+xml',
-    '.json': 'application/json'
+    '.json': 'application/json',
+    '.txt': 'text/plain'
 };
 
 // Simulated Database Sessions (Token store)
@@ -53,34 +55,436 @@ const mockBankAccounts = [
     { user_id: 'sponsor-uuid-1', bank_name: 'Commercial Bank', branch: 'Maharagama', account_number: '8010294851', account_holder_name: 'Kasun Tharaka' }
 ];
 const mockAuditLogs = [];
+const mockEconomicsVersions = [];
+const mockFinancialAuditLogs = [];
+const mockEconomicsSnapshots = [];
+let mockEconomicsDefaults = {
+    tax_percent: 5.00,
+    hosting_cost_fixed: 100.00,
+    staff_cost_fixed: 300.00,
+    marketing_cost_fixed: 400.00,
+    refund_reserve_percent: 3.00,
+    support_cost_fixed: 100.00,
+    operational_cost_fixed: 150.00,
+    payment_processing_fixed: 0.00,
+    profit_reserve_percent: 15.00,
+    direct_commission_percent: 8.00,
+    binary_commission_percent: 7.00,
+    maximum_qualified_uplines: 7,
+    updated_at: new Date().toISOString()
+};
+
+const mockCompanyBankDetails = [
+    {
+        id: 'bank-hnb-1',
+        bank_name: 'Hatton National Bank (HNB)',
+        account_name: 'HAPANAMY ENTERPRISES (PVT) LTD',
+        account_number: '081020048921',
+        branch: 'Maharagama',
+        currency: 'LKR',
+        is_primary: true
+    },
+    {
+        id: 'bank-com-2',
+        bank_name: 'Commercial Bank of Ceylon',
+        account_name: 'HAPANAMY ENTERPRISES (PVT) LTD',
+        account_number: '1000849201',
+        branch: 'Nugegoda',
+        currency: 'LKR',
+        is_primary: false
+    }
+];
 
 const mockProducts = [
     {
-        id: 'prod-fb-mon',
-        name: 'Facebook Monetisation Course',
+        id: 'facebook-course',
         code: 'FB-MON',
-        description: 'Learn to monetize Facebook Pages smartly.',
+        name: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
         category: 'Social Media',
-        price: 7450.00,
-        binary_volume: 7450.00,
+        original_price: 9900.00,
+        discount_price: 7425.00,
+        price: 7425.00,
+        selling_price: 7425.00,
+        product_cost: 1500.00,
+        binary_volume: 7425.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
-        image_url: 'assets/fb-mon.jpg',
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/facebook_course_banner.jpg',
         course_url: 'https://hapanamy.lk/courses/fb-mon',
+        duration: '4 Weeks (8 Live Zoom Sessions)',
+        access_type: 'Lifetime Access + Recording Archive',
+        description: 'Facebook Pages monetization, Reels bonus program, in-stream ads, and copyright-safe viral growth strategies.',
+        benefits: [
+            'Facebook In-Stream Ads & Stars Setup',
+            'Viral Reel Editing & Content Automation',
+            'Copyright Safety & Policy Compliance',
+            'Live Q&A Support with Top Instructors'
+        ],
+        modules_count: 8,
         status: 'ACTIVE'
     },
     {
-        id: 'prod-social-master',
-        name: 'Social Media Income Masterclass',
-        code: 'SOC-MASTER',
-        description: 'Complete digital agency & high-income skills blueprint.',
-        category: 'Income Masterclass',
-        price: 27500.00,
-        binary_volume: 27500.00,
+        id: 'tiktok-course',
+        code: 'TIK-MON',
+        name: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        category: 'Social Media',
+        original_price: 5000.00,
+        discount_price: 4500.00,
+        price: 4500.00,
+        selling_price: 4500.00,
+        product_cost: 900.00,
+        binary_volume: 4500.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
-        image_url: 'assets/social_media_banner.jpg',
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/tiktok_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/tiktok-mon',
+        duration: '2 Weeks (4 Live Zoom Sessions)',
+        access_type: 'Lifetime Access',
+        description: 'TikTok Creativity Program Beta, TikTok Shop Affiliate, and organic viral scaling framework.',
+        benefits: [
+            'TikTok US/UK Account Creation & Verification',
+            'Creativity Program Beta Payout Strategies',
+            'Affiliate Product Sourcing & High-Converting Videos'
+        ],
+        modules_count: 5,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'youtube-course',
+        code: 'YT-MON',
+        name: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+        category: 'Social Media',
+        original_price: 9900.00,
+        discount_price: 7425.00,
+        price: 7425.00,
+        selling_price: 7425.00,
+        product_cost: 1500.00,
+        binary_volume: 7425.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/youtube_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/youtube-mon',
+        duration: '4 Weeks (8 Live Zoom Sessions)',
+        access_type: 'Lifetime Access + Niche Blueprints',
+        description: 'Faceless YouTube automation, SEO ranking, high RPM niches, and AdSense approval acceleration.',
+        benefits: [
+            'High RPM Niche Selection Guide',
+            'AI Scripting & Voiceover Automation',
+            'Fast 4,000 Watch Hours & 1,000 Subs Growth'
+        ],
+        modules_count: 8,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'social-media-masterclass',
+        code: 'SOC-MASTER',
+        name: '🚀 Social Media Income Masterclass 2026',
+        title: '🚀 Social Media Income Masterclass 2026',
+        category: 'Social Media',
+        original_price: 19990.00,
+        discount_price: 15992.00,
+        price: 15992.00,
+        selling_price: 15992.00,
+        product_cost: 2500.00,
+        binary_volume: 15992.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/social_media_masterclass_banner.jpg',
         course_url: 'https://hapanamy.lk/courses/soc-master',
+        duration: '6 Weeks Masterclass',
+        access_type: 'VIP Lifetime Access + Agency Kit',
+        description: 'Complete digital marketing agency, personal branding, and multi-channel monetization masterclass.',
+        benefits: [
+            'All-in-one FB, TikTok, IG, and YouTube Mastery',
+            'High-ticket client acquisition scripts',
+            'Official Masterclass Completion Certificate'
+        ],
+        modules_count: 14,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'forex-course',
+        code: 'FX-BEG',
+        name: '🟢 Beginner – Forex Trading Course (Online Zoom)',
+        title: '🟢 Beginner – Forex Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/forex_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/forex-beg',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access + MT4/MT5 Setup',
+        description: 'From candlestick basics to risk management and profitable trading psychology.',
+        benefits: [
+            'Live Market Analysis & Execution',
+            'Proper Lot Sizing & Risk Calculator',
+            'VIP Trading Signal Group Access (1 Month)'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'crypto-course',
+        code: 'CRYPTO-BEG',
+        name: '🟠 Beginner – Crypto Trading Course (Online Zoom)',
+        title: '🟠 Beginner – Crypto Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/crypto_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/crypto-beg',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access + Spot/Futures Guides',
+        description: 'Binance, Bybit spot & futures trading, wallet security, and on-chain analysis.',
+        benefits: [
+            'Exchange Setup & P2P Deposit/Withdrawal Guide',
+            'Futures Leverage Risk Mitigation',
+            'Altcoin Gem Research Blueprint'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'options-course',
+        code: 'OPT-INT',
+        name: '🔵 Intermediate – Options Trading Course (Online Zoom)',
+        title: '🔵 Intermediate – Options Trading Course (Online Zoom)',
+        category: 'Trading',
+        original_price: 9900.00,
+        discount_price: 7920.00,
+        price: 7920.00,
+        selling_price: 7920.00,
+        product_cost: 1500.00,
+        binary_volume: 7920.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/options_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/options-int',
+        duration: '3 Weeks (6 Sessions)',
+        access_type: 'Lifetime Access',
+        description: 'Call/Put options strategies, implied volatility, spreads, and hedging techniques.',
+        benefits: [
+            'Options Greeks Decoded (Delta, Theta, Gamma)',
+            'Defined-Risk Spreads Strategy',
+            'Deribit & US Options Practice Setup'
+        ],
+        modules_count: 6,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'titan-elite',
+        code: 'SMC-ADV',
+        name: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)',
+        title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)',
+        category: 'Trading',
+        original_price: 24900.00,
+        discount_price: 19900.00,
+        price: 19900.00,
+        selling_price: 19900.00,
+        product_cost: 3000.00,
+        binary_volume: 19900.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/advanced_trading_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/smc-adv',
+        duration: '8 Weeks Intensive',
+        access_type: 'Lifetime Access + Prop Firm Strategy',
+        description: 'Smart Money Concepts, Order Blocks, Liquidity Sweeps, Fair Value Gaps, and Prop Firm Passing system.',
+        benefits: [
+            'Institutional Order Flow & FVG Identification',
+            'Prop Firm Funded Account Blueprint ($50k - $200k)',
+            'Weekly Live Market Breakdown Webinars'
+        ],
+        modules_count: 16,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-video-course',
+        code: 'AI-VID',
+        name: '🎬 AI Video Generation Masterclass 2026',
+        title: '🎬 AI Video Generation Masterclass 2026',
+        category: 'AI & Tech',
+        original_price: 6500.00,
+        discount_price: 5200.00,
+        price: 5200.00,
+        selling_price: 5200.00,
+        product_cost: 1000.00,
+        binary_volume: 5200.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_video_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/ai-video',
+        duration: '2 Weeks (4 Sessions)',
+        access_type: 'Lifetime Access + Tool Prompts',
+        description: 'Runway Gen-3, Midjourney, Kling, ElevenLabs voice cloning, and AI film creation.',
+        benefits: [
+            'Cinematic Prompt Engineering for Video',
+            'Hyper-Realistic AI Avatars & Voice Syncing',
+            'Commercial Video Production for Clients'
+        ],
+        modules_count: 5,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-mastery-course',
+        code: 'AI-MAST',
+        name: '🤖 AI Mastery Program 2026',
+        title: '🤖 AI Mastery Program 2026',
+        category: 'AI & Tech',
+        original_price: 18750.00,
+        discount_price: 15000.00,
+        price: 15000.00,
+        selling_price: 15000.00,
+        product_cost: 2500.00,
+        binary_volume: 15000.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_mastery_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/ai-mastery',
+        duration: '6 Weeks Comprehensive',
+        access_type: 'VIP Lifetime Access + AI Toolkit',
+        description: 'Advanced ChatGPT prompting, custom GPTs, AI agent workflows, and productivity automation.',
+        benefits: [
+            'Building Custom AI Agents & Workflows',
+            'Automating Business Operations with AI',
+            'Certificate in Applied Artificial Intelligence'
+        ],
+        modules_count: 12,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'coding-course',
+        code: 'CODE-WEB',
+        name: '💻 Coding & Web Development Masterclass 2026',
+        title: '💻 Coding & Web Development Masterclass 2026',
+        category: 'AI & Tech',
+        original_price: 9000.00,
+        discount_price: 7200.00,
+        price: 7200.00,
+        selling_price: 7200.00,
+        product_cost: 1500.00,
+        binary_volume: 7200.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/coding_course_banner.jpg',
+        course_url: 'https://hapanamy.lk/courses/coding-web',
+        duration: '4 Weeks (8 Sessions)',
+        access_type: 'Lifetime Access + Source Codes',
+        description: 'HTML5, CSS3, JavaScript, modern responsive website design, and web app deployment.',
+        benefits: [
+            'Building 3 Real-World Portfolio Websites',
+            'Hosting, Domains & SSL Configuration',
+            'Freelance Web Development Client Starter Kit'
+        ],
+        modules_count: 8,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'trading-ebook',
+        code: 'EB-TRD',
+        name: '📘 Trading A to Z – Master E-Book 2026',
+        title: '📘 Trading A to Z – Master E-Book 2026',
+        category: 'E-Book',
+        original_price: 4990.00,
+        discount_price: 3992.00,
+        price: 3992.00,
+        selling_price: 3992.00,
+        product_cost: 500.00,
+        binary_volume: 3992.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ebooks_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/trading-ebook',
+        duration: 'Digital E-Book (PDF Instant Download)',
+        access_type: 'Instant Digital PDF Download',
+        description: 'Comprehensive 180+ page color trading guide with chart patterns, indicators, and cheat sheets.',
+        benefits: [
+            'Printable High-Resolution Chart Pattern Cheatsheets',
+            'Risk Management Rules Reference',
+            'Free Lifetime Updates as Market Evolves'
+        ],
+        modules_count: 1,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'motivation-ebook',
+        code: 'EB-MOT',
+        name: '📖 Motivation & Self-Development Master E-Book 2026',
+        title: '📖 Motivation & Self-Development Master E-Book 2026',
+        category: 'E-Book',
+        original_price: 6990.00,
+        discount_price: 5592.00,
+        price: 5592.00,
+        selling_price: 5592.00,
+        product_cost: 500.00,
+        binary_volume: 5592.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/motivation_ebook_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/motivation-ebook',
+        duration: 'Digital E-Book (PDF Instant Download)',
+        access_type: 'Instant Digital PDF Download',
+        description: 'Mindset mastery, financial discipline, habit transformation, and high-performance habits.',
+        benefits: [
+            'Daily Habit Tracker Printable Worksheets',
+            'Goal Setting Framework & Action Planner'
+        ],
+        modules_count: 1,
+        status: 'ACTIVE'
+    },
+    {
+        id: 'ai-prompts-ebook',
+        code: 'EB-PRM',
+        name: '📘 AI Prompts & Templates Ultimate Collection 2026',
+        title: '📘 AI Prompts & Templates Ultimate Collection 2026',
+        category: 'E-Book',
+        original_price: 2500.00,
+        discount_price: 2000.00,
+        price: 2000.00,
+        selling_price: 2000.00,
+        product_cost: 300.00,
+        binary_volume: 2000.00,
+        direct_commission_percent: 8.00,
+        binary_commission_percent: 7.00,
+        max_binary_qualified_levels: 7,
+        image_url: 'assets/ai_prompts_ebook_banner.jpg',
+        course_url: 'https://hapanamy.lk/downloads/ai-prompts',
+        duration: 'Digital E-Book + Copy-Paste Notion Template',
+        access_type: 'Instant Digital Download',
+        description: 'Over 1,000+ battle-tested AI prompts for copywriting, coding, trading analysis, and image design.',
+        benefits: [
+            'Categorized Notion Database with Copy-Paste Prompts',
+            'Regularly Updated with New AI Models'
+        ],
+        modules_count: 1,
         status: 'ACTIVE'
     }
 ];
@@ -88,11 +492,11 @@ const mockProducts = [
 const mockProductSnapshots = [
     {
         id: 'snap-soc-1',
-        product_id: 'prod-social-master',
-        product_name: 'Social Media Income Masterclass',
-        selling_price: 27500.00,
+        product_id: 'social-media-masterclass',
+        product_name: 'Social Media Income Masterclass 2026',
+        selling_price: 15992.00,
         product_cost: 2500.00,
-        binary_volume: 27500.00,
+        binary_volume: 15992.00,
         direct_commission_percent: 8.00,
         binary_commission_percent: 7.00,
         max_binary_qualified_levels: 7,
@@ -113,7 +517,6 @@ const mockUsers = [
         status: 'ACTIVE', 
         referral_code: 'Hiru',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        password: 'Hapana20260808',
         created_at: '2026-09-01T00:00:00Z' 
     },
     { 
@@ -125,7 +528,6 @@ const mockUsers = [
         status: 'ACTIVE', 
         referral_code: 'NAMOBUDDHAYA',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        password: 'Hapana20260808',
         created_at: '2026-09-01T00:00:00Z' 
     }
 ];
@@ -170,13 +572,26 @@ const mockReferralClicks = [];
 const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
 
-function parseRequestBody(req) {
+function parseRequestBody(req, maxSizeBytes = 10 * 1024 * 1024) {
     return new Promise((resolve) => {
         let body = '';
-        req.on('data', chunk => { body += chunk.toString(); });
+        let tooLarge = false;
+        req.on('data', chunk => { 
+            body += chunk.toString(); 
+            if (body.length > maxSizeBytes) {
+                tooLarge = true;
+                req.destroy();
+                resolve({});
+            }
+        });
         req.on('end', () => {
+            if (tooLarge) {
+                resolve({});
+                return;
+            }
             try {
-                resolve(body ? JSON.parse(body) : {});
+                const parsed = body ? JSON.parse(body) : {};
+                resolve(SecurityCore.sanitizeObject(parsed));
             } catch (e) {
                 resolve({});
             }
@@ -184,8 +599,13 @@ function parseRequestBody(req) {
     });
 }
 
-function sendJSON(res, status, data) {
-    res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
+function sendJSON(res, status, data, extraHeaders = {}) {
+    const securityHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
+    res.writeHead(status, {
+        'Content-Type': 'application/json; charset=utf-8',
+        ...securityHeaders,
+        ...extraHeaders
+    });
     res.end(JSON.stringify(data));
 }
 
@@ -213,11 +633,20 @@ const server = http.createServer(async (req, res) => {
     const url = new URL(req.url, `http://${req.headers.host}`);
     const pathname = url.pathname;
 
-    // Enforce Rate Limiter on all incoming requests (API Abuse, Brute force prevention)
+    // 1. Enforce Rate Limiter on all incoming requests (API Abuse, Brute force prevention)
     const clientIp = req.socket.remoteAddress || '127.0.0.1';
-    if (SecurityCore.isRateLimited(clientIp, 150)) { // Set threshold slightly higher for dev
+    if (SecurityCore.isRateLimited(clientIp, 150)) {
         sendJSON(res, 429, { error: 'Too many requests. Please try again later.' });
         return;
+    }
+
+    // 2. CSRF Origin / Referer Validation for Mutating Requests
+    if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(req.method)) {
+        const isCsrfSafe = SecurityCore.validateCsrfOrigin(req, req.headers.host);
+        if (!isCsrfSafe) {
+            sendJSON(res, 403, { error: 'Cross-Site Request Forgery (CSRF) validation failed.' });
+            return;
+        }
     }
 
     // GET /api/health (System Health & Readiness Inspection)
@@ -1107,7 +1536,16 @@ const server = http.createServer(async (req, res) => {
             productCost, minimumCompanyProfit, operatingCostReserve, paymentProcessingReserve,
             refundRiskReserve, taxReserve, otherReserve, commissionSafetyBuffer,
             binaryVolume, directCommissionRate, binaryCommissionRate, maxBinaryQualifiedLevels,
-            commissionMode, status
+            commissionMode, status,
+            taxType, taxPercent, taxFixedAmount,
+            hostingCostPercent, hostingCostFixed,
+            staffCostPercent, staffCostFixed,
+            marketingCostPercent, marketingCostFixed,
+            refundReservePercent, refundReserveFixed,
+            supportCostPercent, supportCostFixed,
+            operationalCostPercent, operationalCostFixed,
+            profitReserveType, profitReservePercent, profitReserveFixed, profitReserveBase,
+            economicsVersion
         } = body;
 
         if (!name || !code) {
@@ -1115,14 +1553,45 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        // Set defaults to preserve backward compatibility for simple payloads
+        // Set complete pricing & discrete economics configuration
         const pricing = {
             pricing_mode: pricingMode || 'FIXED',
-            market_price: parseFloat(marketPrice || price || 0.00),
+            market_price: parseFloat(marketPrice !== undefined ? marketPrice : (price || 0.00)),
             discount_type: discountType || 'NONE',
             discount_value: parseFloat(discountValue || 0.00),
-            selling_price: parseFloat(price || 0.00),
+            selling_price: parseFloat(price !== undefined ? price : (marketPrice || 0.00)),
             product_cost: parseFloat(productCost || 0.00),
+            
+            // 7 Discrete Cost Allocations
+            tax_type: taxType || 'PERCENTAGE',
+            tax_percent: parseFloat(taxPercent !== undefined ? taxPercent : 0.00),
+            tax_fixed_amount: parseFloat(taxFixedAmount !== undefined ? taxFixedAmount : (taxReserve || 0.00)),
+            
+            hosting_cost_percent: parseFloat(hostingCostPercent !== undefined ? hostingCostPercent : 0.00),
+            hosting_cost_fixed: parseFloat(hostingCostFixed !== undefined ? hostingCostFixed : 0.00),
+            
+            staff_cost_percent: parseFloat(staffCostPercent !== undefined ? staffCostPercent : 0.00),
+            staff_cost_fixed: parseFloat(staffCostFixed !== undefined ? staffCostFixed : 0.00),
+            
+            marketing_cost_percent: parseFloat(marketingCostPercent !== undefined ? marketingCostPercent : 0.00),
+            marketing_cost_fixed: parseFloat(marketingCostFixed !== undefined ? marketingCostFixed : (otherReserve || 0.00)),
+            
+            refund_reserve_percent: parseFloat(refundReservePercent !== undefined ? refundReservePercent : 0.00),
+            refund_reserve_fixed: parseFloat(refundReserveFixed !== undefined ? refundReserveFixed : (refundRiskReserve || 0.00)),
+            
+            support_cost_percent: parseFloat(supportCostPercent !== undefined ? supportCostPercent : 0.00),
+            support_cost_fixed: parseFloat(supportCostFixed !== undefined ? supportCostFixed : 0.00),
+            
+            operational_cost_percent: parseFloat(operationalCostPercent !== undefined ? operationalCostPercent : 0.00),
+            operational_cost_fixed: parseFloat(operationalCostFixed !== undefined ? operationalCostFixed : 0.00),
+            
+            // Profit Reserve
+            profit_reserve_type: profitReserveType || (minimumCompanyProfit !== undefined ? 'FIXED' : 'PERCENTAGE'),
+            profit_reserve_percent: parseFloat(profitReservePercent !== undefined ? profitReservePercent : 0.00),
+            profit_reserve_fixed: parseFloat(profitReserveFixed !== undefined ? profitReserveFixed : (minimumCompanyProfit || 0.00)),
+            profit_reserve_base: profitReserveBase || 'AVAILABLE_CONTRIBUTION',
+
+            // Legacy Reserves Compatibility Aliases
             minimum_company_profit: parseFloat(minimumCompanyProfit || 0.00),
             operating_cost_reserve: parseFloat(operatingCostReserve || 0.00),
             payment_processing_reserve: parseFloat(paymentProcessingReserve || 0.00),
@@ -1130,11 +1599,14 @@ const server = http.createServer(async (req, res) => {
             tax_reserve: parseFloat(taxReserve || 0.00),
             other_reserve: parseFloat(otherReserve || 0.00),
             commission_safety_buffer: parseFloat(commissionSafetyBuffer || 0.00),
-            binary_volume: parseFloat(binaryVolume || 0.00),
+            
+            // Commissions
+            binary_volume: parseFloat(binaryVolume !== undefined ? binaryVolume : (price || 0.00)),
             direct_commission_rate: parseFloat(directCommissionRate || body.directCommission || 8.00),
             binary_commission_rate: parseFloat(binaryCommissionRate || body.binaryCommission || 7.00),
             max_binary_qualified_levels: parseInt(maxBinaryQualifiedLevels || 7),
-            commission_mode: commissionMode || 'MANUAL'
+            commission_mode: commissionMode || 'MANUAL',
+            economics_version: economicsVersion || 'v1.0'
         };
 
         // Determine maximum safe binary rate
@@ -1152,33 +1624,59 @@ const server = http.createServer(async (req, res) => {
         const targetStatus = status || 'ACTIVE';
         if (targetStatus === 'ACTIVE') {
             // 1. Check basic economics block conditions first
-            if (validation.status === 'BLOCKED') {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    blocked_reason: validation.blocked_reason,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    requested_binary_rate: pricing.binary_commission_rate
-                });
-                return;
-            }
+            const isOverridden = Boolean(body.admin_override && body.override_reason);
+            if (!isOverridden) {
+                if (validation.status === 'BLOCKED' || !validation.allowed) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        requested_binary_rate: pricing.binary_commission_rate,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
 
-            // 2. Check manual commission limits second
-            if (pricing.commission_mode === 'MANUAL' && pricing.binary_commission_rate > maxSafeRate) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    blocked_reason: `Manual binary commission rate ${pricing.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
-                    requested_binary_rate: pricing.binary_commission_rate,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    difference: Math.round((pricing.binary_commission_rate - maxSafeRate) * 100) / 100,
-                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin
+                // 2. Check manual commission limits second
+                if (pricing.commission_mode === 'MANUAL' && pricing.binary_commission_rate > maxSafeRate) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: `Manual binary commission rate ${pricing.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                        requested_binary_rate: pricing.binary_commission_rate,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        difference: Math.round((pricing.binary_commission_rate - maxSafeRate) * 100) / 100,
+                        expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
+            } else {
+                // Log financial override audit event
+                mockFinancialAuditLogs.push({
+                    id: 'faudit-ovr-' + Math.random().toString(36).substr(2, 9),
+                    admin_id: authUser.id,
+                    action: 'FINANCIAL_OVERRIDE_ACTIVATION',
+                    entity_type: 'products',
+                    entity_id: 'pending',
+                    details: {
+                        reason: body.override_reason,
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall
+                    },
+                    ip_address: req.socket.remoteAddress || '127.0.0.1',
+                    created_at: new Date().toISOString()
                 });
-                return;
             }
         }
 
@@ -1188,6 +1686,7 @@ const server = http.createServer(async (req, res) => {
             name: SecurityCore.sanitizeInput(name),
             code: SecurityCore.sanitizeInput(code),
             price: econCalc.calculated.selling_price,
+            selling_price: econCalc.calculated.selling_price,
             binary_volume: pricing.binary_volume,
             direct_commission_percent: pricing.direct_commission_rate,
             binary_commission_percent: pricing.binary_commission_rate,
@@ -1196,6 +1695,30 @@ const server = http.createServer(async (req, res) => {
             discount_type: pricing.discount_type,
             discount_value: pricing.discount_value,
             product_cost: pricing.product_cost,
+            
+            // 7 Costs
+            tax_type: pricing.tax_type,
+            tax_percent: pricing.tax_percent,
+            tax_fixed_amount: pricing.tax_fixed_amount,
+            hosting_cost_percent: pricing.hosting_cost_percent,
+            hosting_cost_fixed: pricing.hosting_cost_fixed,
+            staff_cost_percent: pricing.staff_cost_percent,
+            staff_cost_fixed: pricing.staff_cost_fixed,
+            marketing_cost_percent: pricing.marketing_cost_percent,
+            marketing_cost_fixed: pricing.marketing_cost_fixed,
+            refund_reserve_percent: pricing.refund_reserve_percent,
+            refund_reserve_fixed: pricing.refund_reserve_fixed,
+            support_cost_percent: pricing.support_cost_percent,
+            support_cost_fixed: pricing.support_cost_fixed,
+            operational_cost_percent: pricing.operational_cost_percent,
+            operational_cost_fixed: pricing.operational_cost_fixed,
+            
+            // Profit reserve
+            profit_reserve_type: pricing.profit_reserve_type,
+            profit_reserve_percent: pricing.profit_reserve_percent,
+            profit_reserve_fixed: pricing.profit_reserve_fixed,
+            profit_reserve_base: pricing.profit_reserve_base,
+
             minimum_company_profit: pricing.minimum_company_profit,
             operating_cost_reserve: pricing.operating_cost_reserve,
             payment_processing_reserve: pricing.payment_processing_reserve,
@@ -1205,16 +1728,44 @@ const server = http.createServer(async (req, res) => {
             commission_safety_buffer: pricing.commission_safety_buffer,
             max_binary_qualified_levels: pricing.max_binary_qualified_levels,
             commission_mode: pricing.commission_mode,
+            
+            economics_version: pricing.economics_version,
             economics_status: validation.status,
-            validation_status: validation.status === 'BLOCKED' ? 'FAILED' : 'VALIDATED',
+            validation_status: (validation.status === 'BLOCKED' || !validation.allowed) ? 'FAILED' : 'VALIDATED',
             blocked_reason: validation.blocked_reason,
-            status: targetStatus
+            calculated_economics: econCalc.calculated,
+            status: targetStatus,
+            created_at: new Date().toISOString()
         };
 
         mockProducts.push(product);
+
+        // Store initial economics version
+        mockEconomicsVersions.push({
+            id: 'ver-' + Math.random().toString(36).substr(2, 9),
+            product_id: prodId,
+            version_label: pricing.economics_version,
+            configuration: pricing,
+            calculated_economics: econCalc.calculated,
+            created_by: authUser.id,
+            created_at: new Date().toISOString()
+        });
+
+        // Audit Logging
+        const auditLogEntry = {
+            id: 'faudit-' + Math.random().toString(36).substr(2, 9),
+            admin_id: authUser.id,
+            action: 'PRODUCT_CREATED',
+            entity_type: 'products',
+            entity_id: prodId,
+            details: { name: product.name, code: product.code, price: product.price, economics_version: product.economics_version },
+            ip_address: req.socket.remoteAddress || '127.0.0.1',
+            created_at: new Date().toISOString()
+        };
+        mockFinancialAuditLogs.push(auditLogEntry);
         KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_CREATED', 'products', prodId, null, product);
 
-        sendJSON(res, 201, { success: true, product });
+        sendJSON(res, 201, { success: true, product, calculated: econCalc.calculated, validation });
         return;
     }
 
@@ -1242,6 +1793,14 @@ const server = http.createServer(async (req, res) => {
 
         const currentProduct = mockProducts[prodIdx];
 
+        // Determine next economics version
+        let nextVersion = body.economicsVersion;
+        if (!nextVersion) {
+            const currentVer = currentProduct.economics_version || 'v1.0';
+            const verNum = parseFloat(currentVer.replace('v', '')) || 1.0;
+            nextVersion = `v${(verNum + 0.1).toFixed(1)}`;
+        }
+
         // Merge existing values with incoming updates
         const merged = {
             pricing_mode: body.pricingMode || currentProduct.pricing_mode || 'FIXED',
@@ -1250,6 +1809,36 @@ const server = http.createServer(async (req, res) => {
             discount_value: parseFloat(body.discountValue !== undefined ? body.discountValue : (currentProduct.discount_value || 0.00)),
             selling_price: parseFloat(body.price !== undefined ? body.price : (currentProduct.price || 0.00)),
             product_cost: parseFloat(body.productCost !== undefined ? body.productCost : (currentProduct.product_cost || 0.00)),
+            
+            // 7 Costs
+            tax_type: body.taxType || currentProduct.tax_type || 'PERCENTAGE',
+            tax_percent: parseFloat(body.taxPercent !== undefined ? body.taxPercent : (currentProduct.tax_percent || 0.00)),
+            tax_fixed_amount: parseFloat(body.taxFixedAmount !== undefined ? body.taxFixedAmount : (currentProduct.tax_fixed_amount || currentProduct.tax_reserve || 0.00)),
+            
+            hosting_cost_percent: parseFloat(body.hostingCostPercent !== undefined ? body.hostingCostPercent : (currentProduct.hosting_cost_percent || 0.00)),
+            hosting_cost_fixed: parseFloat(body.hostingCostFixed !== undefined ? body.hostingCostFixed : (currentProduct.hosting_cost_fixed || 0.00)),
+            
+            staff_cost_percent: parseFloat(body.staffCostPercent !== undefined ? body.staffCostPercent : (currentProduct.staff_cost_percent || 0.00)),
+            staff_cost_fixed: parseFloat(body.staffCostFixed !== undefined ? body.staffCostFixed : (currentProduct.staff_cost_fixed || 0.00)),
+            
+            marketing_cost_percent: parseFloat(body.marketingCostPercent !== undefined ? body.marketingCostPercent : (currentProduct.marketing_cost_percent || 0.00)),
+            marketing_cost_fixed: parseFloat(body.marketingCostFixed !== undefined ? body.marketingCostFixed : (currentProduct.marketing_cost_fixed || currentProduct.other_reserve || 0.00)),
+            
+            refund_reserve_percent: parseFloat(body.refundReservePercent !== undefined ? body.refundReservePercent : (currentProduct.refund_reserve_percent || 0.00)),
+            refund_reserve_fixed: parseFloat(body.refundReserveFixed !== undefined ? body.refundReserveFixed : (currentProduct.refund_reserve_fixed || currentProduct.refund_risk_reserve || 0.00)),
+            
+            support_cost_percent: parseFloat(body.supportCostPercent !== undefined ? body.supportCostPercent : (currentProduct.support_cost_percent || 0.00)),
+            support_cost_fixed: parseFloat(body.supportCostFixed !== undefined ? body.supportCostFixed : (currentProduct.support_cost_fixed || 0.00)),
+            
+            operational_cost_percent: parseFloat(body.operationalCostPercent !== undefined ? body.operationalCostPercent : (currentProduct.operational_cost_percent || 0.00)),
+            operational_cost_fixed: parseFloat(body.operationalCostFixed !== undefined ? body.operationalCostFixed : (currentProduct.operational_cost_fixed || 0.00)),
+            
+            // Profit Reserve
+            profit_reserve_type: body.profitReserveType || currentProduct.profit_reserve_type || (currentProduct.minimum_company_profit ? 'FIXED' : 'PERCENTAGE'),
+            profit_reserve_percent: parseFloat(body.profitReservePercent !== undefined ? body.profitReservePercent : (currentProduct.profit_reserve_percent || 0.00)),
+            profit_reserve_fixed: parseFloat(body.profitReserveFixed !== undefined ? body.profitReserveFixed : (currentProduct.profit_reserve_fixed !== undefined ? currentProduct.profit_reserve_fixed : (currentProduct.minimum_company_profit || 0.00))),
+            profit_reserve_base: body.profitReserveBase || currentProduct.profit_reserve_base || 'AVAILABLE_CONTRIBUTION',
+
             minimum_company_profit: parseFloat(body.minimumCompanyProfit !== undefined ? body.minimumCompanyProfit : (currentProduct.minimum_company_profit || 0.00)),
             operating_cost_reserve: parseFloat(body.operatingCostReserve !== undefined ? body.operatingCostReserve : (currentProduct.operating_cost_reserve || 0.00)),
             payment_processing_reserve: parseFloat(body.paymentProcessingReserve !== undefined ? body.paymentProcessingReserve : (currentProduct.payment_processing_reserve || 0.00)),
@@ -1261,7 +1850,8 @@ const server = http.createServer(async (req, res) => {
             direct_commission_rate: parseFloat(body.directCommissionRate !== undefined ? body.directCommissionRate : (currentProduct.direct_commission_percent || 8.00)),
             binary_commission_rate: parseFloat(body.binaryCommissionRate !== undefined ? body.binaryCommissionRate : (currentProduct.binary_commission_percent || 7.00)),
             max_binary_qualified_levels: parseInt(body.maxBinaryQualifiedLevels !== undefined ? body.maxBinaryQualifiedLevels : (currentProduct.max_binary_qualified_levels || 7)),
-            commission_mode: body.commissionMode || currentProduct.commission_mode || 'MANUAL'
+            commission_mode: body.commissionMode || currentProduct.commission_mode || 'MANUAL',
+            economics_version: nextVersion
         };
 
         const maxSafeRate = SafeBinaryCommissionRateCalculator.calculateMaxSafeRate(merged);
@@ -1276,33 +1866,59 @@ const server = http.createServer(async (req, res) => {
         const targetStatus = status !== undefined ? status : currentProduct.status;
         if (targetStatus === 'ACTIVE') {
             // 1. Check basic economics block conditions first
-            if (validation.status === 'BLOCKED') {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    blocked_reason: validation.blocked_reason,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    requested_binary_rate: merged.binary_commission_rate
-                });
-                return;
-            }
+            const isOverridden = Boolean(body.admin_override && body.override_reason);
+            if (!isOverridden) {
+                if (validation.status === 'BLOCKED' || !validation.allowed) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        requested_binary_rate: merged.binary_commission_rate,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
 
-            // 2. Check manual commission limits second
-            if (merged.commission_mode === 'MANUAL' && merged.binary_commission_rate > maxSafeRate) {
-                sendJSON(res, 400, {
-                    status: 'BLOCKED',
-                    blocked_reason: `Manual binary commission rate ${merged.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
-                    requested_binary_rate: merged.binary_commission_rate,
-                    maximum_safe_binary_rate: maxSafeRate,
-                    difference: Math.round((merged.binary_commission_rate - maxSafeRate) * 100) / 100,
-                    expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    effective_commission_budget: econCalc.calculated.effective_commission_budget,
-                    maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
-                    remaining_margin: econCalc.calculated.remaining_company_margin
+                // 2. Check manual commission limits second
+                if (merged.commission_mode === 'MANUAL' && merged.binary_commission_rate > maxSafeRate) {
+                    sendJSON(res, 400, {
+                        status: 'BLOCKED',
+                        financial_status: 'NOT_VIABLE',
+                        safety_status: 'UNSAFE',
+                        blocked_reason: `Manual binary commission rate ${merged.binary_commission_rate}% exceeds maximum safe rate of ${maxSafeRate}%.`,
+                        requested_binary_rate: merged.binary_commission_rate,
+                        maximum_safe_binary_rate: maxSafeRate,
+                        difference: Math.round((merged.binary_commission_rate - maxSafeRate) * 100) / 100,
+                        expected_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        effective_commission_budget: econCalc.calculated.effective_commission_budget,
+                        maximum_commission_exposure: econCalc.calculated.max_total_commission_exposure,
+                        remaining_margin: econCalc.calculated.remaining_company_margin,
+                        calculated: econCalc.calculated
+                    });
+                    return;
+                }
+            } else {
+                // Log financial override audit event
+                mockFinancialAuditLogs.push({
+                    id: 'faudit-ovr-' + Math.random().toString(36).substr(2, 9),
+                    admin_id: authUser.id,
+                    action: 'FINANCIAL_OVERRIDE_ACTIVATION',
+                    entity_type: 'products',
+                    entity_id: id,
+                    details: {
+                        reason: body.override_reason,
+                        blocked_reason: validation.blocked_reason,
+                        shortfall: validation.shortfall
+                    },
+                    ip_address: req.socket.remoteAddress || '127.0.0.1',
+                    created_at: new Date().toISOString()
                 });
-                return;
             }
         }
 
@@ -1311,6 +1927,7 @@ const server = http.createServer(async (req, res) => {
             ...currentProduct,
             name: name ? SecurityCore.sanitizeInput(name) : currentProduct.name,
             price: econCalc.calculated.selling_price,
+            selling_price: econCalc.calculated.selling_price,
             binary_volume: merged.binary_volume,
             direct_commission_percent: merged.direct_commission_rate,
             binary_commission_percent: merged.binary_commission_rate,
@@ -1319,6 +1936,29 @@ const server = http.createServer(async (req, res) => {
             discount_type: merged.discount_type,
             discount_value: merged.discount_value,
             product_cost: merged.product_cost,
+            
+            // 7 Costs
+            tax_type: merged.tax_type,
+            tax_percent: merged.tax_percent,
+            tax_fixed_amount: merged.tax_fixed_amount,
+            hosting_cost_percent: merged.hosting_cost_percent,
+            hosting_cost_fixed: merged.hosting_cost_fixed,
+            staff_cost_percent: merged.staff_cost_percent,
+            staff_cost_fixed: merged.staff_cost_fixed,
+            marketing_cost_percent: merged.marketing_cost_percent,
+            marketing_cost_fixed: merged.marketing_cost_fixed,
+            refund_reserve_percent: merged.refund_reserve_percent,
+            refund_reserve_fixed: merged.refund_reserve_fixed,
+            support_cost_percent: merged.support_cost_percent,
+            support_cost_fixed: merged.support_cost_fixed,
+            operational_cost_percent: merged.operational_cost_percent,
+            operational_cost_fixed: merged.operational_cost_fixed,
+            
+            profit_reserve_type: merged.profit_reserve_type,
+            profit_reserve_percent: merged.profit_reserve_percent,
+            profit_reserve_fixed: merged.profit_reserve_fixed,
+            profit_reserve_base: merged.profit_reserve_base,
+
             minimum_company_profit: merged.minimum_company_profit,
             operating_cost_reserve: merged.operating_cost_reserve,
             payment_processing_reserve: merged.payment_processing_reserve,
@@ -1328,15 +1968,458 @@ const server = http.createServer(async (req, res) => {
             commission_safety_buffer: merged.commission_safety_buffer,
             max_binary_qualified_levels: merged.max_binary_qualified_levels,
             commission_mode: merged.commission_mode,
+            
+            economics_version: nextVersion,
             economics_status: validation.status,
-            validation_status: validation.status === 'BLOCKED' ? 'FAILED' : 'VALIDATED',
+            validation_status: (validation.status === 'BLOCKED' || !validation.allowed) ? 'FAILED' : 'VALIDATED',
             blocked_reason: validation.blocked_reason,
-            status: targetStatus
+            calculated_economics: econCalc.calculated,
+            status: targetStatus,
+            updated_at: new Date().toISOString()
         };
 
+        // Store new economics version record
+        mockEconomicsVersions.push({
+            id: 'ver-' + Math.random().toString(36).substr(2, 9),
+            product_id: id,
+            version_label: nextVersion,
+            configuration: merged,
+            calculated_economics: econCalc.calculated,
+            created_by: authUser.id,
+            created_at: new Date().toISOString()
+        });
+
+        // Audit Logging
+        const auditLogEntry = {
+            id: 'faudit-' + Math.random().toString(36).substr(2, 9),
+            admin_id: authUser.id,
+            action: 'PRODUCT_ECONOMICS_EDITED',
+            entity_type: 'products',
+            entity_id: id,
+            details: {
+                previous_version: currentProduct.economics_version || 'v1.0',
+                new_version: nextVersion,
+                price: mockProducts[prodIdx].price,
+                product_cost: mockProducts[prodIdx].product_cost,
+                safety_status: validation.safety_status
+            },
+            ip_address: req.socket.remoteAddress || '127.0.0.1',
+            created_at: new Date().toISOString()
+        };
+        mockFinancialAuditLogs.push(auditLogEntry);
         KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_EDITED', 'products', id, currentProduct, mockProducts[prodIdx]);
 
-        sendJSON(res, 200, { success: true, product: mockProducts[prodIdx] });
+        sendJSON(res, 200, { success: true, product: mockProducts[prodIdx], calculated: econCalc.calculated, validation });
+        return;
+    }
+
+    // POST /api/admin/products/validate-economics (Admin only — Live preview)
+    if (req.method === 'POST' && pathname === '/api/admin/products/validate-economics') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const econCalc = ProductEconomicsCalculator.calculate(body);
+        const validation = ProductCommissionValidator.validate(econCalc);
+
+        sendJSON(res, 200, {
+            success: true,
+            is_safe: validation.allowed,
+            safety_status: validation.safety_status,
+            status: validation.status,
+            shortfall: validation.shortfall,
+            maximum_safe_binary_rate: validation.maximum_safe_binary_rate,
+            calculated: econCalc.calculated,
+            validation: validation
+        });
+        return;
+    }
+
+    // POST /api/admin/products/simulate (Admin only — Scenario Simulator)
+    if (req.method === 'POST' && pathname === '/api/admin/products/simulate') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { product_id, left_volume, right_volume, qualified_levels } = body;
+
+        let productConfig = body;
+        if (product_id) {
+            const found = mockProducts.find(p => p.id === product_id);
+            if (found) {
+                productConfig = { ...found, ...body };
+            }
+        }
+
+        const simulation = ProductEconomicsCalculator.simulateScenario(
+            productConfig,
+            left_volume || 0,
+            right_volume || 0,
+            qualified_levels !== undefined ? qualified_levels : 7
+        );
+
+        sendJSON(res, 200, {
+            success: true,
+            simulation
+        });
+        return;
+    }
+
+    // POST /api/admin/products/stress-test (Admin only — Stress Test & Simulation Engine)
+    if (req.method === 'POST' && pathname === '/api/admin/products/stress-test') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const calculated = ProductEconomicsCalculator.calculate(body);
+        const validation = ProductCommissionValidator.validate(calculated);
+
+        sendJSON(res, 200, {
+            success: true,
+            revenue: calculated.calculated.selling_price,
+            total_costs: calculated.calculated.total_operating_cost,
+            profit_reserve: calculated.calculated.company_profit_reserve,
+            commission_pool: calculated.calculated.commission_pool,
+            direct_commission: calculated.calculated.direct_commission_amount,
+            maximum_binary_exposure: calculated.calculated.maximum_binary_exposure,
+            maximum_total_commission: calculated.calculated.maximum_total_commission_exposure,
+            safety_margin: calculated.calculated.commission_safety_margin,
+            commission_utilization: calculated.calculated.commission_pool_utilization,
+            financial_status: validation.financial_status,
+            safety_status: validation.safety_status,
+            stress_test_result: validation.stress_test_result,
+            is_viable: validation.is_viable,
+            calculated: calculated.calculated,
+            validation
+        });
+        return;
+    }
+
+    // GET /api/admin/settings/product-economics-defaults (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/settings/product-economics-defaults') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        sendJSON(res, 200, {
+            success: true,
+            defaults: mockEconomicsDefaults
+        });
+        return;
+    }
+
+    // POST /api/admin/settings/product-economics-defaults (Admin only)
+    if (req.method === 'POST' && pathname === '/api/admin/settings/product-economics-defaults') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        mockEconomicsDefaults = {
+            ...mockEconomicsDefaults,
+            tax_percent: body.tax_percent !== undefined ? parseFloat(body.tax_percent) : mockEconomicsDefaults.tax_percent,
+            hosting_cost_fixed: body.hosting_cost_fixed !== undefined ? parseFloat(body.hosting_cost_fixed) : mockEconomicsDefaults.hosting_cost_fixed,
+            staff_cost_fixed: body.staff_cost_fixed !== undefined ? parseFloat(body.staff_cost_fixed) : mockEconomicsDefaults.staff_cost_fixed,
+            marketing_cost_fixed: body.marketing_cost_fixed !== undefined ? parseFloat(body.marketing_cost_fixed) : mockEconomicsDefaults.marketing_cost_fixed,
+            refund_reserve_percent: body.refund_reserve_percent !== undefined ? parseFloat(body.refund_reserve_percent) : mockEconomicsDefaults.refund_reserve_percent,
+            support_cost_fixed: body.support_cost_fixed !== undefined ? parseFloat(body.support_cost_fixed) : mockEconomicsDefaults.support_cost_fixed,
+            operational_cost_fixed: body.operational_cost_fixed !== undefined ? parseFloat(body.operational_cost_fixed) : mockEconomicsDefaults.operational_cost_fixed,
+            payment_processing_fixed: body.payment_processing_fixed !== undefined ? parseFloat(body.payment_processing_fixed) : mockEconomicsDefaults.payment_processing_fixed,
+            profit_reserve_percent: body.profit_reserve_percent !== undefined ? parseFloat(body.profit_reserve_percent) : mockEconomicsDefaults.profit_reserve_percent,
+            direct_commission_percent: body.direct_commission_percent !== undefined ? parseFloat(body.direct_commission_percent) : mockEconomicsDefaults.direct_commission_percent,
+            binary_commission_percent: body.binary_commission_percent !== undefined ? parseFloat(body.binary_commission_percent) : mockEconomicsDefaults.binary_commission_percent,
+            maximum_qualified_uplines: body.maximum_qualified_uplines !== undefined ? parseInt(body.maximum_qualified_uplines) : mockEconomicsDefaults.maximum_qualified_uplines,
+            updated_by: authUser.id,
+            updated_at: new Date().toISOString()
+        };
+
+        mockFinancialAuditLogs.push({
+            id: 'faudit-def-' + Math.random().toString(36).substr(2, 9),
+            admin_id: authUser.id,
+            action: 'ECONOMICS_DEFAULTS_UPDATED',
+            entity_type: 'settings',
+            entity_id: 'product-economics-defaults',
+            details: mockEconomicsDefaults,
+            ip_address: req.socket.remoteAddress || '127.0.0.1',
+            created_at: new Date().toISOString()
+        });
+
+        sendJSON(res, 200, {
+            success: true,
+            message: 'Product economics defaults updated successfully.',
+            defaults: mockEconomicsDefaults
+        });
+        return;
+    }
+
+    // GET /api/admin/reports/product-economics (Admin only — Section 32 Report)
+    if (req.method === 'GET' && pathname === '/api/admin/reports/product-economics') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const statusFilter = (urlObj.searchParams.get('status') || '').toLowerCase();
+
+        const reportRows = mockProducts.map(prod => {
+            const calc = ProductEconomicsCalculator.calculate(prod);
+            const val = ProductCommissionValidator.validate(calc);
+            const calculated = calc.calculated;
+
+            const isReviewRequired = Boolean(!prod.product_cost && !prod.tax_percent && !prod.minimum_company_profit);
+
+            return {
+                id: prod.id,
+                product: prod.name || prod.title,
+                code: prod.code,
+                selling_price: calculated.selling_price,
+                product_cost: calculated.product_cost,
+                company_costs: calculated.total_operating_cost,
+                profit_reserve: calculated.company_profit_reserve,
+                commission_pool: calculated.commission_pool,
+                direct_commission: calculated.direct_commission_amount,
+                max_binary_exposure: calculated.maximum_binary_exposure,
+                total_commission_exposure: calculated.maximum_total_commission_exposure,
+                safety_margin: calculated.commission_safety_margin,
+                utilization_percent: calculated.commission_pool_utilization,
+                status: val.financial_status,
+                financial_status: val.financial_status,
+                safety_status: val.safety_status,
+                product_status: prod.status || 'ACTIVE',
+                economics_review_required: isReviewRequired,
+                economics_version: prod.economics_version || 'v1.0'
+            };
+        });
+
+        let filteredRows = reportRows;
+        if (statusFilter === 'safe') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'SAFE');
+        } else if (statusFilter === 'warning') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'WARNING');
+        } else if (statusFilter === 'not_viable' || statusFilter === 'not-viable' || statusFilter === 'unsafe') {
+            filteredRows = reportRows.filter(r => r.financial_status === 'NOT_VIABLE' || r.financial_status === 'BLOCKED');
+        } else if (statusFilter === 'review_required' || statusFilter === 'review-required') {
+            filteredRows = reportRows.filter(r => r.economics_review_required);
+        } else if (statusFilter === 'active') {
+            filteredRows = reportRows.filter(r => r.product_status === 'ACTIVE');
+        } else if (statusFilter === 'inactive') {
+            filteredRows = reportRows.filter(r => r.product_status === 'INACTIVE');
+        }
+
+        sendJSON(res, 200, {
+            success: true,
+            filter: statusFilter || 'all',
+            total_count: filteredRows.length,
+            products: filteredRows
+        });
+        return;
+    }
+
+    // GET /api/admin/products/migration-status (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/products/migration-status') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const total = mockProducts.length;
+        const productsList = mockProducts.map(p => {
+            const isConfigured = Boolean(
+                p.product_cost > 0 ||
+                p.tax_percent > 0 || p.tax_fixed_amount > 0 || p.tax_reserve > 0 ||
+                p.staff_cost_percent > 0 || p.staff_cost_fixed > 0 ||
+                p.marketing_cost_percent > 0 || p.marketing_cost_fixed > 0 || p.other_reserve > 0 ||
+                p.refund_reserve_percent > 0 || p.refund_reserve_fixed > 0 || p.refund_risk_reserve > 0 ||
+                p.profit_reserve_percent > 0 || p.profit_reserve_fixed > 0 || p.minimum_company_profit > 0
+            );
+
+            return {
+                id: p.id,
+                name: p.name || p.title,
+                code: p.code,
+                price: p.price || p.selling_price,
+                product_cost: p.product_cost || 0,
+                is_configured: isConfigured,
+                economics_version: p.economics_version || 'v1.0',
+                economics_status: p.economics_status || (isConfigured ? 'SAFE' : 'DRAFT'),
+                status: p.status || 'ACTIVE'
+            };
+        });
+
+        const configuredCount = productsList.filter(p => p.is_configured).length;
+        const pendingCount = total - configuredCount;
+        const safeCount = productsList.filter(p => p.economics_status === 'SAFE').length;
+        const warningCount = productsList.filter(p => p.economics_status === 'WARNING').length;
+        const unsafeCount = productsList.filter(p => p.economics_status === 'UNSAFE' || p.economics_status === 'BLOCKED').length;
+
+        sendJSON(res, 200, {
+            success: true,
+            total_products: total,
+            configured_products: configuredCount,
+            pending_migration_products: pendingCount,
+            safe_products: safeCount,
+            warning_products: warningCount,
+            unsafe_products: unsafeCount,
+            products: productsList
+        });
+        return;
+    }
+
+    // GET /api/admin/reports/product-profitability (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/reports/product-profitability') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const urlObj = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        const filterProductId = urlObj.searchParams.get('product_id');
+
+        let targetProducts = mockProducts;
+        if (filterProductId) {
+            targetProducts = mockProducts.filter(p => p.id === filterProductId);
+        }
+
+        let totalUnitsSold = 0;
+        let totalGrossRevenue = 0;
+        let totalProductCost = 0;
+        let totalTaxCost = 0;
+        let totalHostingCost = 0;
+        let totalStaffCost = 0;
+        let totalMarketingCost = 0;
+        let totalRefundReserve = 0;
+        let totalSupportCost = 0;
+        let totalOperationalCost = 0;
+        let totalProfitReserve = 0;
+        let totalDirectCommission = 0;
+        let totalBinaryCommission = 0;
+        let totalNetProfit = 0;
+
+        const reportRows = targetProducts.map(prod => {
+            // Find approved purchases
+            const prodPurchases = mockPurchases.filter(pur => 
+                (pur.product_id === prod.id || pur.product_slug === prod.id || pur.product_id === prod.code) &&
+                (pur.status === 'ACTIVE' || pur.status === 'APPROVED' || pur.status === 'COMPLETED')
+            );
+            
+            const unitsSold = prodPurchases.length;
+            const calc = ProductEconomicsCalculator.calculate(prod);
+            const calculated = calc.calculated;
+
+            const revenue = Math.round(unitsSold * calculated.selling_price * 100) / 100;
+            const pCost = Math.round(unitsSold * calculated.product_cost * 100) / 100;
+            const tCost = Math.round(unitsSold * calculated.tax_cost * 100) / 100;
+            const hCost = Math.round(unitsSold * calculated.hosting_cost * 100) / 100;
+            const stCost = Math.round(unitsSold * calculated.staff_cost * 100) / 100;
+            const mCost = Math.round(unitsSold * calculated.marketing_cost * 100) / 100;
+            const refCost = Math.round(unitsSold * calculated.refund_reserve * 100) / 100;
+            const supCost = Math.round(unitsSold * calculated.support_cost * 100) / 100;
+            const opCost = Math.round(unitsSold * calculated.operational_cost * 100) / 100;
+            const profReserve = Math.round(unitsSold * calculated.company_profit_reserve * 100) / 100;
+            
+            const directCommPaid = Math.round(unitsSold * calculated.direct_commission_amount * 100) / 100;
+            // Binary commission paid estimate based on 7 levels max
+            const binaryCommPaid = Math.round(unitsSold * calculated.max_binary_liability * 100) / 100;
+            const totalCommPaid = directCommPaid + binaryCommPaid;
+
+            const totalOperatingCosts = tCost + hCost + stCost + mCost + refCost + supCost + opCost;
+            const netProfit = Math.round((revenue - pCost - totalOperatingCosts - totalCommPaid) * 100) / 100;
+            const profitMargin = revenue > 0 ? Math.round((netProfit / revenue) * 10000) / 100 : 0.00;
+
+            totalUnitsSold += unitsSold;
+            totalGrossRevenue += revenue;
+            totalProductCost += pCost;
+            totalTaxCost += tCost;
+            totalHostingCost += hCost;
+            totalStaffCost += stCost;
+            totalMarketingCost += mCost;
+            totalRefundReserve += refCost;
+            totalSupportCost += supCost;
+            totalOperationalCost += opCost;
+            totalProfitReserve += profReserve;
+            totalDirectCommission += directCommPaid;
+            totalBinaryCommission += binaryCommPaid;
+            totalNetProfit += netProfit;
+
+            return {
+                product_id: prod.id,
+                product_name: prod.name || prod.title,
+                product_code: prod.code,
+                selling_price: calculated.selling_price,
+                units_sold: unitsSold,
+                gross_revenue: revenue,
+                product_cost: pCost,
+                tax_cost: tCost,
+                hosting_cost: hCost,
+                staff_cost: stCost,
+                marketing_cost: mCost,
+                refund_reserve: refCost,
+                support_cost: supCost,
+                operational_cost: opCost,
+                total_operating_reserves: totalOperatingCosts,
+                company_profit_reserve: profReserve,
+                direct_commission_paid: directCommPaid,
+                binary_commission_paid: binaryCommPaid,
+                total_commission_paid: totalCommPaid,
+                net_company_profit: netProfit,
+                net_profit_margin_percent: profitMargin,
+                economics_version: prod.economics_version || 'v1.0',
+                safety_status: calculated.safety_status
+            };
+        });
+
+        sendJSON(res, 200, {
+            success: true,
+            summary: {
+                total_products: targetProducts.length,
+                total_units_sold: totalUnitsSold,
+                total_gross_revenue: Math.round(totalGrossRevenue * 100) / 100,
+                total_product_cost: Math.round(totalProductCost * 100) / 100,
+                total_operating_reserves: Math.round((totalTaxCost + totalHostingCost + totalStaffCost + totalMarketingCost + totalRefundReserve + totalSupportCost + totalOperationalCost) * 100) / 100,
+                total_commissions_paid: Math.round((totalDirectCommission + totalBinaryCommission) * 100) / 100,
+                total_net_company_profit: Math.round(totalNetProfit * 100) / 100,
+                average_profit_margin_percent: totalGrossRevenue > 0 ? Math.round((totalNetProfit / totalGrossRevenue) * 10000) / 100 : 0.00
+            },
+            products: reportRows
+        });
+        return;
+    }
+
+    // GET /api/admin/products/audit-logs (Admin only)
+    if (req.method === 'GET' && pathname === '/api/admin/products/audit-logs') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || authUser.role !== 'admin') {
+            sendJSON(res, 403, { error: 'Access Denied.' });
+            return;
+        }
+
+        const combinedLogs = [
+            ...mockFinancialAuditLogs,
+            ...mockAuditLogs.filter(l => l.entity_type === 'products' || (l.action && l.action.includes('PRODUCT')))
+        ].sort((a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0));
+
+        sendJSON(res, 200, {
+            success: true,
+            total_logs: combinedLogs.length,
+            audit_logs: combinedLogs
+        });
         return;
     }
 
@@ -1393,6 +2476,339 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // ========================================================
+    // MEMBER PRODUCT PURCHASE CENTER API ROUTER
+    // ========================================================
+
+    // GET /api/member/company-bank-details
+    if (req.method === 'GET' && pathname === '/api/member/company-bank-details') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+        sendJSON(res, 200, { success: true, bankDetails: mockCompanyBankDetails });
+        return;
+    }
+
+    // GET /api/member/products
+    if (req.method === 'GET' && pathname === '/api/member/products') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+
+        const enrichedProducts = mockProducts.filter(p => p.status === 'ACTIVE').map(p => {
+            const hasActivePurchase = userPurchases.some(up => up.product_id === p.id && up.status === 'ACTIVE');
+            const hasPendingPurchase = userPurchases.some(up => up.product_id === p.id && up.status === 'PENDING') ||
+                userDeposits.some(d => (d.product_id === p.id || userPurchases.some(up => up.id === d.purchase_id && up.product_id === p.id)) && d.status === 'PENDING');
+
+            let accessStatus = 'AVAILABLE';
+            if (hasActivePurchase) accessStatus = 'ACTIVE';
+            else if (hasPendingPurchase) accessStatus = 'PENDING';
+
+            return {
+                id: p.id,
+                code: p.code,
+                name: p.name || p.title,
+                title: p.title || p.name,
+                category: p.category,
+                price: p.selling_price || p.price,
+                original_price: p.original_price || p.price,
+                discount_price: p.discount_price || p.selling_price || p.price,
+                selling_price: p.selling_price || p.price,
+                savings: (p.original_price && p.original_price > (p.selling_price || p.price)) ? (p.original_price - (p.selling_price || p.price)) : 0,
+                discount_percent: (p.original_price && p.original_price > (p.selling_price || p.price)) ? Math.round(((p.original_price - (p.selling_price || p.price)) / p.original_price) * 100) : 0,
+                binary_volume: p.binary_volume || p.selling_price || p.price,
+                duration: p.duration || 'Comprehensive Lifetime Access',
+                access_type: p.access_type || 'Lifetime Access',
+                description: p.description,
+                benefits: p.benefits || [],
+                modules_count: p.modules_count || 6,
+                image_url: p.image_url,
+                is_purchased: hasActivePurchase,
+                is_pending: hasPendingPurchase,
+                can_buy: !hasActivePurchase && !hasPendingPurchase,
+                access_status: accessStatus
+            };
+        });
+
+        sendJSON(res, 200, { success: true, products: enrichedProducts });
+        return;
+    }
+
+    // GET /api/member/products/:id
+    if (req.method === 'GET' && pathname.startsWith('/api/member/products/')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const productId = pathname.replace('/api/member/products/', '').trim();
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+        const hasActivePurchase = userPurchases.some(up => up.product_id === product.id && up.status === 'ACTIVE');
+        const hasPendingPurchase = userPurchases.some(up => up.product_id === product.id && up.status === 'PENDING') ||
+            userDeposits.some(d => (d.product_id === product.id || userPurchases.some(up => up.id === d.purchase_id && up.product_id === product.id)) && d.status === 'PENDING');
+
+        sendJSON(res, 200, {
+            success: true,
+            product: {
+                ...product,
+                is_purchased: hasActivePurchase,
+                is_pending: hasPendingPurchase,
+                can_buy: !hasActivePurchase && !hasPendingPurchase,
+                refund_policy: '14-Day Money Back Guarantee under standard usage terms'
+            }
+        });
+        return;
+    }
+
+    // POST /api/member/checkout
+    if (req.method === 'POST' && pathname === '/api/member/checkout') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId } = body;
+
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        // Duplicate purchase guard
+        const hasActive = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'ACTIVE');
+        if (hasActive) {
+            sendJSON(res, 400, { error: 'You already own this course with active lifetime access.' });
+            return;
+        }
+
+        const hasPending = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'PENDING') ||
+            mockPaymentDeposits.some(d => d.user_id === authUser.id && d.product_id === product.id && d.status === 'PENDING');
+        if (hasPending) {
+            sendJSON(res, 400, { error: 'You already have a pending payment verification for this course.' });
+            return;
+        }
+
+        const orderNumber = 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        sendJSON(res, 200, {
+            success: true,
+            checkoutSession: {
+                order_number: orderNumber,
+                product_id: product.id,
+                product_name: product.name || product.title,
+                selling_price: product.selling_price || product.price,
+                original_price: product.original_price || product.price,
+                member_id: authUser.id,
+                member_name: authUser.full_name || authUser.username,
+                member_email: authUser.email,
+                company_banks: mockCompanyBankDetails
+            }
+        });
+        return;
+    }
+
+    // POST /api/member/payments
+    if (req.method === 'POST' && pathname === '/api/member/payments') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId, orderNumber, bankReference, transferDate, amount, slipUrl, notes } = body;
+
+        if (!productId || !bankReference || !amount || parseFloat(amount) <= 0) {
+            sendJSON(res, 400, { error: 'Product, Bank Reference, and Valid Amount are required.' });
+            return;
+        }
+
+        const product = mockProducts.find(p => p.id === productId || p.code === productId);
+        if (!product) {
+            sendJSON(res, 404, { error: 'Selected product is invalid.' });
+            return;
+        }
+
+        // Duplicate Reference Guard
+        const cleanRef = SecurityCore.sanitizeInput(bankReference).trim();
+        const duplicateRef = mockPaymentDeposits.some(d => d.bank_reference.toLowerCase() === cleanRef.toLowerCase());
+        if (duplicateRef) {
+            sendJSON(res, 400, { error: 'This payment reference code has already been submitted.' });
+            return;
+        }
+
+        // Duplicate Active/Pending Purchase Guard
+        const alreadyActive = mockProductPurchases.some(p => p.user_id === authUser.id && p.product_id === product.id && p.status === 'ACTIVE');
+        if (alreadyActive) {
+            sendJSON(res, 400, { error: 'You already own this course with active access.' });
+            return;
+        }
+
+        const purchaseId = 'purch-' + Math.random().toString(36).substr(2, 9);
+        const purchase = {
+            id: purchaseId,
+            order_number: orderNumber || ('ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase()),
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            price_paid: parseFloat(amount),
+            status: 'PENDING',
+            created_at: new Date().toISOString()
+        };
+
+        const depositId = 'dep-' + Math.random().toString(36).substr(2, 9);
+        const deposit = {
+            id: depositId,
+            order_number: purchase.order_number,
+            purchase_id: purchaseId,
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            amount: parseFloat(amount),
+            bank_reference: cleanRef,
+            transfer_date: transferDate || new Date().toISOString().split('T')[0],
+            slip_url: slipUrl || 'storage/private/slips/sample-slip.jpg',
+            status: 'PENDING',
+            notes: SecurityCore.sanitizeInput(notes || ''),
+            created_at: new Date().toISOString()
+        };
+
+        mockProductPurchases.push(purchase);
+        mockPaymentDeposits.push(deposit);
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'PAYMENT_SUBMITTED', 'payment_deposits', depositId, null, {
+            order_number: purchase.order_number,
+            product_id: product.id,
+            amount: deposit.amount,
+            bank_reference: deposit.bank_reference
+        });
+
+        sendJSON(res, 201, {
+            success: true,
+            orderNumber: purchase.order_number,
+            depositId: depositId,
+            message: 'Your payment has been submitted successfully and is awaiting verification.'
+        });
+        return;
+    }
+
+    // GET /api/member/orders
+    if (req.method === 'GET' && pathname === '/api/member/orders') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userDeposits = mockPaymentDeposits.filter(d => d.user_id === authUser.id);
+        const orders = userDeposits.map(d => {
+            const purch = mockProductPurchases.find(p => p.id === d.purchase_id) || {};
+            const prod = mockProducts.find(p => p.id === d.product_id || p.id === purch.product_id) || {};
+            return {
+                id: d.id,
+                order_number: d.order_number || purch.order_number || ('ORD-' + d.id.substring(4, 10).toUpperCase()),
+                product_id: d.product_id || purch.product_id,
+                product_name: prod.name || prod.title || d.product_name || purch.product_name || 'Masterclass',
+                amount: d.amount || purch.price_paid || prod.selling_price || 0,
+                bank_reference: d.bank_reference,
+                transfer_date: d.transfer_date || d.created_at,
+                slip_url: d.slip_url,
+                status: d.status,
+                admin_notes: d.notes || null,
+                reviewed_at: d.reviewed_at || null,
+                created_at: d.created_at
+            };
+        }).reverse();
+
+        sendJSON(res, 200, { success: true, orders });
+        return;
+    }
+
+    // GET /api/member/orders/:id
+    if (req.method === 'GET' && pathname.startsWith('/api/member/orders/')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const orderRef = pathname.replace('/api/member/orders/', '').trim();
+        const deposit = mockPaymentDeposits.find(d => (d.id === orderRef || d.order_number === orderRef) && d.user_id === authUser.id);
+        if (!deposit) {
+            sendJSON(res, 404, { error: 'Order not found.' });
+            return;
+        }
+
+        const purch = mockProductPurchases.find(p => p.id === deposit.purchase_id) || {};
+        const prod = mockProducts.find(p => p.id === deposit.product_id || p.id === purch.product_id) || {};
+
+        sendJSON(res, 200, {
+            success: true,
+            order: {
+                id: deposit.id,
+                order_number: deposit.order_number || purch.order_number || ('ORD-' + deposit.id.substring(4, 10).toUpperCase()),
+                product_id: deposit.product_id || purch.product_id,
+                product_name: prod.name || prod.title || deposit.product_name || 'Masterclass',
+                category: prod.category || 'Course',
+                amount: deposit.amount || purch.price_paid || 0,
+                bank_reference: deposit.bank_reference,
+                transfer_date: deposit.transfer_date || deposit.created_at,
+                slip_url: deposit.slip_url,
+                status: deposit.status,
+                admin_notes: deposit.notes || null,
+                reviewed_at: deposit.reviewed_at || null,
+                created_at: deposit.created_at
+            }
+        });
+        return;
+    }
+
+    // GET /api/member/my-products
+    if (req.method === 'GET' && pathname === '/api/member/my-products') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const myProducts = userPurchases.map(p => {
+            const prod = mockProducts.find(mp => mp.id === p.product_id) || {};
+            return {
+                purchase_id: p.id,
+                order_number: p.order_number || ('ORD-' + p.id.substring(6).toUpperCase()),
+                product_id: p.product_id,
+                product_name: p.product_name || prod.name || prod.title || 'Masterclass',
+                category: prod.category || 'Education',
+                selling_price: p.price_paid || prod.selling_price || 0,
+                image_url: prod.image_url || 'assets/facebook_course_banner.jpg',
+                status: p.status,
+                activated_at: p.activated_at || p.created_at,
+                classroom_url: prod.course_url || 'student-dashboard.html'
+            };
+        }).reverse();
+
+        sendJSON(res, 200, { success: true, myProducts });
+        return;
+    }
+
     // GET /api/admin/deposits/pending
     if (req.method === 'GET' && pathname === '/api/admin/deposits/pending') {
         const authUser = getAuthenticatedUser(req);
@@ -1430,9 +2846,16 @@ const server = http.createServer(async (req, res) => {
 
         const deposit = mockPaymentDeposits[depIdx];
         const oldStatus = deposit.status;
+
+        if (oldStatus === 'APPROVED' && action === 'APPROVED') {
+            sendJSON(res, 400, { error: 'Deposit has already been approved and finalized.' });
+            return;
+        }
+
         mockPaymentDeposits[depIdx].status = action;
         mockPaymentDeposits[depIdx].reviewer_id = authUser.id;
         mockPaymentDeposits[depIdx].reviewed_at = new Date().toISOString();
+        if (notes) mockPaymentDeposits[depIdx].notes = SecurityCore.sanitizeInput(notes);
 
         const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
         if (purchIdx !== -1) {
@@ -2241,30 +3664,45 @@ const server = http.createServer(async (req, res) => {
     let filePath = path.join(__dirname, safeUrl);
     
     // Auto-resolve .html if extension is omitted
-    if (!path.extname(filePath) && fs.existsSync(filePath + '.html')) {
-        filePath = filePath + '.html';
-    }
-    
-    if (safeUrl.startsWith('/storage/private/') || !filePath.startsWith(__dirname)) {
-        res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
-        res.end('Forbidden');
+    const isSensitive = safeUrl.startsWith('/storage/private/') ||
+        safeUrl.startsWith('/services/') ||
+        safeUrl.startsWith('/test/') ||
+        safeUrl.startsWith('/sql/') ||
+        safeUrl.includes('/.env') ||
+        safeUrl.includes('/.git') ||
+        safeUrl.includes('/.htaccess') ||
+        safeUrl.includes('/.htpasswd') ||
+        safeUrl.endsWith('.sql') ||
+        safeUrl.endsWith('.log') ||
+        safeUrl.endsWith('.bak') ||
+        safeUrl.endsWith('.sh') ||
+        safeUrl === '/server.js' ||
+        safeUrl === '/package.json' ||
+        safeUrl === '/package-lock.json';
+
+    const normalizedPath = path.normalize(filePath);
+    if (isSensitive || !normalizedPath.startsWith(__dirname)) {
+        const secHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
+        res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8', ...secHeaders });
+        res.end('403 Forbidden: Access to sensitive file is prohibited.');
         return;
     }
     
     const extname = String(path.extname(filePath)).toLowerCase();
     const contentType = MIME_TYPES[extname] || 'application/octet-stream';
+    const secHeaders = SecurityCore.getSecurityHeaders(process.env.NODE_ENV === 'production');
     
     fs.readFile(filePath, (err, content) => {
         if (err) {
             if (err.code === 'ENOENT') {
-                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8' });
+                res.writeHead(404, { 'Content-Type': 'text/html; charset=utf-8', ...secHeaders });
                 res.end('<h1>404 Not Found - Hapanamy.lk</h1>', 'utf-8');
             } else {
-                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8' });
-                res.end(`Server Error: ${err.code}`);
+                res.writeHead(500, { 'Content-Type': 'text/plain; charset=utf-8', ...secHeaders });
+                res.end(`Server Error: An unexpected error occurred.`);
             }
         } else {
-            res.writeHead(200, { 'Content-Type': contentType });
+            res.writeHead(200, { 'Content-Type': contentType, ...secHeaders });
             res.end(content, 'utf-8');
         }
     });

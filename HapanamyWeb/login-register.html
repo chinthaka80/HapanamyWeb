@@ -581,6 +581,12 @@
             }, 4000);
         }
 
+        async function sha256Hex(text) {
+            const enc = new TextEncoder().encode(text);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         // Form Submit Actions
         async function handleAuthSubmit(event, type) {
             event.preventDefault();
@@ -615,116 +621,55 @@
                     console.log('Falling back to local auth mode...');
                 }
                 
-                // Enforce root user credentials check (Hiru & NAMOBUDDHAYA)
-                const cleanLogin = email.toUpperCase();
-                if (cleanLogin === 'HIRU' || email.toLowerCase() === 'hiru@hapanamy.lk') {
-                    if (password === 'Hapana20260808') {
-                        const memberUser = {
-                            id: 'user-hiru',
-                            username: 'Hiru',
-                            full_name: 'Hiru',
-                            name: 'Hiru',
-                            email: 'hiru@hapanamy.lk',
-                            role: 'member',
-                            status: 'ACTIVE'
-                        };
-                        localStorage.setItem('auth_token', 'token-hiru-member');
-                        localStorage.setItem('active_token', 'token-hiru-member');
-                        localStorage.setItem('active_user', JSON.stringify(memberUser));
-                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(memberUser));
-                        
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Hiru!`);
-                        setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 800);
-                        return;
-                    } else {
-                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
-                        return;
-                    }
-                }
-
-                if (cleanLogin === 'NAMOBUDDHAYA' || email.toLowerCase() === 'admin@hapanamy.lk') {
-                    if (password === 'Hapana20260808') {
-                        const rootUser = {
-                            id: 'user-namobuddhaya-root',
-                            username: 'NAMOBUDDHAYA',
-                            full_name: 'NAMOBUDDHAYA',
-                            name: 'NAMOBUDDHAYA',
-                            email: 'admin@hapanamy.lk',
-                            role: 'admin',
-                            status: 'ACTIVE'
-                        };
-                        localStorage.setItem('auth_token', 'token-namobuddhaya-root');
-                        localStorage.setItem('active_token', 'token-namobuddhaya-root');
-                        localStorage.setItem('active_user', JSON.stringify(rootUser));
-                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(rootUser));
-                        
-                        showToast('👑 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!');
-                        setTimeout(() => {
-                            window.location.href = 'hapanamy-admin-portal-9226.html';
-                        }, 800);
-                        return;
-                    } else {
-                        showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
-                        return;
-                    }
-                }
-                
-                // Check if user is registered inside local storage
+                // 2. Local Fallback Authentication
                 const registeredUsers = await dbGetUsers();
-                const matchedUser = registeredUsers.find(u => u.email.toLowerCase() === email.toLowerCase() || u.name.toLowerCase() === email.toLowerCase());
+                const matchedUser = registeredUsers.find(u => 
+                    (u.email && u.email.toLowerCase() === email.toLowerCase()) || 
+                    (u.username && u.username.toLowerCase() === email.toLowerCase()) ||
+                    (u.name && u.name.toLowerCase() === email.toLowerCase())
+                );
                 
                 if (matchedUser) {
-                    if (matchedUser.password === password) {
+                    const enteredHash = await sha256Hex(password);
+                    const isPassValid = matchedUser.password_hash ? (matchedUser.password_hash === enteredHash) : (matchedUser.password === password);
+
+                    if (isPassValid) {
                         const tokenStr = 'token-member-' + (matchedUser.id || matchedUser.email.split('@')[0]);
                         localStorage.setItem('auth_token', tokenStr);
                         localStorage.setItem('active_token', tokenStr);
                         localStorage.setItem('active_user', JSON.stringify({ 
                             id: matchedUser.id || 'user-' + matchedUser.email.split('@')[0],
-                            name: matchedUser.name,
-                            full_name: matchedUser.name,
+                            name: matchedUser.name || matchedUser.full_name,
+                            full_name: matchedUser.full_name || matchedUser.name,
                             username: matchedUser.username || matchedUser.name,
                             email: matchedUser.email, 
                             role: matchedUser.role || 'member' 
                         }));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify({
-                            name: matchedUser.name,
+                            name: matchedUser.name || matchedUser.full_name,
+                            full_name: matchedUser.full_name || matchedUser.name,
                             email: matchedUser.email,
                             phone: matchedUser.phone,
                             address: matchedUser.address,
+                            role: matchedUser.role || 'member',
                             bankName: (matchedUser.bank || 'Commercial Bank').split(' ')[0] || 'Bank',
                             branch: 'Branch',
                             accNumber: (matchedUser.bank || 'Commercial Bank').split(' ').slice(1).join(' ') || 'Account'
                         }));
                         
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.name}!`);
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matchedUser.full_name || matched.name}!`);
+                        const targetUrl = (matchedUser.role === 'admin' || matchedUser.role === 'ADMIN') ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
                         setTimeout(() => {
-                            window.location.href = 'dashboard.html';
-                        }, 1500);
+                            window.location.href = targetUrl;
+                        }, 1000);
+                        return;
                     } else {
                         showToast(`❌ <strong>වැරදි මුරපදයක්!</strong> ඇතුළත් කළ මුරපදය වැරදියි.`);
+                        return;
                     }
-                    return;
                 }
                 
-                // If logging in with an affiliate/partner/member email
-                if (email.includes('affiliate') || email.includes('partner') || email.includes('sponsor') || email.includes('member')) {
-                    localStorage.setItem('active_user', JSON.stringify({ email, role: 'member' }));
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Member Dashboard වෙත පිවිසෙමින්...`);
-                    setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1500);
-                    return;
-                }
-                
-                localStorage.setItem('active_user', JSON.stringify({ email, role: 'student' }));
-                showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> Hapanamy Dashboard වෙත පිවිසෙමින්...`);
-                
-                // Redirect to member dashboard
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1500);
+                showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> පරිශීලක නාමය හෝ මුරපදය වැරදියි.');
             } else {
                 const name = document.getElementById('regName').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
@@ -757,12 +702,14 @@
                     if (apiRes.ok) {
                         const data = await apiRes.json();
                         if (data.success) {
+                            localStorage.setItem('auth_token', data.verification_token);
                             localStorage.setItem('active_token', data.verification_token);
                             localStorage.setItem('active_user', JSON.stringify(data.user));
+                            localStorage.setItem('hapanamy_user_profile', JSON.stringify(data.user));
                             showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${name}!`);
                             setTimeout(() => {
                                 window.location.href = 'dashboard.html';
-                            }, 1500);
+                            }, 1000);
                             return;
                         } else if (data.error) {
                             showToast(`⚠️ <strong>දෝෂයකි:</strong> ${data.error}`);
@@ -775,20 +722,25 @@
                 
                 // Check if user already exists
                 let registeredUsers = await dbGetUsers();
-                const userExists = registeredUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+                const userExists = registeredUsers.some(u => u.email && u.email.toLowerCase() === email.toLowerCase());
                 if (userExists) {
                     showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
                     return;
                 }
                 
+                const passwordHash = await sha256Hex(password);
                 const newUser = {
+                    id: 'user-' + Date.now(),
                     name,
+                    full_name: name,
                     email,
                     phone,
                     address,
-                    password,
+                    password_hash: passwordHash,
                     role: selectedRole,
-                    bank: bankInfo
+                    bank: bankInfo,
+                    status: 'ACTIVE',
+                    created_at: new Date().toISOString()
                 };
                 await dbAddUser(newUser);
 
@@ -803,6 +755,7 @@
                     email: email,
                     phone: phone,
                     address: address,
+                    role: selectedRole,
                     bankName: bankInfo.split(' ')[0] || 'Bank',
                     branch: 'Branch',
                     accNumber: bankInfo.split(' ').slice(1).join(' ') || 'Account'

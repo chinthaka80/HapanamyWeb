@@ -337,6 +337,12 @@
             toast.style.display = 'block';
         }
 
+        async function sha256Hex(text) {
+            const enc = new TextEncoder().encode(text);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             toast.style.display = 'none';
@@ -352,64 +358,7 @@
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ පරීක්ෂා කරමින්... (Verifying)</span>';
 
-            // 1. First Production Member (Hiru)
-            const cleanId = identifier.toUpperCase();
-            if (cleanId === 'HIRU' || identifier.toLowerCase() === 'hiru@hapanamy.lk') {
-                if (password === 'Hapana20260808') {
-                    const memberUser = {
-                        id: 'user-hiru',
-                        username: 'Hiru',
-                        full_name: 'Hiru',
-                        name: 'Hiru',
-                        email: 'hiru@hapanamy.lk',
-                        role: 'member',
-                        status: 'ACTIVE'
-                    };
-                    localStorage.setItem('auth_token', 'token-hiru-member');
-                    localStorage.setItem('active_token', 'token-hiru-member');
-                    localStorage.setItem('active_user', JSON.stringify(memberUser));
-                    localStorage.setItem('hapanamy_user_profile', JSON.stringify(memberUser));
-                    showToast('👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Hiru!', false);
-                    setTimeout(() => {
-                        window.location.replace('dashboard.html');
-                    }, 800);
-                    return;
-                } else {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
-                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
-                    return;
-                }
-            }
-
-            // 2. Root Administrator Direct Auth (NAMOBUDDHAYA)
-            if (cleanId === 'NAMOBUDDHAYA' || identifier.toLowerCase() === 'admin@hapanamy.lk') {
-                if (password === 'Hapana20260808') {
-                    const rootUser = {
-                        id: 'user-namobuddhaya-root',
-                        username: 'NAMOBUDDHAYA',
-                        full_name: 'NAMOBUDDHAYA',
-                        email: 'admin@hapanamy.lk',
-                        role: 'admin',
-                        status: 'ACTIVE'
-                    };
-                    localStorage.setItem('auth_token', 'token-namobuddhaya-root');
-                    localStorage.setItem('active_token', 'token-namobuddhaya-root');
-                    localStorage.setItem('active_user', JSON.stringify(rootUser));
-                    showToast('👑 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු Admin NAMOBUDDHAYA!', false);
-                    setTimeout(() => {
-                        window.location.replace('hapanamy-admin-portal-9226.html');
-                    }, 800);
-                    return;
-                } else {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
-                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
-                    return;
-                }
-            }
-
-            // 2. Try Backend API
+            // 1. Authoritative Backend Authentication API
             try {
                 const response = await fetch('/api/auth/login', {
                     method: 'POST',
@@ -440,33 +389,42 @@
                     }
                 }
             } catch (err) {
-                console.log('Backend API offline, falling back to local database.');
+                console.log('Backend API offline, falling back to local database adapter.');
             }
 
-            // 3. Fallback to Local Storage Registered Users
-            const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-            const matched = regUsers.find(u => 
-                (u.email && u.email.toLowerCase() === identifier.toLowerCase()) || 
-                (u.username && u.username.toLowerCase() === identifier.toLowerCase())
-            );
+            // 2. Local Fallback for Offline / Standalone Testing
+            try {
+                const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                const matched = regUsers.find(u => 
+                    (u.email && u.email.toLowerCase() === identifier.toLowerCase()) || 
+                    (u.username && u.username.toLowerCase() === identifier.toLowerCase())
+                );
 
-            if (matched) {
-                if (matched.password === password) {
-                    localStorage.setItem('auth_token', 'token-member-' + (matched.id || Date.now()));
-                    localStorage.setItem('active_token', 'token-member-' + (matched.id || Date.now()));
-                    localStorage.setItem('active_user', JSON.stringify(matched));
-                    localStorage.setItem('hapanamy_user_profile', JSON.stringify(matched));
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
-                    setTimeout(() => {
-                        window.location.replace('dashboard.html');
-                    }, 800);
-                    return;
-                } else {
-                    btnSubmit.disabled = false;
-                    btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
-                    showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
-                    return;
+                if (matched) {
+                    const enteredHash = await sha256Hex(password);
+                    const isPassValid = matched.password_hash ? (matched.password_hash === enteredHash) : (matched.password === password);
+
+                    if (isPassValid) {
+                        const sessionToken = 'token-member-' + (matched.id || Date.now());
+                        localStorage.setItem('auth_token', sessionToken);
+                        localStorage.setItem('active_token', sessionToken);
+                        localStorage.setItem('active_user', JSON.stringify(matched));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(matched));
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
+                        const targetUrl = (matched.role === 'admin' || matched.role === 'ADMIN') ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
+                        setTimeout(() => {
+                            window.location.replace(targetUrl);
+                        }, 800);
+                        return;
+                    } else {
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<span>🔐 පිවිසෙන්න (Login)</span>';
+                        showToast('❌ <strong>ඇතුල්වීම අසාර්ථකයි:</strong> මුරපදය වැරදියි.');
+                        return;
+                    }
                 }
+            } catch (e2) {
+                console.error('Local fallback auth error:', e2);
             }
 
             btnSubmit.disabled = false;

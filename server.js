@@ -517,7 +517,6 @@ const mockUsers = [
         status: 'ACTIVE', 
         referral_code: 'Hiru',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        password: 'Hapana20260808',
         created_at: '2026-09-01T00:00:00Z' 
     },
     { 
@@ -529,7 +528,6 @@ const mockUsers = [
         status: 'ACTIVE', 
         referral_code: 'NAMOBUDDHAYA',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        password: 'Hapana20260808',
         created_at: '2026-09-01T00:00:00Z' 
     }
 ];

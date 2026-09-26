@@ -440,6 +440,12 @@
             toast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
+        async function sha256Hex(text) {
+            const enc = new TextEncoder().encode(text);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
         function validateEmail(email) {
             return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
@@ -548,7 +554,7 @@
                 console.log('Backend API offline, proceeding with local database layer.');
             }
 
-            // 2. Local Storage & Database Adapter Layer
+            // 2. Local Storage & Database Adapter Layer (Password NEVER stored in plaintext)
             try {
                 let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
                 const exists = regUsers.some(u => u.email && u.email.toLowerCase() === email.toLowerCase());
@@ -559,6 +565,7 @@
                     return;
                 }
 
+                const passwordHash = await sha256Hex(password);
                 const newUser = {
                     id: 'user-' + Date.now(),
                     name: fullName,
@@ -566,7 +573,7 @@
                     username: username,
                     email: email,
                     phone: phone,
-                    password: password,
+                    password_hash: passwordHash,
                     role: currentRole,
                     sponsor: effectiveSponsor,
                     position: effectivePosition,
@@ -598,10 +605,24 @@
                 }
 
                 const userSessionToken = 'token-member-' + newUser.id;
+                const safeUserProfile = {
+                    id: newUser.id,
+                    name: fullName,
+                    full_name: fullName,
+                    username: username,
+                    email: email,
+                    phone: phone,
+                    role: currentRole,
+                    sponsor: effectiveSponsor,
+                    position: effectivePosition,
+                    status: 'ACTIVE',
+                    created_at: newUser.created_at
+                };
+
                 localStorage.setItem('auth_token', userSessionToken);
                 localStorage.setItem('active_token', userSessionToken);
-                localStorage.setItem('active_user', JSON.stringify(newUser));
-                localStorage.setItem('hapanamy_user_profile', JSON.stringify(newUser));
+                localStorage.setItem('active_user', JSON.stringify(safeUserProfile));
+                localStorage.setItem('hapanamy_user_profile', JSON.stringify(safeUserProfile));
 
                 if (currentRole === 'member' || currentRole === 'affiliate') {
                     localStorage.setItem('hapanamy_affiliate_profile', JSON.stringify({
