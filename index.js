@@ -3210,7 +3210,7 @@ const heroSlides = [
 let currentSlideIdx = 0;
 const slideIntervalMs = 7000; // 7 seconds slider
 
-function renderHeroSlide(slideIdx) {
+function renderHeroSlide(slideIdx, isInitial = false) {
     const container = document.getElementById('heroSliderContent');
     const visualContainer = document.getElementById('heroSliderVisual');
     const statsContainer = document.getElementById('heroStatsContainer');
@@ -3221,14 +3221,7 @@ function renderHeroSlide(slideIdx) {
     const slide = heroSlides[slideIdx];
     const lang = localStorage.getItem('language') || 'si';
 
-    // Fade out first
-    container.style.opacity = '0';
-    container.style.transform = 'translateY(12px)';
-    visualContainer.style.opacity = '0';
-    visualContainer.style.transform = 'scale(0.95)';
-    statsContainer.style.opacity = '0';
-
-    setTimeout(() => {
+    const updateDOM = () => {
         // Change background image dynamically
         bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
 
@@ -3298,8 +3291,10 @@ function renderHeroSlide(slideIdx) {
         `).join('');
 
         // Update Bottom Gradient Bar
-        document.getElementById('heroBottomBarText').textContent = bottomBarText;
-        document.getElementById('heroBottomBarSubtext').textContent = bottomBarSub;
+        const bText = document.getElementById('heroBottomBarText');
+        const bSub = document.getElementById('heroBottomBarSubtext');
+        if (bText) bText.textContent = bottomBarText;
+        if (bSub) bSub.textContent = bottomBarSub;
 
         // Fade back in
         container.style.opacity = '1';
@@ -3307,16 +3302,28 @@ function renderHeroSlide(slideIdx) {
         visualContainer.style.opacity = '1';
         visualContainer.style.transform = 'scale(1)';
         statsContainer.style.opacity = '1';
+    };
 
-    }, 300);
+    if (isInitial) {
+        updateDOM();
+    } else {
+        // Fade out first for transition
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(12px)';
+        visualContainer.style.opacity = '0';
+        visualContainer.style.transform = 'scale(0.95)';
+        statsContainer.style.opacity = '0';
+
+        setTimeout(updateDOM, 300);
+    }
 }
 
 function initHeroSlider() {
-    renderHeroSlide(0);
+    renderHeroSlide(0, true);
 
     setInterval(() => {
         currentSlideIdx = (currentSlideIdx + 1) % heroSlides.length;
-        renderHeroSlide(currentSlideIdx);
+        renderHeroSlide(currentSlideIdx, false);
     }, slideIntervalMs);
 }
 
