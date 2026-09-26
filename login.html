@@ -268,6 +268,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
     <meta name="google-adsense-account" content="ca-pub-8211523479069192">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
     <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
@@ -420,6 +424,7 @@
                         localStorage.setItem('auth_token', data.token);
                         localStorage.setItem('active_token', data.token);
                         localStorage.setItem('active_user', JSON.stringify(data.user));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(data.user));
 
                         showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
                         const targetUrl = data.redirect_url || (data.user.role === 'admin' || data.user.role === 'ADMIN' ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html');
@@ -450,6 +455,7 @@
                     localStorage.setItem('auth_token', 'token-member-' + (matched.id || Date.now()));
                     localStorage.setItem('active_token', 'token-member-' + (matched.id || Date.now()));
                     localStorage.setItem('active_user', JSON.stringify(matched));
+                    localStorage.setItem('hapanamy_user_profile', JSON.stringify(matched));
                     showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
                     setTimeout(() => {
                         window.location.replace('dashboard.html');

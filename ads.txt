@@ -1,2 +1,1 @@
-# Google AdSense Authorized Digital Sellers (ads.txt) for Hapanamy.lk
 google.com, pub-8211523479069192, DIRECT, f08c47fec0942fa0

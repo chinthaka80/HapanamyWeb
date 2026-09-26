@@ -793,9 +793,13 @@
                 await dbAddUser(newUser);
 
                 // Save active user and profile
-                localStorage.setItem('active_user', JSON.stringify({ email, role: selectedRole }));
+                const tokenStr = 'token-member-' + Date.now();
+                localStorage.setItem('auth_token', tokenStr);
+                localStorage.setItem('active_token', tokenStr);
+                localStorage.setItem('active_user', JSON.stringify({ name, full_name: name, email, role: selectedRole }));
                 localStorage.setItem('hapanamy_user_profile', JSON.stringify({
                     name: name,
+                    full_name: name,
                     email: email,
                     phone: phone,
                     address: address,

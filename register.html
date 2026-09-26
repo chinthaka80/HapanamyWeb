@@ -334,6 +334,11 @@
             </a>
         </div>
 
+        <div id="sponsorBadge" class="sponsor-badge" style="display: none; background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 13px; color: var(--brand-gold); align-items: center; gap: 8px;">
+            <span style="font-size: 16px;">🤝</span>
+            <span>Sponsor: <strong id="sponsorNameText" style="color: #FFF;">Hiru</strong> (<span id="sponsorPosText" style="color: var(--brand-orange); font-weight: 700;">LEFT</span> Team)</span>
+        </div>
+
         <div id="authToast" class="auth-toast"></div>
 
         <form id="registerForm">
@@ -400,6 +405,28 @@
         const registerForm = document.getElementById('registerForm');
         const btnSubmit = document.getElementById('btnSubmit');
 
+        // Capture referral parameters (?ref=USERNAME&position=left|right)
+        const urlParams = new URLSearchParams(window.location.search);
+        const refQuery = urlParams.get('ref') || urlParams.get('sponsor');
+        const posQuery = urlParams.get('position');
+
+        if (refQuery) {
+            localStorage.setItem('hapanamy_referrer', refQuery);
+        }
+        if (posQuery) {
+            localStorage.setItem('hapanamy_ref_position', posQuery.toUpperCase());
+        }
+
+        const effectiveSponsor = refQuery || localStorage.getItem('hapanamy_referrer') || 'Hiru';
+        const effectivePosition = (posQuery || localStorage.getItem('hapanamy_ref_position') || 'LEFT').toUpperCase();
+
+        const sponsorBadge = document.getElementById('sponsorBadge');
+        if (sponsorBadge && effectiveSponsor) {
+            document.getElementById('sponsorNameText').textContent = effectiveSponsor;
+            document.getElementById('sponsorPosText').textContent = effectivePosition;
+            sponsorBadge.style.display = 'flex';
+        }
+
         function selectRole(role) {
             currentRole = role;
             document.getElementById('roleStudent').classList.toggle('active', role === 'student');
@@ -410,6 +437,11 @@
             toast.className = `auth-toast ${isError ? 'auth-toast-error' : 'auth-toast-success'}`;
             toast.innerHTML = msg;
             toast.style.display = 'block';
+            toast.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function validateEmail(email) {
+            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
         }
 
         registerForm.addEventListener('submit', async (e) => {
@@ -421,6 +453,22 @@
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
+            const termsAgreed = document.getElementById('agreeTerms').checked;
+
+            if (!fullName) {
+                showToast('⚠️ කරුණාකර ඔබගේ සම්පූර්ණ නම ඇතුළත් කරන්න.');
+                return;
+            }
+
+            if (!email || !validateEmail(email)) {
+                showToast('⚠️ කරුණාකර නිවැරදි විද්‍යුත් තැපැල් (Email) ලිපිනයක් ඇතුළත් කරන්න.');
+                return;
+            }
+
+            if (!phone || phone.length < 7) {
+                showToast('⚠️ කරුණාකර වලංගු දුරකථන අංකයක් ඇතුළත් කරන්න.');
+                return;
+            }
 
             if (password.length < 6) {
                 showToast('⚠️ මුරපදය සඳහා අවම වශයෙන් අක්ෂර 6ක් ඇතුළත් කරන්න.');
@@ -432,11 +480,15 @@
                 return;
             }
 
+            if (!termsAgreed) {
+                showToast('⚠️ ලියාපදිංචි වීමට කරුණාකර සේවා කොන්දේසි වලට එකඟ වන්න.');
+                return;
+            }
+
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ ලියාපදිංචි කරමින්...</span>';
 
             const username = email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
-            const sponsorCode = localStorage.getItem('hapanamy_referrer') || 'Hiru';
 
             // 1. Try Backend API
             try {
@@ -450,7 +502,8 @@
                         mobile: phone,
                         password,
                         confirmPassword,
-                        sponsorCode,
+                        sponsorCode: effectiveSponsor,
+                        position: effectivePosition,
                         role: currentRole,
                         termsAccepted: true,
                         privacyAccepted: true
@@ -461,9 +514,24 @@
                 if (contentType.includes('application/json')) {
                     const data = await response.json();
                     if (response.ok && data.success) {
-                        localStorage.setItem('auth_token', data.verification_token || 'token-' + Date.now());
-                        localStorage.setItem('active_token', data.verification_token || 'token-' + Date.now());
+                        const token = data.verification_token || 'token-' + Date.now();
+                        localStorage.setItem('auth_token', token);
+                        localStorage.setItem('active_token', token);
                         localStorage.setItem('active_user', JSON.stringify(data.user));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                            id: data.user.id,
+                            name: fullName,
+                            full_name: fullName,
+                            username: data.user.username || username,
+                            email: email,
+                            phone: phone,
+                            role: currentRole,
+                            status: 'ACTIVE',
+                            sponsor: effectiveSponsor,
+                            position: effectivePosition,
+                            created_at: new Date().toISOString()
+                        }));
+
                         showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
                         setTimeout(() => {
                             window.location.replace('dashboard.html');
@@ -477,13 +545,13 @@
                     }
                 }
             } catch (err) {
-                console.log('Backend API offline, falling back to local database.');
+                console.log('Backend API offline, proceeding with local database layer.');
             }
 
-            // 2. Local Fallback via db.js / localStorage
+            // 2. Local Storage & Database Adapter Layer
             try {
                 let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-                const exists = regUsers.some(u => u.email.toLowerCase() === email.toLowerCase());
+                const exists = regUsers.some(u => u.email && u.email.toLowerCase() === email.toLowerCase());
                 if (exists) {
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = '<span>🚀 ලියාපදිංචි වන්න (Create Account)</span>';
@@ -500,6 +568,8 @@
                     phone: phone,
                     password: password,
                     role: currentRole,
+                    sponsor: effectiveSponsor,
+                    position: effectivePosition,
                     status: 'ACTIVE',
                     created_at: new Date().toISOString()
                 };
@@ -511,10 +581,38 @@
                     await dbAddUser(newUser);
                 }
 
-                localStorage.setItem('auth_token', 'token-member-' + newUser.id);
-                localStorage.setItem('active_token', 'token-member-' + newUser.id);
+                // Record under sponsor downline list
+                if (effectiveSponsor) {
+                    let referredList = JSON.parse(localStorage.getItem('referred_users_' + effectiveSponsor)) || [];
+                    referredList.push({
+                        name: fullName,
+                        username: username,
+                        email: email,
+                        mobile: phone,
+                        position: effectivePosition,
+                        role: currentRole,
+                        date: new Date().toLocaleDateString(),
+                        created_at: new Date().toISOString()
+                    });
+                    localStorage.setItem('referred_users_' + effectiveSponsor, JSON.stringify(referredList));
+                }
+
+                const userSessionToken = 'token-member-' + newUser.id;
+                localStorage.setItem('auth_token', userSessionToken);
+                localStorage.setItem('active_token', userSessionToken);
                 localStorage.setItem('active_user', JSON.stringify(newUser));
                 localStorage.setItem('hapanamy_user_profile', JSON.stringify(newUser));
+
+                if (currentRole === 'member' || currentRole === 'affiliate') {
+                    localStorage.setItem('hapanamy_affiliate_profile', JSON.stringify({
+                        name: fullName,
+                        email: email,
+                        phone: phone,
+                        bankName: 'Commercial Bank',
+                        accNumber: '8010294851',
+                        status: 'ACTIVE'
+                    }));
+                }
 
                 showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
                 setTimeout(() => {
