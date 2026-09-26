@@ -1,4 +1,4 @@
-﻿/**
+/**
  * HAPANAMY.LK — Privacy & Cookie Consent Banner Engine
  * Compliant with Google Publisher Policies, GDPR, and ePrivacy Directive.
  */
@@ -20,7 +20,7 @@
         banner.id = 'hapanamyCookieBanner';
         banner.style = 'position: fixed; bottom: 16px; left: 16px; right: 16px; max-width: 600px; margin: 0 auto; background: rgba(15, 23, 42, 0.95); backdrop-filter: blur(12px); border: 1px solid rgba(240, 179, 35, 0.3); border-radius: 16px; padding: 18px 22px; z-index: 999999; box-shadow: 0 20px 40px rgba(0,0,0,0.6); color: #f8fafc; font-family: inherit; font-size: 13px; line-height: 1.5; display: flex; flex-direction: column; gap: 12px;';
 
-        banner.innerHTML = 
+        banner.innerHTML = `
             <div style="display: flex; align-items: flex-start; gap: 12px;">
                 <span style="font-size: 24px;">🍪</span>
                 <div style="flex: 1;">
@@ -32,7 +32,7 @@
                 <button id="btnDeclineCookie" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #94a3b8; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 600; cursor: pointer;">Decline</button>
                 <button id="btnAcceptCookie" style="background: linear-gradient(135deg, #f0b323, #f47b20); border: none; color: #000; padding: 7px 18px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">Accept All</button>
             </div>
-        ;
+        `;
 
         document.body.appendChild(banner);
 
