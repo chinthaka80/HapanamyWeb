@@ -513,6 +513,8 @@
             to { transform: translateX(0); }
         }
     </style>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -894,9 +896,9 @@
         // 🔒 Session Security Guard
         (function() {
             const activeUser = JSON.parse(localStorage.getItem('active_user'));
-            if (!activeUser) {
-                alert('🔒 Access Denied! Please sign in first.');
-                window.location.href = 'login-register.html';
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            if (!activeUser && !token) {
+                window.location.href = 'login.html';
             }
         })();
 
@@ -938,8 +940,10 @@
         // Logout
         function logoutUser() {
             localStorage.removeItem('active_user');
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('active_token');
             showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
-            setTimeout(() => { window.location.href = 'login-register.html'; }, 1500);
+            setTimeout(() => { window.location.href = 'login.html'; }, 1200);
         }
 
         // Filter downline members across all 5 levels dynamically

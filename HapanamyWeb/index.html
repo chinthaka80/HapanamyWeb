@@ -16,6 +16,7 @@
     <meta property="og:image" content="assets/logo.jpg">
     <meta property="og:url" content="https://www.hapanamy.lk">
     <meta property="og:type" content="website">
+    <link rel="canonical" href="https://www.hapanamy.lk/">
 
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -42,6 +43,9 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="db.js"></script>
+    <!-- Google AdSense (Auto Ads & Manual Units) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
 </head>
 <body>
 
@@ -49,7 +53,7 @@
     <div class="top-bar">
         <div class="container top-bar-content">
             <div class="top-bar-left">
-                <span>🔥 ශ්‍රී ලංකාවේ ප්‍රථම වරට 40% Affiliate කොමිස් මුදලක්!</span>
+                <span>🔥 15% සෘජු Affiliate කොමිස් මුදලක් (Direct Commission) | සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</span>
             </div>
             <div class="top-bar-right">
                 <a href="mailto:info@hapanamy.lk">info@hapanamy.lk</a>
@@ -62,7 +66,7 @@
     <!-- Header & Navigation -->
     <header class="header">
         <div class="container header-container">
-            <a href="#" class="logo" ondblclick="window.location.href='login-register.html?access=admin'" title="Hapanamy Portal">
+            <a href="#" class="logo" ondblclick="window.location.href='login.html?access=admin'" title="Hapanamy Portal">
                 <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
                 <div style="display: flex; flex-direction: column; justify-content: center;">
                     <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
@@ -125,7 +129,11 @@
         <div class="container hero-container" style="position:relative; z-index:5; display: grid; grid-template-columns: 1.25fr 1fr; gap: 40px; align-items: center; padding-bottom: 50px;">
             <!-- Left Side: Dynamic Slider Content -->
             <div class="hero-content" id="heroSliderContent" style="opacity:1; transition: opacity 0.4s ease, transform 0.4s ease;">
-                <!-- Injected dynamically by JS -->
+                <div style="background: rgba(255, 255, 255, 0.45); backdrop-filter: blur(30px); border: 1px solid rgba(255, 255, 255, 0.6); border-radius: 32px; padding: 40px;">
+                    <span class="hero-badge" style="display:inline-block; margin-bottom:20px; font-size:12.5px; font-weight:800; text-transform:uppercase; color:#5D4037; background-color:#FFD54F; padding:8px 18px; border-radius:30px;">🎓 ශ්‍රී ලංකාවේ ඩිජිටල් ඉගෙනුම් සරසවිය</span>
+                    <h1 class="hero-title" style="font-size:38px; font-weight:900; line-height:1.2; color:#5D4037; margin-bottom:12px; font-family:'Poppins', sans-serif;">ශ්‍රී ලංකාවේ අංක 1 <br><span style="color:var(--brand-orange);">ඩිජිටල් ඉගෙනුම් සරසවිය.</span></h1>
+                    <p class="hero-subtitle" style="font-size:14.5px; color:#5D4037; line-height:1.7; margin-bottom:20px; font-weight:500;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න (CONNECT • LEARN • GROW • EARN)</p>
+                </div>
             </div>
             
             <!-- Right Side: Dynamic Slider Content (Holographic Dashboard, Categories Panel) -->
@@ -143,7 +151,7 @@
         <div class="hero-bottom-bar" style="background: linear-gradient(90deg, #F57C00, #D4AF37); padding: 15px 0; color: white; text-align: center; border-top: 1px solid rgba(255,255,255,0.2); position:relative; z-index:5;">
             <div class="container" style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
                 <span style="background-color: var(--brand-red); color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase;">100% ප්‍රායෝගික පාඨමාලා</span>
-                <span style="font-size: 15px; font-weight: 800;" id="heroBottomBarText">ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★</span>
+                <span style="font-size: 15px; font-weight: 800;" id="heroBottomBarText">ශ්‍රී ලංකාවේ ඩිජිටල් ඉගෙනුම් සරසවිය (Sri Lanka's Digital Learning Campus) ★★★★★</span>
                 <span style="font-size: 12px; opacity: 0.9;" id="heroBottomBarSubtext">ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම</span>
             </div>
         </div>
@@ -156,7 +164,7 @@
                 <span class="sub-title" data-translate="video_sub_badge">🎓 HAPANAMY INTRODUCTION</span>
                 <h2 class="section-main-title" data-translate="video_main_title">විශ්වවිද්‍යාලය ක්‍රියාත්මක වන ආකාරය</h2>
                 <div class="title-line"></div>
-                <p class="section-desc" data-translate="video_desc">ශ්‍රී ලංකාවේ ප්‍රථම සහ විශාලතම ඩිජිටල් අධ්‍යාපනික සහ අනුබද්ධිත (Affiliate) අලෙවිකරණ සරසවිය පිළිබඳ අපගේ ප්‍රධාන හඳුන්වාදීමේ වීඩියෝව නරඹන්න.</p>
+                <p class="section-desc" data-translate="video_desc">ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ අනුබද්ධිත (Affiliate) අලෙවිකරණ වේදිකාව පිළිබඳ අපගේ ප්‍රධාන හඳුන්වාදීමේ වීඩියෝව නරඹන්න.</p>
             </div>
 
             <div class="video-container-wrapper">
@@ -880,7 +888,7 @@
                 <img id="blogModalBanner" src="" alt="Blog Banner" style="height: 100%; width: 100%; object-fit: cover;">
                 <div class="modal-header-overlay" style="background: linear-gradient(transparent, rgba(93, 64, 55, 0.95)); padding: 20px;">
                     <span class="modal-badge" id="blogModalCategory" style="background-color: var(--brand-orange); color:white; font-weight:700;">Category</span>
-                    <h2 id="blogModalTitle" style="color: white; font-size: 22px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Article Title</h2>
+                    <h2 id="blogModalTitle" style="color: white; font-size: 22px; font-weight: 800; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">Hapanamy ලිපි (Article)</h2>
                 </div>
             </div>
             <div class="modal-body-content" style="display: block; padding: 30px; max-height: 60vh; overflow-y: auto;">
@@ -902,13 +910,13 @@
                 <img id="modalBanner" src="" alt="Course Banner">
                 <div class="modal-header-overlay">
                     <span class="modal-badge" id="modalCategory">Category</span>
-                    <h2 id="modalTitle">Course Name</h2>
+                    <h2 id="modalTitle">පාඨමාලා විස්තර (Course Details)</h2>
                 </div>
             </div>
             <div class="modal-body-content">
                 <div class="modal-main-detail">
                     <h3 id="modalOverviewTitle">💡 පාඨමාලාව ගැන (Course Overview)</h3>
-                    <p id="modalDesc">Detailed description goes here...</p>
+                    <div id="modalDesc" style="line-height: 1.7; color: var(--text-primary);">පාඨමාලා විස්තර පූරණය වෙමින් පවතී...</div>
                     
                     <h3 id="modalSyllabusTitle" style="margin-top: 25px;">📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)</h3>
                     <ul class="syllabus-list" id="modalSyllabus">
@@ -919,12 +927,12 @@
                     <div class="modal-price-card">
                         <div class="sidebar-price-label">මිල ගණන් සහ ප්‍රවර්ධන</div>
                         <div class="sidebar-price-original" id="modalOriginalPrice">රු. 9,900</div>
-                        <div class="sidebar-price-current" id="modalCurrentPrice">රු. 7,920</div>
-                        <div class="sidebar-discount" id="modalDiscount">20% OFF</div>
+                        <div class="sidebar-price-current" id="modalCurrentPrice">රු. 7,425</div>
+                        <div class="sidebar-discount" id="modalDiscount">25% OFF</div>
                         
                         <div class="sidebar-affiliate-box">
                             <div class="sidebar-aff-label">Affiliate කොමිස් මුදල (15%)</div>
-                            <div class="sidebar-aff-val" id="modalCommission">රු. 3,168.00</div>
+                            <div class="sidebar-aff-val" id="modalCommission">රු. 1,113.75</div>
                         </div>
                         
                         <button class="sidebar-buy-btn" id="modalBuyBtn" style="border: none; width: 100%; text-align: center; cursor: pointer; text-decoration: none; display: block;">Enroll / Buy Course</button>
@@ -942,9 +950,9 @@
             <div class="affiliate-layout">
                 <div class="affiliate-info-box">
                     <span class="affiliate-badge">💰 HAPANAMY PARTNERSHIP PROGRAM</span>
-                    <h2>ලංකාවේ වැඩිම කොමිස් මුදලක් ගෙවන Affiliate වැඩසටහන</h2>
+                    <h2>Hapanamy 15% සෘජු Affiliate වැඩසටහන (Partnership Program)</h2>
                     <p class="affiliate-sin-text">
-                        අපගේ උසස් තත්ත්වයේ ඩිජිටල් නිෂ්පාදන සහ පාඨමාලා සමාජ මාධ්‍ය හරහා හඳුන්වා දී, සෑම සාර්ථක අලෙවියක් සඳහාම <strong>15% ක සෘජු කොමිස් මුදලක් (රු. 896 සිට රු. 6,396 දක්වා)</strong> උපයා ගන්න.
+                        අපගේ උසස් තත්ත්වයේ ඩිජිටල් නිෂ්පාදන සහ පාඨමාලා සමාජ මාධ්‍ය හරහා හඳුන්වා දී, සෑම සාර්ථක අලෙවියක් සඳහාම <strong>15% ක සෘජු කොමිස් මුදලක් (රු. 300 සිට රු. 2,985 දක්වා)</strong> උපයා ගන්න.
                     </p>
                     
                     <div class="affiliate-steps">
@@ -978,7 +986,7 @@
                         <ul class="feature-list">
                             <li>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
-                                <span><strong>15% ක ඉහළම කොමිස් අනුපාතය:</strong> වෙනත් කිසිම තැනක නොලැබෙන ඉහළ ආදායමක්.</span>
+                                <span><strong>15% සෘජු කොමිස් අනුපාතය:</strong> සෑම සාර්ථක පාඨමාලා සහ E-Book අලෙවියක් සඳහාම 15% ක සෘජු කොමිස් මුදලක්.</span>
                             </li>
                             <li>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="feat-icon"><polyline points="20 6 9 17 4 12"/></svg>
@@ -994,7 +1002,7 @@
                             </li>
                         </ul>
                         <div style="margin-top: 25px; text-align: center;">
-                            <a href="login-register.html" class="btn btn-primary" style="width: 100%;">Affiliate සාමාජිකයෙකු වන්න</a>
+                            <a href="register.html" class="btn btn-primary" style="width: 100%;">Affiliate සාමාජිකයෙකු වන්න</a>
                         </div>
                     </div>
                 </div>
@@ -1017,7 +1025,7 @@
                     <!-- Ebooks Slider -->
                     <div class="calc-slider-group">
                         <div class="slider-header">
-                            <span class="slider-label">E-Books අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,476)</span>
+                            <span class="slider-label">E-Books අලෙවිය (සාමාන්‍ය කොමිස් රු. 579)</span>
                             <span class="slider-count" id="ebooksCount">0</span>
                         </div>
                         <input type="range" id="ebooksSlider" min="0" max="100" value="0" class="calc-range-input">
@@ -1031,7 +1039,7 @@
                     <!-- Trading Courses Slider -->
                     <div class="calc-slider-group">
                         <div class="slider-header">
-                            <span class="slider-label">Trading පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,877)</span>
+                            <span class="slider-label">Trading පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 1,637)</span>
                             <span class="slider-count" id="tradingCount">0</span>
                         </div>
                         <input type="range" id="tradingSlider" min="0" max="100" value="0" class="calc-range-input">
@@ -1045,7 +1053,7 @@
                     <!-- Social Media Slider -->
                     <div class="calc-slider-group">
                         <div class="slider-header">
-                            <span class="slider-label">Social Media පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,150)</span>
+                            <span class="slider-label">Social Media පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 1,325)</span>
                             <span class="slider-count" id="socialCount">0</span>
                         </div>
                         <input type="range" id="socialSlider" min="0" max="100" value="0" class="calc-range-input">
@@ -1059,7 +1067,7 @@
                     <!-- AI & Tech Slider -->
                     <div class="calc-slider-group">
                         <div class="slider-header">
-                            <span class="slider-label">AI & Tech පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 3,266)</span>
+                            <span class="slider-label">AI & Tech පාඨමාලා අලෙවිය (සාමාන්‍ය කොමිස් රු. 1,370)</span>
                             <span class="slider-count" id="aiCount">0</span>
                         </div>
                         <input type="range" id="aiSlider" min="0" max="100" value="0" class="calc-range-input">
@@ -1209,6 +1217,22 @@
         </div>
     </section>
 
+    <!-- Google AdSense Homepage Banner Placement -->
+    <div class="container" style="margin: 30px auto 0 auto;">
+        <div class="ad-slot-card">
+            <span class="ad-slot-label">Advertisement</span>
+            <ins class="adsbygoogle"
+                 style="display:block"
+                 data-ad-client="ca-pub-8211523479069192"
+                 data-ad-slot="5005005005"
+                 data-ad-format="auto"
+                 data-full-width-responsive="true"></ins>
+            <script>
+                 (adsbygoogle = window.adsbygoogle || []).push({});
+            </script>
+        </div>
+    </div>
+
     <!-- Blog Section -->
     <section class="blog-section" id="blog" style="padding: 80px 0; background-color: var(--brand-orange-soft); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
         <div class="container">
@@ -1222,6 +1246,7 @@
             <div class="blog-articles-slider" id="blogArticlesGrid" style="margin-top: 40px;">
                 <!-- Dynamic blog cards will be injected here -->
             </div>
+        </div>
     </section>
 
     <!-- Contact & Register Section -->
@@ -1236,7 +1261,7 @@
                         <span class="c-icon">📍</span>
                         <div>
                             <h4>කාර්යාලය (Address)</h4>
-                            <p>Hapanamy Technologies PLC, Colombo 03, Sri Lanka.</p>
+                            <p>MAX SAVE INTERNATIONAL (PVT) LTD, Kurunegala & Colombo 03, Sri Lanka.</p>
                         </div>
                     </div>
                     <div class="contact-method-item">
@@ -1337,7 +1362,7 @@
                     <li><a href="#courses">Courses (පාඨමාලා)</a></li>
                     <li><a href="#courses">E-Books (ඩිජිටල් පොත්)</a></li>
                     <li><a href="blog.html" target="_blank">Blog (අපගේ බ්ලොග් ලිපි)</a></li>
-                    <li><a href="login-register.html">Affiliate Portal (අනුබද්ධිත පිවිසුම)</a></li>
+                    <li><a href="login.html">Affiliate Portal (අනුබද්ධිත පිවිසුම)</a></li>
                 </ul>
             </div>
             
@@ -1406,13 +1431,13 @@
     </div>
 
     <!-- Floating Cart Trigger Button -->
-    <div id="floatingCartBtn" onclick="toggleCartDrawer(true)" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: var(--brand-orange); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(244,123,32,0.4); z-index: 999; transition: var(--transition-smooth);">
+    <div id="floatingCartBtn" onclick="toggleCartDrawer(true)" style="position: fixed; bottom: 95px; right: 25px; width: 56px; height: 56px; background: var(--gold-gradient); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 22px; color: white; cursor: pointer; box-shadow: 0 4px 15px rgba(244,123,32,0.4); z-index: 998; transition: var(--transition-smooth);">
         🛒
-        <span id="floatingCartCount" style="position: absolute; top: -5px; right: -5px; background-color: var(--brand-gold); color: #102A43; font-size: 11px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">0</span>
+        <span id="floatingCartCount" style="position: absolute; top: -4px; right: -4px; background-color: var(--brand-gold); color: #102A43; font-size: 11px; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white;">0</span>
     </div>
 
     <!-- Sliding Cart Drawer -->
-    <div class="cart-drawer" id="cartDrawer" style="position: fixed; top: 0; right: -400px; width: 380px; height: 100vh; background-color: var(--bg-surface); border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.3); z-index: 1000; transition: 0.4s ease; display: flex; flex-direction: column;">
+    <div class="cart-drawer" id="cartDrawer" style="position: fixed; top: 0; right: -400px; width: 380px; max-width: 100vw; height: 100vh; background-color: var(--bg-surface); border-left: 1px solid var(--border-color); box-shadow: -5px 0 30px rgba(0,0,0,0.3); z-index: 1000; transition: 0.4s ease; display: flex; flex-direction: column;">
         <div style="padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
             <h3 style="font-size: 18px; color: var(--text-primary);" data-translate="cart_title">සාප්පු සවාරි කරත්තය (Your Cart)</h3>
             <button onclick="toggleCartDrawer(false)" style="background: none; border: none; font-size: 28px; color: var(--text-primary); cursor: pointer; line-height: 1;">&times;</button>
@@ -1434,8 +1459,8 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <!-- Global Floating WhatsApp Widget -->
-    <a href="https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20want%20to%20know%20more%20details%20about%20your%20services." target="_blank" class="floating-whatsapp-widget" aria-label="Chat on WhatsApp" style="position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background-color: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3), 0 0 20px rgba(37, 211, 102, 0.4); z-index: 1000; text-decoration: none;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.49-3.218c1.652.98 3.23 1.493 4.883 1.495 5.518 0 10.011-4.49 10.014-10.01.002-2.653-1.03-5.148-2.908-7.028-1.879-1.881-4.38-2.916-7.037-2.917-5.522 0-10.014 4.493-10.017 10.017-.001 1.745.485 3.326 1.478 4.902L1.082 22.07l4.475-1.173c-.01 0-.01 0 0 0zm12.5-5.32c-.27-.137-1.602-.79-1.85-.88-.248-.09-.43-.137-.61.137-.18.275-.698.88-.856 1.06-.157.18-.315.203-.585.067-.27-.137-1.14-.42-2.17-1.34-.8-.713-1.34-1.595-1.5-1.87-.156-.276-.017-.425.12-.562.124-.123.27-.315.406-.473.136-.158.18-.27.27-.45.09-.18.046-.338-.022-.475-.069-.137-.61-1.472-.836-2.016-.22-.53-.44-.458-.61-.466-.157-.008-.339-.01-.52-.01-.18 0-.476.067-.725.339-.25.275-.953.93-.953 2.27 0 1.34.975 2.637 1.11 2.822.137.184 1.92 2.93 4.65 4.11.65.28 1.157.446 1.55.57.653.208 1.248.178 1.717.108.524-.078 1.602-.656 1.83-.1.228-.61.228-1.13.16-.123-.069-.137-.248-.275-.518zm0 0"/></svg>
+    <a href="https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20want%20to%20know%20more%20details%20about%20your%20services." target="_blank" class="floating-whatsapp-widget" aria-label="Chat on WhatsApp" style="position: fixed; bottom: 25px; right: 25px; width: 56px; height: 56px; background-color: #25D366; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), 0 0 16px rgba(37, 211, 102, 0.35); z-index: 998; text-decoration: none; transition: var(--transition-smooth);">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.49-3.218c1.652.98 3.23 1.493 4.883 1.495 5.518 0 10.011-4.49 10.014-10.01.002-2.653-1.03-5.148-2.908-7.028-1.879-1.881-4.38-2.916-7.037-2.917-5.522 0-10.014 4.493-10.017 10.017-.001 1.745.485 3.326 1.478 4.902L1.082 22.07l4.475-1.173c-.01 0-.01 0 0 0zm12.5-5.32c-.27-.137-1.602-.79-1.85-.88-.248-.09-.43-.137-.61.137-.18.275-.698.88-.856 1.06-.157.18-.315.203-.585.067-.27-.137-1.14-.42-2.17-1.34-.8-.713-1.34-1.595-1.5-1.87-.156-.276-.017-.425.12-.562.124-.123.27-.315.406-.473.136-.158.18-.27.27-.45.09-.18.046-.338-.022-.475-.069-.137-.61-1.472-.836-2.016-.22-.53-.44-.458-.61-.466-.157-.008-.339-.01-.52-.01-.18 0-.476.067-.725.339-.25.275-.953.93-.953 2.27 0 1.34.975 2.637 1.11 2.822.137.184 1.92 2.93 4.65 4.11.65.28 1.157.446 1.55.57.653.208 1.248.178 1.717.108.524-.078 1.602-.656 1.83-.1.228-.61.228-1.13.16-.123-.069-.137-.248-.275-.518zm0 0"/></svg>
     </a>
 
     <!-- Script File -->

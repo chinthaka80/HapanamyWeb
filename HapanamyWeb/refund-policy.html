@@ -1,63 +1,257 @@
 <!DOCTYPE html>
-<html lang="si" data-theme="light">
+<html lang="si" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Refund Policy | Hapanamy.lk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Hapanamy.lk | මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය (Refund Policy)</title>
+    
+    <!-- Meta tags for SEO & AdSense -->
+    <meta name="description" content="Hapanamy.lk මුදල් ආපසු ගෙවීමේ නිල ප්‍රතිපත්තිය (Refund Policy). ඩිජිටල් පාඨමාලා, E-Books සහ සජීවී Zoom වැඩමුළු සඳහා වන කොන්දේසි.">
+    <link rel="canonical" href="https://www.hapanamy.lk/refund-policy.html">
+    
+        <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය (Refund Policy)">
+    <meta property="og:description" content="Hapanamy.lk ඩිජිටල් නිෂ්පාදන සහ පාඨමාලා මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/refund-policy.html">
+    <meta property="og:type" content="website">
+<!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="index.css">
+    
     <style>
-        .policy-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 40px;
-            background: #FFFFFF;
-            border-radius: 24px;
+        .page-header {
+            padding: 90px 0 40px 0;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .legal-card {
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto 60px auto;
+            max-width: 900px;
             box-shadow: var(--card-shadow);
         }
-        .policy-container h1 {
-            font-size: 32px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .policy-container h2 {
+
+        .legal-card h2 {
             font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 14px;
             border-left: 4px solid var(--brand-gold);
-            padding-left: 12px;
+            padding-left: 14px;
         }
-        .policy-container p, .policy-container li {
+
+        .legal-card p, .legal-card li {
             font-size: 14.5px;
             color: var(--text-body);
-            line-height: 1.7;
+            line-height: 1.8;
             margin-bottom: 14px;
         }
-        .btn-home {
-            display: block;
-            width: fit-content;
-            margin: 40px auto 0 auto;
+
+        .legal-card ul {
+            padding-left: 24px;
+            margin-bottom: 18px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .breadcrumb a {
+            color: var(--brand-gold);
+            text-decoration: none;
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
+            });
+            navMenu.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuBtn.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+        }
+  
+    </script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <!-- Google AdSense (Auto Ads & Manual Units) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
 </head>
 <body>
-    <div class="container">
-        <div class="policy-container">
-            <h1>Refund Policy (මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය)</h1>
-            <p>Hapanamy.lk වෙතින් මිලදී ගන්නා ඩිජිටල් නිෂ්පාදන සඳහා අදාළ මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය පහත පරිදි වේ.</p>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
             
-            <h2>1. ඩිජිටල් E-Books</h2>
-            <p>E-books යනු බාගත හැකි (downloadable) ක්ෂණික ඩිජිටල් නිෂ්පාදන බැවින්, මිලදී ගැනීමෙන් පසු ඒවා සඳහා කිසිදු මුදල් ආපසු ගෙවීමක් (No refunds) සිදු කළ නොහැකි බව කාරුණිකව සලකන්න.</p>
-            
-            <h2>2. Online Zoom පාඨමාලා</h2>
-            <p>Zoom පාඨමාලාවක් සඳහා ලියාපදිංචි වී, එහි පළමු දේශනය ආරම්භ වීමට ප්‍රථම යම් සාධාරණ හේතුවක් මත මුදල් ආපසු ඉල්ලා සිටින්නේ නම්, 100% ක්ම මුදල් ආපසු ලබාදෙනු ලැබේ. දේශන 2ක් හෝ ඊට වැඩි ගණනක් පැවැත්වීමෙන් පසු කිසිදු මුදල් ආපසු ගෙවීමක් සිදු කරනු නොලැබේ.</p>
-            
-            <h2>3. විමසීම් කටයුතු</h2>
-            <p>මුදල් ආපසු ඉල්ලීමක් සඳහා info@hapanamy.lk විද්‍යුත් තැපෑල ඔස්සේ ඔබගේ ගෙවීම් රිසිට්පත සහ ගිණුම් තොරතුරු සමඟ අපව සම්බන්ධ කරගන්න.</p>
-            
-            <a href="index.html" class="btn btn-primary btn-home">ප්‍රධාන පිටුවට (Back to Home)</a>
+            <nav class="nav-menu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#courses" class="nav-link">Courses</a>
+                <a href="index.html#affiliate" class="nav-link">Affiliate</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About Us</a>
+                <a href="contact-us.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Page Title Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="section-title">මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය <span>(Refund Policy)</span></h1>
+            <div class="breadcrumb">
+                <a href="index.html">මුල් පිටුව</a>
+                <span>/</span>
+                <span>Refund Policy</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <main class="container">
+        <article class="legal-card">
+            <p>Hapanamy.lk වෙතින් ඔබ මිලදී ගන්නා සියලුම ඩිජිටල් නිෂ්පාදන, E-Books සහ සජීවී මාර්ගගත (Live Zoom) පාඨමාලා සඳහා අදාළ නිල මුදල් ආපසු ගෙවීමේ ප්‍රතිපත්තිය පහත පරිදි වේ.</p>
+
+            <h2>1. බාගත හැකි E-Books සහ ඩිජිටල් අත්පොත් (Digital E-Books)</h2>
+            <p>E-Books සහ PDF මාර්ගෝපදේශ යනු මිලදී ගත් වහාම පරිශීලකයාට ක්ෂණිකව බාගත කරගත හැකි (Instant Download) ඩිජිටල් නිෂ්පාදන වේ. එබැවින්, සාමාන්‍ය තත්ත්වයන් යටතේ <strong>E-Books සඳහා මුදල් ආපසු ලබාදීමක් (No Refunds) සිදු නොකෙරේ.</strong></p>
+            <p>කෙසේ වෙතත්, ඔබට ලැබුණු ගොනුව ක්‍රියා විරහිත (Corrupted/Unreadable) බව ඔප්පු වුවහොත් හෝ වෙනත් තාක්ෂණික දෝෂයක් මතුවුවහොත් පැය 24ක් ඇතුළත නව ගොනුවක් ලබාදීමට හෝ ගැටලුව විසඳීමට අප කටයුතු කරමු.</p>
+
+            <h2>2. සජීවී මාර්ගගත (Live Zoom) පාඨමාලා සහ වැඩමුළු</h2>
+            <ul>
+                <li><strong>පළමු දේශනයට පෙර:</strong> ඔබ ලියාපදිංචි වූ සජීවී Zoom පාඨමාලාවේ පළමු දේශනය ආරම්භ වීමට අවම වශයෙන් පැය 24කට පෙර සාධාරණ හේතුවක් දක්වා මුදල් ආපසු ඉල්ලා සිටින්නේ නම්, ගෙවූ මුදලින් 100% ක්ම ආපසු ලබාදෙනු ලැබේ.</li>
+                <li><strong>පාඨමාලාව ආරම්භ වීමෙන් පසු:</strong> පළමු දේශනය අවසන් වූ පසු හෝ දේශන 2ක් හෝ ඊට වැඩි ගණනක් පැවැත්වීමෙන් පසු කිසිදු මුදල් ආපසු ගෙවීමක් සිදු කරනු නොලැබේ.</li>
+            </ul>
+
+            <h2>3. පෙර පටිගත කරන ලද වීඩියෝ පාඨමාලා (Recorded Video Courses)</h2>
+            <p>පෙර පටිගත කරන ලද වීඩියෝ පාඨමාලා සඳහා ප්‍රවේශය ලබාදුන් පසු, ඔබ පාඨමාලාවේ අන්තර්ගතයෙන් 10% ට වඩා අඩු ප්‍රමාණයක් නරඹා ඇත්නම් සහ මිලදී ගෙන දින 3ක් ඇතුළත තාක්ෂණික හෝ අන්තර්ගත ගැටලුවක් වාර්තා කරන්නේ නම්, අපගේ කණ්ඩායම විසින් එම ඉල්ලීම සලකා බලා සාධාරණ තීරණයක් ගනු ලැබේ.</p>
+
+            <h2>4. මුදල් ආපසු ඉල්ලුම් කිරීමේ ක්‍රියාවලිය (How to Request a Refund)</h2>
+            <p>මුදල් ආපසු ලබාගැනීමට අවශ්‍ය නම් පහත තොරතුරු සමඟ අපගේ නිල විද්‍යුත් තැපෑල වෙත ඉල්ලීමක් යොමු කරන්න:</p>
+            <ul>
+                <li>ඔබගේ සම්පූර්ණ නම සහ ලියාපදිංචි ඊමේල් ලිපිනය.</li>
+                <li>ඇණවුම් අංකය හෝ ගෙවීම් රිසිට්පත (Receipt / Slip).</li>
+                <li>මුදල් ආපසු ඉල්ලීමට හේතුව (Reason for request).</li>
+                <li>මුදල් ආපසු බැර කළ යුතු ශ්‍රී ලංකා බැංකු ගිණුම් විස්තර.</li>
+            </ul>
+            <p>අනුමත වූ ඉල්ලීම් සඳහා වැඩකරන දින 3 සිට 5 දක්වා කාලයක් තුළ මුදල් ආපසු බැර කිරීම සිදු කෙරේ.</p>
+
+            <h2>5. පාරිභෝගික සහාය සම්බන්ධතා</h2>
+            <p>මුදල් ආපසු ගෙවීම් හෝ ගෙවීම් ගැටලු පිළිබඳ විමසීම් සඳහා:</p>
+            <ul>
+                <li>විද්‍යුත් තැපෑල: <strong>info@hapanamy.lk</strong></li>
+                <li>ක්ෂණික ඇමතුම් / WhatsApp: <strong>+94 72 609 0050</strong></li>
+            </ul>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="index.html" class="btn btn-primary">ප්‍රධාන පිටුවට (Back to Home)</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#courses">Courses</a></li>
+                    <li><a href="index.html#affiliate">Affiliate</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+    </script>
 </body>
 </html>

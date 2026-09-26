@@ -72,7 +72,7 @@ const courseData = {
         originalPrice: 'රු. 9,900',
         currentPrice: 'රු. 7,425',
         discount: '25% OFF',
-        commission: 'රු. 1,485.00',
+        commission: 'රු. 1,113.75',
         banner: 'assets/facebook_course_banner.jpg',
         desc: `
             <div style="background: linear-gradient(135deg, rgba(24,119,242,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
@@ -253,7 +253,7 @@ const courseData = {
         originalPrice: 'රු. 9,900',
         currentPrice: 'රු. 7,425',
         discount: '25% OFF',
-        commission: 'රු. 1,485.00',
+        commission: 'රු. 1,113.75',
         banner: 'assets/youtube_course_banner.jpg',
         desc: `
             <div style="background: linear-gradient(135deg, rgba(255,0,0,0.1), rgba(0,242,234,0.05)); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
@@ -1838,80 +1838,69 @@ function initCalculator() {
     const goalProgressFill = document.getElementById('goalProgressFill');
     const statusDescEl = document.getElementById('statusDesc');
 
-    // Setup Averages for Products & Commissions
-    // Ebooks Avg Price: රු. 6,861 | Direct Commission (50%): રુ. 3,430
-    const avgEbookPrice = 6861;
-    const avgEbookDirectComm = 1029;
+    // Setup Averages for Products & Commissions (15% Direct Commission)
+    const avgEbookPrice = 3861;
+    const avgEbookComm = 579;
 
-    // Courses Avg Price: රු. 8,630 | Direct Commission (50%): රු. 4,315
-    const avgCoursePrice = 8630;
-    const avgCourseDirectComm = 1295;
+    const avgTradingPrice = 10915;
+    const avgTradingComm = 1637;
+
+    const avgSocialPrice = 8835;
+    const avgSocialComm = 1325;
+
+    const avgAiPrice = 9133;
+    const avgAiComm = 1370;
 
     function updateCalculator() {
-        const ebooksSold = parseInt(ebooksSlider.value, 10);
-        const tradingSold = parseInt(tradingSlider.value, 10);
-        const socialSold = parseInt(socialSlider.value, 10);
-        const aiSold = parseInt(aiSlider.value, 10);
+        const ebooksSold = parseInt(ebooksSlider ? ebooksSlider.value : 0, 10) || 0;
+        const tradingSold = parseInt(tradingSlider ? tradingSlider.value : 0, 10) || 0;
+        const socialSold = parseInt(socialSlider ? socialSlider.value : 0, 10) || 0;
+        const aiSold = parseInt(aiSlider ? aiSlider.value : 0, 10) || 0;
 
         // Update count text labels
-        ebooksCount.textContent = ebooksSold;
-        tradingCount.textContent = tradingSold;
-        socialCount.textContent = socialSold;
-        aiCount.textContent = aiSold;
+        if (ebooksCount) ebooksCount.textContent = ebooksSold;
+        if (tradingCount) tradingCount.textContent = tradingSold;
+        if (socialCount) socialCount.textContent = socialSold;
+        if (aiCount) aiCount.textContent = aiSold;
 
-        // Ebooks: Ebooks A to Z, Social Media, Astrology, Motivation
-        // Trading: Crypto, Forex, Option
-        // Social Media: FB, YT, TikTok
-        // AI: Video, Mastery, Coding
-        
         // Total direct sales volume created
-        const totalSalesVolume = (ebooksSold * avgEbookPrice) + ((tradingSold + socialSold + aiSold) * avgCoursePrice);
+        const totalSalesVolume = (ebooksSold * avgEbookPrice) + (tradingSold * avgTradingPrice) + (socialSold * avgSocialPrice) + (aiSold * avgAiPrice);
 
-        // Direct Sales Earnings (8% direct rate)
-        const directCommissionTotal = totalSalesVolume * 0.08;
-
-        // Binary Team Volume & 7% Binary Matching Commission
-        // Estimated dual-leg team volume generated from left & right network
-        const leftLegVolume = totalSalesVolume * 1.8;
-        const rightLegVolume = totalSalesVolume * 1.5;
-        const weakerLegVolume = Math.min(leftLegVolume, rightLegVolume);
-        const binaryCommission = weakerLegVolume * 0.07; // 7% binary matching
-
-        // Daily cap enforcement (LKR 30,000 / day -> LKR 900,000 / month)
-        const totalMonthlyEarnings = Math.min(900000, directCommissionTotal + binaryCommission);
+        // Direct Sales Earnings (15% Direct Commission)
+        const totalMonthlyEarnings = (ebooksSold * avgEbookComm) + (tradingSold * avgTradingComm) + (socialSold * avgSocialComm) + (aiSold * avgAiComm);
         const annualProjection = totalMonthlyEarnings * 12;
 
         // Format and render numbers
-        monthlyEarningsEl.textContent = 'රු. ' + Math.round(totalMonthlyEarnings).toLocaleString();
-        annualEarningsEl.textContent = 'රු. ' + Math.round(annualProjection).toLocaleString();
-        totalSalesVolumeEl.textContent = 'රු. ' + Math.round(totalSalesVolume + leftLegVolume + rightLegVolume).toLocaleString();
+        if (monthlyEarningsEl) monthlyEarningsEl.textContent = 'රු. ' + Math.round(totalMonthlyEarnings).toLocaleString();
+        if (annualEarningsEl) annualEarningsEl.textContent = 'රු. ' + Math.round(annualProjection).toLocaleString();
+        if (totalSalesVolumeEl) totalSalesVolumeEl.textContent = 'රු. ' + Math.round(totalSalesVolume).toLocaleString();
 
         // Financial Level Indicator (Status Level)
         let status = 'Bronze Partner';
         let progress = 0;
         let desc = 'අර්ධකාලීනව අමතර ආදායමක් උපයා ගැනීමට පටන් ගන්න.';
 
-        if (totalMonthlyEarnings > 150000) {
-            status = 'Crown Diamond Partner 💎';
+        if (totalMonthlyEarnings >= 100000) {
+            status = 'Diamond Partner 💎';
             progress = 100;
-            desc = 'සුපිරි ආදායමක්! නිවසේ සිටම පූර්ණ කාලීන මූල්‍ය ස්වාධීනත්වය ළඟා කරගෙන ඇත.';
-        } else if (totalMonthlyEarnings > 80000) {
+            desc = 'විශිෂ්ඨ ප්‍රතිඵලයක්! නිවසේ සිටම සැලකිය යුතු අතිරේක ඩිජිටල් ආදායමක්.';
+        } else if (totalMonthlyEarnings >= 50000) {
             status = 'Gold Partner 🥇';
             progress = 75;
-            desc = 'විශිෂ්ඨ ජයග්‍රහණයක්! කණ්ඩායම කළමනාකරණය කරමින් විශාල නිෂ්ක්‍රීය ආදායමක් උපයන්න.';
-        } else if (totalMonthlyEarnings > 30000) {
+            desc = 'ඉතා හොඳ ප්‍රගතියක්! වැඩි අලෙවි ප්‍රමාණයක් සමඟ ස්ථාවර ආදායමක්.';
+        } else if (totalMonthlyEarnings >= 20000) {
             status = 'Silver Partner 🥈';
-            progress = 40;
-            desc = 'වැඩි විකුණුම් ප්‍රමාණයක් සහ කණ්ඩායම් ප්‍රසාද දීමනා ලබමින් ඉදිරියට යන්න.';
+            progress = 45;
+            desc = 'සාර්ථක ආරම්භයක්! පාරිභෝගිකයින් සමඟ සම්බන්ධ වෙමින් ඉදිරියට යන්න.';
         } else if (totalMonthlyEarnings > 0) {
             status = 'Bronze Partner';
             progress = 15;
             desc = 'ආරම්භක අදියර. ඔබේ පළමු සේවාදායකයින් සම්බන්ධ කරගන්න.';
         }
 
-        statusLevelEl.textContent = status;
-        goalProgressFill.style.width = progress + '%';
-        statusDescEl.textContent = desc;
+        if (statusLevelEl) statusLevelEl.textContent = status;
+        if (goalProgressFill) goalProgressFill.style.width = progress + '%';
+        if (statusDescEl) statusDescEl.textContent = desc;
     }
 
     // Attach listeners
@@ -1925,6 +1914,7 @@ function initCalculator() {
         updateCalculator();
     }
 }
+
 
 // Course details modal controller
 const modalOverlay = document.getElementById('courseModal');
@@ -2365,11 +2355,11 @@ function sendChatSupportMessage(event) {
         let replyText = "ඔබගේ පණිවිඩය ලැබුණි. සහාය නියෝජිතයෙකු පැය 24ක් ඇතුළත සම්බන්ධ වනු ඇත. (Message received. Support agent will contact you within 24h.)";
 
         if (query.includes('register') || query.includes('join') || query.includes('ලියාපදිංචි')) {
-            replyText = "ලියාපදිංචි වීමට Register Now බොත්තම ඔබන්න. Affiliate සාමාජිකයෙකු ලෙස එකතු වී 15% සෘජු කොමිස් සහ 5-layer unilevel ආදායම් උපයා ගන්න!";
+            replyText = "ලියාපදිංචි වීමට Register Free බොත්තම ඔබන්න. Hapanamy Affiliate සාමාජිකයෙකු ලෙස නොමිලේ එක්වී සෑම සාර්ථක පාඨමාලා හෝ E-Book අලෙවියක් සඳහාම 15% සෘජු කොමිස් මුදලක් උපයා ගත හැක!";
         } else if (query.includes('buy') || query.includes('course') || query.includes('මිලදී')) {
             replyText = "පාඨමාලාවක් මිලදී ගැනීමට, අදාළ Course එකෙහි 'View Details' ඔබා ඉන්පසු 'Enroll / Buy Course' ක්ලික් කර checkout කරන්න.";
         } else if (query.includes('commission') || query.includes('earn') || query.includes('කොමිස්')) {
-            replyText = "Hapanamy.lk තුළ Direct Commission 15% ක් වන අතර Layer 1: 10%, Layer 2: 5%, Layer 3: 3%, Layer 4: 3%, Layer 5: 3% ලෙස MLM නිෂ්ක්‍රීය ආදායම් (මුළු 39% payout) ක්‍රියාත්මක වේ.";
+            replyText = "Hapanamy.lk තුළ සෑම සාර්ථක අලෙවියක් සඳහාම 15% ක සෘජු කොමිස් මුදලක් (Direct Commission) හිමිවන අතර ඉපැයීම් සතිපතා සෘජුවම ඔබගේ බැංකු ගිණුමට ලබාගත හැක.";
         } else if (query.includes('titan') || query.includes('forex') || query.includes('trading')) {
             replyText = "අපගේ Titan Elite Trading Academy පාඨමාලාව (දේශක C N Gunasekara) LKR 19,900 කට දැන් ලබාගත හැක. එහි Chapter 1-8 දක්වා SMC/ICT ක්‍රමවේද අඩංගු වේ.";
         }
@@ -2472,7 +2462,7 @@ function translateAIMasteryShowcase(lang) {
 function syncHeaderUserState() {
     const activeUser = JSON.parse(localStorage.getItem('active_user'));
     if (activeUser) {
-        const ctaBtns = document.querySelectorAll('#headerCtaBtn, a[href="login-register.html"]');
+        const ctaBtns = document.querySelectorAll('#headerCtaBtn, a[href="login.html"], a[href="register.html"], a[href="login-register.html"]');
         ctaBtns.forEach(btn => {
             // Hide the button or point to my-account.html, never admin.html for public safety
             btn.href = activeUser.role === 'admin' ? 'hapanamy-admin-portal-9226.html' : 'my-account.html';
@@ -2830,8 +2820,26 @@ function renderBlogArticles() {
     });
 }
 
-// Hook Blog Close buttons
+// Hook Blog Close buttons & Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', () => {
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navMenu = document.getElementById('navMenu');
+    if (mobileMenuBtn && navMenu) {
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenuBtn.classList.toggle('active');
+            navMenu.classList.toggle('active');
+            document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
+        });
+        navMenu.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenuBtn.classList.remove('active');
+                navMenu.classList.remove('active');
+                document.body.classList.remove('menu-open');
+            });
+        });
+    }
+
     const blogCloseBtn = document.getElementById('blogModalCloseBtn');
     const blogCloseActionBtn = document.getElementById('blogModalCloseActionBtn');
     const blogModal = document.getElementById('blogModal');
@@ -2851,13 +2859,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render dynamic articles
     renderBlogArticles();
     
-    // Capture referral query parameter and redirect to registration page
+    // Capture referral query parameter and save to localStorage
     const urlParams = new URLSearchParams(window.location.search);
     const refCode = urlParams.get('ref');
     if (refCode) {
         localStorage.setItem('hapanamy_referrer', refCode);
-        console.log('Captured referrer code and redirecting to registration page:', refCode);
-        window.location.href = 'login-register.html?ref=' + refCode;
+        console.log('Captured referrer code:', refCode);
     }
 });
 
@@ -2871,8 +2878,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const heroSlides = [
     {
         bgImage: 'assets/glass_digital_campus.jpg',
-        badge_si: '🏆 ශ්‍රී ලංකාවේ අංක 01 Digital Skills Campus',
-        badge_en: "🏆 Sri Lanka's No.1 Digital Skills Campus",
+        badge_si: '🎓 ශ්‍රී ලංකාවේ ඩිජිටල් ඉගෙනුම් සරසවිය',
+        badge_en: "🎓 Sri Lanka's Digital Learning Campus",
         title_si: 'ඔබේ අනාගතය <br><span style="color:var(--brand-orange);">අදම නිර්මාණය කරන්න.</span>',
         title_en: 'Create Your Future <br><span style="color:var(--brand-orange);">Starting Today.</span>',
         subBadge_si: 'AI • Trading • Coding • Social Media • Business • Freelancing',
@@ -2981,8 +2988,8 @@ const heroSlides = [
                 </div>
             </div>
         `,
-        bottomBarText_si: 'ශ්‍රී ලංකාවේ No.1 තාක්ෂණික පාඨමාලා සහ E-Learning Platform එක ★★★★★',
-        bottomBarText_en: "Sri Lanka's No.1 Tech Courses and E-Learning Platform ★★★★★",
+        bottomBarText_si: 'ශ්‍රී ලංකාවේ ප්‍රමුඛතම තාක්ෂණික හා ඩිජිටල් කුසලතා ඉගෙනුම් සරසවිය ★★★★★',
+        bottomBarText_en: "Sri Lanka's Premier Digital Skills & Technology Campus ★★★★★",
         bottomBarSub_si: 'ප්‍රායෝගික ඉගෙනීම • ජීවිත කාලය පුරා සහය • සාර්ථකත්වය සඳහා ඔබගේ හොඳම තේරීම',
         bottomBarSub_en: 'Practical Learning • Lifetime Support • Your Best Choice for Success'
     },

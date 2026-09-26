@@ -1,63 +1,252 @@
 <!DOCTYPE html>
-<html lang="si" data-theme="light">
+<html lang="si" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terms & Conditions | Hapanamy.lk</title>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <title>Hapanamy.lk | සේවා කොන්දේසි (Terms & Conditions)</title>
+    
+    <!-- Meta tags for SEO & AdSense -->
+    <meta name="description" content="Hapanamy.lk නිල සේවා කොන්දේසි (Terms and Conditions). වෙබ් අඩවිය, පාඨමාලා සහ ඩිජිටල් නිෂ්පාදන භාවිතයේ නීතිමය කොන්දේසි.">
+    <link rel="canonical" href="https://www.hapanamy.lk/terms-conditions.html">
+    
+        <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | සේවා කොන්දේසි (Terms & Conditions)">
+    <meta property="og:description" content="Hapanamy.lk භාවිතයේ සේවා නීති රීති සහ කොන්දේසි.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/terms-conditions.html">
+    <meta property="og:type" content="website">
+<!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
     <link rel="stylesheet" href="index.css">
+    
     <style>
-        .policy-container {
-            max-width: 800px;
-            margin: 60px auto;
-            padding: 40px;
-            background: #FFFFFF;
-            border-radius: 24px;
+        .page-header {
+            padding: 90px 0 40px 0;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .legal-card {
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px auto 60px auto;
+            max-width: 900px;
             box-shadow: var(--card-shadow);
         }
-        .policy-container h1 {
-            font-size: 32px;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-        .policy-container h2 {
+
+        .legal-card h2 {
             font-size: 20px;
-            margin-top: 30px;
-            margin-bottom: 12px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: 32px;
+            margin-bottom: 14px;
             border-left: 4px solid var(--brand-gold);
-            padding-left: 12px;
+            padding-left: 14px;
         }
-        .policy-container p, .policy-container li {
+
+        .legal-card p, .legal-card li {
             font-size: 14.5px;
             color: var(--text-body);
-            line-height: 1.7;
+            line-height: 1.8;
             margin-bottom: 14px;
         }
-        .btn-home {
-            display: block;
-            width: fit-content;
-            margin: 40px auto 0 auto;
+
+        .legal-card ul {
+            padding-left: 24px;
+            margin-bottom: 18px;
+        }
+
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        .breadcrumb a {
+            color: var(--brand-gold);
+            text-decoration: none;
         }
     </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
+            });
+            navMenu.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuBtn.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+        }
+  
+    </script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <!-- Google AdSense (Auto Ads & Manual Units) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
 </head>
 <body>
-    <div class="container">
-        <div class="policy-container">
-            <h1>Terms & Conditions (සේවා කොන්දේසි)</h1>
-            <p>Hapanamy.lk වෙබ් අඩවිය භාවිතා කිරීමෙන් ඔබ පහත සේවා කොන්දේසි වලට එකඟ වන බව සලකන්න.</p>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
             
-            <h2>1. ගිණුම් භාවිතය</h2>
-            <p>ලියාපදිංචි වන සෑම සාමාජිකයෙකුම නිවැරදි තොරතුරු සැපයිය යුතු අතර, ඔබගේ ගිණුමේ මුරපද සහ ආරක්ෂාව සුරැකීම ඔබ සතු වගකීමකි. එක් ගිණුමක් පුද්ගලයන් කිහිපදෙනෙකු අතර බෙදාගැනීම සපුරා තහනම් වේ.</p>
-            
-            <h2>2. බුද්ධිමය දේපල අයිතිය (Copyright)</h2>
-            <p>මෙහි ඇති සියලුම පාඨමාලා ද්‍රව්‍ය, E-books, වීඩියෝ සහ අනෙකුත් අන්තර්ගතයන් Hapanamy.lk සතු බුද්ධිමය දේපල වේ. ඒවා අනවසරයෙන් පිටපත් කිරීම, විකිණීම හෝ වෙනත් පාර්ශවයකට බෙදාහැරීම නීති විරෝධී වන අතර, එවැනි ක්‍රියාවලදී ගිණුම අවලංගු කර නීතිමය පියවර ගනු ලැබේ.</p>
-            
-            <h2>3. Affiliate අලෙවිකරණය</h2>
-            <p>Affiliate සාමාජිකයින් කිසිදු ආකාරයකින් සාවද්‍ය තොරතුරු හෝ අසත්‍ය ප්‍රචාරණ මඟින් නිෂ්පාදන අලෙවි නොකළ යුතුය. නීත්‍යානුකූල හා සදාචාරාත්මක අයුරින් අලෙවිකරණයේ යෙදීමට වගබලා ගත යුතුය.</p>
-            
-            <a href="index.html" class="btn btn-primary btn-home">ප්‍රධාන පිටුවට (Back to Home)</a>
+            <nav class="nav-menu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#courses" class="nav-link">Courses</a>
+                <a href="index.html#affiliate" class="nav-link">Affiliate</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About Us</a>
+                <a href="contact-us.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
         </div>
-    </div>
+    </header>
+
+    <!-- Page Title Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="section-title">සේවා කොන්දේසි <span>(Terms & Conditions)</span></h1>
+            <div class="breadcrumb">
+                <a href="index.html">මුල් පිටුව</a>
+                <span>/</span>
+                <span>Terms & Conditions</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Content Section -->
+    <main class="container">
+        <article class="legal-card">
+            <p>Hapanamy.lk වෙබ් අඩවිය සහ එහි සේවාවන් භාවිතා කිරීමෙන් හෝ පාඨමාලා මිලදී ගැනීමෙන් ඔබ පහත සඳහන් සේවා කොන්දේසි වලට නීත්‍යානුකූලව බැඳී සිටින බව සලකන්න. කරුණාකර මෙම කොන්දේසි ප්‍රවේශමෙන් කියවා තේරුම් ගන්න.</p>
+
+            <h2>1. ගිණුම් ලියාපදිංචිය සහ ආරක්ෂාව (Account Registration & Security)</h2>
+            <ul>
+                <li>ලියාපදිංචි වන සෑම සාමාජිකයෙකුම නිවැරදි, යාවත්කාලීන සහ සත්‍ය පුද්ගලික තොරතුරු සැපයිය යුතුය.</li>
+                <li>ඔබගේ ගිණුමේ මුරපදයේ රහස්‍යභාවය සුරැකීම ඔබ සතු වගකීමක් වන අතර ඔබගේ ගිණුම හරහා සිදුවන සියලුම ක්‍රියාකාරකම් වලට ඔබ වගකිව යුතුය.</li>
+                <li>තනි පුද්ගල ගිණුමක් බහු පාර්ශව අතර බෙදාගැනීම (Account Sharing) හෝ නැවත විකිණීම සපුරා තහනම් වේ. එවැනි අවස්ථාවකදී ගිණුම වහාම අත්හිටුවනු ලැබේ.</li>
+            </ul>
+
+            <h2>2. බුද්ධිමය දේපල සහ ප්‍රකාශන අයිතිය (Intellectual Property & Copyright)</h2>
+            <p>Hapanamy.lk හි අඩංගු සියලුම වීඩියෝ පාඨමාලා, E-Books, ග්‍රැෆික් මෝස්තර, ලාංඡන, කේත සහ ලිපි Hapanamy.lk සහ එහි උපදේශකවරුන් සතු බුද්ධිමය දේපල වේ. Hapanamy.lk හි ලිඛිත පූර්ව අවසරයකින් තොරව කිසිදු අන්තර්ගතයක් පටිගත කිරීම (Screen Recording), නැවත මුද්‍රණය කිරීම, Torrent හෝ Telegram සමූහ ඔස්සේ බෙදාහැරීම හෝ විකිණීම නීති විරෝධී වන අතර ශ්‍රී ලංකා බුද්ධිමය දේපල පනත යටතේ නීතිමය පියවර ගනු ලැබේ.</p>
+
+            <h2>3. ගෙවීම් සහ ඩිජිටල් ප්‍රවේශය (Payments & Access)</h2>
+            <p>සියලුම පාඨමාලා සහ E-Books සඳහා ගාස්තු ශ්‍රී ලංකා රුපියල් (LKR) වලින් දක්වා ඇත. බැංකු තැන්පතු හෝ අන්තර්ජාල ගෙවීම් ක්‍රමවේද හරහා ගෙවීම් සම්පූර්ණ කිරීමෙන් අනතුරුව පරිපාලක අනුමැතිය (Verification) මත පාඨමාලා ප්‍රවේශය ලබාදෙනු ඇත.</p>
+
+            <h2>4. Affiliate අලෙවිකරණ කොන්දේසි (Affiliate Terms)</h2>
+            <p>Affiliate සාමාජිකයින් Hapanamy.lk නාමය භාවිත කරමින් සාවද්‍ය තොරතුරු, වංචනික පොරොන්දු හෝ නොමඟ යවන දැන්වීම් පළකිරීමෙන් වැළකිය යුතුය. සෑම සත්‍යාපිත විකිණුමකටම 15% ක සෘජු කොමිස් මුදලක් ගෙවනු ලබන අතර නීති විරෝධී ප්‍රවර්ධනයන් හමුවුවහොත් කොමිස් මුදල් අත්හිටුවා ගිණුම අවලංගු කෙරේ.</p>
+
+            <h2>5. ගිණුම් අවලංගු කිරීමේ අයිතිය (Account Termination)</h2>
+            <p>Hapanamy.lk හි කොන්දේසි කඩකිරීම, අසභ්‍ය හෝ හානිකර හැසිරීම්, හෝ පද්ධතියට අනවසරයෙන් පිවිසීමට උත්සාහ දැරීම (Hacking/Abuse) වැනි ක්‍රියාවන්හි යෙදෙන ඕනෑම ගිණුමක් පූර්ව දැනුම්දීමකින් තොරව අවලංගු කිරීමට Hapanamy.lk පරිපාලනයට පූර්ණ අයිතිය ඇත.</p>
+
+            <h2>6. සංශෝධන (Amendments to Terms)</h2>
+            <p>මෙම සේවා කොන්දේසි ඕනෑම අවස්ථාවක යාවත්කාලීන කිරීමේ අයිතිය අප සතු වේ. යාවත්කාලීන කරන ලද කොන්දේසි මෙම පිටුවේ පළකළ වහාම බලාත්මක වේ.</p>
+
+            <h2>7. සම්බන්ධ කරගැනීම</h2>
+            <p>සේවා කොන්දේසි පිළිබඳ කිසියම් පැහැදිලි කිරීමක් සඳහා info@hapanamy.lk හෝ +94 72 609 0050 ඔස්සේ අප හා සම්බන්ධ වන්න.</p>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="index.html" class="btn btn-primary">ප්‍රධාන පිටුවට (Back to Home)</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#courses">Courses</a></li>
+                    <li><a href="index.html#affiliate">Affiliate</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+    </script>
 </body>
 </html>

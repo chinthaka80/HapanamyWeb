@@ -60,13 +60,12 @@
 
         /* Sidebar styling */
         .dashboard-sidebar {
-            background: linear-gradient(180deg, #07111E 0%, #0F2338 100%);
+            background-color: #102A43; /* Always deep navy for sidebar visual consistency */
             color: #FFF5E4;
-            padding: 35px 22px;
+            padding: 30px 20px;
             display: flex;
             flex-direction: column;
-            border-right: 1px solid rgba(255, 245, 228, 0.06);
-            box-shadow: 4px 0 25px rgba(0,0,0,0.15);
+            border-right: 1px solid rgba(255, 249, 240, 0.1);
         }
 
         .sidebar-logo {
@@ -81,53 +80,42 @@
             height: 38px;
             border-radius: 6px;
             border: 2px solid var(--brand-gold);
-            box-shadow: 0 4px 10px rgba(240, 179, 35, 0.2);
         }
 
         .sidebar-nav {
             list-style: none;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 14px 18px;
-            border-radius: 12px;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 14.5px;
             font-weight: 600;
             color: #B2C8DF;
             text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border-left: 4px solid transparent;
+            transition: 0.2s;
         }
 
-        .nav-link:hover {
-            background-color: rgba(255, 255, 255, 0.04);
-            color: var(--brand-gold) !important;
-            transform: translateX(6px);
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.08);
+            color: #FFF5E4;
         }
 
         .nav-link.active {
             border-left: 4px solid var(--brand-orange);
-            background-color: rgba(244, 123, 32, 0.12) !important;
+            background-color: rgba(244, 123, 32, 0.1);
             color: var(--brand-orange) !important;
-            box-shadow: inset 5px 0 15px rgba(244, 123, 32, 0.08);
-            font-weight: 700;
         }
 
         .nav-icon {
-            font-size: 23px;
-            display: inline-block;
-            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-
-        .nav-link:hover .nav-icon {
-            transform: scale(1.25) rotate(5deg);
+            font-size: 18px;
         }
 
         /* Content Area */
@@ -241,21 +229,11 @@
         .form-group {
             position: relative;
             margin-bottom: 20px;
-            text-align: left;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-secondary);
-            font-size: 13.5px;
-            font-weight: 600;
-            line-height: 1.4;
         }
 
         .form-group input, .form-group textarea, .form-group select {
             width: 100%;
-            padding: 13px 16px;
+            padding: 14px 16px;
             background-color: var(--bg-main);
             border: 1px solid var(--border-color);
             border-radius: 8px;
@@ -263,13 +241,30 @@
             font-size: 14px;
             outline: none;
             transition: 0.2s;
-            box-sizing: border-box;
-            display: block;
         }
 
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
-            border-color: var(--brand-orange);
-            box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.15);
+        .form-group label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+            pointer-events: none;
+            transition: 0.2s;
+        }
+
+        .form-group input:focus ~ label,
+        .form-group input:not(:placeholder-shown) ~ label,
+        .form-group textarea:focus ~ label,
+        .form-group textarea:not(:placeholder-shown) ~ label {
+            top: 0;
+            font-size: 11px;
+            background-color: var(--bg-surface);
+            padding: 0 6px;
+            transform: translateY(-50%) translateX(2px);
+            color: var(--brand-orange);
+            font-weight: 700;
         }
 
         .form-group textarea {
@@ -518,10 +513,8 @@
             to { transform: translateX(0); }
         }
     </style>
-    <!-- Supabase Cloud DB Core -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="config.js"></script>
-    <script src="db.js"></script>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -530,10 +523,7 @@
         <aside class="dashboard-sidebar">
             <div class="sidebar-logo">
                 <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                <div style="display: flex; flex-direction: column; justify-content: center;">
-                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif; line-height: 1.1;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
-                    <span style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
-                </div>
+                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
             </div>
             
             <ul class="sidebar-nav">
@@ -613,15 +603,15 @@
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-label">ආදායම (Total Earnings LKR)</div>
-                            <div class="stat-value" id="dashTotalEarningsVal" style="color: var(--brand-gold);">රු. 0.00</div>
+                            <div class="stat-value" style="color: var(--brand-gold);">රු. 23,790.00</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">ප්‍රවර්ධන ක්ලික් කිරීම් (Link Clicks)</div>
-                            <div class="stat-value" id="dashLinkClicksVal">0 Clicks</div>
+                            <div class="stat-value">1,248 Clicks</div>
                         </div>
                         <div class="stat-card">
                             <div class="stat-label">මුළු විකුණුම් (Direct Referrals)</div>
-                            <div class="stat-value" id="dashTotalSalesVal">0 Sales</div>
+                            <div class="stat-value">12 Sales</div>
                         </div>
                     </div>
 
@@ -630,33 +620,33 @@
                         <h4 style="margin-bottom: 20px; color: var(--text-primary); font-size: 15px;">පසුගිය මාස 6 කොමිස් ලැබීමේ ප්‍රස්ථාරය (Last 6 Months Earnings Trend)</h4>
                         <div style="display: flex; justify-content: space-between; align-items: flex-end; height: 160px; padding: 10px 20px; border-left: 2px solid var(--border-color); border-bottom: 2px solid var(--border-color); max-width: 600px; margin: 0 auto;">
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Feb">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Feb"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 4.2K</span>
+                                <div style="width: 20px; height: 35px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Feb</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Mar">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Mar"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 8.5K</span>
+                                <div style="width: 20px; height: 60px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Mar</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Apr">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Apr"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 12.0K</span>
+                                <div style="width: 20px; height: 90px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Apr</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-May">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-May"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 9.8K</span>
+                                <div style="width: 20px; height: 75px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">May</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);" id="trend-text-Jun">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-orange); border-radius: 4px 4px 0 0;" id="trend-bar-Jun"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-orange);">රු. 16.5K</span>
+                                <div style="width: 20px; height: 120px; background: var(--brand-orange); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted);">Jun</span>
                             </div>
                             <div style="display: flex; flex-direction: column; align-items: center; flex-grow: 1;">
-                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-gold);" id="trend-text-Jul">රු. 0.0</span>
-                                <div style="width: 20px; height: 2px; background: var(--brand-gold); border-radius: 4px 4px 0 0;" id="trend-bar-Jul"></div>
+                                <span style="font-size: 9px; margin-bottom: 4px; font-weight: 700; color: var(--brand-gold);">රු. 23.7K</span>
+                                <div style="width: 20px; height: 145px; background: var(--brand-gold); border-radius: 4px 4px 0 0;"></div>
                                 <span style="font-size: 10px; margin-top: 6px; color: var(--text-muted); font-weight: 700;">Jul</span>
                             </div>
                         </div>
@@ -721,7 +711,7 @@
                 <div class="account-panel" id="panel-links">
                     <div class="admin-table-box" style="padding: 24px;">
                         <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px;">ඔබේ පොදු අනුබද්ධිත සබැඳිය (Your Main Referral Link)</h3>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ ලියාපදිංචි වන සාමාජිකයින්ගේ ගනුදෙනු සඳහා ඔබට 8% සෘජු කොමිස් සහ 7% Binary Volume කොමිස් හිමිවේ.</p>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ මිලදී ගන්නා සියලුම ගනුදෙනු සඳහා ඔබට 15% සෘජු කොමිස් සහ මට්ටම් 5 කින් නිෂ්ක්‍රීය ආදායම් ලැබෙනු ඇත.</p>
                         
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="mainReferralLinkVal" readonly value="https://hapanamy.lk/register?ref=Hiru" style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px;">
@@ -734,7 +724,6 @@
                 <div class="account-panel" id="panel-network">
                     <div style="background-color: var(--bg-surface); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
                         <input type="text" id="downlineSearchInput" oninput="filterDownlineNetwork()" placeholder="🔍 Search team member by name or username..." style="flex-grow: 1; padding: 10px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
-                        <a href="dashboard.html" class="btn btn-secondary" style="margin-left: 15px; text-decoration: none; font-size: 13px;">🌿 Open Interactive Tree</a>
                     </div>
 
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -742,7 +731,7 @@
                         <div class="admin-table-box" style="border-left: 5px solid #10B981; box-shadow: 0 4px 10px rgba(16,185,129,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                                 <span style="font-weight: 800; font-size: 14.5px; color: #10B981;">👈 LEFT Leg Team (වම් ශාඛාව)</span>
-                                <span id="leftLegVolText" style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Volume: LKR 0.00</span>
+                                <span style="font-size: 12.5px; color: var(--brand-green-light); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
                             <div id="leftLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
                                 නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
@@ -753,7 +742,7 @@
                         <div class="admin-table-box" style="border-left: 5px solid #F59E0B; box-shadow: 0 4px 10px rgba(245,158,11,0.05);">
                             <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                                 <span style="font-weight: 800; font-size: 14.5px; color: #F59E0B;">👉 RIGHT Leg Team (දකුණු ශාඛාව)</span>
-                                <span id="rightLegVolText" style="font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">Volume: LKR 0.00</span>
+                                <span style="font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">Volume: LKR 0.00</span>
                             </div>
                             <div id="rightLegDownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
                                 නව සාමාජිකයින් ලියාපදිංචි වන විට මෙහි සටහන් වේ.
@@ -765,11 +754,13 @@
                     <div class="admin-table-box" style="border-left: 5px solid #6366F1; box-shadow: 0 4px 10px rgba(99,102,241,0.05);">
                         <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding: 16px 20px;">
                             <span style="font-weight: 800; font-size: 14.5px; color: #6366F1;">👥 Direct Referrals (8% Direct Commission)</span>
-                            <span id="directCountText" style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">0 Direct Members</span>
+                            <span style="font-size: 12.5px; color: var(--text-muted); font-weight: 700;">0 Direct Members</span>
                         </div>
                         <div id="level1DownlinesList" style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 13px;">
-                            තවමත් සෘජු සාමාජිකයින් නොමැත. ඔබගේ Referral Link එක බෙදාගන්න.
+                            ඔබගේ Direct Referral Link හරහා ලියාපදිංචි වන සාමාජිකයින් මෙහි දැක්වේ.
                         </div>
+                    </div>
+                </div>
                     </div>
                 </div>
 
@@ -781,18 +772,18 @@
                             
                             <div style="margin-bottom: 20px; background-color: rgba(185, 231, 105, 0.08); padding: 15px; border-radius: 8px; border: 1px dashed var(--brand-green-light);">
                                 <span style="font-size: 12px; color: var(--text-muted); display: block;">ගෙවිය හැකි මුළු කොමිස් ශේෂය (Withdrawable Balance)</span>
-                                <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 0.00</span>
+                                <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 23,790.00</span>
                             </div>
 
                             <form id="payoutRequestForm" onsubmit="submitPayoutRequest(event)">
                                 <div class="form-group">
-                                    <label for="payoutAmountInput">ලබා ගැනීමට අවශ්‍ය මුදල (Amount LKR) *</label>
-                                    <input type="number" id="payoutAmountInput" required min="1000" placeholder="1000" style="width: 100%;">
+                                    <input type="number" id="payoutAmountInput" required min="1000" placeholder=" " style="width: 100%;">
+                                    <label for="payoutAmountInput">ලබා ගැනීමට අවශ්‍ය මුදල (Amount LKR)</label>
                                 </div>
 
                                 <div class="form-group" style="margin-top: 15px;">
-                                    <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details) *</label>
-                                    <textarea id="payoutBankDetails" required placeholder="Hiru, Commercial Bank, Acc: 8010294851, Maharagama Branch" rows="3" style="width: 100%;"></textarea>
+                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details)</label>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary" style="width: 100%;">ඉල්ලීම යොමු කරන්න (Request Bank Payout)</button>
@@ -834,7 +825,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="setUserPhone">දුරකථන අංකය (Phone Number) *</label>
-                                <input type="tel" id="setUserPhone" value="0726090050" required placeholder="0726090050">
+                                <input type="tel" id="setUserPhone" value="0719226600" required placeholder="0719226600">
                             </div>
                             <div class="form-group">
                                 <label for="setUserAddress">ලිපිනය (Home Address) *</label>
@@ -905,9 +896,9 @@
         // 🔒 Session Security Guard
         (function() {
             const activeUser = JSON.parse(localStorage.getItem('active_user'));
-            if (!activeUser) {
-                alert('🔒 Access Denied! Please sign in first.');
-                window.location.href = 'login-register.html';
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            if (!activeUser && !token) {
+                window.location.href = 'login.html';
             }
         })();
 
@@ -934,10 +925,6 @@
             const activePanel = document.getElementById('panel-' + tabId);
             if (activeLink) activeLink.classList.add('active');
             if (activePanel) activePanel.classList.add('active');
-
-            if (tabId === 'network') {
-                loadDynamicDownlines();
-            }
         }
 
         // Show Toast Utility
@@ -953,8 +940,10 @@
         // Logout
         function logoutUser() {
             localStorage.removeItem('active_user');
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('active_token');
             showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
-            setTimeout(() => { window.location.href = 'login-register.html'; }, 1500);
+            setTimeout(() => { window.location.href = 'login.html'; }, 1200);
         }
 
         // Filter downline members across all 5 levels dynamically
@@ -977,7 +966,8 @@
 
         // Load dynamically referred binary team and direct referrals
         function loadDynamicDownlines() {
-            const userSlug = getActiveUserSlug();
+            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Hiru' };
+            const myRefCode = profile.name ? profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') : 'hiru';
             
             // Containers
             const l1Container = document.getElementById('level1DownlinesList');
@@ -987,7 +977,7 @@
             const leftVolEl = document.getElementById('leftLegVolText');
             const rightVolEl = document.getElementById('rightLegVolText');
 
-            const directMembers = JSON.parse(localStorage.getItem('referred_users_' + userSlug)) || [];
+            const directMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
             
             if (l1Container) {
                 if (directMembers.length === 0) {
@@ -1071,7 +1061,7 @@
             const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {
                 name: 'Kasun Tharaka',
                 email: 'student@hapanamy.lk',
-                phone: '0726090050',
+                phone: '0719226600',
                 address: 'No. 45, Temple Road, Maharagama',
                 bankName: 'Commercial Bank',
                 branch: 'Maharagama',
@@ -1092,7 +1082,8 @@
 
         // Load Payouts queue
         function getAffiliateBalance() {
-            const userSlug = getActiveUserSlug();
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
             
             let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
@@ -1202,7 +1193,8 @@
                 
                 const balance = getAffiliateBalance();
                 const newBalance = balance - tempPayoutAmount;
-                const userSlug = getActiveUserSlug();
+                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+                const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
 
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
@@ -1272,173 +1264,14 @@
             showToast('🔄 Switching language between English & Sinhala...');
         }
 
-        // Get or initialize user-specific affiliate statistics
-        function getAffiliateStats() {
-            const userSlug = getActiveUserSlug();
-            let stats = JSON.parse(localStorage.getItem('affiliate_stats_' + userSlug));
-            if (!stats) {
-                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
-                    stats = {
-                        clicks: 1248,
-                        sales: 12,
-                        total_earnings: 23790,
-                        trend: { Feb: 4200, Mar: 8500, Apr: 12000, May: 9800, Jun: 16500, Jul: 23790 }
-                    };
-                } else {
-                    stats = {
-                        clicks: 0,
-                        sales: 0,
-                        total_earnings: 0,
-                        trend: { Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0, Jul: 0 }
-                    };
-                }
-                localStorage.setItem('affiliate_stats_' + userSlug, JSON.stringify(stats));
-            }
-            return stats;
-        }
-
-        // Dynamically load stats and trend chart on dashboard
-        function loadDashboardStats() {
-            const stats = getAffiliateStats();
-            
-            // 1. Total Earnings
-            const totalEarnElement = document.getElementById('dashTotalEarningsVal');
-            if (totalEarnElement) {
-                totalEarnElement.textContent = 'රු. ' + stats.total_earnings.toLocaleString(undefined, {minimumFractionDigits: 2});
-            }
-            
-            // 2. Link Clicks
-            const clicksElement = document.getElementById('dashLinkClicksVal');
-            if (clicksElement) {
-                clicksElement.textContent = stats.clicks.toLocaleString() + ' Clicks';
-            }
-            
-            // 3. Direct Referrals
-            const salesElement = document.getElementById('dashTotalSalesVal');
-            if (salesElement) {
-                salesElement.textContent = stats.sales.toLocaleString() + ' Sales';
-            }
-            
-            // 4. Update Trend Chart Heights
-            const months = ['Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'];
-            const maxVal = Math.max(...Object.values(stats.trend), 1000);
-            months.forEach(month => {
-                const val = stats.trend[month] || 0;
-                const textElem = document.getElementById('trend-text-' + month);
-                const barElem = document.getElementById('trend-bar-' + month);
-                
-                if (textElem) {
-                    textElem.textContent = val > 0 ? 'රු. ' + (val / 1000).toFixed(1) + 'K' : 'රු. 0.0';
-                }
-                if (barElem) {
-                    const height = val > 0 ? Math.max(5, Math.round((val / maxVal) * 140)) : 2;
-                    barElem.style.height = height + 'px';
-                }
-            });
-        }
-
-        // Helper to get safe user slug from active session email
-        function getActiveUserSlug() {
-            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
-            const email = activeUser.email || 'affiliate@hapanamy.lk';
-            return email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
-        }
-
-        // ==================== STUDENT COURSE DASHBOARD ====================
-        const courseData = {
-            'facebook-course': { title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/facebook_course_banner.jpg', category: 'Social Media' },
-            'tiktok-course': { title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/tiktok_course_banner.jpg', category: 'Social Media' },
-            'youtube-course': { title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව', banner: 'assets/youtube_course_banner.jpg', category: 'Social Media' },
-            'social-media-masterclass': { title: 'Social Media Marketing Masterclass', banner: 'assets/social_media_masterclass_banner.jpg', category: 'Social Media' },
-            'forex-course': { title: 'Professional Forex Trading Core Course', banner: 'assets/forex_course_banner.jpg', category: 'Trading' },
-            'crypto-course': { title: 'Cryptocurrency Trading & Investing Course', banner: 'assets/crypto_course_banner.jpg', category: 'Trading' },
-            'options-course': { title: 'Advanced Stock Options Trading Course', banner: 'assets/options_course_banner.jpg', category: 'Trading' },
-            'titan-elite': { title: 'Titan Elite SMC Mentorship Program', banner: 'assets/trading_banner.jpg', category: 'Trading' },
-            'ai-video-course': { title: 'AI-Powered Video Generation Mastery', banner: 'assets/ai_video_course_banner.jpg', category: 'AI & Tech' },
-            'ai-mastery-course': { title: 'Artificial Intelligence Mastery Core Course', banner: 'assets/ai_mastery_banner.jpg', category: 'AI & Tech' },
-            'coding-course': { title: 'Full-Stack Software Development Masterclass', banner: 'assets/coding_course_banner.jpg', category: 'AI & Tech' },
-            'trading-ebook': { title: 'Ultimate Trading Strategy Blueprint (E-Book)', banner: 'assets/ebooks_banner.jpg', category: 'E-Books' },
-            'motivation-ebook': { title: 'Mindset & Success Blueprint E-Book', banner: 'assets/motivation_ebook_banner.jpg', category: 'E-Books' },
-            'ai-prompts-ebook': { title: 'ChatGPT Prompt Engineering Guide (E-Book)', banner: 'assets/ai_prompts_ebook_banner.jpg', category: 'E-Books' }
-        };
-
-        function renderStudentPurchasedCourses() {
-            const grid = document.getElementById('studentCoursesGrid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            
-            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
-            const email = activeUser.email || 'student@hapanamy.lk';
-            
-            // Seed default courses for NamoBudhdhaya if not set
-            if (email.toLowerCase() === 'namobudhdhaya@hapanamy.lk' || email.toLowerCase() === 'namobudhdhaya') {
-                let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_namobudhdhaya@hapanamy.lk'));
-                if (!unlocked) {
-                    unlocked = ['titan-elite', 'youtube-course', 'ai-mastery-course', 'trading-ebook'];
-                    localStorage.setItem('unlocked_courses_namobudhdhaya@hapanamy.lk', JSON.stringify(unlocked));
-                    localStorage.setItem('unlocked_courses_namobudhdhaya', JSON.stringify(unlocked));
-                }
-            }
-            
-            const unlockedKeys = JSON.parse(localStorage.getItem('unlocked_courses_' + email)) || 
-                                 JSON.parse(localStorage.getItem('unlocked_courses_' + email.toLowerCase())) || [];
-            
-            if (unlockedKeys.length === 0) {
-                grid.innerHTML = `
-                    <div style="grid-column: 1/-1; text-align: center; padding: 50px 20px; background-color: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 12px; width: 100%;">
-                        <span style="font-size: 40px; display: block; margin-bottom: 15px;">📚</span>
-                        <h4 style="font-size: 16px; margin-bottom: 8px; font-weight: 700; color: var(--text-primary);">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත.</h4>
-                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">පාඨමාලා මිලදී ගැනීමෙන් පසු ඒවා මෙතැනින් හැදෑරීම ආරම්භ කළ හැක.</p>
-                        <a href="index.html#courses" class="btn btn-primary" style="border: none; text-decoration: none; font-size:12.5px;">පාඨමාලා බැලීම (Browse Catalog)</a>
-                    </div>
-`;
-                return;
-            }
-            
-            unlockedKeys.forEach(key => {
-                const course = courseData[key];
-                if (!course) return;
-                
-                const card = document.createElement('div');
-                card.className = 'course-card';
-                card.style.cssText = 'background-color: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: 0.2s; cursor: pointer;';
-                card.onclick = () => openCoursePlayer(key);
-                
-                card.innerHTML = `
-                    <div style="position: relative; height: 160px; overflow: hidden;">
-                        <img src="${course.banner}" alt="${course.title}" style="width: 100%; height: 100%; object-fit: cover;">
-                        <span style="position: absolute; top: 12px; left: 12px; background-color: var(--brand-orange); color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 700; text-transform: uppercase;">${course.category}</span>
-                    </div>
-                    <div style="padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
-                        <h4 style="font-size: 14.5px; font-weight: 700; color: var(--text-primary); margin-bottom: 15px; line-height: 1.4;">${course.title}</h4>
-                        <button class="btn btn-primary" style="width: 100%; border: none; font-size: 12px; padding: 10px; border-radius: 6px;">නැරඹීම අරඹන්න (Start Learning) 🎥</button>
-                    </div>
-`;
-                
-                // Add hover style behavior via JS
-                card.onmouseover = () => {
-                    card.style.transform = 'translateY(-5px)';
-                    card.style.boxShadow = '0 8px 20px rgba(244,123,32,0.15)';
-                };
-                card.onmouseout = () => {
-                    card.style.transform = 'none';
-                    card.style.boxShadow = 'none';
-                };
-                
-                grid.appendChild(card);
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             renderStudentPurchasedCourses();
             loadUserProfile();
             loadPayoutHistory();
-            loadDashboardStats();
-            loadDynamicDownlines();
             
             // Prefill dynamic user-specific referral link
-            const userSlug = getActiveUserSlug();
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
+            const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
             const refInput = document.getElementById('mainReferralLinkVal');
             if (refInput) {
                 refInput.value = window.location.origin + '/?ref=' + userSlug;

@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | 404 - පිටුව සොයාගත නොහැක (Page Not Found)</title>
+    
+    <!-- Robots meta to prevent 404 indexing -->
+    <meta name="robots" content="noindex, follow">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        .error-wrapper {
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .error-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            padding: 50px 35px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--card-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .error-code {
+            font-size: 88px;
+            font-weight: 900;
+            line-height: 1;
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: -2px;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .error-desc {
+            font-size: 14.5px;
+            color: var(--text-body);
+            line-height: 1.7;
+            margin-bottom: 30px;
+        }
+
+        .quick-nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .quick-nav-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .quick-nav-btn:hover {
+            border-color: var(--brand-orange);
+            color: var(--brand-orange);
+            transform: translateY(-2px);
+        }
+
+        .quick-nav-icon {
+            font-size: 20px;
+        }
+    </style>
+    <!-- Supabase Cloud DB Core -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+                document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
+            });
+            navMenu.querySelectorAll('.nav-link').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenuBtn.classList.remove('active');
+                    navMenu.classList.remove('active');
+                    document.body.classList.remove('menu-open');
+                });
+            });
+        }
+  
+    </script>
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="index.html#courses" class="nav-link">Courses</a>
+                <a href="index.html#affiliate" class="nav-link">Affiliate</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About Us</a>
+                <a href="contact-us.html" class="nav-link">Contact</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="error-wrapper">
+        <div class="error-card">
+            <div class="error-code">404</div>
+            <h1 class="error-title">කණගාටුයි! පිටුව සොයාගත නොහැක.</h1>
+            <p class="error-desc">ඔබ සොයන පිටුව ඉවත් කර ඇත, නම වෙනස් කර ඇත, හෝ තාවකාලිකව ලබාගත නොහැක. පහත සබැඳි මඟින් ඔබට අවශ්‍ය අංශය වෙත පිවිසිය හැක.</p>
+
+            <div class="quick-nav-grid">
+                <a href="index.html" class="quick-nav-btn">
+                    <span class="quick-nav-icon">🏠</span>
+                    <span>ප්‍රධාන පිටුව</span>
+                </a>
+                <a href="index.html#courses" class="quick-nav-btn">
+                    <span class="quick-nav-icon">📚</span>
+                    <span>පාඨමාලා</span>
+                </a>
+                <a href="blog.html" class="quick-nav-btn">
+                    <span class="quick-nav-icon">💡</span>
+                    <span>Knowledge Hub</span>
+                </a>
+                <a href="contact-us.html" class="quick-nav-btn">
+                    <span class="quick-nav-icon">📞</span>
+                    <span>අප අමතන්න</span>
+                </a>
+            </div>
+
+            <a href="index.html" class="btn btn-primary" style="padding: 12px 30px; font-weight: 700;">
+                ← මුල් පිටුවට යන්න (Go to Home)
+            </a>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="index.html#courses">Courses</a></li>
+                    <li><a href="index.html#affiliate">Affiliate</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact-us.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+    </script>
+</body>
+</html>

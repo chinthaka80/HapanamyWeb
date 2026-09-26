@@ -1,5 +1,16 @@
 User-agent: *
 Allow: /
 Disallow: /admin.html
+Disallow: /admin-kyc.html
+Disallow: /admin-withdrawals.html
+Disallow: /hapanamy-admin-portal-9226.html
+Disallow: /dashboard.html
+Disallow: /affiliate-dashboard.html
+Disallow: /student-dashboard.html
+Disallow: /my-account.html
+Disallow: /checkout.html
+Disallow: /order-success.html
+Disallow: /payhere-mock.html
+Disallow: /api/
 
 Sitemap: https://www.hapanamy.lk/sitemap.xml
