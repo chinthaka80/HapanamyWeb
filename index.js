@@ -3325,22 +3325,57 @@ function syncNavAuthState() {
     const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
     const userStr = localStorage.getItem('active_user');
     const authBtnContainer = document.getElementById('headerAuthButtons');
+    const mobileAuthContainers = document.querySelectorAll('.mobile-only-auth');
 
-    if (token && userStr && authBtnContainer) {
+    if (token && userStr) {
         try {
             const user = JSON.parse(userStr);
             const isAdmin = user.role === 'admin' || user.role === 'ADMIN';
             const dashLink = isAdmin ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
 
-            authBtnContainer.innerHTML = `
-                <a href="${dashLink}" class="header-register-btn">
-                    <span>👤 My Dashboard</span>
-                </a>
-                <button onclick="handleGlobalLogout()" class="header-register-btn" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; box-shadow:none; cursor:pointer;">
-                    <span>🚪 Logout</span>
-                </button>
-            `;
+            if (authBtnContainer) {
+                authBtnContainer.innerHTML = `
+                    <a href="${dashLink}" class="header-register-btn">
+                        <span>👤 My Dashboard</span>
+                    </a>
+                    <button onclick="handleGlobalLogout()" class="header-login-btn" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; cursor:pointer;">
+                        <span>🚪 Logout</span>
+                    </button>
+                `;
+            }
+
+            mobileAuthContainers.forEach(container => {
+                container.innerHTML = `
+                    <a href="${dashLink}" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;">
+                        <span>👤 My Dashboard</span>
+                    </a>
+                    <button onclick="handleGlobalLogout()" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; cursor:pointer;">
+                        <span>🚪 Logout</span>
+                    </button>
+                `;
+            });
         } catch (e) {}
+    } else {
+        if (authBtnContainer) {
+            authBtnContainer.innerHTML = `
+                <a href="login.html" class="header-login-btn" id="headerLoginBtn">
+                    <span>🔐 LOGIN</span>
+                </a>
+                <a href="register.html" class="header-register-btn" id="headerRegisterBtn">
+                    <span>🚀 REGISTER FREE</span>
+                </a>
+            `;
+        }
+        mobileAuthContainers.forEach(container => {
+            container.innerHTML = `
+                <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;">
+                    <span>🔐 LOGIN</span>
+                </a>
+                <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;">
+                    <span>🚀 REGISTER FREE</span>
+                </a>
+            `;
+        });
     }
 }
 

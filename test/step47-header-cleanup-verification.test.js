@@ -1,7 +1,7 @@
 // test/step47-header-cleanup-verification.test.js
-// Production Verification Test Suite for Header Cleanup & Navigation UX Modernization
-// Verifies: Public Header Login Button Removal, Single REGISTER FREE CTA, Reduced Header Height,
-// Slim Promo Strip, /login.html Direct Route Integrity, Admin Isolation, and MLM Engine Preservation.
+// Production Verification Test Suite for Header Navigation & Public Login Restoration
+// Verifies: Public Header Login Button Restoration, Single REGISTER FREE CTA, Visual Hierarchy,
+// Compact Header Height, Direct /login.html Integrity, Admin Isolation, and MLM Engine Preservation.
 
 const testRunner = require('./test-runner');
 const assert = require('assert');
@@ -21,7 +21,7 @@ const PUBLIC_PAGES = [
     '404.html'
 ];
 
-test('Step 47: 1. Complete Removal of Public Header LOGIN Buttons Across All Public Pages', () => {
+test('Step 47: 1. Clean Public Header 🔐 LOGIN Button Exists Across All Public Pages', () => {
     PUBLIC_PAGES.forEach(page => {
         const filePath = path.join(__dirname, '..', page);
         assert.ok(fs.existsSync(filePath), `${page} must exist`);
@@ -33,12 +33,10 @@ test('Step 47: 1. Complete Removal of Public Header LOGIN Buttons Across All Pub
 
         const headerContent = headerMatch[0];
 
-        // Ensure no user login button / link inside header
-        assert.ok(!headerContent.includes('href="login.html"'), `${page} header must NOT contain a link to login.html`);
-        assert.ok(!headerContent.includes("href='login.html'"), `${page} header must NOT contain a link to login.html`);
-        assert.ok(!headerContent.includes('🔐 LOGIN'), `${page} header must NOT contain 🔐 LOGIN`);
-        assert.ok(!headerContent.includes('>Sign In<'), `${page} header must NOT contain Sign In`);
-        assert.ok(!headerContent.includes('>LOGIN<'), `${page} header must NOT contain LOGIN text`);
+        // Ensure exactly ONE public login button in desktop header actions and mobile menu
+        assert.ok(headerContent.includes('href="login.html"'), `${page} header must contain link to login.html`);
+        assert.ok(headerContent.includes('header-login-btn'), `${page} header must use class header-login-btn`);
+        assert.ok(headerContent.includes('🔐 LOGIN'), `${page} header must contain 🔐 LOGIN label`);
     });
 });
 
@@ -57,7 +55,7 @@ test('Step 47: 2. Single High-Converting Public Account CTA (REGISTER FREE)', ()
     });
 });
 
-test('Step 47: 3. Header Height Reduction & Slim Promo Strip CSS Verification', () => {
+test('Step 47: 3. Header Height Compactness & Button Hierarchy CSS Verification', () => {
     const cssPath = path.join(__dirname, '..', 'index.css');
     assert.ok(fs.existsSync(cssPath), 'index.css must exist');
     const cssContent = fs.readFileSync(cssPath, 'utf8');
@@ -65,10 +63,10 @@ test('Step 47: 3. Header Height Reduction & Slim Promo Strip CSS Verification', 
     // Verify compact header height variable
     assert.ok(cssContent.includes('--header-height: 66px'), 'index.css must define compact --header-height: 66px');
 
-    // Verify top bar slim styling
-    assert.ok(cssContent.includes('.top-bar'), 'index.css must style .top-bar');
-    assert.ok(cssContent.includes('.top-promo-text'), 'index.css must style .top-promo-text');
+    // Verify button styling hierarchy
+    assert.ok(cssContent.includes('.header-login-btn'), 'index.css must style .header-login-btn');
     assert.ok(cssContent.includes('.header-register-btn'), 'index.css must style .header-register-btn');
+    assert.ok(cssContent.includes('.mobile-only-auth'), 'index.css must define .mobile-only-auth');
 
     // Verify index.html top promo text content
     const indexHtml = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
@@ -126,6 +124,7 @@ test('Step 47: 6. Dynamic Nav Auth State Synchronization (Logged-in vs Logged-ou
     assert.ok(jsContent.includes('👤 My Dashboard'), 'syncNavAuthState must render My Dashboard for logged in users');
     assert.ok(jsContent.includes('🚪 Logout'), 'syncNavAuthState must render Logout for logged in users');
     assert.ok(jsContent.includes('header-register-btn'), 'syncNavAuthState must use header-register-btn class');
+    assert.ok(jsContent.includes('header-login-btn'), 'syncNavAuthState must use header-login-btn class');
 });
 
 test('Step 47: 7. MLM Engine Business Rules & Invariants Preservation', () => {
