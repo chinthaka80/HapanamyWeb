@@ -1,0 +1,202 @@
+name: Deploy Nexus Prime to Production (nexusp.online)
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'nexus_backend/**'
+      - 'nexus_migrations/**'
+      - 'assets/nexus/**'
+      - 'nexus_*.html'
+      - 'NEXUS_PRIME_*.md'
+      - '.env.nexus*'
+      - 'test/nexus*'
+      - '.github/workflows/deploy-nexus.yml'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment Environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+jobs:
+  # ============================================================
+  # STEP 1: TEST & PRE-DEPLOYMENT VALIDATION GATE
+  # ============================================================
+  test-and-validate:
+    name: Nexus Foundation Test Suite (208 Steps)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies (if package-lock present)
+        run: |
+          if [ -f package-lock.json ]; then
+            npm ci || npm install
+          fi
+
+      - name: Run Nexus Prime Foundation Test Harness
+        run: |
+          echo "============================================================"
+          echo "🚀 RUNNING NEXUS PRIME AUTOMATED TESTS (208 STEPS)"
+          echo "============================================================"
+          node test/nexus-foundation.test.js
+
+  # ============================================================
+  # STEP 2: ISOLATED NEXUS DEPLOYMENT
+  # ============================================================
+  deploy:
+    name: Deploy to nexusp.online
+    needs: test-and-validate
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' || github.event_name == 'workflow_dispatch'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # ------------------------------------------------------------
+      # SAFETY GATE: Validate Secrets & Strict Hapanamy Anti-Collision
+      # ------------------------------------------------------------
+      - name: Pre-Flight Safety & Isolation Gate
+        run: |
+          echo "============================================================"
+          echo "🔒 RUNNING PRE-FLIGHT DEPLOYMENT ISOLATION CHECK"
+          echo "============================================================"
+
+          # 1. Verify mandatory secrets presence
+          MISSING_SECRETS=0
+          if [ -z "${{ secrets.NEXUS_SFTP_HOST }}" ]; then
+            echo "::error::Missing secret: NEXUS_SFTP_HOST"
+            MISSING_SECRETS=1
+          fi
+          if [ -z "${{ secrets.NEXUS_SFTP_USERNAME }}" ]; then
+            echo "::error::Missing secret: NEXUS_SFTP_USERNAME"
+            MISSING_SECRETS=1
+          fi
+          if [ -z "${{ secrets.NEXUS_SFTP_PRIVATE_KEY }}" ]; then
+            echo "::error::Missing secret: NEXUS_SFTP_PRIVATE_KEY"
+            MISSING_SECRETS=1
+          fi
+          if [ -z "${{ secrets.NEXUS_DEPLOY_PATH }}" ]; then
+            echo "::error::Missing secret: NEXUS_DEPLOY_PATH"
+            MISSING_SECRETS=1
+          fi
+
+          if [ $MISSING_SECRETS -eq 1 ]; then
+            echo "::error::Required Nexus deployment secrets are not configured in repository."
+            exit 1
+          fi
+
+          # 2. Strict Anti-Collision Check: Never target Hapanamy infrastructure
+          NEXUS_HOST="${{ secrets.NEXUS_SFTP_HOST }}"
+          NEXUS_PATH="${{ secrets.NEXUS_DEPLOY_PATH }}"
+
+          if echo "$NEXUS_HOST" | grep -qi "hapanamy"; then
+            echo "::error::FATAL SECURITY VIOLATION: NEXUS_SFTP_HOST ($NEXUS_HOST) targets Hapanamy infrastructure!"
+            exit 1
+          fi
+
+          if echo "$NEXUS_PATH" | grep -qi "hapanamy"; then
+            echo "::error::FATAL SECURITY VIOLATION: NEXUS_DEPLOY_PATH ($NEXUS_PATH) targets Hapanamy directory!"
+            exit 1
+          fi
+
+          if [ "$NEXUS_PATH" = "/public_html" ] || [ "$NEXUS_PATH" = "public_html" ]; then
+            echo "::error::FATAL SECURITY VIOLATION: NEXUS_DEPLOY_PATH cannot be the root /public_html reserved for Hapanamy!"
+            exit 1
+          fi
+
+          echo "✅ Isolation Verification Passed: Target does not collide with Hapanamy."
+
+      # ------------------------------------------------------------
+      # STAGE ARTIFACTS: Isolate ONLY Nexus Prime files
+      # ------------------------------------------------------------
+      - name: Stage Nexus Prime Deployment Bundle
+        run: |
+          echo "Creating isolated staging directory..."
+          rm -rf nexus_dist
+          mkdir -p nexus_dist/assets/nexus
+          mkdir -p nexus_dist/nexus_backend
+          mkdir -p nexus_dist/nexus_migrations
+
+          # Copy backend, migrations, and assets
+          cp -r nexus_backend/* nexus_dist/nexus_backend/
+          cp -r nexus_migrations/* nexus_dist/nexus_migrations/
+          cp -r assets/nexus/* nexus_dist/assets/nexus/
+
+          # Copy frontend HTML portals
+          cp nexus_*.html nexus_dist/
+
+          # Copy package files if present
+          if [ -f package.json ]; then cp package.json nexus_dist/; fi
+          if [ -f package-lock.json ]; then cp package-lock.json nexus_dist/; fi
+          if [ -f .env.nexus.example ]; then cp .env.nexus.example nexus_dist/; fi
+
+          # Generate Immutable Deployment Manifest
+          cat << 'EOF' > nexus_dist/nexus-deployment-manifest.json
+          {
+            "application": "Nexus Prime (PVT) Ltd",
+            "domain": "nexusp.online",
+            "commit_sha": "${{ github.sha }}",
+            "branch": "${{ github.ref_name }}",
+            "deployed_by": "${{ github.actor }}",
+            "environment": "${{ inputs.environment || 'production' }}",
+            "timestamp": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')"
+          }
+          EOF
+
+          # Verify no forbidden secrets or Hapanamy files leaked into bundle
+          echo "Scanning bundle for safety..."
+          if find nexus_dist -name ".env" -o -name ".env.local" -o -name ".env.production" | grep .; then
+            echo "::error::Forbidden secret file found in staging bundle!"
+            exit 1
+          fi
+          if find nexus_dist -name "HapanamyWeb" -o -name "server.js" | grep .; then
+            echo "::error::Hapanamy application file leaked into Nexus bundle!"
+            exit 1
+          fi
+
+          echo "Staged files summary:"
+          ls -la nexus_dist/
+
+      # ------------------------------------------------------------
+      # SSH SETUP: Nexus-specific SSH Key
+      # ------------------------------------------------------------
+      - name: Install Nexus SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.NEXUS_SFTP_PRIVATE_KEY }}" > ~/.ssh/nexus_rsa
+          # Strip Windows CRLF characters to prevent OpenSSH parsing failures
+          sed -i 's/\r$//' ~/.ssh/nexus_rsa
+          chmod 600 ~/.ssh/nexus_rsa
+          ssh-keyscan -H ${{ secrets.NEXUS_SFTP_HOST }} >> ~/.ssh/known_hosts
+
+      # ------------------------------------------------------------
+      # DEPLOY VIA SFTP (lftp): Dedicated Nexus deployment target
+      # ------------------------------------------------------------
+      - name: Deploy Nexus Prime to nexusp.online via SFTP
+        run: |
+          sudo apt-get update && sudo apt-get install -y lftp
+          lftp -c "
+            set sftp:private-key ~/.ssh/nexus_rsa;
+            set sftp:connect-program 'ssh -a -x -i ~/.ssh/nexus_rsa -o StrictHostKeyChecking=no -o PasswordAuthentication=no -o PubkeyAuthentication=yes';
+            connect sftp://${{ secrets.NEXUS_SFTP_USERNAME }}:@${{ secrets.NEXUS_SFTP_HOST }};
+            mirror -R -v --delete --ignore-time ./nexus_dist/ ${{ secrets.NEXUS_DEPLOY_PATH }}
+          "
+          echo "============================================================"
+          echo "🎉 NEXUS PRIME SUCCESSFULLY DEPLOYED TO ${{ secrets.NEXUS_SFTP_HOST }}"
+          echo "============================================================"

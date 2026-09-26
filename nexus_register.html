@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Member Account — Nexus Prime (PVT) Ltd</title>
+    <meta name="description" content="Register as a verified distributor with Nexus Prime (PVT) Ltd. Access high-income masterclasses and scalable network tools.">
+    <link rel="canonical" href="https://nexusp.online/register">
+    <link rel="stylesheet" href="/assets/nexus/nexus-style.css">
+    <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="nexus-header">
+        <div class="nexus-container nexus-header-content">
+            <a href="/" class="nexus-logo-wrapper" aria-label="Nexus Prime Home">
+                <div class="nexus-logo-mark">NP</div>
+                <div class="nexus-logo-text">
+                    <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                    <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                </div>
+            </a>
+            <nav class="nexus-nav-links">
+                <a href="/">Home</a>
+                <a href="/login" class="nexus-btn nexus-btn-outline nexus-btn-sm">Sign In</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Registration Shell -->
+    <main class="nexus-container" style="padding-top:30px; padding-bottom:60px;">
+        <div class="nexus-card nexus-auth-box" style="max-width:580px;">
+            <div style="text-align:center; margin-bottom:24px;">
+                <h1 style="font-size:26px; font-weight:800; margin-bottom:6px;">Join Nexus Prime</h1>
+                <p style="color:var(--text-muted); font-size:13.5px;">Complete the 5-step registration to activate your distributor portal.</p>
+            </div>
+
+            <!-- Contextual Sponsor Referral Invitation Banner -->
+            <div id="sponsorBanner" class="nexus-sponsor-banner" style="display:none;">
+                <div class="nexus-sponsor-banner-icon" id="sponsorBannerIcon">✓</div>
+                <div class="nexus-sponsor-banner-content" id="sponsorBannerText">
+                    <strong>You've been invited to join Nexus Prime.</strong><br>
+                    <span id="sponsorDetailText" style="color:var(--text-muted);">Sponsor: Verifying...</span>
+                </div>
+            </div>
+
+            <!-- 5-Step Progress Bar -->
+            <div class="nexus-wizard-steps" aria-label="Registration Progress">
+                <div class="nexus-step-item active" id="stepIndicator-1">
+                    <div class="nexus-step-circle">1</div>
+                    <div class="nexus-step-title">Referral</div>
+                </div>
+                <div class="nexus-step-item" id="stepIndicator-2">
+                    <div class="nexus-step-circle">2</div>
+                    <div class="nexus-step-title">Identity</div>
+                </div>
+                <div class="nexus-step-item" id="stepIndicator-3">
+                    <div class="nexus-step-circle">3</div>
+                    <div class="nexus-step-title">Account</div>
+                </div>
+                <div class="nexus-step-item" id="stepIndicator-4">
+                    <div class="nexus-step-circle">4</div>
+                    <div class="nexus-step-title">Terms</div>
+                </div>
+                <div class="nexus-step-item" id="stepIndicator-5">
+                    <div class="nexus-step-circle">5</div>
+                    <div class="nexus-step-title">Confirm</div>
+                </div>
+            </div>
+
+            <!-- Error / Alert Box -->
+            <div id="alertBox" style="display:none;" class="nexus-alert" role="alert"></div>
+
+            <form id="nexusRegisterWizard" novalidate>
+                
+                <!-- STEP 1: REFERRAL SPONSOR -->
+                <div id="step-1" class="nexus-step-content">
+                    <div style="margin-bottom:18px;">
+                        <h3 style="font-size:16px; margin-bottom:4px;">Step 1: Sponsor Referral Code</h3>
+                        <p style="font-size:12.5px; color:var(--text-muted);">Enter the verified code of the distributor who introduced you.</p>
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="referralCode">Sponsor Code or Member ID</label>
+                        <input 
+                            type="text" 
+                            id="referralCode" 
+                            class="nexus-input" 
+                            placeholder="e.g. NEXUS001" 
+                            style="text-transform:uppercase; font-weight:700; letter-spacing:1px;"
+                            autocomplete="off">
+                        <div id="sponsorLiveFeedback" style="margin-top:6px; font-size:12px;">
+                            <span style="color:var(--text-muted);">Optional: Default corporate sponsor will be assigned if left empty.</span>
+                        </div>
+                    </div>
+
+                    <button type="button" class="nexus-btn nexus-btn-primary" style="width:100%; margin-top:10px;" onclick="goToStep(2)">
+                        Continue to Personal Details &rarr;
+                    </button>
+                </div>
+
+                <!-- STEP 2: PERSONAL IDENTITY -->
+                <div id="step-2" class="nexus-step-content" style="display:none;">
+                    <div style="margin-bottom:18px;">
+                        <h3 style="font-size:16px; margin-bottom:4px;">Step 2: Personal Details</h3>
+                        <p style="font-size:12.5px; color:var(--text-muted);">Provide your legal contact and identity records.</p>
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="fullName">Full Legal Name</label>
+                        <input type="text" id="fullName" class="nexus-input" placeholder="e.g. Kasun Bandara" required autocomplete="name">
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="email">Email Address</label>
+                        <input type="email" id="email" class="nexus-input" placeholder="name@domain.com" required autocomplete="email">
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="phone">Mobile Phone (Sri Lanka / International)</label>
+                        <input type="tel" id="phone" class="nexus-input" placeholder="+94 7X XXX XXXX" required autocomplete="tel">
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top:15px;">
+                        <button type="button" class="nexus-btn nexus-btn-outline" style="flex:1;" onclick="goToStep(1)">
+                            &larr; Back
+                        </button>
+                        <button type="button" class="nexus-btn nexus-btn-primary" style="flex:2;" onclick="validateAndGoStep3()">
+                            Next: Account Security &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: ACCOUNT SECURITY -->
+                <div id="step-3" class="nexus-step-content" style="display:none;">
+                    <div style="margin-bottom:18px;">
+                        <h3 style="font-size:16px; margin-bottom:4px;">Step 3: Security &amp; Password</h3>
+                        <p style="font-size:12.5px; color:var(--text-muted);">Create a secure password (minimum 8 characters).</p>
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="password">Account Password</label>
+                        <div class="nexus-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="password" 
+                                class="nexus-input" 
+                                placeholder="••••••••" 
+                                required 
+                                autocomplete="new-password">
+                            <button type="button" class="nexus-password-toggle" onclick="togglePasswordVisibility('password', this)" aria-label="Toggle password visibility">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="confirmPassword">Confirm Password</label>
+                        <div class="nexus-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="confirmPassword" 
+                                class="nexus-input" 
+                                placeholder="••••••••" 
+                                required 
+                                autocomplete="new-password">
+                            <button type="button" class="nexus-password-toggle" onclick="togglePasswordVisibility('confirmPassword', this)" aria-label="Toggle confirm password visibility">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top:15px;">
+                        <button type="button" class="nexus-btn nexus-btn-outline" style="flex:1;" onclick="goToStep(2)">
+                            &larr; Back
+                        </button>
+                        <button type="button" class="nexus-btn nexus-btn-primary" style="flex:2;" onclick="validateAndGoStep4()">
+                            Next: Agreement &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: TERMS & CONSENT -->
+                <div id="step-4" class="nexus-step-content" style="display:none;">
+                    <div style="margin-bottom:18px;">
+                        <h3 style="font-size:16px; margin-bottom:4px;">Step 4: Distributor Agreement</h3>
+                        <p style="font-size:12.5px; color:var(--text-muted);">Please review and accept our corporate terms.</p>
+                    </div>
+
+                    <div class="nexus-card" style="padding:16px; margin-bottom:18px; font-size:12px; color:var(--text-muted); max-height:140px; overflow-y:auto; border-color:var(--border);">
+                        <p style="margin-bottom:8px;"><strong>1. Code of Ethics:</strong> Distributors agree to represent Nexus Prime (PVT) Ltd honestly and adhere to all Sri Lankan consumer protection rules.</p>
+                        <p style="margin-bottom:8px;"><strong>2. Independent Standing:</strong> Distributors are independent contractors, not corporate employees.</p>
+                        <p><strong>3. Transparent Solvency:</strong> Financial rewards depend on actual product orders and active participation, with built-in daily caps.</p>
+                    </div>
+
+                    <div class="nexus-form-group" style="display:flex; align-items:flex-start; gap:10px;">
+                        <input type="checkbox" id="termsCheck" required style="margin-top:4px; accent-color:var(--accent);">
+                        <label for="termsCheck" style="font-size:12.5px; color:var(--text-muted); cursor:pointer;">
+                            I agree to the <a href="/terms" target="_blank" style="color:var(--accent);">Terms &amp; Conditions</a> and <a href="/privacy" target="_blank" style="color:var(--accent);">Privacy Policy</a>.
+                        </label>
+                    </div>
+
+                    <div style="display:flex; gap:12px; margin-top:15px;">
+                        <button type="button" class="nexus-btn nexus-btn-outline" style="flex:1;" onclick="goToStep(3)">
+                            &larr; Back
+                        </button>
+                        <button type="button" id="submitRegBtn" class="nexus-btn nexus-btn-primary" style="flex:2;" onclick="submitRegistration()">
+                            Complete Registration &rarr;
+                        </button>
+                    </div>
+                </div>
+
+                <!-- STEP 5: CONFIRMATION & SUCCESS -->
+                <div id="step-5" class="nexus-step-content" style="display:none; text-align:center; padding:20px 0;">
+                    <div style="font-size:48px; margin-bottom:12px;">🎉</div>
+                    <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Registration Complete!</h2>
+                    <p style="font-size:13.5px; color:var(--text-muted); max-width:440px; margin:0 auto 20px auto;">
+                        Your Nexus Prime distributor account has been activated. Redirecting you to your Member Command Center...
+                    </p>
+                    <div class="nexus-spinner"></div>
+                </div>
+
+            </form>
+
+            <div style="text-align:center; margin-top:24px; font-size:13px; color:var(--text-muted);">
+                Already have an account? <a href="/login" style="color:var(--accent); font-weight:700; text-decoration:none;">Sign in here</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Client Script -->
+    <script>
+        let currentStep = 1;
+        let validatedSponsor = null;
+
+        function showAlert(msg, type = 'error') {
+            const alertBox = document.getElementById('alertBox');
+            alertBox.className = `nexus-alert nexus-alert-${type}`;
+            alertBox.innerText = msg;
+            alertBox.style.display = 'block';
+        }
+
+        function hideAlert() {
+            document.getElementById('alertBox').style.display = 'none';
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerText = '🔒';
+            } else {
+                input.type = 'password';
+                btn.innerText = '👁️';
+            }
+        }
+
+        function goToStep(step) {
+            hideAlert();
+            for (let i = 1; i <= 5; i++) {
+                const el = document.getElementById(`step-${i}`);
+                if (el) el.style.display = (i === step) ? 'block' : 'none';
+                
+                const indicator = document.getElementById(`stepIndicator-${i}`);
+                if (indicator) {
+                    indicator.classList.remove('active', 'completed');
+                    if (i === step) indicator.classList.add('active');
+                    else if (i < step) indicator.classList.add('completed');
+                }
+            }
+            currentStep = step;
+        }
+
+        function validateAndGoStep3() {
+            hideAlert();
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            if (!name || !email || !phone) {
+                showAlert('Please fill in your full name, email address, and mobile number.');
+                return;
+            }
+            if (!email.includes('@') || !email.includes('.')) {
+                showAlert('Please enter a valid email address format.');
+                return;
+            }
+            goToStep(3);
+        }
+
+        function validateAndGoStep4() {
+            hideAlert();
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!password || password.length < 8) {
+                showAlert('Password must contain at least 8 characters.');
+                return;
+            }
+            if (password !== confirmPassword) {
+                showAlert('Passwords do not match. Please verify.');
+                return;
+            }
+            goToStep(4);
+        }
+
+        async function submitRegistration() {
+            hideAlert();
+            const termsCheck = document.getElementById('termsCheck');
+            if (!termsCheck.checked) {
+                showAlert('You must accept the Terms & Conditions to proceed.');
+                return;
+            }
+
+            const btn = document.getElementById('submitRegBtn');
+            btn.disabled = true;
+            btn.innerText = 'Processing Account...';
+
+            const payload = {
+                fullName: document.getElementById('fullName').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                referralCode: document.getElementById('referralCode').value.trim().toUpperCase()
+            };
+
+            try {
+                const res = await fetch('/api/v1/nexus/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    goToStep(5);
+                    localStorage.setItem('nexus_token', data.token);
+                    localStorage.setItem('nexus_user', JSON.stringify(data.member));
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || '/dashboard';
+                    }, 1200);
+                } else {
+                    showAlert(data.error || 'Registration failed. Please review your entries.');
+                    btn.disabled = false;
+                    btn.innerText = 'Complete Registration →';
+                }
+            } catch (err) {
+                showAlert('Network error occurred. Please try again.');
+                btn.disabled = false;
+                btn.innerText = 'Complete Registration →';
+            }
+        }
+
+        // Sponsor Code Live Verification & Contextual Banner
+        const urlParams = new URLSearchParams(window.location.search);
+        const refParam = urlParams.get('ref') || urlParams.get('sponsor');
+        const refInput = document.getElementById('referralCode');
+        const sponsorBanner = document.getElementById('sponsorBanner');
+        const sponsorBannerIcon = document.getElementById('sponsorBannerIcon');
+        const sponsorBannerText = document.getElementById('sponsorBannerText');
+        const sponsorLiveFeedback = document.getElementById('sponsorLiveFeedback');
+
+        if (refParam) {
+            refInput.value = refParam.trim().toUpperCase();
+            validateSponsorLive(refInput.value);
+        }
+
+        let debounceTimer = null;
+        refInput.addEventListener('input', () => {
+            clearTimeout(debounceTimer);
+            const val = refInput.value.trim().toUpperCase();
+            if (!val) {
+                sponsorBanner.style.display = 'none';
+                sponsorLiveFeedback.innerHTML = '<span style="color:var(--text-muted);">Optional: Default corporate sponsor will be assigned if left empty.</span>';
+                return;
+            }
+            debounceTimer = setTimeout(() => validateSponsorLive(val), 350);
+        });
+
+        async function validateSponsorLive(code) {
+            sponsorLiveFeedback.innerHTML = '<span style="color:var(--text-muted);">Verifying sponsor code...</span>';
+            try {
+                const res = await fetch(`/api/v1/nexus/referrals/validate?code=${encodeURIComponent(code)}`);
+                const data = await res.json();
+                if (data.valid) {
+                    validatedSponsor = data.sponsor;
+                    sponsorBanner.className = 'nexus-sponsor-banner';
+                    sponsorBannerIcon.innerText = '✓';
+                    sponsorBannerText.innerHTML = `<strong>You've been invited to join Nexus Prime.</strong><br><span style="color:var(--accent-hover);">Sponsor: ${data.sponsor.name} (${data.sponsor.referralCode})</span>`;
+                    sponsorBanner.style.display = 'flex';
+                    sponsorLiveFeedback.innerHTML = `<span style="color:var(--success);">✓ Verified: ${data.sponsor.name} (${data.sponsor.referralCode})</span>`;
+                } else {
+                    validatedSponsor = null;
+                    sponsorBanner.className = 'nexus-sponsor-banner invalid';
+                    sponsorBannerIcon.innerText = '✕';
+                    sponsorBannerText.innerHTML = `<strong>This referral link is no longer valid.</strong><br><span style="color:var(--error);">${data.error || 'Please enter a valid sponsor code or register under Corporate HQ.'}</span>`;
+                    sponsorBanner.style.display = 'flex';
+                    sponsorLiveFeedback.innerHTML = `<span style="color:var(--error);">✗ ${data.error || 'This referral link is no longer valid.'}</span>`;
+                }
+            } catch (err) {
+                sponsorLiveFeedback.innerHTML = '<span style="color:var(--error);">Could not connect to sponsor verification desk.</span>';
+            }
+        }
+    </script>
+</body>
+</html>

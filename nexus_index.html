@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Prime — Build Your Network. Grow Your Future.</title>
+    <meta name="description" content="Nexus Prime (PVT) Ltd (nexusp.online) — A professional network marketing platform designed to help members build relationships, grow teams, and develop long-term business opportunities.">
+    <link rel="canonical" href="https://nexusp.online/">
+    
+    <!-- OpenGraph Metadata -->
+    <meta property="og:title" content="Nexus Prime — Build Your Network. Grow Your Future.">
+    <meta property="og:description" content="A professional network marketing platform designed to help members build relationships, grow teams, and develop long-term business opportunities.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nexusp.online/">
+    <meta property="og:site_name" content="Nexus Prime (PVT) Ltd">
+    
+    <link rel="stylesheet" href="/assets/nexus/nexus-style.css">
+    <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
+</head>
+<body>
+
+    <!-- 1. PUBLIC HEADER / NAVIGATION -->
+    <header class="nexus-header">
+        <div class="nexus-container nexus-header-content">
+            <!-- Reusable Logo Component -->
+            <a href="/" class="nexus-logo-wrapper" aria-label="Nexus Prime Home">
+                <div class="nexus-logo-mark">NP</div>
+                <div class="nexus-logo-text">
+                    <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                    <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                </div>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="nexus-nav-links" aria-label="Primary Navigation">
+                <a href="/">Home</a>
+                <a href="#about">About</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#opportunity">Opportunity</a>
+                <a href="#packages">Packages</a>
+                <a href="#products">Products</a>
+                <a href="#faq">FAQ</a>
+                <a href="#contact">Contact</a>
+                <a href="/login" class="nexus-btn nexus-btn-outline nexus-btn-sm" style="margin-left:8px;">Login</a>
+                <a href="/register" class="nexus-btn nexus-btn-primary nexus-btn-sm">Join Now</a>
+            </nav>
+
+            <!-- Mobile Drawer Toggle -->
+            <button class="nexus-mobile-toggle" onclick="toggleMobileNav()" aria-label="Open Mobile Menu">☰</button>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer & Backdrop -->
+    <div class="nexus-drawer-backdrop" id="drawerBackdrop" onclick="toggleMobileNav()"></div>
+    <div class="nexus-sidebar" id="mobileDrawer" style="position:fixed; z-index:1001; height:100vh; top:0; left:-280px; width:280px; background:var(--surface); transition:left 0.3s ease;">
+        <div class="nexus-sidebar-header" style="display:flex; justify-content:space-between; align-items:center;">
+            <a href="/" class="nexus-logo-wrapper" onclick="toggleMobileNav()">
+                <div class="nexus-logo-mark">NP</div>
+                <div class="nexus-logo-text">
+                    <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                    <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                </div>
+            </a>
+            <button onclick="toggleMobileNav()" style="background:none; border:none; color:var(--text); font-size:22px; cursor:pointer;" aria-label="Close Menu">✕</button>
+        </div>
+        <ul class="nexus-sidebar-nav">
+            <li><a href="/" class="nexus-sidebar-link active" onclick="toggleMobileNav()"><span class="icon">🏠</span> Home</a></li>
+            <li><a href="#about" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">🏢</span> About</a></li>
+            <li><a href="#how-it-works" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">⚙️</span> How It Works</a></li>
+            <li><a href="#opportunity" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">💼</span> Opportunity</a></li>
+            <li><a href="#packages" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">📦</span> Packages</a></li>
+            <li><a href="#products" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">🎓</span> Products</a></li>
+            <li><a href="#faq" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">❓</span> FAQ</a></li>
+            <li><a href="#contact" class="nexus-sidebar-link" onclick="toggleMobileNav()"><span class="icon">✉️</span> Contact</a></li>
+            <li style="margin-top:24px; display:flex; flex-direction:column; gap:10px; padding:0 8px;">
+                <a href="/login" class="nexus-btn nexus-btn-outline" style="width:100%;">Login</a>
+                <a href="/register" class="nexus-btn nexus-btn-primary" style="width:100%;">Join Nexus Prime</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 2. HERO SECTION -->
+    <section class="nexus-hero-section">
+        <div class="nexus-container">
+            <div class="nexus-hero-badge">ENTERPRISE NETWORK MARKETING PLATFORM</div>
+            <h1 class="nexus-hero-title">
+                Build Your Network.<br>
+                <span>Grow Your Future.</span>
+            </h1>
+            <p class="nexus-hero-desc">
+                A professional network marketing platform designed to help members build relationships, grow teams and develop long-term business opportunities.
+            </p>
+            <div class="nexus-hero-actions">
+                <a href="/register" class="nexus-btn nexus-btn-primary" style="padding: 14px 34px; font-size: 15px;">
+                    Join Nexus Prime &rarr;
+                </a>
+                <a href="#how-it-works" class="nexus-btn nexus-btn-outline" style="padding: 14px 30px; font-size: 15px;">
+                    How It Works
+                </a>
+            </div>
+
+            <!-- Professional Abstract Network Topology Illustration (SVG) -->
+            <div style="margin-top:55px; display:flex; justify-content:center;">
+                <svg width="100%" max-width="640" height="160" viewBox="0 0 640 160" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width:600px; opacity:0.85;">
+                    <!-- Connection Lines -->
+                    <line x1="320" y1="30" x2="160" y2="90" stroke="rgba(0, 141, 218, 0.3)" stroke-width="2" stroke-dasharray="4 4" />
+                    <line x1="320" y1="30" x2="480" y2="90" stroke="rgba(0, 141, 218, 0.3)" stroke-width="2" stroke-dasharray="4 4" />
+                    <line x1="160" y1="90" x2="80" y2="140" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    <line x1="160" y1="90" x2="240" y2="140" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    <line x1="480" y1="90" x2="400" y2="140" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    <line x1="480" y1="90" x2="560" y2="140" stroke="rgba(255, 255, 255, 0.12)" stroke-width="1.5" />
+                    
+                    <!-- Root Node -->
+                    <circle cx="320" cy="30" r="14" fill="#0B192C" stroke="#008DDA" stroke-width="3" />
+                    <circle cx="320" cy="30" r="6" fill="#38BDF8" />
+                    <text x="320" y="12" fill="#F8FAFC" font-size="11" font-weight="700" text-anchor="middle" font-family="'Plus Jakarta Sans', sans-serif">NEXUS PRIME</text>
+
+                    <!-- Tier 1 Nodes -->
+                    <circle cx="160" cy="90" r="10" fill="#0F1B2E" stroke="#008DDA" stroke-width="2" />
+                    <circle cx="160" cy="90" r="4" fill="#008DDA" />
+                    <text x="160" y="112" fill="#94A3B8" font-size="10" text-anchor="middle" font-family="'Inter', sans-serif">Direct Member</text>
+
+                    <circle cx="480" cy="90" r="10" fill="#0F1B2E" stroke="#008DDA" stroke-width="2" />
+                    <circle cx="480" cy="90" r="4" fill="#008DDA" />
+                    <text x="480" y="112" fill="#94A3B8" font-size="10" text-anchor="middle" font-family="'Inter', sans-serif">Direct Member</text>
+
+                    <!-- Tier 2 Nodes -->
+                    <circle cx="80" cy="140" r="7" fill="#1E293B" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" />
+                    <circle cx="240" cy="140" r="7" fill="#1E293B" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" />
+                    <circle cx="400" cy="140" r="7" fill="#1E293B" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" />
+                    <circle cx="560" cy="140" r="7" fill="#1E293B" stroke="rgba(255, 255, 255, 0.2)" stroke-width="1.5" />
+                </svg>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. TRUST / VALUE SECTION -->
+    <section class="nexus-section" id="about" style="background:var(--surface);">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Built on Trust, Technology &amp; Growth</h2>
+                <p class="nexus-section-subtitle">Nexus Prime provides the structural framework and digital tools for professional direct distribution.</p>
+            </div>
+
+            <div class="nexus-feature-grid">
+                <div class="nexus-feature-card">
+                    <div class="nexus-feature-icon">🌐</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Network</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Build and manage your professional network with transparent, deterministic sponsor attribution and genealogy tracking.
+                    </p>
+                </div>
+                <div class="nexus-feature-card">
+                    <div class="nexus-feature-icon">📈</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Growth</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Develop your team leadership and practical business capabilities through structured educational curriculums.
+                    </p>
+                </div>
+                <div class="nexus-feature-card">
+                    <div class="nexus-feature-icon">💼</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Opportunity</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Access structured, long-term business opportunities backed by real educational products and clear governance.
+                    </p>
+                </div>
+                <div class="nexus-feature-card">
+                    <div class="nexus-feature-icon">🤝</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Community</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Connect with ambitious individuals working toward shared commercial goals in a collaborative business environment.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. HOW IT WORKS -->
+    <section class="nexus-section" id="how-it-works">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">How It Works</h2>
+                <p class="nexus-section-subtitle">A clear, step-by-step pathway from registration to active team management.</p>
+            </div>
+
+            <div class="nexus-feature-grid" style="grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));">
+                <div class="nexus-feature-card" style="text-align:center;">
+                    <div class="nexus-step-badge">01</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Join</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Create your verified Nexus Prime account via a sponsor link or corporate registration.
+                    </p>
+                </div>
+                <div class="nexus-feature-card" style="text-align:center;">
+                    <div class="nexus-step-badge">02</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Connect</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Build your professional network through verified referrals and authentic business relationships.
+                    </p>
+                </div>
+                <div class="nexus-feature-card" style="text-align:center;">
+                    <div class="nexus-step-badge">03</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Grow</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Develop your team, complete educational modules, and participate in available platform opportunities.
+                    </p>
+                </div>
+                <div class="nexus-feature-card" style="text-align:center;">
+                    <div class="nexus-step-badge">04</div>
+                    <h3 style="font-size:18px; margin-bottom:8px;">Track</h3>
+                    <p style="font-size:13.5px; color:var(--text-muted); line-height:1.6;">
+                        Manage your network, activity and eligible earnings directly from your personalized member dashboard.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. BUSINESS OPPORTUNITY SECTION -->
+    <section class="nexus-section" id="opportunity" style="background:var(--surface);">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">The Business Opportunity</h2>
+                <p class="nexus-section-subtitle">A sustainable model focused on personal growth, team development, and network expansion.</p>
+            </div>
+
+            <div style="max-width:840px; margin:0 auto; background:var(--surface-card); border:1px solid var(--border); border-radius:var(--radius-lg); padding:36px;">
+                <p style="font-size:15px; color:var(--text); margin-bottom:16px; line-height:1.8;">
+                    Nexus Prime (PVT) Ltd is founded on the principle that sustainable commercial success comes from genuine collaboration, continuous skill acquisition, and ethical direct selling.
+                </p>
+                <p style="font-size:14px; color:var(--text-muted); margin-bottom:24px; line-height:1.8;">
+                    Rather than relying on inflated promises, our platform provides distributors with the digital infrastructure, educational products, and organized team tracking necessary to build real value. Financial participation depends on verified business activities, adherence to corporate guidelines, and team development.
+                </p>
+
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:18px; padding-top:20px; border-top:1px solid var(--border);">
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:var(--accent);">Relationship Building</div>
+                        <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">Direct personal connections with your team.</div>
+                    </div>
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:var(--accent);">Personal Growth</div>
+                        <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">Accredited digital training and masterclasses.</div>
+                    </div>
+                    <div>
+                        <div style="font-size:13px; font-weight:700; color:var(--accent);">Long-Term Vision</div>
+                        <div style="font-size:12.5px; color:var(--text-muted); margin-top:4px;">Mathematically solvent, audit-grade ledgers.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. PACKAGES SECTION (PREVIEW / DEMO STRUCTURE) -->
+    <section class="nexus-section" id="packages">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Membership Packages</h2>
+                <p class="nexus-section-subtitle">Structured tiers designed for distributors at each stage of their professional journey.</p>
+            </div>
+
+            <div class="nexus-feature-grid" id="publicPackagesGrid">
+                <!-- Starter Package -->
+                <div class="nexus-package-card">
+                    <div>
+                        <div class="nexus-badge nexus-badge-member">TIER 01 &bull; PREVIEW</div>
+                        <h3 style="font-size:22px; margin:14px 0 6px 0;">Starter Package</h3>
+                        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;">Foundational package for new distributors entering the platform.</p>
+                        <div style="font-size:28px; font-weight:800; color:var(--text); margin-bottom:20px; font-family:'Plus Jakarta Sans', sans-serif;">
+                            LKR 7,500 <span style="font-size:12.5px; color:var(--text-muted); font-weight:400;">/ demo tier</span>
+                        </div>
+                        <ul style="list-style:none; font-size:13.5px; color:var(--text-muted); display:flex; flex-direction:column; gap:10px; margin-bottom:26px;">
+                            <li>✓ Foundational Digital Curriculums</li>
+                            <li>✓ Personal Distributor Dashboard</li>
+                            <li>✓ Direct Referral Tools</li>
+                            <li>✓ Standard Platform Support</li>
+                        </ul>
+                    </div>
+                    <a href="/register" class="nexus-btn nexus-btn-outline" style="width:100%;">View Details</a>
+                </div>
+
+                <!-- Professional Package (Featured) -->
+                <div class="nexus-package-card featured">
+                    <div style="position:absolute; top:-12px; right:20px;" class="nexus-badge nexus-badge-active">RECOMMENDED</div>
+                    <div>
+                        <div class="nexus-badge nexus-badge-member">TIER 02 &bull; PREVIEW</div>
+                        <h3 style="font-size:22px; margin:14px 0 6px 0;">Professional Package</h3>
+                        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;">Designed for dedicated team builders seeking advanced masterclasses.</p>
+                        <div style="font-size:28px; font-weight:800; color:var(--accent-hover); margin-bottom:20px; font-family:'Plus Jakarta Sans', sans-serif;">
+                            LKR 15,000 <span style="font-size:12.5px; color:var(--text-muted); font-weight:400;">/ demo tier</span>
+                        </div>
+                        <ul style="list-style:none; font-size:13.5px; color:var(--text-muted); display:flex; flex-direction:column; gap:10px; margin-bottom:26px;">
+                            <li>✓ All Starter Curriculums</li>
+                            <li>✓ AI Automation &amp; Digital Workflows</li>
+                            <li>✓ Advanced Network Visualizer Access</li>
+                            <li>✓ Priority Helpdesk Routing</li>
+                        </ul>
+                    </div>
+                    <a href="/register" class="nexus-btn nexus-btn-primary" style="width:100%;">View Details</a>
+                </div>
+
+                <!-- Executive / Founder Package -->
+                <div class="nexus-package-card">
+                    <div>
+                        <div class="nexus-badge nexus-badge-founder">TIER 03 &bull; PREVIEW</div>
+                        <h3 style="font-size:22px; margin:14px 0 6px 0;">Executive Package</h3>
+                        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;">Comprehensive curriculum for experienced commercial leaders.</p>
+                        <div style="font-size:28px; font-weight:800; color:var(--text); margin-bottom:20px; font-family:'Plus Jakarta Sans', sans-serif;">
+                            LKR 30,000 <span style="font-size:12.5px; color:var(--text-muted); font-weight:400;">/ demo tier</span>
+                        </div>
+                        <ul style="list-style:none; font-size:13.5px; color:var(--text-muted); display:flex; flex-direction:column; gap:10px; margin-bottom:26px;">
+                            <li>✓ Complete Masterclass Library</li>
+                            <li>✓ Leadership Development Modules</li>
+                            <li>✓ Comprehensive Team Analytics</li>
+                            <li>✓ Executive Support Channel</li>
+                        </ul>
+                    </div>
+                    <a href="/register" class="nexus-btn nexus-btn-outline" style="width:100%;">View Details</a>
+                </div>
+            </div>
+            
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:24px;">
+                * Package details and pricing shown are for preview purposes. Final active packages will be loaded from the corporate database upon launch.
+            </p>
+        </div>
+    </section>
+
+    <!-- 7. PRODUCTS SECTION (PREVIEW) -->
+    <section class="nexus-section" id="products" style="background:var(--surface);">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Digital Products &amp; Masterclasses</h2>
+                <p class="nexus-section-subtitle">Real skills and digital learning assets developed for modern entrepreneurs.</p>
+            </div>
+
+            <div class="nexus-feature-grid" id="publicProductsGrid">
+                <div class="nexus-product-card">
+                    <div class="nexus-product-image">🤖</div>
+                    <div class="nexus-product-body">
+                        <div>
+                            <span class="nexus-badge nexus-badge-active" style="margin-bottom:8px;">AVAILABLE</span>
+                            <h3 style="font-size:17px; margin-bottom:6px;">AI Workflow Automation</h3>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                                Deploying modern generative AI tools and workflows for business productivity.
+                            </p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:14px;">
+                            <span style="font-size:13px; font-weight:700;">Curriculum Module</span>
+                            <a href="/register" class="nexus-btn nexus-btn-outline nexus-btn-sm">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nexus-product-card">
+                    <div class="nexus-product-image">📊</div>
+                    <div class="nexus-product-body">
+                        <div>
+                            <span class="nexus-badge nexus-badge-active" style="margin-bottom:8px;">AVAILABLE</span>
+                            <h3 style="font-size:17px; margin-bottom:6px;">Digital Commerce Fundamentals</h3>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                                Strategies for product sourcing, digital storefronts, and online distribution.
+                            </p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:14px;">
+                            <span style="font-size:13px; font-weight:700;">Curriculum Module</span>
+                            <a href="/register" class="nexus-btn nexus-btn-outline nexus-btn-sm">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nexus-product-card">
+                    <div class="nexus-product-image">👥</div>
+                    <div class="nexus-product-body">
+                        <div>
+                            <span class="nexus-badge nexus-badge-active" style="margin-bottom:8px;">AVAILABLE</span>
+                            <h3 style="font-size:17px; margin-bottom:6px;">Team Leadership &amp; Ethics</h3>
+                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                                Principles of sustainable team coaching, compliance, and long-term retention.
+                            </p>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:14px;">
+                            <span style="font-size:13px; font-weight:700;">Curriculum Module</span>
+                            <a href="/register" class="nexus-btn nexus-btn-outline nexus-btn-sm">Learn More</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. NETWORK VISUAL SECTION (EXPLANATORY ABSTRACT DIAGRAM) -->
+    <section class="nexus-section">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Network Architecture</h2>
+                <p class="nexus-section-subtitle">An explanatory overview of how team connections develop hierarchically.</p>
+            </div>
+
+            <div class="nexus-network-diagram">
+                <!-- Tier 0: Nexus Prime Platform -->
+                <div class="nexus-network-pill accent-primary" style="padding:12px 28px; font-size:14px;">
+                    🏢 Nexus Prime Platform
+                </div>
+
+                <div class="nexus-network-connector-line"></div>
+
+                <!-- Tier 1: Direct Members -->
+                <div class="nexus-network-tier">
+                    <div class="nexus-network-pill">👤 Direct Member A</div>
+                    <div class="nexus-network-pill">👤 Direct Member B</div>
+                    <div class="nexus-network-pill">👤 Direct Member C</div>
+                </div>
+
+                <div class="nexus-network-connector-line"></div>
+
+                <!-- Tier 2: Team -->
+                <div class="nexus-network-tier">
+                    <div class="nexus-network-pill" style="font-size:12px; color:var(--text-muted);">👥 Team Member 1</div>
+                    <div class="nexus-network-pill" style="font-size:12px; color:var(--text-muted);">👥 Team Member 2</div>
+                    <div class="nexus-network-pill" style="font-size:12px; color:var(--text-muted);">👥 Team Member 3</div>
+                    <div class="nexus-network-pill" style="font-size:12px; color:var(--text-muted);">👥 Team Member 4</div>
+                </div>
+
+                <div class="nexus-network-connector-line"></div>
+
+                <!-- Tier 3: Extended Network -->
+                <div class="nexus-network-tier">
+                    <div class="nexus-network-pill" style="font-size:11.5px; opacity:0.8;">🌐 Extended Network &bull; Multi-Tier Reach</div>
+                </div>
+            </div>
+
+            <p style="text-align:center; font-size:12.5px; color:var(--text-muted); max-width:600px; margin:20px auto 0 auto;">
+                Note: This diagram is an illustrative representation of structural hierarchy. Actual member placement follows verified sponsor referrals.
+            </p>
+        </div>
+    </section>
+
+    <!-- 9. MEMBER BENEFITS -->
+    <section class="nexus-section" style="background:var(--surface);">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Why Join Nexus Prime?</h2>
+                <p class="nexus-section-subtitle">Purpose-built tools to support and streamline your distributor operations.</p>
+            </div>
+
+            <div class="nexus-feature-grid">
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">📊 Personal Dashboard</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Real-time overview of your member status, team metrics, and announcements.</p>
+                </div>
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">🔗 Referral Tools</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Personalized referral links and sharing utilities for team onboarding.</p>
+                </div>
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">🌳 Network Management</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Interactive genealogy visualizer to inspect your team structure.</p>
+                </div>
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">👥 Team Visibility</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Comprehensive downline directory with level filtering and search.</p>
+                </div>
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">📈 Activity Tracking</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Audited log of platform activities, enrollments, and status updates.</p>
+                </div>
+                <div class="nexus-feature-card">
+                    <h4 style="color:var(--accent-hover); margin-bottom:6px;">💳 Wallet Management</h4>
+                    <p style="font-size:13.5px; color:var(--text-muted);">Double-entry balance tracking and electronic withdrawal request desk.</p>
+                </div>
+            </div>
+            
+            <p style="text-align:center; font-size:12px; color:var(--text-muted); margin-top:20px;">
+                * Earning and withdrawal capabilities depend on active membership status and compliance with Nexus Prime business guidelines.
+            </p>
+        </div>
+    </section>
+
+    <!-- 10. CALL TO ACTION SECTION -->
+    <section class="nexus-section" style="border-top:1px solid var(--border); border-bottom:1px solid var(--border); text-align:center; background:linear-gradient(135deg, rgba(0, 141, 218, 0.08), var(--surface));">
+        <div class="nexus-container">
+            <h2 style="font-size:clamp(26px, 3.5vw, 38px); margin-bottom:14px;">Ready to Build Your Network?</h2>
+            <p style="max-width:580px; margin:0 auto 28px auto; font-size:15px; color:var(--text-muted);">
+                Join a professional platform engineered for scalable relationships, structured teams, and genuine opportunities.
+            </p>
+            <div style="display:flex; justify-content:center; gap:16px; flex-wrap:wrap;">
+                <a href="/register" class="nexus-btn nexus-btn-primary" style="padding:14px 34px;">
+                    Join Nexus Prime
+                </a>
+                <a href="/login" class="nexus-btn nexus-btn-outline" style="padding:14px 30px;">
+                    Member Login
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 11. FAQ ACCORDION -->
+    <section class="nexus-section" id="faq">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Frequently Asked Questions</h2>
+                <p class="nexus-section-subtitle">Answers to common inquiries about the Nexus Prime platform.</p>
+            </div>
+
+            <div style="max-width:760px; margin:0 auto;" id="faqContainer">
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>What is Nexus Prime?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        Nexus Prime (PVT) Ltd is a digital commerce and professional network marketing platform designed to provide practical business curriculums and structured team distribution opportunities.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>How do I become a member?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        You can register online by visiting the registration page and providing your details along with a verified sponsor referral code.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>What is a referral code?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        A referral code connects you to the distributor who introduced you to Nexus Prime, ensuring correct placement in the network structure.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>How does the network structure work?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        Members build teams hierarchically through direct invitations. The platform uses deterministic graph technology to track relationships and team depth accurately.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>Where can I see my team?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        Once signed in to your Member Dashboard, you can view your team via both the interactive Network Tree and the Team Directory.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>Where can I see commissions?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        Eligible commissions and referral rewards are tracked in the Commissions section of your protected member dashboard.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>How do withdrawals work?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        When your verified wallet balance meets the minimum threshold, you may submit a withdrawal request to your registered bank account for processing.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>Can I change my sponsor?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        To protect network integrity, sponsor relationships are immutable once assigned during registration. Exceptions require formal administrative compliance review.
+                    </div>
+                </div>
+
+                <div class="nexus-faq-item">
+                    <div class="nexus-faq-question" onclick="toggleFaq(this)">
+                        <span>How do I contact support?</span>
+                        <span class="faq-icon">+</span>
+                    </div>
+                    <div class="nexus-faq-answer" style="display:none;">
+                        You can reach support through the Contact Us form on this website or by submitting a ticket directly inside your member dashboard.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM SECTION -->
+    <section class="nexus-section" id="contact" style="background:var(--surface);">
+        <div class="nexus-container">
+            <div class="nexus-section-header">
+                <h2 class="nexus-section-title">Contact Support</h2>
+                <p class="nexus-section-subtitle">Reach out to our corporate team with questions or partnership inquiries.</p>
+            </div>
+
+            <div style="max-width:580px; margin:0 auto;" class="nexus-card">
+                <form id="contactForm" onsubmit="handleContactSubmit(event)">
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="contactName">Full Name</label>
+                        <input type="text" id="contactName" class="nexus-input" placeholder="Your Name" required>
+                    </div>
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="contactEmail">Email Address</label>
+                        <input type="email" id="contactEmail" class="nexus-input" placeholder="name@domain.com" required>
+                    </div>
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="contactMessage">Message</label>
+                        <textarea id="contactMessage" class="nexus-textarea" rows="4" placeholder="How can our corporate desk assist you?" required></textarea>
+                    </div>
+                    <button type="submit" class="nexus-btn nexus-btn-primary" style="width:100%;">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- 12. FOOTER -->
+    <footer class="nexus-footer">
+        <div class="nexus-container">
+            <div class="nexus-footer-grid">
+                <!-- Col 1: Corporate Brand -->
+                <div class="nexus-footer-col" style="grid-column: span 1;">
+                    <a href="/" class="nexus-logo-wrapper" style="margin-bottom:14px;">
+                        <div class="nexus-logo-mark">NP</div>
+                        <div class="nexus-logo-text">
+                            <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                            <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                        </div>
+                    </a>
+                    <p style="font-size:13px; color:var(--text-muted); line-height:1.6; margin-top:10px;">
+                        Professional Direct Distribution Platform.<br>
+                        Domain: <strong>nexusp.online</strong>
+                    </p>
+                </div>
+
+                <!-- Col 2: Nexus Prime -->
+                <div class="nexus-footer-col">
+                    <h4>Nexus Prime</h4>
+                    <ul>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#how-it-works">How It Works</a></li>
+                        <li><a href="#opportunity">Opportunity</a></li>
+                        <li><a href="#packages">Packages</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3: Members -->
+                <div class="nexus-footer-col">
+                    <h4>Members</h4>
+                    <ul>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Register</a></li>
+                        <li><a href="/dashboard">Dashboard</a></li>
+                        <li><a href="/forgot-password">Forgot Password</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4: Information & Support -->
+                <div class="nexus-footer-col">
+                    <h4>Information</h4>
+                    <ul>
+                        <li><a href="#faq">FAQ</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                        <li><a href="/privacy">Privacy Policy</a></li>
+                        <li><a href="/terms">Terms &amp; Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="nexus-footer-bottom">
+                <div>&copy; 2026 Nexus Prime (PVT) Ltd. All rights reserved.</div>
+                <div>Domain: <strong>nexusp.online</strong></div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div class="nexus-toast-container" id="toastContainer"></div>
+
+    <!-- PUBLIC DETAIL / PHASE 2 MODAL -->
+    <div id="publicDetailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:9999; justify-content:center; align-items:center;">
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:14px; max-width:560px; width:92%; padding:28px; box-shadow:0 24px 48px rgba(0,0,0,0.5); position:relative; max-height:85vh; overflow-y:auto;">
+            <button onclick="closePublicModal()" style="position:absolute; top:16px; right:16px; background:transparent; border:none; color:var(--text-muted); font-size:24px; cursor:pointer; line-height:1;">&times;</button>
+            <div id="publicModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Client Script -->
+    <script>
+        function toggleMobileNav() {
+            const drawer = document.getElementById('mobileDrawer');
+            const backdrop = document.getElementById('drawerBackdrop');
+            if (drawer.style.left === '0px') {
+                drawer.style.left = '-280px';
+                backdrop.classList.remove('active');
+            } else {
+                drawer.style.left = '0px';
+                backdrop.classList.add('active');
+            }
+        }
+
+        function toggleFaq(el) {
+            const answer = el.nextElementSibling;
+            const icon = el.querySelector('.faq-icon');
+            if (answer.style.display === 'none' || !answer.style.display) {
+                answer.style.display = 'block';
+                icon.textContent = '−';
+            } else {
+                answer.style.display = 'none';
+                icon.textContent = '+';
+            }
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `nexus-toast ${type}`;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        function handleContactSubmit(e) {
+            e.preventDefault();
+            showToast('Thank you! Your message has been received.');
+            e.target.reset();
+        }
+
+        // ==============================================================================
+        // DYNAMIC CATALOG LOADERS (PACKAGES & PRODUCTS)
+        // ==============================================================================
+        let publicPackagesCache = [];
+        let publicProductsCache = [];
+
+        async function loadPublicPackages() {
+            try {
+                const res = await fetch('/api/v1/nexus/packages');
+                const data = await res.json();
+                if (data.success && Array.isArray(data.packages) && data.packages.length > 0) {
+                    publicPackagesCache = data.packages;
+                    const grid = document.getElementById('publicPackagesGrid');
+                    if (grid) {
+                        grid.innerHTML = data.packages.map((pkg, idx) => {
+                            const isFeatured = !!pkg.featured;
+                            const cardClass = isFeatured ? 'nexus-package-card featured' : 'nexus-package-card';
+                            const badgeText = isFeatured ? 'RECOMMENDED' : `TIER 0${idx + 1}`;
+                            const badgeStyle = isFeatured ? 'position:absolute; top:-12px; right:20px;' : '';
+                            const priceFormatted = (pkg.price || 0).toLocaleString();
+                            const featuresList = (pkg.features || []).map(f => `<li>✓ ${f}</li>`).join('');
+
+                            return `
+                                <div class="${cardClass}">
+                                    ${isFeatured ? `<div style="${badgeStyle}" class="nexus-badge nexus-badge-active">${badgeText}</div>` : ''}
+                                    <div>
+                                        ${!isFeatured ? `<div class="nexus-badge nexus-badge-member">${badgeText}</div>` : ''}
+                                        <h3 style="font-size:22px; margin:14px 0 6px 0;">${pkg.name}</h3>
+                                        <p style="font-size:13.5px; color:var(--text-muted); margin-bottom:20px;">${pkg.short_description || ''}</p>
+                                        <div style="font-size:28px; font-weight:800; color:${isFeatured ? 'var(--accent-hover)' : 'var(--text)'}; margin-bottom:20px; font-family:'Plus Jakarta Sans', sans-serif;">
+                                            LKR ${priceFormatted}
+                                        </div>
+                                        <ul style="list-style:none; font-size:13.5px; color:var(--text-muted); display:flex; flex-direction:column; gap:10px; margin-bottom:26px;">
+                                            ${featuresList}
+                                        </ul>
+                                    </div>
+                                    <button onclick="showPackageModal('${pkg.id}')" class="nexus-btn ${isFeatured ? 'nexus-btn-primary' : 'nexus-btn-outline'}" style="width:100%;">View Details</button>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+            } catch (err) {
+                console.log('Using static package fallback:', err);
+            }
+        }
+
+        async function loadPublicProducts() {
+            try {
+                const res = await fetch('/api/v1/nexus/products?limit=20');
+                const data = await res.json();
+                if (data.success && Array.isArray(data.products) && data.products.length > 0) {
+                    publicProductsCache = data.products;
+                    const grid = document.getElementById('publicProductsGrid');
+                    if (grid) {
+                        const icons = ['🤖', '📊', '👥', '💡', '📈', '🌐'];
+                        grid.innerHTML = data.products.map((prod, idx) => {
+                            const icon = icons[idx % icons.length];
+                            const priceFormatted = (prod.price || 0).toLocaleString();
+
+                            return `
+                                <div class="nexus-product-card">
+                                    <div class="nexus-product-image">${icon}</div>
+                                    <div class="nexus-product-body">
+                                        <div>
+                                            <span class="nexus-badge nexus-badge-active" style="margin-bottom:8px;">AVAILABLE</span>
+                                            <h3 style="font-size:17px; margin-bottom:6px;">${prod.name}</h3>
+                                            <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">
+                                                ${prod.short_description || ''}
+                                            </p>
+                                        </div>
+                                        <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--border); padding-top:14px;">
+                                            <span style="font-size:13px; font-weight:700;">LKR ${priceFormatted}</span>
+                                            <button onclick="showProductModal('${prod.slug}')" class="nexus-btn nexus-btn-outline nexus-btn-sm">Learn More</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+            } catch (err) {
+                console.log('Using static product fallback:', err);
+            }
+        }
+
+        function showPackageModal(pkgId) {
+            const pkg = publicPackagesCache.find(p => p.id === pkgId);
+            if (!pkg) return;
+
+            const modal = document.getElementById('publicDetailModal');
+            const content = document.getElementById('publicModalContent');
+            const features = (pkg.features || []).map(f => `<li style="margin-bottom:6px;">✓ ${f}</li>`).join('');
+
+            content.innerHTML = `
+                <div style="margin-bottom:16px;">
+                    <span class="nexus-badge nexus-badge-member">${pkg.package_code}</span>
+                    <h2 style="font-size:24px; margin:10px 0 4px 0;">${pkg.name}</h2>
+                    <div style="font-size:24px; font-weight:800; color:var(--primary); margin:8px 0;">LKR ${(pkg.price || 0).toLocaleString()}</div>
+                    <p style="color:var(--text-muted); font-size:14px;">${pkg.short_description || ''}</p>
+                </div>
+                <div style="margin-bottom:20px; font-size:14px; line-height:1.6; color:var(--text);">
+                    ${pkg.full_description || ''}
+                </div>
+                <div style="margin-bottom:20px;">
+                    <h4 style="font-size:14px; text-transform:uppercase; color:var(--text-muted); margin-bottom:8px;">Included Curriculum Features</h4>
+                    <ul style="list-style:none; padding:0; font-size:13.5px; color:var(--text);">
+                        ${features}
+                    </ul>
+                </div>
+                <div style="background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.25); border-radius:8px; padding:14px; margin-bottom:20px; font-size:13px; color:var(--text-muted);">
+                    ℹ️ <strong>Pre-Launch Notice:</strong> Direct IPG checkout and online enrollment will be enabled in Phase 2. You can register your distributor position now to prepare your network.
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <a href="/register" class="nexus-btn nexus-btn-primary" style="flex:1; text-align:center;">Register Account</a>
+                    <button onclick="closePublicModal()" class="nexus-btn nexus-btn-outline">Close</button>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        async function showProductModal(slug) {
+            let prod = publicProductsCache.find(p => p.slug === slug);
+            if (!prod) {
+                try {
+                    const res = await fetch(`/api/v1/nexus/products/${slug}`);
+                    const data = await res.json();
+                    if (data.success) prod = data.product;
+                } catch (e) {}
+            }
+            if (!prod) return;
+
+            const modal = document.getElementById('publicDetailModal');
+            const content = document.getElementById('publicModalContent');
+
+            content.innerHTML = `
+                <div style="margin-bottom:16px;">
+                    <span class="nexus-badge nexus-badge-active">${prod.sku} &bull; ${prod.category_name || 'Masterclass'}</span>
+                    <h2 style="font-size:22px; margin:10px 0 4px 0;">${prod.name}</h2>
+                    <div style="font-size:22px; font-weight:800; color:var(--primary); margin:8px 0;">LKR ${(prod.price || 0).toLocaleString()}</div>
+                    <p style="color:var(--text-muted); font-size:14px;">${prod.short_description || ''}</p>
+                </div>
+                <div style="margin-bottom:20px; font-size:14px; line-height:1.6; color:var(--text);">
+                    <h4 style="font-size:13px; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px;">Curriculum Overview</h4>
+                    ${prod.full_description || 'In-depth video tutorials, downloadable frameworks, practical exercises, and certification.'}
+                </div>
+                <div style="background:rgba(59, 130, 246, 0.1); border:1px solid rgba(59, 130, 246, 0.25); border-radius:8px; padding:14px; margin-bottom:20px; font-size:13px; color:var(--text-muted);">
+                    ℹ️ <strong>Curriculum Notice:</strong> Individual masterclass enrollment is bundled with Nexus Prime membership tiers or will be available for direct purchase upon Phase 2 launch.
+                </div>
+                <div style="display:flex; gap:12px;">
+                    <a href="/register" class="nexus-btn nexus-btn-primary" style="flex:1; text-align:center;">Join Nexus Prime</a>
+                    <button onclick="closePublicModal()" class="nexus-btn nexus-btn-outline">Close</button>
+                </div>
+            `;
+            modal.style.display = 'flex';
+        }
+
+        function closePublicModal() {
+            const modal = document.getElementById('publicDetailModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Initialize dynamic catalog
+        loadPublicPackages();
+        loadPublicProducts();
+    </script>
+</body>
+</html>

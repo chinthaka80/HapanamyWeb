@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Referrals Foundation | Nexus Prime (PVT) Ltd</title>
+    <link rel="stylesheet" href="/assets/nexus/nexus-style.css">
+    <!-- Client-Side Auth Guard -->
+    <script>
+        (function() {
+            const token = localStorage.getItem('nexus_token');
+            if (!token) {
+                window.location.replace('/login?redirect=referrals');
+            }
+        })();
+    </script>
+    <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="nexus-header">
+        <div class="nexus-container nexus-header-content">
+            <a href="/dashboard" class="nexus-brand">
+                <div class="nexus-brand-icon">NP</div>
+                <div class="nexus-brand-title">NEXUS<span>PRIME</span></div>
+            </a>
+            <nav class="nexus-nav-links">
+                <a href="/dashboard">Dashboard</a>
+                <a href="/referrals" class="active">Referrals</a>
+                <button onclick="logout()" class="nexus-btn nexus-btn-outline nexus-btn-sm" style="margin-left: 10px;">Sign Out</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Referrals Container -->
+    <main class="nexus-container" style="padding-top: 40px; padding-bottom: 60px;">
+        
+        <div style="margin-bottom: 25px;">
+            <h1 style="font-size: 28px; margin-bottom: 6px;">Direct Referrals Management</h1>
+            <p style="color: var(--nexus-text-muted); font-size: 14px;">View your unique referral assets and track directly sponsored team members.</p>
+        </div>
+
+        <!-- Referral Link Share Box -->
+        <div class="nexus-card" style="margin-bottom: 30px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-items: center;">
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--nexus-text-muted); margin-bottom: 4px;">Your Unique Referral Code</div>
+                    <div id="referralCode" style="font-size: 32px; font-weight: 900; font-family: 'Outfit', sans-serif; color: var(--nexus-accent-gold);">---</div>
+                    <p style="color: var(--nexus-text-muted); font-size: 13px; margin-top: 6px;">Share this code with individuals during registration.</p>
+                </div>
+                <div>
+                    <div style="font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--nexus-text-muted); margin-bottom: 8px;">Direct Referral URL</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="referralUrl" class="nexus-input" readonly style="font-weight: 600; color: var(--nexus-primary-hover);">
+                        <button onclick="copyReferralUrl()" id="copyBtn" class="nexus-btn nexus-btn-primary" style="width: auto; min-width: 120px;">
+                            📋 Copy
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Stats -->
+        <div class="nexus-grid-4">
+            <div class="nexus-stat-card">
+                <div class="nexus-stat-title">Total Direct Members</div>
+                <div id="directCount" class="nexus-stat-value">0</div>
+            </div>
+            <div class="nexus-stat-card">
+                <div class="nexus-stat-title">Active Referrals</div>
+                <div id="activeDirectCount" class="nexus-stat-value" style="color: var(--nexus-success);">0</div>
+            </div>
+        </div>
+
+        <!-- Direct Referrals Table -->
+        <div class="nexus-card">
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Direct Sponsored Team Directory</h3>
+            <div class="nexus-table-responsive">
+                <table class="nexus-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Member ID</th>
+                            <th>Full Name</th>
+                            <th>Referral Code</th>
+                            <th>Account Status</th>
+                            <th>Rank</th>
+                            <th>Joined Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referralsTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--nexus-text-muted); padding: 30px;">
+                                Loading direct referrals...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const token = localStorage.getItem('nexus_token');
+
+        async function loadReferrals() {
+            try {
+                const res = await fetch('/api/v1/nexus/referrals/my-referrals', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.status === 401) {
+                    logout();
+                    return;
+                }
+
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('referralCode').innerText = data.referralCode;
+                    document.getElementById('referralUrl').value = data.referralUrl;
+                    document.getElementById('directCount').innerText = data.directCount;
+
+                    const activeCount = (data.directs || []).filter(d => d.status === 'active').length;
+                    document.getElementById('activeDirectCount').innerText = activeCount;
+
+                    renderTable(data.directs || []);
+                }
+            } catch (err) {
+                console.error('Failed to load referrals:', err);
+            }
+        }
+
+        function renderTable(directs) {
+            const tbody = document.getElementById('referralsTableBody');
+            if (!directs || directs.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--nexus-text-muted); padding: 30px;">
+                            No direct referrals yet. Invite team members using your referral link above!
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = directs.map((d, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><code>${d.member_id}</code></td>
+                    <td><strong>${d.full_name}</strong></td>
+                    <td><span style="color: var(--nexus-accent-gold); font-weight: 700;">${d.referral_code}</span></td>
+                    <td><span class="nexus-badge nexus-badge-${d.status === 'active' ? 'active' : 'member'}">${d.status}</span></td>
+                    <td><span class="nexus-badge nexus-badge-member">${d.rank || 'MEMBER'}</span></td>
+                    <td>${new Date(d.registration_date).toLocaleDateString()}</td>
+                </tr>
+            `).join('');
+        }
+
+        function copyReferralUrl() {
+            const input = document.getElementById('referralUrl');
+            input.select();
+            document.execCommand('copy');
+            const btn = document.getElementById('copyBtn');
+            btn.innerText = '✓ Copied!';
+            setTimeout(() => {
+                btn.innerText = '📋 Copy';
+            }, 2000);
+        }
+
+        function logout() {
+            const tok = localStorage.getItem('nexus_token');
+            if (tok) {
+                fetch('/api/v1/nexus/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${tok}` }
+                });
+            }
+            localStorage.removeItem('nexus_token');
+            localStorage.removeItem('nexus_user');
+            window.location.href = '/login';
+        }
+
+        loadReferrals();
+    </script>
+</body>
+</html>

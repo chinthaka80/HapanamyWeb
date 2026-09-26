@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Login — Nexus Prime (PVT) Ltd</title>
+    <meta name="description" content="Sign in to your Nexus Prime member account to access your personal dashboard, team directory, and network tools.">
+    <link rel="canonical" href="https://nexusp.online/login">
+    <link rel="stylesheet" href="/assets/nexus/nexus-style.css">
+    <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="nexus-header">
+        <div class="nexus-container nexus-header-content">
+            <a href="/" class="nexus-logo-wrapper" aria-label="Nexus Prime Home">
+                <div class="nexus-logo-mark">NP</div>
+                <div class="nexus-logo-text">
+                    <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                    <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                </div>
+            </a>
+            <nav class="nexus-nav-links">
+                <a href="/">Home</a>
+                <a href="/register" class="nexus-btn nexus-btn-primary nexus-btn-sm">Join Now</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Split Login Container -->
+    <main class="nexus-container" style="padding-top:20px; padding-bottom:60px;">
+        <div class="nexus-auth-split">
+            <!-- Left: Brand / Positioning Column -->
+            <div class="nexus-auth-brand-col">
+                <div>
+                    <a href="/" class="nexus-logo-wrapper" style="margin-bottom:28px;">
+                        <div class="nexus-logo-mark">NP</div>
+                        <div class="nexus-logo-text">
+                            <div class="nexus-logo-name">NEXUS <span>PRIME</span></div>
+                            <div class="nexus-logo-corp">Nexus Prime (PVT) Ltd</div>
+                        </div>
+                    </a>
+
+                    <h2 style="font-size:26px; font-weight:800; margin-bottom:14px; line-height:1.25;">
+                        Welcome to Your Member Command Center
+                    </h2>
+                    <p style="font-size:14px; color:var(--text-muted); line-height:1.7; margin-bottom:28px;">
+                        Sign in to access your direct downline metrics, team visualizer, referral sharing tools, and double-entry wallet statements.
+                    </p>
+
+                    <div style="display:flex; flex-direction:column; gap:14px;">
+                        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted);">
+                            <span style="color:var(--accent);">✓</span> Real-time network &amp; sponsor tracking
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted);">
+                            <span style="color:var(--accent);">✓</span> Double-entry audited wallet balances
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-muted);">
+                            <span style="color:var(--accent);">✓</span> High-income digital curriculum access
+                        </div>
+                    </div>
+                </div>
+
+                <div style="font-size:12px; color:var(--text-muted); padding-top:28px; border-top:1px solid var(--border);">
+                    Need technical assistance? <a href="/#contact" style="color:var(--accent); text-decoration:none;">Contact Helpdesk</a>
+                </div>
+            </div>
+
+            <!-- Right: Login Form Column -->
+            <div class="nexus-auth-form-col">
+                <div style="margin-bottom:24px;">
+                    <h1 style="font-size:24px; font-weight:800; margin-bottom:6px;">Member Sign In</h1>
+                    <p style="color:var(--text-muted); font-size:13px;">Enter your verified credentials to continue.</p>
+                </div>
+
+                <!-- Alert Feedback Box -->
+                <div id="alertBox" style="display:none;" class="nexus-alert" role="alert"></div>
+
+                <form id="nexusLoginForm" novalidate>
+                    <!-- Email Address -->
+                    <div class="nexus-form-group">
+                        <label class="nexus-label" for="loginEmail">Email Address</label>
+                        <input 
+                            type="email" 
+                            id="loginEmail" 
+                            class="nexus-input" 
+                            placeholder="name@example.com" 
+                            required 
+                            autocomplete="email"
+                            aria-required="true">
+                    </div>
+
+                    <!-- Password with Visibility Toggle -->
+                    <div class="nexus-form-group">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                            <label class="nexus-label" for="loginPassword" style="margin-bottom:0;">Password</label>
+                            <a href="/forgot-password" style="font-size:12px; color:var(--accent); text-decoration:none;">Forgot Password?</a>
+                        </div>
+                        <div class="nexus-password-wrapper">
+                            <input 
+                                type="password" 
+                                id="loginPassword" 
+                                class="nexus-input" 
+                                placeholder="••••••••" 
+                                required 
+                                autocomplete="current-password"
+                                aria-required="true">
+                            <button 
+                                type="button" 
+                                class="nexus-password-toggle" 
+                                onclick="togglePasswordVisibility('loginPassword', this)"
+                                aria-label="Toggle password visibility">
+                                👁️
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" id="loginBtn" class="nexus-btn nexus-btn-primary" style="width:100%; margin-top:10px;">
+                        Sign In &rarr;
+                    </button>
+                </form>
+
+                <div style="text-align:center; margin-top:24px; font-size:13px; color:var(--text-muted);">
+                    Don't have an account? <a href="/register" style="color:var(--accent); font-weight:700; text-decoration:none;">Join Nexus Prime</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Client Auth Logic -->
+    <script>
+        const loginForm = document.getElementById('nexusLoginForm');
+        const alertBox = document.getElementById('alertBox');
+        const loginBtn = document.getElementById('loginBtn');
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerText = '🔒';
+            } else {
+                input.type = 'password';
+                btn.innerText = '👁️';
+            }
+        }
+
+        function showAlert(msg, type = 'error') {
+            alertBox.className = `nexus-alert nexus-alert-${type}`;
+            alertBox.innerText = msg;
+            alertBox.style.display = 'block';
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            alertBox.style.display = 'none';
+
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showAlert('Please provide both email address and password.');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.innerText = 'Authenticating...';
+
+            try {
+                const res = await fetch('/api/v1/nexus/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    showAlert('Signed in successfully. Redirecting...', 'success');
+                    localStorage.setItem('nexus_token', data.token);
+                    localStorage.setItem('nexus_user', JSON.stringify(data.member));
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || '/dashboard';
+                    }, 600);
+                } else {
+                    showAlert(data.error || 'Authentication failed. Please check your credentials.');
+                    loginBtn.disabled = false;
+                    loginBtn.innerText = 'Sign In →';
+                }
+            } catch (err) {
+                showAlert('Network error occurred. Please try again.');
+                loginBtn.disabled = false;
+                loginBtn.innerText = 'Sign In →';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -24,6 +24,7 @@ const NotificationEngine = require('./services/notification-engine');
 const ReversalEngine = require('./services/reversal-engine');
 const SimulationEngine = require('./services/simulation-engine');
 const PurchaseOrchestrator = require('./services/purchase-orchestrator');
+const MLMNetworkEngine = require('./services/mlm-network-engine');
 
 const PORT = 3000;
 
@@ -3447,9 +3448,155 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /api/member/network
+    if (req.method === 'GET' && pathname === '/api/member/network') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberNetwork(authUser.id, {
+                binaryNodes: mockBinaryNodes,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/commissions
+    if (req.method === 'GET' && pathname === '/api/member/commissions') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberCommissions(authUser.id, {
+                commissionLedger: mockCommissionTransactions
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/wallet
+    if (req.method === 'GET' && pathname === '/api/member/wallet') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberWallet(authUser.id, {
+                walletLedger: mockWalletLedger
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/earnings-summary
+    if (req.method === 'GET' && pathname === '/api/member/earnings-summary') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberEarningsSummary(authUser.id, {
+                commissionLedger: mockCommissionTransactions,
+                walletLedger: mockWalletLedger
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
     // ========================================================
     // ADMIN MLM OPERATIONS DASHBOARD API ROUTER (STEP 27)
     // ========================================================
+
+    // GET /api/admin/network/validate
+    if (req.method === 'GET' && pathname === '/api/admin/network/validate') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        try {
+            const report = MLMNetworkEngine.validateEntireMLMNetwork({
+                users: mockUsers,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                purchases: mockProductPurchases,
+                commissionLedger: mockCommissionTransactions,
+                volumeLedger: mockVolumeLedger,
+                walletLedger: mockWalletLedger
+            });
+            sendJSON(res, 200, report);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // POST /api/admin/commissions/calculate
+    if (req.method === 'POST' && pathname === '/api/admin/commissions/calculate') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        parseRequestBody(req).then(body => {
+            const orderId = body.order_id || body.orderId;
+            if (!orderId) {
+                sendJSON(res, 400, { error: 'order_id is required in request body.' });
+                return;
+            }
+
+            const result = MLMNetworkEngine.calculateOrderCommissions(orderId, {
+                purchases: mockProductPurchases,
+                products: mockProducts,
+                users: mockUsers,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                kycDocs: mockKycDocs,
+                commissionLedger: mockCommissionTransactions,
+                volumeLedger: mockVolumeLedger,
+                walletLedger: mockWalletLedger,
+                dailyEarningsMap: mockDailyEarningsMap,
+                dailyCapLimit: 30000.00
+            });
+
+            if (!result.success) {
+                sendJSON(res, 400, result);
+            } else {
+                sendJSON(res, 200, result);
+            }
+        }).catch(err => {
+            sendJSON(res, 400, { error: err.message });
+        });
+        return;
+    }
 
     // GET /api/admin/dashboard
     if (req.method === 'GET' && pathname === '/api/admin/dashboard') {
