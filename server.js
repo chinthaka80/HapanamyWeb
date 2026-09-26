@@ -3584,14 +3584,18 @@ const server = http.createServer(async (req, res) => {
                     withdrawal_hold_balance: earnings.withdrawal_hold_balance
                 },
                 binary_network: {
-                    left_team_count: network.tree && network.tree.left ? 1 : 0,
-                    right_team_count: network.tree && network.tree.right ? 1 : 0,
+                    left_team_count: network.center_member ? network.center_member.left_team_count : (network.tree && network.tree.left ? 1 : 0),
+                    right_team_count: network.center_member ? network.center_member.right_team_count : (network.tree && network.tree.right ? 1 : 0),
                     left_volume_lifetime: volSummary.lifetime_left_volume,
                     right_volume_lifetime: volSummary.lifetime_right_volume,
                     left_volume_current: volSummary.current_left_volume,
                     right_volume_current: volSummary.current_right_volume,
                     weaker_leg: volSummary.weaker_leg,
-                    tree: network.tree
+                    tree: network.tree,
+                    center_member: network.center_member,
+                    left_member: network.left_member,
+                    right_member: network.right_member,
+                    team_list: network.team_list || []
                 },
                 referral_tools: {
                     left_link: `${baseOrigin}/register?ref=${encodeURIComponent(refCode)}&position=left`,

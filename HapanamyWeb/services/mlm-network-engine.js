@@ -543,11 +543,93 @@ const MLMNetworkEngine = {
         const directs = PlacementEngine.getDirectReferrals(userId, sponsors, users, purchases, binaryNodes);
         const volumeSummary = VolumeLedger.getVolumeSummary(userId, volumeLedger);
 
+        const directLeftNode = binaryNodes.find(n => n.placement_parent_id === userId && n.position === 'LEFT');
+        const directRightNode = binaryNodes.find(n => n.placement_parent_id === userId && n.position === 'RIGHT');
+
+        let leftMember = null;
+        if (directLeftNode) {
+            const uLeft = users.find(u => u.id === directLeftNode.user_id) || { id: directLeftNode.user_id, username: directLeftNode.user_id, full_name: 'Member ' + directLeftNode.user_id };
+            const leftHasPurch = purchases.some(p => p.user_id === directLeftNode.user_id && p.status === 'ACTIVE');
+            const leftSummary = PlacementEngine.getTeamSummary(directLeftNode.user_id, binaryNodes, volumeLedger);
+            leftMember = {
+                id: directLeftNode.user_id,
+                username: uLeft.username || directLeftNode.user_id,
+                full_name: uLeft.full_name || uLeft.name || 'Member',
+                status: (leftHasPurch || uLeft.status === 'ACTIVE') ? 'Active' : (uLeft.status || 'Registered'),
+                is_active: leftHasPurch || uLeft.status === 'ACTIVE',
+                balance_points: (leftSummary.leftVolume || 0) + (leftSummary.rightVolume || 0),
+                left_volume: leftSummary.leftVolume || 0,
+                right_volume: leftSummary.rightVolume || 0,
+                team_count: leftSummary.teamCount || 0,
+                join_date: uLeft.created_at || directLeftNode.created_at || new Date().toISOString()
+            };
+        }
+
+        let rightMember = null;
+        if (directRightNode) {
+            const uRight = users.find(u => u.id === directRightNode.user_id) || { id: directRightNode.user_id, username: directRightNode.user_id, full_name: 'Member ' + directRightNode.user_id };
+            const rightHasPurch = purchases.some(p => p.user_id === directRightNode.user_id && p.status === 'ACTIVE');
+            const rightSummary = PlacementEngine.getTeamSummary(directRightNode.user_id, binaryNodes, volumeLedger);
+            rightMember = {
+                id: directRightNode.user_id,
+                username: uRight.username || directRightNode.user_id,
+                full_name: uRight.full_name || uRight.name || 'Member',
+                status: (rightHasPurch || uRight.status === 'ACTIVE') ? 'Active' : (uRight.status || 'Registered'),
+                is_active: rightHasPurch || uRight.status === 'ACTIVE',
+                balance_points: (rightSummary.leftVolume || 0) + (rightSummary.rightVolume || 0),
+                left_volume: rightSummary.leftVolume || 0,
+                right_volume: rightSummary.rightVolume || 0,
+                team_count: rightSummary.teamCount || 0,
+                join_date: uRight.created_at || directRightNode.created_at || new Date().toISOString()
+            };
+        }
+
+        const descendants = PlacementEngine.getDescendants(userId, binaryNodes);
+        const teamList = descendants.map(d => {
+            const u = users.find(usr => usr.id === d.user_id) || { id: d.user_id, username: d.user_id, full_name: 'Member ' + d.user_id };
+            const hasPurch = purchases.some(p => p.user_id === d.user_id && p.status === 'ACTIVE');
+            const dSum = PlacementEngine.getTeamSummary(d.user_id, binaryNodes, volumeLedger);
+            return {
+                id: d.user_id,
+                user_id: d.user_id,
+                username: u.username || d.user_id,
+                full_name: u.full_name || u.name || 'Member',
+                position: d.branch_leg || d.position || 'LEFT',
+                status: (hasPurch || u.status === 'ACTIVE') ? 'Active' : 'Registered',
+                is_active: hasPurch || u.status === 'ACTIVE',
+                balance_points: (dSum.leftVolume || 0) + (dSum.rightVolume || 0),
+                left_volume: dSum.leftVolume || 0,
+                right_volume: dSum.rightVolume || 0,
+                team_count: dSum.teamCount || 0,
+                relative_depth: d.relative_depth,
+                join_date: u.created_at || new Date().toISOString()
+            };
+        });
+
+        const curUser = users.find(u => u.id === userId) || { id: userId, username: 'member', full_name: 'Member' };
+        const centerMember = {
+            id: userId,
+            full_name: curUser.full_name || curUser.name || 'Member',
+            username: curUser.username || 'member',
+            status: curUser.status || 'ACTIVE',
+            qualification_status: curUser.qualification_status || 'QUALIFIED',
+            left_points: volumeSummary.current_left_volume || 0,
+            right_points: volumeSummary.current_right_volume || 0,
+            left_team_count: descendants.filter(d => d.branch_leg === 'LEFT').length,
+            right_team_count: descendants.filter(d => d.branch_leg === 'RIGHT').length,
+            total_team_count: descendants.length
+        };
+
         return {
             user_id: userId,
             tree,
             direct_referrals: directs,
-            volume_summary: volumeSummary
+            volume_summary: volumeSummary,
+            descendants,
+            team_list: teamList,
+            center_member: centerMember,
+            left_member: leftMember,
+            right_member: rightMember
         };
     },
 

@@ -575,7 +575,7 @@
             background: rgba(245, 124, 0, 0.03);
         }
 
-        /* Binary Visualizer */
+        /* My Sales Team Visualizer */
         .binary-summary-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -605,46 +605,294 @@
             color: var(--text-primary);
         }
 
-        .tree-viewport {
-            background: var(--bg-main);
+        .sales-team-container {
+            margin: 10px 0;
+        }
+
+        .sales-team-cards-row {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .sales-connector-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            width: 36px;
+            height: 2px;
+            background: linear-gradient(90deg, rgba(245, 124, 0, 0.4), rgba(212, 175, 55, 0.4));
+        }
+
+        .connector-dot {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: var(--brand-orange);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--brand-orange);
+        }
+
+        .sales-team-card {
+            background: var(--bg-surface);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 40px 20px;
+            border-radius: 16px;
+            padding: 22px 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+            transition: var(--transition-smooth);
+            min-height: 280px;
+            position: relative;
+        }
+
+        .sales-team-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .sales-team-card.center-card {
+            border: 2px solid rgba(245, 124, 0, 0.6);
+            background: linear-gradient(180deg, rgba(245, 124, 0, 0.08) 0%, rgba(16, 42, 67, 0.2) 100%), var(--bg-surface);
+            box-shadow: 0 8px 30px rgba(245, 124, 0, 0.15);
+        }
+
+        .sales-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sales-leg-badge {
+            font-size: 11.5px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.5px;
+        }
+
+        .badge-left {
+            background: rgba(33, 150, 243, 0.15);
+            color: #42A5F5;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .badge-right {
+            background: rgba(156, 39, 176, 0.15);
+            color: #BA68C8;
+            border: 1px solid rgba(156, 39, 176, 0.3);
+        }
+
+        .badge-center {
+            background: linear-gradient(135deg, rgba(245, 124, 0, 0.2), rgba(212, 175, 55, 0.2));
+            color: var(--brand-orange-light);
+            border: 1px solid rgba(245, 124, 0, 0.4);
+        }
+
+        .sales-card-body {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
-            overflow-x: auto;
-            background-image: radial-gradient(rgba(245, 124, 0, 0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
+            text-align: center;
+            flex: 1;
+            justify-content: space-between;
         }
 
-        .tree-node-card {
-            background: var(--bg-surface);
+        .sales-avatar {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
             border: 2px solid var(--border-color);
-            border-radius: 14px;
-            padding: 16px 24px;
-            min-width: 180px;
+            color: var(--text-primary);
+            font-size: 20px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .sales-avatar-me {
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            color: #FFFFFF;
+            border: 2px solid #FFFFFF;
+            box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3);
+        }
+
+        .sales-avatar-sm {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(245, 124, 0, 0.15);
+            color: var(--brand-orange-light);
+            font-size: 13px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(245, 124, 0, 0.3);
+        }
+
+        .sales-member-name {
+            font-size: 16px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .sales-member-user {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .sales-stats-box {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .sales-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12.5px;
+        }
+
+        .sales-stat-label {
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .sales-stat-val {
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .sales-stat-divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: 2px 0;
+        }
+
+        .empty-slot-body {
+            padding: 10px 0;
+            justify-content: center;
+        }
+
+        .empty-slot-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+
+        .empty-slot-title {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .empty-slot-desc {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 18px;
+            line-height: 1.4;
+        }
+
+        .btn-invite-slot {
+            width: 100%;
+            padding: 10px;
+            font-weight: 700;
+            font-size: 13px;
+            border-radius: 8px;
             text-align: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+            cursor: pointer;
+        }
+
+        /* Team List Toolbar */
+        .team-list-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .team-search-box {
+            flex: 1;
+            min-width: 260px;
+        }
+
+        .team-search-input {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 13.5px;
+            color: var(--text-primary);
+            outline: none;
             transition: var(--transition-smooth);
         }
 
-        .tree-node-card.root-node {
+        .team-search-input:focus {
             border-color: var(--brand-orange);
-            background: linear-gradient(135deg, rgba(245, 124, 0, 0.12), rgba(212, 175, 55, 0.08));
+            box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.15);
         }
 
-        .tree-node-card.active-leg {
-            border-color: var(--brand-green);
-        }
-
-        .tree-branches-row {
+        .team-filter-pills {
             display: flex;
-            justify-content: space-around;
-            width: 100%;
-            max-width: 700px;
-            gap: 40px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .team-filter-btn {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 7px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .team-filter-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--brand-orange);
+        }
+
+        .team-filter-btn.active {
+            background: var(--brand-orange);
+            color: #FFFFFF;
+            border-color: var(--brand-orange);
+        }
+
+        @media (max-width: 900px) {
+            .sales-team-cards-row {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .sales-connector-line {
+                display: none;
+            }
+            .sales-team-card.center-card {
+                order: -1;
+            }
         }
 
         /* Modal */
@@ -796,8 +1044,8 @@
                     <span>Earnings (ඉපැයීම්)</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('network')" id="nav-network">
-                    <span class="member-nav-icon">🌿</span>
-                    <span>Binary Tree (ජාලය)</span>
+                    <span class="member-nav-icon">👥</span>
+                    <span>My Sales Team (විකුණුම් කණ්ඩායම)</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('referrals')" id="nav-referrals">
                     <span class="member-nav-icon">👥</span>
@@ -962,11 +1210,11 @@
 
                     <!-- QUICK SUMMARY PREVIEWS -->
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
-                        <!-- Binary Quick Stats -->
+                        <!-- Sales Team Quick Stats -->
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">
-                                <span>🌿 Binary Team Volume</span>
-                                <button class="btn-action-sm" onclick="switchMemberTab('network')">View Tree →</button>
+                                <span>👥 Sales Team Volume</span>
+                                <button class="btn-action-sm" onclick="switchMemberTab('network')">View Sales Team →</button>
                             </div>
                             <div style="display: flex; justify-content: space-between; padding: 15px; background: var(--bg-main); border-radius: 12px;">
                                 <div>
@@ -1028,14 +1276,18 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: BINARY NETWORK & TREE -->
+                <!-- TAB 3: MY SALES TEAM -->
                 <div class="tab-panel" id="panel-network">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>🌿 Binary Network & Volume Analytics</span>
+                            <div>
+                                <span style="font-size: 18px; font-weight: 800; letter-spacing: 0.5px;">👥 MY SALES TEAM</span>
+                                <p style="font-size: 13px; color: var(--text-muted); margin-top: 4px; font-weight: normal;">ඔබේ Sales Team එක එකම තැනකින් බලන්න (View and manage your entire sales team)</p>
+                            </div>
                             <span class="badge-pill badge-qualified" id="treeQualStatus">★ QUALIFIED STATUS</span>
                         </div>
 
+                        <!-- Summary Cards -->
                         <div class="binary-summary-grid">
                             <div class="binary-sum-card">
                                 <div class="binary-sum-card-title">LEFT Team Members</div>
@@ -1046,43 +1298,88 @@
                                 <div class="binary-sum-card-val" id="treeRightCount">0</div>
                             </div>
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">LEFT Lifetime Volume</div>
+                                <div class="binary-sum-card-title">LEFT Team Volume</div>
                                 <div class="binary-sum-card-val" id="treeLeftVol">LKR 0.00</div>
                             </div>
                             <div class="binary-sum-card">
-                                <div class="binary-sum-card-title">RIGHT Lifetime Volume</div>
+                                <div class="binary-sum-card-title">RIGHT Team Volume</div>
                                 <div class="binary-sum-card-val" id="treeRightVol">LKR 0.00</div>
                             </div>
                         </div>
 
-                        <!-- Interactive Binary Tree Visualizer -->
-                        <div class="tree-viewport">
-                            <!-- Root Node -->
-                            <div class="tree-node-card root-node">
-                                <div style="font-size: 11px; font-weight: 700; color: var(--brand-orange);">👑 YOU (ROOT)</div>
-                                <div style="font-weight: 800; font-size: 15px;" id="treeRootName">Hiru</div>
-                                <div style="font-size: 11px; color: var(--text-muted);" id="treeRootUser">@Hiru</div>
-                                <div style="margin-top: 6px; font-size: 11px; font-weight: 700; color: var(--brand-green);">L: 0.00 | R: 0.00</div>
-                            </div>
-
-                            <!-- Level 1 Branches -->
-                            <div class="tree-branches-row">
-                                <!-- Left Child -->
-                                <div class="tree-node-card active-leg">
-                                    <div style="font-size: 10px; font-weight: 700; color: var(--brand-green);">👈 LEFT LEG</div>
-                                    <div style="font-weight: 800; font-size: 14px;" id="treeLeftChildName">Nimal Silva</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">@nimal_s</div>
-                                    <div style="font-size: 11px; color: var(--brand-gold); font-weight: 700; margin-top: 4px;">Vol: LKR 27,500.00</div>
+                        <!-- 3-Card Horizontal Structure: [ LEFT TEAM ] ─── [ ME ] ─── [ RIGHT TEAM ] -->
+                        <div class="sales-team-container">
+                            <div class="sales-team-cards-row">
+                                <!-- LEFT TEAM CARD -->
+                                <div class="sales-team-card" id="salesCardLeft">
+                                    <!-- Rendered dynamically -->
                                 </div>
 
-                                <!-- Right Child -->
-                                <div class="tree-node-card active-leg">
-                                    <div style="font-size: 10px; font-weight: 700; color: var(--brand-green);">👉 RIGHT LEG</div>
-                                    <div style="font-weight: 800; font-size: 14px;" id="treeRightChildName">Sunil Kumar</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">@sunil_k</div>
-                                    <div style="font-size: 11px; color: var(--brand-gold); font-weight: 700; margin-top: 4px;">Vol: LKR 27,500.00</div>
+                                <!-- CONNECTOR 1 -->
+                                <div class="sales-connector-line">
+                                    <span class="connector-dot"></span>
+                                </div>
+
+                                <!-- CENTER (ME) CARD -->
+                                <div class="sales-team-card center-card" id="salesCardCenter">
+                                    <!-- Rendered dynamically -->
+                                </div>
+
+                                <!-- CONNECTOR 2 -->
+                                <div class="sales-connector-line">
+                                    <span class="connector-dot"></span>
+                                </div>
+
+                                <!-- RIGHT TEAM CARD -->
+                                <div class="sales-team-card" id="salesCardRight">
+                                    <!-- Rendered dynamically -->
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- MY TEAM LIST TABLE -->
+                    <div class="dashboard-card" style="margin-top: 24px;">
+                        <div class="dashboard-card-title">
+                            <div>
+                                <span style="font-size: 16.5px; font-weight: 800;">👥 MY TEAM LIST (මගේ කණ්ඩායමේ සාමාජිකයින්)</span>
+                                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px; font-weight: normal;">ඔබේ සියලුම Downline කණ්ඩායම් සාමාජිකයින්ගේ විස්තර</p>
+                            </div>
+                            <span class="badge-pill badge-active" id="teamListCountBadge">0 Members</span>
+                        </div>
+
+                        <!-- Search & Filter Controls -->
+                        <div class="team-list-toolbar">
+                            <div class="team-search-box">
+                                <input type="text" id="teamSearchInput" class="team-search-input" placeholder="🔍 Search members by name or @username..." oninput="handleTeamFilterChange()">
+                            </div>
+                            <div class="team-filter-pills">
+                                <button class="team-filter-btn active" data-filter="all" onclick="setTeamFilter('all', this)">All Team</button>
+                                <button class="team-filter-btn" data-filter="left" onclick="setTeamFilter('left', this)">Left Team</button>
+                                <button class="team-filter-btn" data-filter="right" onclick="setTeamFilter('right', this)">Right Team</button>
+                                <button class="team-filter-btn" data-filter="active" onclick="setTeamFilter('active', this)">Active</button>
+                                <button class="team-filter-btn" data-filter="inactive" onclick="setTeamFilter('inactive', this)">Inactive</button>
+                            </div>
+                        </div>
+
+                        <!-- Team Members Table -->
+                        <div style="overflow-x: auto;">
+                            <table class="custom-table" id="myTeamListTable">
+                                <thead>
+                                    <tr>
+                                        <th>Member</th>
+                                        <th>Username</th>
+                                        <th>Team Leg</th>
+                                        <th>Status</th>
+                                        <th>Balance Points</th>
+                                        <th>Team Size</th>
+                                        <th>Join Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -1263,12 +1560,12 @@
             <span>Earnings</span>
         </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('network')" id="mob-network">
-            <span>🌿</span>
-            <span>Tree</span>
+            <span>👥</span>
+            <span>Sales Team</span>
         </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('referrals')" id="mob-referrals">
             <span>👥</span>
-            <span>Team</span>
+            <span>Referrals</span>
         </div>
         <div class="mobile-nav-item" onclick="switchMemberTab('financial')" id="mob-financial">
             <span>💳</span>
@@ -1310,7 +1607,7 @@
             const sectionTitles = {
                 'overview': 'සාමාජික පාලන පුවරුව (Member Dashboard)',
                 'earnings': 'ඉපැයීම් විස්තර (Earnings Breakdown)',
-                'network': 'ද්විමය ජාලය (Binary Network Tree)',
+                'network': 'My Sales Team (විකුණුම් කණ්ඩායම)',
                 'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
                 'links': 'ප්‍රවර්ධන සබැඳි (Referral Link Tools)',
                 'products': 'පාඨමාලා (Masterclasses & Courses)',
@@ -1320,7 +1617,7 @@
             const sectionIcons = {
                 'overview': '📊',
                 'earnings': '💰',
-                'network': '🌿',
+                'network': '👥',
                 'referrals': '👥',
                 'links': '🔗',
                 'products': '📚',
@@ -1502,20 +1799,254 @@
             });
         }
 
-        function renderBinaryTreeVisualizer(treeData) {
-            const leftName = document.getElementById('treeLeftChildName');
-            const rightName = document.getElementById('treeRightChildName');
-            
-            if (treeData && treeData.left_child) {
-                if (leftName) leftName.textContent = treeData.left_child.name || 'Member';
-            } else {
-                if (leftName) leftName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Left Slot</span>';
+        let globalTeamList = [];
+        let currentTeamFilter = 'all';
+
+        function copyRefLinkByPosition(position) {
+            const inputId = position === 'left' ? 'leftRefLinkInput' : 'rightRefLinkInput';
+            const input = document.getElementById(inputId);
+            let link = input ? input.value : '';
+            if (!link) {
+                const uHandle = (window.currentActiveUser && window.currentActiveUser.username) || 'Hiru';
+                link = `${window.location.origin}/register?ref=${encodeURIComponent(uHandle)}&position=${position}`;
+            }
+            navigator.clipboard.writeText(link).then(() => {
+                showMemberToast(`📋 <strong>${position.toUpperCase()} Team Invitation Link Copied!</strong><br><small style="color:#94A3B8;">${link}</small>`);
+            }).catch(() => {
+                showMemberToast(`📋 <strong>${position.toUpperCase()} Team Link Copied!</strong>`);
+            });
+        }
+
+        function setTeamFilter(filter, btn) {
+            currentTeamFilter = filter;
+            document.querySelectorAll('.team-filter-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            handleTeamFilterChange();
+        }
+
+        function handleTeamFilterChange() {
+            const searchVal = (document.getElementById('teamSearchInput')?.value || '').toLowerCase().trim();
+            const filtered = globalTeamList.filter(m => {
+                if (currentTeamFilter === 'left' && (m.position || '').toUpperCase() !== 'LEFT') return false;
+                if (currentTeamFilter === 'right' && (m.position || '').toUpperCase() !== 'RIGHT') return false;
+                if (currentTeamFilter === 'active' && !m.is_active && (m.status || '').toUpperCase() !== 'ACTIVE') return false;
+                if (currentTeamFilter === 'inactive' && (m.is_active || (m.status || '').toUpperCase() === 'ACTIVE')) return false;
+
+                if (searchVal) {
+                    const nameMatch = (m.full_name || '').toLowerCase().includes(searchVal);
+                    const userMatch = (m.username || '').toLowerCase().includes(searchVal);
+                    const idMatch = (m.user_id || m.id || '').toLowerCase().includes(searchVal);
+                    return nameMatch || userMatch || idMatch;
+                }
+                return true;
+            });
+
+            renderTeamListRows(filtered);
+        }
+
+        function renderTeamListRows(members) {
+            const tbody = document.querySelector('#myTeamListTable tbody');
+            const countBadge = document.getElementById('teamListCountBadge');
+            if (countBadge) countBadge.textContent = `${members.length} Members`;
+            if (!tbody) return;
+
+            if (!members || members.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 35px 20px;">
+                            <div style="font-size: 28px; margin-bottom: 8px;">👥</div>
+                            <div style="font-weight: 700; font-size: 15px; color: var(--text-primary); margin-bottom: 4px;">කිසිදු Sales Team සාමාජිකයෙකු හමු නොවීය</div>
+                            <div style="font-size: 12.5px; color: var(--text-muted); max-width: 380px; margin: 0 auto 14px auto;">ඔබේ Referral Link එක බෙදාගෙන ඔබේ Sales Team එකට සාමාජිකයින් එකතු කරගන්න.</div>
+                            <button class="btn-action-sm btn-primary-action" onclick="switchMemberTab('links')" style="display: inline-flex;">🔗 Referral Links වෙත යන්න</button>
+                        </td>
+                    </tr>
+                `;
+                return;
             }
 
-            if (treeData && treeData.right_child) {
-                if (rightName) rightName.textContent = treeData.right_child.name || 'Member';
+            tbody.innerHTML = '';
+            members.forEach(m => {
+                const tr = document.createElement('tr');
+                const dt = m.join_date ? new Date(m.join_date).toLocaleDateString() : '2026-09-01';
+                const initial = (m.full_name || m.name || m.username || 'M')[0].toUpperCase();
+                const posBadge = (m.position || 'LEFT').toUpperCase() === 'LEFT'
+                    ? '<span class="sales-leg-badge badge-left" style="font-size: 11px; padding: 3px 8px;">👈 LEFT</span>'
+                    : '<span class="sales-leg-badge badge-right" style="font-size: 11px; padding: 3px 8px;">👉 RIGHT</span>';
+                const isAct = m.is_active || (m.status || '').toUpperCase() === 'ACTIVE';
+                const stBadge = isAct
+                    ? '<span class="badge-pill badge-qualified">● Active</span>'
+                    : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● Registered</span>';
+                const pts = Number(m.balance_points || m.volume || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const teamSize = Number(m.team_count || 0);
+
+                tr.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="sales-avatar-sm">${initial}</div>
+                            <strong style="color: var(--text-primary);">${m.full_name || m.name || 'Member'}</strong>
+                        </div>
+                    </td>
+                    <td><code style="color: var(--text-muted);">@${m.username || ''}</code></td>
+                    <td>${posBadge}</td>
+                    <td>${stBadge}</td>
+                    <td style="font-weight: 700; color: var(--brand-gold);">LKR ${pts}</td>
+                    <td><strong>${teamSize}</strong> Members</td>
+                    <td style="color: var(--text-muted); font-size: 12.5px;">${dt}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function renderSalesTeamVisualizer(networkData) {
+            const cardLeft = document.getElementById('salesCardLeft');
+            const cardCenter = document.getElementById('salesCardCenter');
+            const cardRight = document.getElementById('salesCardRight');
+            if (!cardLeft || !cardCenter || !cardRight) return;
+
+            // 1. Center Card (ME)
+            const cMember = networkData && networkData.center_member ? networkData.center_member : null;
+            const curUser = window.currentActiveUser || JSON.parse(localStorage.getItem('active_user')) || { full_name: 'Member', username: 'member' };
+            const cName = (cMember && cMember.full_name) || curUser.full_name || curUser.name || 'Member';
+            const cUser = (cMember && cMember.username) || curUser.username || 'member';
+            const cInitial = (cName || 'M')[0].toUpperCase();
+            const cLeftPts = cMember ? Number(cMember.left_points || 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00';
+            const cRightPts = cMember ? Number(cMember.right_points || 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00';
+            const cTotalTeam = cMember ? (cMember.total_team_count || (Number(cMember.left_team_count || 0) + Number(cMember.right_team_count || 0))) : 0;
+            const cQualStatus = (cMember && cMember.qualification_status) || curUser.qualification_status || 'QUALIFIED';
+
+            cardCenter.innerHTML = `
+                <div class="sales-card-header">
+                    <span class="sales-leg-badge badge-center">👑 YOU (ME)</span>
+                    <span class="badge-pill badge-qualified">${cQualStatus}</span>
+                </div>
+                <div class="sales-card-body">
+                    <div>
+                        <div class="sales-avatar sales-avatar-me">${cInitial}</div>
+                        <div class="sales-member-name">${cName}</div>
+                        <div class="sales-member-user">@${cUser}</div>
+                    </div>
+                    <div class="sales-stats-box">
+                        <div class="sales-stat-row">
+                            <span class="sales-stat-label">Left Points:</span>
+                            <span class="sales-stat-val">LKR ${cLeftPts}</span>
+                        </div>
+                        <div class="sales-stat-row">
+                            <span class="sales-stat-label">Right Points:</span>
+                            <span class="sales-stat-val">LKR ${cRightPts}</span>
+                        </div>
+                        <div class="sales-stat-divider"></div>
+                        <div class="sales-stat-row">
+                            <span class="sales-stat-label">Total Team:</span>
+                            <span class="sales-stat-val" style="color: var(--brand-gold); font-size: 13.5px;">${cTotalTeam} Members</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // 2. Left Card
+            const lMember = (networkData && networkData.left_member) || (networkData && networkData.tree && networkData.tree.left ? networkData.tree.left : null);
+            if (lMember) {
+                const lName = lMember.full_name || lMember.name || 'Member';
+                const lUser = lMember.username || 'member';
+                const lInitial = (lName || 'L')[0].toUpperCase();
+                const lPts = Number(lMember.balance_points !== undefined ? lMember.balance_points : (lMember.left_volume + lMember.right_volume || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const lTeam = lMember.team_count || 0;
+                const lIsActive = lMember.is_active || (lMember.status || '').toUpperCase() === 'ACTIVE';
+                const lStatusBadge = lIsActive ? '<span class="badge-pill badge-active">● ACTIVE</span>' : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● REGISTERED</span>';
+
+                cardLeft.className = 'sales-team-card';
+                cardLeft.innerHTML = `
+                    <div class="sales-card-header">
+                        <span class="sales-leg-badge badge-left">👈 LEFT TEAM</span>
+                        ${lStatusBadge}
+                    </div>
+                    <div class="sales-card-body">
+                        <div>
+                            <div class="sales-avatar">${lInitial}</div>
+                            <div class="sales-member-name">${lName}</div>
+                            <div class="sales-member-user">@${lUser}</div>
+                        </div>
+                        <div class="sales-stats-box">
+                            <div class="sales-stat-row">
+                                <span class="sales-stat-label">Balance Points:</span>
+                                <span class="sales-stat-val" style="color: var(--brand-gold);">LKR ${lPts}</span>
+                            </div>
+                            <div class="sales-stat-row">
+                                <span class="sales-stat-label">Team Members:</span>
+                                <span class="sales-stat-val">${lTeam} Members</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
             } else {
-                if (rightName) rightName.innerHTML = '<span style="color:var(--text-muted); font-size:12px;">+ Empty Right Slot</span>';
+                cardLeft.className = 'sales-team-card empty-card';
+                cardLeft.innerHTML = `
+                    <div class="sales-card-header">
+                        <span class="sales-leg-badge badge-left">👈 LEFT TEAM</span>
+                        <span class="badge-pill" style="background: rgba(245,124,0,0.15); color: var(--brand-orange);">OPEN POSITION</span>
+                    </div>
+                    <div class="sales-card-body empty-slot-body">
+                        <div class="empty-slot-icon">👤➕</div>
+                        <div class="empty-slot-title">Open Left Position</div>
+                        <p class="empty-slot-desc">Invite a new member to place directly in your Left Team.</p>
+                        <button class="btn-action-sm btn-primary-action btn-invite-slot" onclick="copyRefLinkByPosition('left')">
+                            <span>🔗 INVITE MEMBER</span>
+                        </button>
+                    </div>
+                `;
+            }
+
+            // 3. Right Card
+            const rMember = (networkData && networkData.right_member) || (networkData && networkData.tree && networkData.tree.right ? networkData.tree.right : null);
+            if (rMember) {
+                const rName = rMember.full_name || rMember.name || 'Member';
+                const rUser = rMember.username || 'member';
+                const rInitial = (rName || 'R')[0].toUpperCase();
+                const rPts = Number(rMember.balance_points !== undefined ? rMember.balance_points : (rMember.left_volume + rMember.right_volume || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const rTeam = rMember.team_count || 0;
+                const rIsActive = rMember.is_active || (rMember.status || '').toUpperCase() === 'ACTIVE';
+                const rStatusBadge = rIsActive ? '<span class="badge-pill badge-active">● ACTIVE</span>' : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● REGISTERED</span>';
+
+                cardRight.className = 'sales-team-card';
+                cardRight.innerHTML = `
+                    <div class="sales-card-header">
+                        <span class="sales-leg-badge badge-right">👉 RIGHT TEAM</span>
+                        ${rStatusBadge}
+                    </div>
+                    <div class="sales-card-body">
+                        <div>
+                            <div class="sales-avatar">${rInitial}</div>
+                            <div class="sales-member-name">${rName}</div>
+                            <div class="sales-member-user">@${rUser}</div>
+                        </div>
+                        <div class="sales-stats-box">
+                            <div class="sales-stat-row">
+                                <span class="sales-stat-label">Balance Points:</span>
+                                <span class="sales-stat-val" style="color: var(--brand-gold);">LKR ${rPts}</span>
+                            </div>
+                            <div class="sales-stat-row">
+                                <span class="sales-stat-label">Team Members:</span>
+                                <span class="sales-stat-val">${rTeam} Members</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                cardRight.className = 'sales-team-card empty-card';
+                cardRight.innerHTML = `
+                    <div class="sales-card-header">
+                        <span class="sales-leg-badge badge-right">👉 RIGHT TEAM</span>
+                        <span class="badge-pill" style="background: rgba(245,124,0,0.15); color: var(--brand-orange);">OPEN POSITION</span>
+                    </div>
+                    <div class="sales-card-body empty-slot-body">
+                        <div class="empty-slot-icon">👤➕</div>
+                        <div class="empty-slot-title">Open Right Position</div>
+                        <p class="empty-slot-desc">Invite a new member to place directly in your Right Team.</p>
+                        <button class="btn-action-sm btn-primary-action btn-invite-slot" onclick="copyRefLinkByPosition('right')">
+                            <span>🔗 INVITE MEMBER</span>
+                        </button>
+                    </div>
+                `;
             }
         }
 
@@ -1632,11 +2163,13 @@
             renderWithdrawalHistory(JSON.parse(localStorage.getItem('payout_requests_queue')) || []);
             renderDirectReferrals([]);
             renderPurchasedProducts([]);
-            renderBinaryTreeVisualizer(null);
+            renderSalesTeamVisualizer(null);
+            renderTeamListRows([]);
         }
 
         function applyLocalUserProfile(user) {
             if (!user) return;
+            window.currentActiveUser = user;
             const uName = user.full_name || user.name || user.username || 'Hiru';
             const uHandle = user.username || 'Hiru';
             const uId = user.id || 'user-hiru-root';
@@ -1660,8 +2193,8 @@
             if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = rightL;
             if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = genL;
 
-            if (document.getElementById('treeRootName')) document.getElementById('treeRootName').textContent = uName;
-            if (document.getElementById('treeRootUser')) document.getElementById('treeRootUser').textContent = `@${uHandle}`;
+            renderSalesTeamVisualizer(null);
+            renderTeamListRows([]);
 
             // Populate bank select with profile bank if available
             const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {};
@@ -1684,6 +2217,7 @@
             
             // 1. Profile
             if (data.profile) {
+                window.currentActiveUser = data.profile;
                 document.getElementById('profileFullName').textContent = data.profile.full_name || 'Member';
                 document.getElementById('sidebarName').textContent = data.profile.full_name || 'Member';
                 document.getElementById('profileUsernameDisplay').innerHTML = `@${data.profile.username} (<span>${data.profile.id}</span>)`;
@@ -1721,6 +2255,10 @@
                 document.getElementById('treeRightCount').textContent = data.binary_network.right_team_count || 0;
                 document.getElementById('treeLeftVol').textContent = `LKR ${Number(data.binary_network.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 document.getElementById('treeRightVol').textContent = `LKR ${Number(data.binary_network.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+                globalTeamList = data.binary_network.team_list || [];
+                renderSalesTeamVisualizer(data.binary_network);
+                handleTeamFilterChange();
             }
 
             // 4. Referral Links
@@ -1748,9 +2286,6 @@
             }
             if (data.products) {
                 renderPurchasedProducts(data.products.list);
-            }
-            if (data.binary_network) {
-                renderBinaryTreeVisualizer(data.binary_network);
             }
         }
 
