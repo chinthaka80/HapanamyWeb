@@ -2286,57 +2286,70 @@
             const addedHandles = new Set();
             if (uHandle) addedHandles.add(uHandle);
 
-            // 1. Check referred_users_<uHandle>
-            const refList = JSON.parse(localStorage.getItem('referred_users_' + (user.username || user.name || 'Hiru'))) || [];
-            refList.forEach((r, idx) => {
-                const uname = (r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx)).toLowerCase();
-                const uid = r.id || 'usr-ref-' + uname;
-                if (!addedHandles.has(uname)) {
-                    addedHandles.add(uname);
-                    const pos = (r.position || 'LEFT').toUpperCase();
-                    const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
-                    const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
-                    downlines.push({
-                        id: uid,
-                        user_id: uid,
-                        username: r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx),
-                        full_name: r.full_name || r.name || 'Member',
-                        position: pos,
-                        status: isAct ? 'Active' : 'Inactive',
-                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
-                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
-                        is_active: isAct,
-                        is_qualified: isQual,
-                        balance_points: Number(r.balance_points || 0),
-                        left_volume: Number(r.left_volume || 0),
-                        right_volume: Number(r.right_volume || 0),
-                        team_count: Number(r.team_size || r.team_count || 0),
-                        team_size: Number(r.team_size || r.team_count || 0),
-                        level: r.level || 1,
-                        depth: r.depth || 1,
-                        relative_depth: r.relative_depth || 1,
-                        join_date: r.created_at || r.date || new Date().toISOString()
-                    });
+            // 1. Check ALL referred_users_* keys in localStorage (case-insensitive)
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.toLowerCase().startsWith('referred_users_')) {
+                    const sponsorKey = k.substring('referred_users_'.length).toLowerCase().trim();
+                    const isMySponsorKey = sponsorKey === uHandle || sponsorKey === uId || sponsorKey === uName || (uHandle === 'hiru' && (sponsorKey === 'hiru' || sponsorKey === 'user-hiru-root'));
+                    if (isMySponsorKey) {
+                        try {
+                            const refList = JSON.parse(localStorage.getItem(k)) || [];
+                            refList.forEach((r, idx) => {
+                                const rawUname = r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx);
+                                const unameLower = rawUname.toLowerCase().trim();
+                                const uid = r.id || 'usr-ref-' + rawUname;
+                                if (!addedHandles.has(unameLower) && unameLower !== uHandle) {
+                                    addedHandles.add(unameLower);
+                                    const pos = (r.position || 'LEFT').toUpperCase();
+                                    const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
+                                    const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                                    downlines.push({
+                                        id: uid,
+                                        user_id: uid,
+                                        username: rawUname,
+                                        full_name: r.full_name || r.name || 'Member',
+                                        position: pos,
+                                        status: isAct ? 'Active' : 'Inactive',
+                                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                                        is_active: isAct,
+                                        is_qualified: isQual,
+                                        balance_points: Number(r.balance_points || 0),
+                                        left_volume: Number(r.left_volume || 0),
+                                        right_volume: Number(r.right_volume || 0),
+                                        team_count: Number(r.team_size || r.team_count || 0),
+                                        team_size: Number(r.team_size || r.team_count || 0),
+                                        level: r.level || 1,
+                                        depth: r.depth || 1,
+                                        relative_depth: r.relative_depth || 1,
+                                        join_date: r.created_at || r.date || new Date().toISOString()
+                                    });
+                                }
+                            });
+                        } catch (e) {}
+                    }
                 }
-            });
+            }
 
             // 2. Check general registered users
             const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
             regUsers.forEach((u, idx) => {
                 const sp = (u.sponsor || '').toLowerCase().trim();
                 const isDownline = sp && (sp === uHandle || sp === uId || sp === uName || (uHandle === 'hiru' && (sp === 'hiru' || sp === 'user-hiru-root' || !sp)));
-                const uname = (u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx)).toLowerCase();
-                const uid = u.id || 'usr-reg-' + uname;
+                const rawUname = u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx);
+                const unameLower = rawUname.toLowerCase().trim();
+                const uid = u.id || 'usr-reg-' + rawUname;
 
-                if (isDownline && !addedHandles.has(uname)) {
-                    addedHandles.add(uname);
+                if (isDownline && !addedHandles.has(unameLower) && unameLower !== uHandle) {
+                    addedHandles.add(unameLower);
                     const pos = (u.position || 'LEFT').toUpperCase();
                     const isAct = Boolean(u.is_active || (u.status || u.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
                     const isQual = Boolean(u.is_qualified || (u.qualification_status || '').toUpperCase() === 'QUALIFIED');
                     downlines.push({
                         id: uid,
                         user_id: uid,
-                        username: u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx),
+                        username: rawUname,
                         full_name: u.full_name || u.name || 'Member',
                         position: pos,
                         status: isAct ? 'Active' : 'Inactive',
