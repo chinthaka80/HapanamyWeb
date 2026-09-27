@@ -534,11 +534,8 @@
                 if (contentType.includes('application/json')) {
                     const data = await response.json();
                     if (response.ok && data.success) {
-                        const token = data.verification_token || 'token-' + Date.now();
-                        localStorage.setItem('auth_token', token);
-                        localStorage.setItem('active_token', token);
-                        localStorage.setItem('active_user', JSON.stringify(data.user));
-                        localStorage.setItem('hapanamy_user_profile', JSON.stringify({
+                        const token = data.token || data.verification_token || ('token-' + data.user.id);
+                        const userObj = {
                             id: data.user.id,
                             name: fullName,
                             full_name: fullName,
@@ -547,10 +544,51 @@
                             phone: phone,
                             role: currentRole,
                             status: 'ACTIVE',
+                            account_status: 'ACTIVE',
+                            qualification_status: data.user.qualification_status || 'NOT_QUALIFIED',
                             sponsor: effectiveSponsor,
                             position: effectivePosition,
-                            created_at: new Date().toISOString()
-                        }));
+                            created_at: data.user.created_at || new Date().toISOString()
+                        };
+
+                        localStorage.setItem('auth_token', token);
+                        localStorage.setItem('active_token', token);
+                        localStorage.setItem('active_user', JSON.stringify(userObj));
+                        localStorage.setItem('hapanamy_user_profile', JSON.stringify(userObj));
+
+                        // Always save to registered users list
+                        let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                        if (!regUsers.some(u => u.email === email || u.id === data.user.id)) {
+                            regUsers.push(userObj);
+                            localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
+                        }
+
+                        // Always record under sponsor downline list
+                        if (effectiveSponsor) {
+                            let referredList = JSON.parse(localStorage.getItem('referred_users_' + effectiveSponsor)) || [];
+                            if (!referredList.some(r => r.email === email || r.username === userObj.username)) {
+                                referredList.push({
+                                    id: data.user.id,
+                                    name: fullName,
+                                    full_name: fullName,
+                                    username: userObj.username,
+                                    email: email,
+                                    mobile: phone,
+                                    position: effectivePosition,
+                                    role: currentRole,
+                                    status: 'Active',
+                                    account_status: 'ACTIVE',
+                                    qualification_status: userObj.qualification_status,
+                                    date: new Date().toLocaleDateString(),
+                                    created_at: userObj.created_at
+                                });
+                                localStorage.setItem('referred_users_' + effectiveSponsor, JSON.stringify(referredList));
+                            }
+                        }
+
+                        if (typeof dbAddUser === 'function') {
+                            try { await dbAddUser(userObj); } catch (e) {}
+                        }
 
                         showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
                         setTimeout(() => {

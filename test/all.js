@@ -68,6 +68,7 @@ require('./step50-realtime-registration-upline-commissions.test');
 require('./step51-member-status-logic.test');
 require('./step52-student-dashboard-user-identity.test');
 require('./step53-my-team-list-verification.test');
+require('./step54-live-registration-persistence.test');
 
 // Run
 runTests();

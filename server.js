@@ -1093,6 +1093,17 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
+        const sessionToken = 'token-' + result.user.id;
+        activeSessions.set(sessionToken, {
+            id: result.user.id,
+            username: result.user.username,
+            full_name: result.user.full_name,
+            email: result.user.email,
+            role: result.user.role || 'member'
+        });
+        result.token = sessionToken;
+        result.verification_token = sessionToken;
+
         addLiveEvent('NEW_MEMBER_REGISTERED', {
             userId: result.user.id,
             username: result.user.username,

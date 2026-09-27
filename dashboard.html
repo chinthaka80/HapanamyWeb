@@ -2275,6 +2275,91 @@
             }, 600);
         }
 
+        // Helper function to extract local downlines for a given user
+        function getLocalDownlinesForUser(user) {
+            if (!user) return [];
+            const uHandle = (user.username || user.name || '').toLowerCase().trim();
+            const uId = (user.id || '').toLowerCase().trim();
+            const uName = (user.full_name || user.name || '').toLowerCase().trim();
+
+            const downlines = [];
+            const addedHandles = new Set();
+            if (uHandle) addedHandles.add(uHandle);
+
+            // 1. Check referred_users_<uHandle>
+            const refList = JSON.parse(localStorage.getItem('referred_users_' + (user.username || user.name || 'Hiru'))) || [];
+            refList.forEach((r, idx) => {
+                const uname = (r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx)).toLowerCase();
+                const uid = r.id || 'usr-ref-' + uname;
+                if (!addedHandles.has(uname)) {
+                    addedHandles.add(uname);
+                    const pos = (r.position || 'LEFT').toUpperCase();
+                    const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
+                    const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                    downlines.push({
+                        id: uid,
+                        user_id: uid,
+                        username: r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx),
+                        full_name: r.full_name || r.name || 'Member',
+                        position: pos,
+                        status: isAct ? 'Active' : 'Inactive',
+                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                        is_active: isAct,
+                        is_qualified: isQual,
+                        balance_points: Number(r.balance_points || 0),
+                        left_volume: Number(r.left_volume || 0),
+                        right_volume: Number(r.right_volume || 0),
+                        team_count: Number(r.team_size || r.team_count || 0),
+                        team_size: Number(r.team_size || r.team_count || 0),
+                        level: r.level || 1,
+                        depth: r.depth || 1,
+                        relative_depth: r.relative_depth || 1,
+                        join_date: r.created_at || r.date || new Date().toISOString()
+                    });
+                }
+            });
+
+            // 2. Check general registered users
+            const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            regUsers.forEach((u, idx) => {
+                const sp = (u.sponsor || '').toLowerCase().trim();
+                const isDownline = sp && (sp === uHandle || sp === uId || sp === uName || (uHandle === 'hiru' && (sp === 'hiru' || sp === 'user-hiru-root' || !sp)));
+                const uname = (u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx)).toLowerCase();
+                const uid = u.id || 'usr-reg-' + uname;
+
+                if (isDownline && !addedHandles.has(uname)) {
+                    addedHandles.add(uname);
+                    const pos = (u.position || 'LEFT').toUpperCase();
+                    const isAct = Boolean(u.is_active || (u.status || u.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
+                    const isQual = Boolean(u.is_qualified || (u.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                    downlines.push({
+                        id: uid,
+                        user_id: uid,
+                        username: u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx),
+                        full_name: u.full_name || u.name || 'Member',
+                        position: pos,
+                        status: isAct ? 'Active' : 'Inactive',
+                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                        is_active: isAct,
+                        is_qualified: isQual,
+                        balance_points: Number(u.balance_points || 0),
+                        left_volume: Number(u.left_volume || 0),
+                        right_volume: Number(u.right_volume || 0),
+                        team_count: Number(u.team_size || u.team_count || 0),
+                        team_size: Number(u.team_size || u.team_count || 0),
+                        level: u.level || 1,
+                        depth: u.depth || 1,
+                        relative_depth: u.relative_depth || 1,
+                        join_date: u.created_at || u.date || new Date().toISOString()
+                    });
+                }
+            });
+
+            return downlines;
+        }
+
         // Live API Data Fetching with Graceful Fallback
         async function loadLiveDashboard() {
             // Check local active user first for instant UI response
@@ -2284,12 +2369,13 @@
                 return;
             }
 
+            let localUser = null;
             try {
-                const localUser = JSON.parse(localUserStr);
+                localUser = JSON.parse(localUserStr);
                 applyLocalUserProfile(localUser);
             } catch (e) {}
 
-            const token = localStorage.getItem('auth_token');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
             try {
                 const res = await fetch('/api/member/dashboard', {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -2309,13 +2395,57 @@
                 console.log('Live API fallback active, using local member dataset.');
             }
 
-            // Fallback rendering for clean zero state
+            // Fallback rendering from Local Storage
+            const curUser = localUser || window.currentActiveUser || { username: 'Hiru', full_name: 'Hiru' };
+            const localTeam = getLocalDownlinesForUser(curUser);
+            const leftDesc = localTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'LEFT');
+            const rightDesc = localTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'RIGHT');
+
+            const fallbackBn = {
+                center_member: {
+                    user_id: curUser.id || 'user-hiru-root',
+                    username: curUser.username || 'Hiru',
+                    full_name: curUser.full_name || curUser.name || 'Hiru',
+                    left_team_count: leftDesc.length,
+                    right_team_count: rightDesc.length,
+                    left_points: 0,
+                    right_points: 0,
+                    total_team_count: localTeam.length,
+                    qualification_status: curUser.qualification_status || 'NOT_QUALIFIED'
+                },
+                left_member: leftDesc[0] || null,
+                right_member: rightDesc[0] || null,
+                left_team_count: leftDesc.length,
+                right_team_count: rightDesc.length,
+                left_volume_lifetime: 0,
+                right_volume_lifetime: 0,
+                team_list: localTeam
+            };
+
+            const qLeft = document.getElementById('quickLeftCount');
+            const qRight = document.getElementById('quickRightCount');
+            const tLeft = document.getElementById('treeLeftCount');
+            const tRight = document.getElementById('treeRightCount');
+            if (qLeft) qLeft.textContent = `${leftDesc.length} Members`;
+            if (qRight) qRight.textContent = `${rightDesc.length} Members`;
+            if (tLeft) tLeft.textContent = leftDesc.length;
+            if (tRight) tRight.textContent = rightDesc.length;
+
+            globalTeamList = localTeam;
+            renderSalesTeamVisualizer(fallbackBn);
+            handleTeamFilterChange();
+
             renderWalletLedger([]);
             renderWithdrawalHistory(JSON.parse(localStorage.getItem('payout_requests_queue')) || []);
-            renderDirectReferrals([]);
+            renderDirectReferrals(localTeam.map(t => ({
+                full_name: t.full_name,
+                username: t.username,
+                join_date: t.join_date,
+                tree_position: t.position,
+                qualification_status: t.qualification_status,
+                has_active_purchase: t.is_active
+            })));
             renderPurchasedProducts([]);
-            renderSalesTeamVisualizer(null);
-            renderTeamListRows([]);
         }
 
         function applyLocalUserProfile(user) {
@@ -2344,8 +2474,34 @@
             if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = rightL;
             if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = genL;
 
-            renderSalesTeamVisualizer(null);
-            renderTeamListRows([]);
+            const initialTeam = getLocalDownlinesForUser(user);
+            const leftDesc = initialTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'LEFT');
+            const rightDesc = initialTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'RIGHT');
+
+            const initBn = {
+                center_member: {
+                    user_id: uId,
+                    username: uHandle,
+                    full_name: uName,
+                    left_team_count: leftDesc.length,
+                    right_team_count: rightDesc.length,
+                    left_points: 0,
+                    right_points: 0,
+                    total_team_count: initialTeam.length,
+                    qualification_status: user.qualification_status || 'NOT_QUALIFIED'
+                },
+                left_member: leftDesc[0] || null,
+                right_member: rightDesc[0] || null,
+                left_team_count: leftDesc.length,
+                right_team_count: rightDesc.length,
+                left_volume_lifetime: 0,
+                right_volume_lifetime: 0,
+                team_list: initialTeam
+            };
+
+            globalTeamList = initialTeam;
+            renderSalesTeamVisualizer(initBn);
+            renderTeamListRows(initialTeam);
 
             // Populate bank select with profile bank if available
             const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {};
@@ -2421,13 +2577,33 @@
             // 3. Binary Network & BV Breakdown
             if (data.binary_network) {
                 const bn = data.binary_network;
-                document.getElementById('quickLeftCount').textContent = `${bn.left_team_count || 0} Members`;
-                document.getElementById('quickRightCount').textContent = `${bn.right_team_count || 0} Members`;
+                let teamList = Array.isArray(bn.team_list) ? [...bn.team_list] : [];
+
+                // Merge any client-side registered downlines for this user
+                const localDownlines = getLocalDownlinesForUser(window.currentActiveUser);
+                localDownlines.forEach(ld => {
+                    const exists = teamList.some(m => 
+                        (m.username && m.username.toLowerCase() === ld.username.toLowerCase()) || 
+                        (m.id && m.id === ld.id) || 
+                        (m.user_id && m.user_id === ld.id)
+                    );
+                    if (!exists) {
+                        teamList.push(ld);
+                    }
+                });
+
+                const leftDesc = teamList.filter(m => (m.position || m.branch_leg || 'LEFT').toUpperCase() === 'LEFT');
+                const rightDesc = teamList.filter(m => (m.position || m.branch_leg || 'LEFT').toUpperCase() === 'RIGHT');
+                const leftCount = Math.max(bn.left_team_count || 0, leftDesc.length);
+                const rightCount = Math.max(bn.right_team_count || 0, rightDesc.length);
+
+                document.getElementById('quickLeftCount').textContent = `${leftCount} Members`;
+                document.getElementById('quickRightCount').textContent = `${rightCount} Members`;
                 document.getElementById('quickLeftVol').textContent = `LKR ${Number(bn.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
                 document.getElementById('quickRightVol').textContent = `LKR ${Number(bn.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
 
-                document.getElementById('treeLeftCount').textContent = bn.left_team_count || 0;
-                document.getElementById('treeRightCount').textContent = bn.right_team_count || 0;
+                document.getElementById('treeLeftCount').textContent = leftCount;
+                document.getElementById('treeRightCount').textContent = rightCount;
                 document.getElementById('treeLeftVol').textContent = `LKR ${Number(bn.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 document.getElementById('treeRightVol').textContent = `LKR ${Number(bn.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
@@ -2450,7 +2626,17 @@
                     document.getElementById('bvWeakerLegBadge').textContent = `Weaker Leg: ${weaker}`;
                 }
 
-                globalTeamList = bn.team_list || [];
+                if (!bn.left_member && leftDesc.length > 0) {
+                    bn.left_member = leftDesc[0];
+                }
+                if (!bn.right_member && rightDesc.length > 0) {
+                    bn.right_member = rightDesc[0];
+                }
+                bn.left_team_count = leftCount;
+                bn.right_team_count = rightCount;
+                bn.total_team_count = teamList.length;
+
+                globalTeamList = teamList;
                 renderSalesTeamVisualizer(bn);
                 handleTeamFilterChange();
             }

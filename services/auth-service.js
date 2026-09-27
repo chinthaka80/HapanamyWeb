@@ -122,16 +122,16 @@ const AuthService = {
         }
 
         // 3. Validate Sponsor and Position
-        let effectiveSponsorCode = sponsorCode;
-        let effectivePosition = position;
+        let effectiveSponsorCode = sponsorCode || payload.sponsor || payload.referrer || payload.sponsor_id || payload.sponsor_username;
+        let effectivePosition = position || payload.requestedPosition || payload.tree_position || 'LEFT';
 
         // Check if referral intent token provided from Step 14
         if (intentId) {
             const intent = ReferralService.verifyAndConsumeIntent(intentId, intentStore);
             if (intent) {
                 effectiveSponsorCode = intent.referral_code;
-                if (!effectivePosition) {
-                    effectivePosition = intent.position;
+                if (!effectivePosition || effectivePosition === 'LEFT') {
+                    effectivePosition = intent.position || effectivePosition;
                 }
             }
         }

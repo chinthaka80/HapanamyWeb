@@ -84,6 +84,10 @@ global.before = before;
 global.assert = assert;
 global.runTests = runTests;
 
+if (typeof module !== 'undefined') {
+    module.exports = { test, before, assert, runTests };
+}
+
 // Auto-run if executed directly
 if (require.main === module) {
     // Basic test to verify runner works

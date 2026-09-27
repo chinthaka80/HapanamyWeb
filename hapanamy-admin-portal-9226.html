@@ -3198,21 +3198,43 @@
             const tableBody = document.getElementById('registeredUsersTableBody');
             if (!tableBody) return;
             tableBody.innerHTML = '';
-            users.forEach(user => {
+
+            const allUsers = [...(users || [])];
+            // Include core root users if missing
+            if (!allUsers.some(u => (u.username || '').toLowerCase() === 'hiru')) {
+                allUsers.unshift({ id: 'user-hiru-root', name: 'Hiru', full_name: 'Hiru', username: 'Hiru', email: 'hiru@hapanamy.lk', role: 'member', status: 'ACTIVE', position: 'ROOT' });
+            }
+            if (!allUsers.some(u => (u.username || '').toLowerCase() === 'namobuddhaya')) {
+                allUsers.unshift({ id: 'user-namobuddhaya-root', name: 'NAMOBUDDHAYA', full_name: 'NAMOBUDDHAYA', username: 'NAMOBUDDHAYA', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE', position: 'ROOT' });
+            }
+
+            allUsers.forEach(user => {
                 const tr = document.createElement('tr');
-                const name = user.name || 'N/A';
+                const name = user.full_name || user.name || 'Member';
+                const uname = user.username || (user.email ? user.email.split('@')[0] : 'member');
                 const email = user.email || 'N/A';
-                const status = user.status || 'Active';
+                const status = (user.status || user.account_status || 'ACTIVE').toUpperCase();
+                const pos = (user.position || 'LEFT').toUpperCase();
+                const posBadge = pos === 'ROOT'
+                    ? '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>'
+                    : (pos === 'LEFT' ? '<span class="sales-leg-badge badge-left">👈 LEFT</span>' : '<span class="sales-leg-badge badge-right">👉 RIGHT</span>');
+                const sp = user.sponsor ? `<strong>${user.sponsor}</strong>` : '<span style="color:var(--text-muted);">Direct (Company)</span>';
+                
                 tr.innerHTML = `
-                    <td><strong>${name}</strong><br><code>${email}</code></td>
-                    <td><span style="color:var(--text-muted);">Direct</span></td>
-                    <td><span class="badge-status">ROOT</span></td>
-                    <td>රු. 0.00</td>
+                    <td>
+                        <strong>${name}</strong><br>
+                        <code style="color:var(--brand-gold);">@${uname}</code> <small style="color:var(--text-muted);">(${email})</small>
+                    </td>
+                    <td>${sp}</td>
+                    <td>${posBadge}</td>
+                    <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
                     <td>L: 0 | R: 0</td>
                     <td>රු. 0.00</td>
-                    <td><span class="badge-status paid">${status}</span></td>
+                    <td>
+                        <span class="badge-status ${status === 'ACTIVE' ? 'badge-account-active' : 'badge-account-inactive'}">● ${status}</span>
+                    </td>
                     <td style="text-align: center;">
-                        <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px;">🔄 Status</button>
+                        <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
                     </td>
                 `;
                 tableBody.appendChild(tr);
