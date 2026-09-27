@@ -5,12 +5,12 @@ const PlacementEngine = require('../services/placement-engine');
 test('PlacementEngine: Sponsor validation correctly identifies active vs invalid sponsors', () => {
     const users = [
         { id: 'u1', username: 'alice', status: 'ACTIVE' },
-        { id: 'u2', username: 'bob', status: 'INACTIVE' }
+        { id: 'u2', username: 'bob', status: 'SUSPENDED' }
     ];
 
     assert(PlacementEngine.validateSponsor('u1', users), 'Active sponsor by ID should pass');
     assert(PlacementEngine.validateSponsor('alice', users), 'Active sponsor by username should pass');
-    assert(!PlacementEngine.validateSponsor('u2', users), 'Inactive sponsor should fail');
+    assert(!PlacementEngine.validateSponsor('u2', users), 'Suspended sponsor should fail');
     assert(!PlacementEngine.validateSponsor('u999', users), 'Non-existent sponsor should fail');
 });
 

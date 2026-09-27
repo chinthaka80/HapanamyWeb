@@ -42,8 +42,9 @@ const MemberDashboardService = {
         const kycStatus = kycRecord ? kycRecord.status : (user.kyc_status || 'NOT_SUBMITTED');
 
         // 3. Qualification Evaluation
-        const qualificationContext = { users, kycDocs, purchases, sponsors, binaryNodes };
+        const qualificationContext = { users, kycDocs, purchases, sponsors, binaryNodes, volumeLedger };
         const qDecision = QualificationEngine.evaluateQualification(actualUserId, qualificationContext);
+        const compStatus = QualificationEngine.getMemberComprehensiveStatus(actualUserId, qualificationContext);
 
         // 4. Financial & Earnings Summary
         const walletBalances = WalletService.getWalletBalances(actualUserId, walletLedger);
@@ -83,8 +84,8 @@ const MemberDashboardService = {
         const directReferrals = directSponsorLinks.map(link => {
             const referredUser = users.find(u => u.id === link.user_id);
             const refNode = binaryNodes.find(n => n.user_id === link.user_id);
-            const refPurchases = purchases.filter(p => p.user_id === link.user_id && p.status === 'ACTIVE');
-            const refQDecision = QualificationEngine.evaluateQualification(link.user_id, qualificationContext);
+            const refPurchases = purchases.filter(p => p.user_id === link.user_id && (p.status === 'ACTIVE' || p.status === 'PAID'));
+            const refComp = QualificationEngine.getMemberComprehensiveStatus(link.user_id, qualificationContext);
 
             return {
                 user_id: link.user_id,
@@ -94,7 +95,9 @@ const MemberDashboardService = {
                 join_date: referredUser ? (referredUser.created_at || '2026-09-01') : null,
                 tree_position: refNode ? refNode.position : 'UNPLACED',
                 has_active_purchase: refPurchases.length > 0,
-                qualification_status: refQDecision.status
+                account_status: refComp.account_status,
+                qualification_status: refComp.qualification_status,
+                kyc_status: refComp.kyc_status
             };
         });
 
@@ -127,11 +130,16 @@ const MemberDashboardService = {
                 username: user.username,
                 email: user.email,
                 phone: user.phone || user.mobile_number,
-                account_status: user.status || 'ACTIVE',
-                kyc_status: kycStatus,
-                qualification_status: qDecision.status,
-                is_qualified: qDecision.is_qualified,
-                unmet_requirements: qDecision.unmet_requirements
+                account_status: compStatus.account_status,
+                is_active: compStatus.is_active,
+                kyc_status: compStatus.kyc_status,
+                is_kyc_approved: compStatus.is_kyc_approved,
+                qualification_status: compStatus.qualification_status,
+                is_qualified: compStatus.is_qualified,
+                qualifying_sales_count: compStatus.qualification.qualifying_sales_count,
+                qualification_progress: compStatus.qualification.progress_text,
+                unmet_requirements: qDecision.unmet_requirements,
+                display_banner: compStatus.display_banner
             },
             earnings: {
                 today_earnings: capSummary.daily_earned,

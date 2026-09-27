@@ -160,7 +160,7 @@ test('Step 43: 5. Duplicate Account Rejection: Same email and same username bloc
 test('Step 43: 6. Referral & Dual-Leg Engine: Validates sponsor, position, and blocks self-referral', () => {
     const users = [
         { id: 'u-sponsor-1', username: 'TopLeader', email: 'leader@hapanamy.lk', role: 'member', status: 'ACTIVE' },
-        { id: 'u-inactive', username: 'SuspendedUser', email: 'banned@hapanamy.lk', role: 'member', status: 'INACTIVE' }
+        { id: 'u-inactive', username: 'SuspendedUser', email: 'banned@hapanamy.lk', role: 'member', status: 'SUSPENDED' }
     ];
 
     // Valid Referral

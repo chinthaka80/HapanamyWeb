@@ -69,10 +69,11 @@ test('Step 36: TEST 01 & 03: Free Registration (Rs. 0.00) Creates Member, Wallet
     assert.equal(regResult.user.username, 'kasun_b');
     assert.equal(regResult.user.role, 'member');
 
-    // Verify User Added in store
+    // Verify User Added in store with initial INACTIVE status
     const createdUser = ctx.users.find(u => u.username === 'kasun_b');
     assert(createdUser);
-    assert.equal(createdUser.status, 'ACTIVE');
+    assert.equal(createdUser.status, 'INACTIVE');
+    assert.equal(createdUser.account_status, 'INACTIVE');
 
     // Verify Binary Placement Under Sponsor
     const node = ctx.binaryNodes.find(n => n.user_id === createdUser.id);

@@ -194,7 +194,10 @@ const AuthService = {
                 mobile: cleanMobile,
                 password_hash: passwordHash,
                 role: 'member',
-                status: 'ACTIVE',
+                status: 'INACTIVE',
+                account_status: 'INACTIVE',
+                qualification_status: 'NOT_QUALIFIED',
+                kyc_status: (nicPassport || address) ? 'PENDING' : 'NOT_SUBMITTED',
                 created_at: now
             };
             users.push(newUser);
@@ -282,7 +285,11 @@ const AuthService = {
                     username: newUser.username,
                     full_name: newUser.full_name,
                     email: newUser.email,
-                    role: newUser.role
+                    role: newUser.role,
+                    status: newUser.status,
+                    account_status: newUser.account_status,
+                    qualification_status: newUser.qualification_status,
+                    kyc_status: newUser.kyc_status
                 },
                 sponsor: {
                     sponsor_id: sponsorId,

@@ -65,6 +65,7 @@ require('./step47-header-cleanup-verification.test');
 require('./step48-global-ui-scale-and-banner-recovery.test');
 require('./step49-nowatrix-brand-integration.test');
 require('./step50-realtime-registration-upline-commissions.test');
+require('./step51-member-status-logic.test');
 
 // Run
 runTests();

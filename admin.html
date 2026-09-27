@@ -314,6 +314,46 @@
             color: #2E7D32;
         }
 
+        .badge-account-inactive {
+            background-color: rgba(148, 163, 184, 0.15) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-account-active {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            color: #10B981 !important;
+        }
+        .badge-qual-unqualified {
+            background-color: rgba(148, 163, 184, 0.15) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-qual-qualified {
+            background-color: rgba(240, 179, 35, 0.18) !important;
+            color: #F0B323 !important;
+        }
+        .badge-kyc-none {
+            background-color: rgba(148, 163, 184, 0.12) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-kyc-pending {
+            background-color: rgba(245, 124, 0, 0.15) !important;
+            color: #F57C00 !important;
+        }
+        .badge-kyc-approved {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            color: #10B981 !important;
+        }
+        .badge-kyc-rejected {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            color: #EF4444 !important;
+        }
+        .badge-progress {
+            background-color: rgba(244, 123, 32, 0.12) !important;
+            color: var(--brand-orange) !important;
+            font-size: 10.5px !important;
+            padding: 2px 8px !important;
+            border-radius: 6px !important;
+        }
+
         [data-theme="dark"] .badge-status.active, [data-theme="dark"] .badge-status.paid {
             color: var(--brand-green-light);
         }
@@ -3095,13 +3135,31 @@
                     else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
                 }
 
-                const qualBadge = m.qualification_status === 'QUALIFIED'
-                    ? '<span class="badge-status paid">★ QUALIFIED</span>'
-                    : (m.qualification_status === 'PURCHASED' ? '<span class="badge-status" style="background:rgba(33,150,243,0.15); color:#42A5F5;">● PURCHASED</span>' : '<span class="badge-status pending">● REGISTERED</span>');
+                const isAccountActive = (m.account_status || m.status || '').toUpperCase() === 'ACTIVE';
+                const accountBadge = isAccountActive
+                    ? '<span class="badge-status badge-account-active">● ACTIVE</span>'
+                    : '<span class="badge-status badge-account-inactive">● INACTIVE</span>';
 
-                const statusBadge = (m.status || 'ACTIVE').toUpperCase() === 'ACTIVE'
-                    ? '<span class="badge-status paid">Active</span>'
-                    : '<span class="badge-status" style="background:rgba(239,83,80,0.15); color:#EF5350;">Suspended</span>';
+                const isQualified = (m.qualification_status || '').toUpperCase() === 'QUALIFIED';
+                const qualProgress = m.qualification_progress || `${m.sales_team_purchases_count || 0} / 2 Sales`;
+                const qualBadge = isQualified
+                    ? '<span class="badge-status badge-qual-qualified">★ QUALIFIED</span>'
+                    : `<span class="badge-status badge-qual-unqualified">★ NOT QUALIFIED</span><br><small class="badge-progress" style="display:inline-block; margin-top:3px;">${qualProgress}</small>`;
+
+                const kycSt = (m.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+                let kycBadgeClass = 'badge-kyc-none';
+                let kycLabel = '🛡️ KYC NOT SUBMITTED';
+                if (kycSt === 'APPROVED') {
+                    kycBadgeClass = 'badge-kyc-approved';
+                    kycLabel = '🛡️ KYC APPROVED';
+                } else if (kycSt === 'PENDING') {
+                    kycBadgeClass = 'badge-kyc-pending';
+                    kycLabel = '🛡️ KYC PENDING';
+                } else if (kycSt === 'REJECTED') {
+                    kycBadgeClass = 'badge-kyc-rejected';
+                    kycLabel = '🛡️ KYC REJECTED';
+                }
+                const kycBadge = `<span class="badge-status ${kycBadgeClass}" style="margin-top:3px; display:inline-block;">${kycLabel}</span>`;
 
                 const personalBvStr = `රු. ${Number(m.personal_bv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : '0';
@@ -3120,8 +3178,9 @@
                     <td>${teamVolStr}</td>
                     <td>${walletStr}</td>
                     <td>
-                        ${statusBadge}<br>
+                        <div>${accountBadge}</div>
                         <div style="margin-top:4px;">${qualBadge}</div>
+                        <div>${kycBadge}</div>
                     </td>
                     <td style="text-align: center;">
                         <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
@@ -3205,9 +3264,29 @@
             document.getElementById('modalMemberUsername').textContent = `@${p.username} (ID: ${p.id})`;
             document.getElementById('modalMemberEmail').textContent = p.email || 'N/A';
             document.getElementById('modalMemberMobile').textContent = p.mobile || 'N/A';
-            document.getElementById('modalMemberAccountStatus').textContent = p.status || 'ACTIVE';
-            document.getElementById('modalMemberQualStatus').textContent = p.qualification_status || 'REGISTERED';
-            document.getElementById('modalMemberKycStatus').textContent = p.kyc_status || 'PENDING';
+
+            const accSt = (p.account_status || p.status || 'INACTIVE').toUpperCase();
+            const accEl = document.getElementById('modalMemberAccountStatus');
+            if (accEl) {
+                accEl.textContent = `● ${accSt} (${p.personal_paid_purchases_count || 0} Paid Orders)`;
+                accEl.className = accSt === 'ACTIVE' ? 'badge-status badge-account-active' : 'badge-status badge-account-inactive';
+            }
+
+            const qualSt = (p.qualification_status || 'NOT_QUALIFIED').toUpperCase();
+            const qualEl = document.getElementById('modalMemberQualStatus');
+            if (qualEl) {
+                const qProg = p.qualification_progress || `${p.sales_team_purchases_count || 0} / 2 Sales Completed`;
+                qualEl.textContent = `★ ${qualSt} (${qProg})`;
+                qualEl.className = qualSt === 'QUALIFIED' ? 'badge-status badge-qual-qualified' : 'badge-status badge-qual-unqualified';
+            }
+
+            const kycSt = (p.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+            const kycEl = document.getElementById('modalMemberKycStatus');
+            if (kycEl) {
+                kycEl.textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
+                kycEl.className = kycSt === 'APPROVED' ? 'badge-status badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-status badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-status badge-kyc-rejected' : 'badge-status badge-kyc-none'));
+            }
+
             document.getElementById('modalMemberJoinDate').textContent = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A';
 
             document.getElementById('modalMemberSponsor').textContent = net.sponsor ? `${net.sponsor.full_name} (@${net.sponsor.username})` : 'Direct Company';

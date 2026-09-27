@@ -317,11 +317,71 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 12px;
+            padding: 5px 12px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 700;
             letter-spacing: 0.3px;
+            transition: var(--transition-smooth);
+        }
+
+        /* Account Status: INACTIVE (Gray) vs ACTIVE (Green) */
+        .badge-account-inactive {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94A3B8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .badge-account-active {
+            background: rgba(46, 125, 50, 0.15);
+            color: #4CAF50;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+        }
+
+        /* Qualification Status: NOT QUALIFIED (Gray) vs QUALIFIED (Gold) */
+        .badge-qual-unqualified {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94A3B8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .badge-qual-qualified {
+            background: linear-gradient(135deg, rgba(212, 175, 55, 0.2), rgba(245, 124, 0, 0.2));
+            color: var(--brand-gold);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.15);
+        }
+
+        /* KYC Status: NOT_SUBMITTED (Gray), PENDING (Yellow), APPROVED (Green/Blue), REJECTED (Red) */
+        .badge-kyc-none {
+            background: rgba(148, 163, 184, 0.15);
+            color: #94A3B8;
+            border: 1px solid rgba(148, 163, 184, 0.3);
+        }
+
+        .badge-kyc-pending {
+            background: rgba(245, 124, 0, 0.15);
+            color: var(--brand-orange-light);
+            border: 1px solid rgba(245, 124, 0, 0.3);
+        }
+
+        .badge-kyc-approved {
+            background: rgba(33, 150, 243, 0.15);
+            color: #42A5F5;
+            border: 1px solid rgba(33, 150, 243, 0.3);
+        }
+
+        .badge-kyc-rejected {
+            background: rgba(239, 83, 80, 0.15);
+            color: #EF5350;
+            border: 1px solid rgba(239, 83, 80, 0.3);
+        }
+
+        .badge-progress {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            font-size: 11.5px;
         }
 
         .badge-qualified {
@@ -340,12 +400,6 @@
             background: rgba(212, 175, 55, 0.15);
             color: var(--brand-gold);
             border: 1px solid rgba(212, 175, 55, 0.3);
-        }
-
-        .badge-kyc-approved {
-            background: rgba(33, 150, 243, 0.15);
-            color: #2196F3;
-            border: 1px solid rgba(33, 150, 243, 0.3);
         }
 
         .profile-id-box {
@@ -1109,9 +1163,10 @@
                         <div>
                             <h2 class="profile-name-title" id="profileFullName">Hiru</h2>
                             <div class="profile-sub-badges">
-                                <span class="badge-pill badge-active" id="profileAccountStatus">● ACTIVE</span>
-                                <span class="badge-pill badge-qualified" id="profileQualStatus">★ QUALIFIED</span>
-                                <span class="badge-pill badge-kyc-approved" id="profileKycStatus">🛡️ KYC APPROVED</span>
+                                <span class="badge-pill badge-account-inactive" id="profileAccountStatus">● INACTIVE</span>
+                                <span class="badge-pill badge-qual-unqualified" id="profileQualStatus">★ NOT QUALIFIED</span>
+                                <span class="badge-pill badge-progress" id="profileQualProgress">0 / 2 Sales Completed</span>
+                                <span class="badge-pill badge-kyc-none" id="profileKycStatus">🛡️ KYC NOT SUBMITTED</span>
                             </div>
                         </div>
                     </div>
@@ -1936,10 +1991,10 @@
                 const posBadge = (m.position || 'LEFT').toUpperCase() === 'LEFT'
                     ? '<span class="sales-leg-badge badge-left" style="font-size: 11px; padding: 3px 8px;">👈 LEFT</span>'
                     : '<span class="sales-leg-badge badge-right" style="font-size: 11px; padding: 3px 8px;">👉 RIGHT</span>';
-                const isAct = m.is_active || (m.status || '').toUpperCase() === 'ACTIVE';
+                const isAct = (m.account_status || m.status || '').toUpperCase() === 'ACTIVE' || m.is_active;
                 const stBadge = isAct
-                    ? '<span class="badge-pill badge-qualified">● Active</span>'
-                    : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● Registered</span>';
+                    ? '<span class="badge-pill badge-account-active">● Active</span>'
+                    : '<span class="badge-pill badge-account-inactive">● Inactive</span>';
                 const pts = Number(m.balance_points || m.volume || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
                 const teamSize = Number(m.team_count || 0);
 
@@ -1976,12 +2031,16 @@
             const cLeftPts = cMember ? Number(cMember.left_points || 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00';
             const cRightPts = cMember ? Number(cMember.right_points || 0).toLocaleString(undefined, { minimumFractionDigits: 2 }) : '0.00';
             const cTotalTeam = cMember ? (cMember.total_team_count || (Number(cMember.left_team_count || 0) + Number(cMember.right_team_count || 0))) : 0;
-            const cQualStatus = (cMember && cMember.qualification_status) || curUser.qualification_status || 'QUALIFIED';
+            const cQualStatus = (cMember && cMember.qualification_status) || curUser.qualification_status || 'NOT_QUALIFIED';
+            const isCenterQual = cQualStatus.toUpperCase() === 'QUALIFIED';
+            const cQualBadge = isCenterQual
+                ? '<span class="badge-pill badge-qual-qualified">★ QUALIFIED</span>'
+                : '<span class="badge-pill badge-qual-unqualified">★ NOT QUALIFIED</span>';
 
             cardCenter.innerHTML = `
                 <div class="sales-card-header">
                     <span class="sales-leg-badge badge-center">👑 YOU (ME)</span>
-                    <span class="badge-pill badge-qualified">${cQualStatus}</span>
+                    ${cQualBadge}
                 </div>
                 <div class="sales-card-body">
                     <div>
@@ -2015,8 +2074,8 @@
                 const lInitial = (lName || 'L')[0].toUpperCase();
                 const lPts = Number(lMember.balance_points !== undefined ? lMember.balance_points : (lMember.left_volume + lMember.right_volume || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 });
                 const lTeam = lMember.team_count || 0;
-                const lIsActive = lMember.is_active || (lMember.status || '').toUpperCase() === 'ACTIVE';
-                const lStatusBadge = lIsActive ? '<span class="badge-pill badge-active">● ACTIVE</span>' : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● REGISTERED</span>';
+                const lIsActive = (lMember.account_status || lMember.status || '').toUpperCase() === 'ACTIVE' || lMember.is_active;
+                const lStatusBadge = lIsActive ? '<span class="badge-pill badge-account-active">● ACTIVE</span>' : '<span class="badge-pill badge-account-inactive">● INACTIVE</span>';
 
                 cardLeft.className = 'sales-team-card';
                 cardLeft.innerHTML = `
@@ -2068,8 +2127,8 @@
                 const rInitial = (rName || 'R')[0].toUpperCase();
                 const rPts = Number(rMember.balance_points !== undefined ? rMember.balance_points : (rMember.left_volume + rMember.right_volume || 0)).toLocaleString(undefined, { minimumFractionDigits: 2 });
                 const rTeam = rMember.team_count || 0;
-                const rIsActive = rMember.is_active || (rMember.status || '').toUpperCase() === 'ACTIVE';
-                const rStatusBadge = rIsActive ? '<span class="badge-pill badge-active">● ACTIVE</span>' : '<span class="badge-pill" style="background: rgba(148,163,184,0.15); color: #94A3B8;">● REGISTERED</span>';
+                const rIsActive = (rMember.account_status || rMember.status || '').toUpperCase() === 'ACTIVE' || rMember.is_active;
+                const rStatusBadge = rIsActive ? '<span class="badge-pill badge-account-active">● ACTIVE</span>' : '<span class="badge-pill badge-account-inactive">● INACTIVE</span>';
 
                 cardRight.className = 'sales-team-card';
                 cardRight.innerHTML = `
@@ -2291,9 +2350,32 @@
                 document.getElementById('profileAvatarBig').textContent = initial;
                 document.getElementById('sidebarAvatar').textContent = initial;
 
-                document.getElementById('profileAccountStatus').textContent = `● ${data.profile.account_status}`;
-                document.getElementById('profileQualStatus').textContent = `★ ${data.profile.qualification_status}`;
-                document.getElementById('profileKycStatus').textContent = `🛡️ KYC ${data.profile.kyc_status}`;
+                const accSt = (data.profile.account_status || 'INACTIVE').toUpperCase();
+                const accEl = document.getElementById('profileAccountStatus');
+                if (accEl) {
+                    accEl.textContent = `● ${accSt}`;
+                    accEl.className = `badge-pill ${accSt === 'ACTIVE' ? 'badge-account-active' : 'badge-account-inactive'}`;
+                }
+
+                const qualSt = (data.profile.qualification_status || 'NOT_QUALIFIED').toUpperCase();
+                const isQual = qualSt === 'QUALIFIED';
+                const qualEl = document.getElementById('profileQualStatus');
+                if (qualEl) {
+                    qualEl.textContent = isQual ? '★ QUALIFIED' : '★ NOT QUALIFIED';
+                    qualEl.className = `badge-pill ${isQual ? 'badge-qual-qualified' : 'badge-qual-unqualified'}`;
+                }
+
+                const qualProgEl = document.getElementById('profileQualProgress');
+                if (qualProgEl) {
+                    qualProgEl.textContent = data.profile.qualification_progress || (data.profile.qualification_details ? data.profile.qualification_details.progress_label : '0 / 2 Sales Completed');
+                }
+
+                const kycSt = (data.profile.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+                const kycEl = document.getElementById('profileKycStatus');
+                if (kycEl) {
+                    kycEl.textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
+                    kycEl.className = `badge-pill ${kycSt === 'APPROVED' ? 'badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
+                }
             }
 
             // 2. Earnings

@@ -9,7 +9,7 @@ function createMockContext() {
         users: [
             { id: 'admin-1', username: 'admin', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE' },
             { id: 'sponsor-1', username: 'kasun_t', email: 'kasun@hapanamy.lk', role: 'member', status: 'ACTIVE' },
-            { id: 'inactive-1', username: 'banned_user', email: 'banned@hapanamy.lk', role: 'member', status: 'INACTIVE' }
+            { id: 'inactive-1', username: 'banned_user', email: 'banned@hapanamy.lk', role: 'member', status: 'SUSPENDED' }
         ],
         sponsors: [
             { user_id: 'sponsor-1', sponsor_id: 'admin-1', created_at: new Date().toISOString() }
@@ -128,7 +128,7 @@ test('Step 15: 3. Rejects invalid or inactive referral code', () => {
         position: 'LEFT'
     }, ctx);
     assert(!inactiveRes.success, 'Inactive sponsor should fail');
-    assert(inactiveRes.error.includes('inactive'));
+    assert(inactiveRes.error.includes('suspended') || inactiveRes.error.includes('inactive'));
 });
 
 test('Step 15: 4. Rejects duplicate username and duplicate email', () => {

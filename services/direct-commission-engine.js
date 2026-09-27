@@ -85,7 +85,7 @@ const DirectCommissionEngine = {
             // 3. Validate Sponsor Status
             if (users && users.length > 0) {
                 const sponsorUser = users.find(u => u.id === sponsorId || u.username === sponsorId);
-                if (sponsorUser && (sponsorUser.status === 'SUSPENDED' || sponsorUser.status === 'BANNED' || sponsorUser.status === 'INACTIVE')) {
+                if (sponsorUser && (sponsorUser.status === 'SUSPENDED' || sponsorUser.status === 'BANNED' || sponsorUser.status === 'TERMINATED' || sponsorUser.status === 'BLOCKED')) {
                     return {
                         success: false,
                         reason: `Sponsor ${sponsorId} is ${sponsorUser.status}. Direct commission skipped.`

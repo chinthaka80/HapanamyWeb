@@ -36,8 +36,8 @@ class ReferralService {
             if (!sponsor) {
                 return { valid: false, error: `Sponsor with referral code '${trimmed}' does not exist.` };
             }
-            if (sponsor.status && sponsor.status !== 'ACTIVE' && sponsor.status !== 'Active') {
-                return { valid: false, error: `Sponsor account '${trimmed}' is currently inactive.` };
+            if (sponsor.status === 'SUSPENDED' || sponsor.status === 'BANNED' || sponsor.status === 'TERMINATED' || sponsor.status === 'BLOCKED') {
+                return { valid: false, error: `Sponsor account '${trimmed}' is currently suspended.` };
             }
             return { valid: true, sponsor };
         }

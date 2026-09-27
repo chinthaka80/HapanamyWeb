@@ -590,7 +590,7 @@ function addLiveEvent(type, data = {}, message = '') {
 }
 
 function getEnrichedAdminMembersList(filters = {}) {
-    const { search = '', status = 'all', qualification = 'all' } = filters;
+    const { search = '', status = 'all', qualification = 'all', kyc = 'all' } = filters;
     const searchLower = (search || '').toLowerCase().trim();
 
     return mockUsers.map(user => {
@@ -599,8 +599,16 @@ function getEnrichedAdminMembersList(filters = {}) {
         const binaryNode = mockBinaryNodes.find(n => n.user_id === user.id);
         const parentUser = binaryNode && binaryNode.placement_parent_id ? mockUsers.find(u => u.id === binaryNode.placement_parent_id) : null;
 
-        const kyc = mockKycDocs.find(k => k.user_id === user.id);
-        const userPurchases = mockProductPurchases.filter(p => p.user_id === user.id && p.status === 'ACTIVE');
+        const compStatus = QualificationEngine.getMemberComprehensiveStatus(user.id, {
+            users: mockUsers,
+            kycDocs: mockKycDocs,
+            purchases: mockProductPurchases,
+            sponsors: mockSponsors,
+            binaryNodes: mockBinaryNodes,
+            volumeLedger: mockVolumeLedger
+        });
+
+        const userPurchases = mockProductPurchases.filter(p => (p.user_id === user.id || p.buyer_id === user.id) && (p.status === 'ACTIVE' || p.status === 'PAID'));
         const personalBv = userPurchases.reduce((sum, p) => sum + (p.binary_volume || p.price_paid || 0), 0);
 
         const volSummary = VolumeLedger.getVolumeSummary(user.id, mockVolumeLedger);
@@ -610,10 +618,6 @@ function getEnrichedAdminMembersList(filters = {}) {
             walletLedger: mockWalletLedger
         });
 
-        const hasDirect = mockSponsors.some(s => s.sponsor_id === user.id);
-        const isQualified = userPurchases.length > 0 && hasDirect;
-        const qualStatus = user.qualification_status || (isQualified ? 'QUALIFIED' : (userPurchases.length > 0 ? 'PURCHASED' : 'REGISTERED'));
-
         return {
             id: user.id,
             username: user.username,
@@ -621,10 +625,15 @@ function getEnrichedAdminMembersList(filters = {}) {
             email: user.email,
             mobile: user.mobile || user.phone || 'N/A',
             role: user.role || 'member',
-            status: user.status || 'ACTIVE',
-            qualification_status: qualStatus,
-            is_qualified: isQualified,
-            kyc_status: kyc ? kyc.status : 'PENDING',
+            status: user.status === 'SUSPENDED' ? 'SUSPENDED' : compStatus.account_status,
+            account_status: compStatus.account_status,
+            is_active: compStatus.is_active,
+            qualification_status: compStatus.qualification_status,
+            is_qualified: compStatus.is_qualified,
+            qualifying_sales_count: compStatus.qualification.qualifying_sales_count,
+            qualification_progress: compStatus.qualification.progress_text,
+            kyc_status: compStatus.kyc_status,
+            is_kyc_approved: compStatus.is_kyc_approved,
             sponsor: sponsorUser ? {
                 id: sponsorUser.id,
                 username: sponsorUser.username,
@@ -642,11 +651,22 @@ function getEnrichedAdminMembersList(filters = {}) {
             total_commission: earnings.total_earned,
             available_balance: wallet.available_balance,
             volume_summary: volSummary,
-            created_at: user.created_at || '2026-09-01T00:00:00Z'
+            created_at: user.created_at || '2026-09-01T00:00:00Z',
+            display_banner: compStatus.display_banner
         };
     }).filter(m => {
-        if (status && status !== 'all' && (m.status || '').toLowerCase() !== status.toLowerCase()) return false;
-        if (qualification && qualification !== 'all' && (m.qualification_status || '').toLowerCase() !== qualification.toLowerCase()) return false;
+        if (status && status !== 'all') {
+            const st = (m.status || m.account_status || '').toLowerCase();
+            if (st !== status.toLowerCase()) return false;
+        }
+        if (qualification && qualification !== 'all') {
+            const q = (m.qualification_status || '').toLowerCase();
+            if (q !== qualification.toLowerCase()) return false;
+        }
+        if (kyc && kyc !== 'all') {
+            const k = (m.kyc_status || '').toLowerCase();
+            if (k !== kyc.toLowerCase()) return false;
+        }
         if (searchLower) {
             const nameMatch = (m.full_name || '').toLowerCase().includes(searchLower);
             const userMatch = (m.username || '').toLowerCase().includes(searchLower);
@@ -667,10 +687,18 @@ function getEnrichedAdminMemberDetail(userId) {
     const binaryNode = mockBinaryNodes.find(n => n.user_id === user.id);
     const parentUser = binaryNode && binaryNode.placement_parent_id ? mockUsers.find(u => u.id === binaryNode.placement_parent_id) : null;
 
-    const kyc = mockKycDocs.find(k => k.user_id === user.id);
+    const compStatus = QualificationEngine.getMemberComprehensiveStatus(user.id, {
+        users: mockUsers,
+        kycDocs: mockKycDocs,
+        purchases: mockProductPurchases,
+        sponsors: mockSponsors,
+        binaryNodes: mockBinaryNodes,
+        volumeLedger: mockVolumeLedger
+    });
+
     const bank = mockBankAccounts.find(b => b.user_id === user.id);
-    const userPurchases = mockProductPurchases.filter(p => p.user_id === user.id);
-    const activePurchases = userPurchases.filter(p => p.status === 'ACTIVE');
+    const userPurchases = mockProductPurchases.filter(p => p.user_id === user.id || p.buyer_id === user.id);
+    const activePurchases = userPurchases.filter(p => p.status === 'ACTIVE' || p.status === 'PAID');
     const personalBv = activePurchases.reduce((sum, p) => sum + (p.binary_volume || p.price_paid || 0), 0);
 
     const volSummary = VolumeLedger.getVolumeSummary(user.id, mockVolumeLedger);
@@ -699,11 +727,19 @@ function getEnrichedAdminMemberDetail(userId) {
             email: user.email,
             mobile: user.mobile || user.phone || 'N/A',
             role: user.role || 'member',
-            status: user.status || 'ACTIVE',
-            qualification_status: user.qualification_status || (activePurchases.length > 0 && mockSponsors.some(s => s.sponsor_id === user.id) ? 'QUALIFIED' : 'REGISTERED'),
-            kyc_status: kyc ? kyc.status : 'PENDING',
+            status: user.status === 'SUSPENDED' ? 'SUSPENDED' : compStatus.account_status,
+            account_status: compStatus.account_status,
+            is_active: compStatus.is_active,
+            qualification_status: compStatus.qualification_status,
+            is_qualified: compStatus.is_qualified,
+            qualifying_sales_count: compStatus.qualification.qualifying_sales_count,
+            qualification_progress: compStatus.qualification.progress_text,
+            kyc_status: compStatus.kyc_status,
+            is_kyc_approved: compStatus.is_kyc_approved,
             created_at: user.created_at || '2026-09-01T00:00:00Z',
-            bank_account: bank || null
+            bank_account: bank || null,
+            display_banner: compStatus.display_banner,
+            status_evidence: compStatus
         },
         network: {
             sponsor: sponsorUser ? {
@@ -748,6 +784,9 @@ function getEnrichedAdminMemberDetail(userId) {
             paid_balance: earnings.paid_balance,
             withdrawal_hold_balance: earnings.withdrawal_hold_balance,
             commissions: userCommissions,
+            ledger_transactions: userLedger,
+            withdrawals: userWithdrawals
+        },
             ledger_transactions: userLedger,
             withdrawals: userWithdrawals
         },
@@ -3755,7 +3794,15 @@ const server = http.createServer(async (req, res) => {
                 volumeLedger: mockVolumeLedger,
                 sponsors: mockSponsors
             });
-            const kyc = mockKycDocs.find(k => k.user_id === authUser.id);
+            const compStatus = QualificationEngine.getMemberComprehensiveStatus(authUser.id, {
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                sponsors: mockSponsors,
+                binaryNodes: mockBinaryNodes,
+                volumeLedger: mockVolumeLedger
+            });
+
             const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id || p.buyer_id === authUser.id);
             const userWithdrawals = mockWithdrawalRequests.filter(w => w.user_id === authUser.id);
 
@@ -3774,9 +3821,16 @@ const server = http.createServer(async (req, res) => {
                     username: user.username || 'member',
                     email: user.email,
                     role: user.role || 'member',
-                    account_status: user.status || 'ACTIVE',
-                    qualification_status: user.qualification_status || 'QUALIFIED',
-                    kyc_status: kyc ? kyc.status : 'PENDING'
+                    status: user.status === 'SUSPENDED' ? 'SUSPENDED' : compStatus.account_status,
+                    account_status: compStatus.account_status,
+                    is_active: compStatus.is_active,
+                    qualification_status: compStatus.qualification_status,
+                    is_qualified: compStatus.is_qualified,
+                    qualifying_sales_count: compStatus.qualification.qualifying_sales_count,
+                    qualification_progress: compStatus.qualification.progress_text,
+                    kyc_status: compStatus.kyc_status,
+                    is_kyc_approved: compStatus.is_kyc_approved,
+                    display_banner: compStatus.display_banner
                 },
                 earnings: {
                     today_earnings: 0.00,

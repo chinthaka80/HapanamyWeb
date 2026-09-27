@@ -12,7 +12,11 @@ const PlacementEngine = {
     validateSponsor(sponsorId, users) {
         if (!sponsorId || !users) return false;
         const sponsor = users.find(u => u.id === sponsorId || u.username === sponsorId);
-        return !!sponsor && (sponsor.status === 'ACTIVE' || sponsor.status === 'Active');
+        if (!sponsor) return false;
+        if (sponsor.status === 'SUSPENDED' || sponsor.status === 'BANNED' || sponsor.status === 'TERMINATED' || sponsor.status === 'BLOCKED') {
+            return false;
+        }
+        return true;
     },
 
     /**
