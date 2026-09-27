@@ -67,6 +67,7 @@ require('./step49-nowatrix-brand-integration.test');
 require('./step50-realtime-registration-upline-commissions.test');
 require('./step51-member-status-logic.test');
 require('./step52-student-dashboard-user-identity.test');
+require('./step53-my-team-list-verification.test');
 
 // Run
 runTests();

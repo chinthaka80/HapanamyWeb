@@ -587,7 +587,9 @@ const MLMNetworkEngine = {
         const descendants = PlacementEngine.getDescendants(userId, binaryNodes);
         const teamList = descendants.map(d => {
             const u = users.find(usr => usr.id === d.user_id) || { id: d.user_id, username: d.user_id, full_name: 'Member ' + d.user_id };
-            const hasPurch = purchases.some(p => p.user_id === d.user_id && p.status === 'ACTIVE');
+            const hasPurch = purchases.some(p => p.user_id === d.user_id && (p.status === 'ACTIVE' || p.status === 'PAID'));
+            const isAct = hasPurch || u.status === 'ACTIVE' || u.account_status === 'ACTIVE';
+            const isQual = (u.qualification_status === 'QUALIFIED') || (typeof QualificationEngine.getMemberQualificationStatus === 'function' ? QualificationEngine.getMemberQualificationStatus(d.user_id, { purchases, sponsors, users, binaryNodes }).is_qualified : false);
             const dSum = PlacementEngine.getTeamSummary(d.user_id, binaryNodes, volumeLedger);
             return {
                 id: d.user_id,
@@ -595,12 +597,18 @@ const MLMNetworkEngine = {
                 username: u.username || d.user_id,
                 full_name: u.full_name || u.name || 'Member',
                 position: d.branch_leg || d.position || 'LEFT',
-                status: (hasPurch || u.status === 'ACTIVE') ? 'Active' : 'Registered',
-                is_active: hasPurch || u.status === 'ACTIVE',
+                status: isAct ? 'Active' : 'Inactive',
+                account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                is_active: isAct,
+                is_qualified: isQual,
                 balance_points: (dSum.leftVolume || 0) + (dSum.rightVolume || 0),
                 left_volume: dSum.leftVolume || 0,
                 right_volume: dSum.rightVolume || 0,
                 team_count: dSum.teamCount || 0,
+                team_size: dSum.teamCount || 0,
+                level: d.relative_depth,
+                depth: d.relative_depth,
                 relative_depth: d.relative_depth,
                 join_date: u.created_at || new Date().toISOString()
             };

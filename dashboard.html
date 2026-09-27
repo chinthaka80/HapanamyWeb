@@ -1937,24 +1937,32 @@
 
         function handleTeamFilterChange() {
             const searchVal = (document.getElementById('teamSearchInput')?.value || '').toLowerCase().trim();
+            const cleanSearch = searchVal.startsWith('@') ? searchVal.substring(1) : searchVal;
+
             const filtered = globalTeamList.filter(m => {
-                if (currentTeamFilter === 'left' && (m.position || '').toUpperCase() !== 'LEFT') return false;
-                if (currentTeamFilter === 'right' && (m.position || '').toUpperCase() !== 'RIGHT') return false;
-                if (currentTeamFilter === 'active' && !m.is_active && (m.status || '').toUpperCase() !== 'ACTIVE') return false;
-                if (currentTeamFilter === 'inactive' && (m.is_active || (m.status || '').toUpperCase() === 'ACTIVE')) return false;
-                if (currentTeamFilter === 'qualified' && (m.qualification_status || '').toUpperCase() !== 'QUALIFIED') return false;
-                if (currentTeamFilter === 'level1' && (m.level || m.depth || 1) !== 1) return false;
-                if (currentTeamFilter === 'level2' && (m.level || m.depth || 1) !== 2) return false;
-                if (currentTeamFilter === 'level3' && (m.level || m.depth || 1) !== 3) return false;
+                const leg = (m.position || m.branch_leg || 'LEFT').toUpperCase();
+                if (currentTeamFilter === 'left' && leg !== 'LEFT') return false;
+                if (currentTeamFilter === 'right' && leg !== 'RIGHT') return false;
+
+                const isAct = Boolean(m.is_active || (m.status || m.account_status || '').toUpperCase() === 'ACTIVE');
+                if (currentTeamFilter === 'active' && !isAct) return false;
+                if (currentTeamFilter === 'inactive' && isAct) return false;
+
+                const isQual = Boolean(m.is_qualified || (m.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                if (currentTeamFilter === 'qualified' && !isQual) return false;
+
+                const lvl = m.level || m.depth || m.relative_depth || 1;
+                if (currentTeamFilter === 'level1' && lvl !== 1) return false;
+                if (currentTeamFilter === 'level2' && lvl !== 2) return false;
+                if (currentTeamFilter === 'level3' && lvl !== 3) return false;
                 if (currentTeamFilter === 'level4-7') {
-                    const lvl = m.level || m.depth || 1;
                     if (lvl < 4 || lvl > 7) return false;
                 }
 
-                if (searchVal) {
-                    const nameMatch = (m.full_name || '').toLowerCase().includes(searchVal);
-                    const userMatch = (m.username || '').toLowerCase().includes(searchVal);
-                    const idMatch = (m.user_id || m.id || '').toLowerCase().includes(searchVal);
+                if (cleanSearch) {
+                    const nameMatch = (m.full_name || m.name || '').toLowerCase().includes(cleanSearch);
+                    const userMatch = (m.username || '').toLowerCase().includes(cleanSearch);
+                    const idMatch = (m.user_id || m.id || '').toLowerCase().includes(cleanSearch);
                     return nameMatch || userMatch || idMatch;
                 }
                 return true;
@@ -1966,7 +1974,8 @@
         function renderTeamListRows(members) {
             const tbody = document.querySelector('#myTeamListTable tbody');
             const countBadge = document.getElementById('teamListCountBadge');
-            if (countBadge) countBadge.textContent = `${members.length} Members`;
+            const totalCount = members ? members.length : 0;
+            if (countBadge) countBadge.textContent = `${totalCount} ${totalCount === 1 ? 'Member' : 'Members'}`;
             if (!tbody) return;
 
             if (!members || members.length === 0) {
@@ -1986,30 +1995,49 @@
             tbody.innerHTML = '';
             members.forEach(m => {
                 const tr = document.createElement('tr');
-                const dt = m.join_date ? new Date(m.join_date).toLocaleDateString() : '2026-09-01';
+                const dt = m.join_date ? new Date(m.join_date).toLocaleDateString() : (m.created_at ? new Date(m.created_at).toLocaleDateString() : '2026-09-01');
                 const initial = (m.full_name || m.name || m.username || 'M')[0].toUpperCase();
-                const posBadge = (m.position || 'LEFT').toUpperCase() === 'LEFT'
+                const leg = (m.position || m.branch_leg || 'LEFT').toUpperCase();
+                const posBadge = leg === 'LEFT'
                     ? '<span class="sales-leg-badge badge-left" style="font-size: 11px; padding: 3px 8px;">👈 LEFT</span>'
                     : '<span class="sales-leg-badge badge-right" style="font-size: 11px; padding: 3px 8px;">👉 RIGHT</span>';
-                const isAct = (m.account_status || m.status || '').toUpperCase() === 'ACTIVE' || m.is_active;
-                const stBadge = isAct
-                    ? '<span class="badge-pill badge-account-active">● Active</span>'
-                    : '<span class="badge-pill badge-account-inactive">● Inactive</span>';
-                const pts = Number(m.balance_points || m.volume || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
-                const teamSize = Number(m.team_count || 0);
+                
+                const isAct = Boolean(m.is_active || (m.status || m.account_status || '').toUpperCase() === 'ACTIVE');
+                const isQual = Boolean(m.is_qualified || (m.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                
+                const actBadge = isAct
+                    ? '<span class="badge-pill badge-account-active" style="font-size: 10.5px;">● Active</span>'
+                    : '<span class="badge-pill badge-account-inactive" style="font-size: 10.5px;">● Inactive</span>';
+                
+                const qualBadge = isQual
+                    ? '<span class="badge-pill badge-qual-qualified" style="font-size: 10.5px; margin-left: 4px;">★ Qualified</span>'
+                    : '';
+
+                const ptsVal = m.balance_points !== undefined ? m.balance_points : ((m.left_volume || 0) + (m.right_volume || 0));
+                const pts = Number(ptsVal || 0).toLocaleString(undefined, { minimumFractionDigits: 2 });
+                const teamSize = Number(m.team_size !== undefined ? m.team_size : (m.team_count || 0));
+                const lvl = m.level || m.depth || m.relative_depth || 1;
 
                 tr.innerHTML = `
                     <td>
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <div class="sales-avatar-sm">${initial}</div>
-                            <strong style="color: var(--text-primary);">${m.full_name || m.name || 'Member'}</strong>
+                            <div>
+                                <strong style="color: var(--text-primary); display: block;">${m.full_name || m.name || 'Member'}</strong>
+                                <span class="badge-pill" style="font-size: 10px; padding: 1px 6px; background: rgba(255,255,255,0.06); color: var(--text-muted);">Level ${lvl}</span>
+                            </div>
                         </div>
                     </td>
-                    <td><code style="color: var(--text-muted);">@${m.username || ''}</code></td>
+                    <td><code style="color: var(--brand-gold);">@${m.username || ''}</code></td>
                     <td>${posBadge}</td>
-                    <td>${stBadge}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 3px;">
+                            ${actBadge}
+                            ${qualBadge}
+                        </div>
+                    </td>
                     <td style="font-weight: 700; color: var(--brand-gold);">LKR ${pts}</td>
-                    <td><strong>${teamSize}</strong> Members</td>
+                    <td><strong>${teamSize}</strong> ${teamSize === 1 ? 'Member' : 'Members'}</td>
                     <td style="color: var(--text-muted); font-size: 12.5px;">${dt}</td>
                 `;
                 tbody.appendChild(tr);
