@@ -205,6 +205,32 @@
         const amount = parseFloat(urlParams.get('amount')) || 0;
         const method = urlParams.get('method') || 'payhere';
 
+        // Save purchases on payhere success
+        if (method === 'payhere') {
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
+            const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [
+                { id: 'trading', title: 'Titan Elite Trading Academy', price: amount || 19900, status: 'ACTIVE' }
+            ];
+            
+            if (activeUser && (activeUser.id || activeUser.email || activeUser.username)) {
+                const uid = (activeUser.id || 'user-active').toLowerCase();
+                const uname = (activeUser.username || '').toLowerCase();
+                const uemail = (activeUser.email || '').toLowerCase();
+                
+                let existing = JSON.parse(localStorage.getItem('hapanamy_purchased_courses_' + uid) || '[]');
+                purchasedList.forEach(p => {
+                    if (!existing.some(e => e.id === p.id || (e.title && p.title && e.title === p.title))) {
+                        existing.push({ ...p, status: 'ACTIVE', activated_at: new Date().toISOString() });
+                    }
+                });
+                if (uid) localStorage.setItem('hapanamy_purchased_courses_' + uid, JSON.stringify(existing));
+                if (uname) localStorage.setItem('hapanamy_purchased_courses_' + uname, JSON.stringify(existing));
+                if (uemail) localStorage.setItem('hapanamy_purchased_courses_' + uemail, JSON.stringify(existing));
+                activeUser.purchased_courses = existing;
+                localStorage.setItem('active_user', JSON.stringify(activeUser));
+            }
+        }
+
         // Handle file upload changes
         function handleBankSlipChange(event) {
             const file = event.target.files[0];
@@ -325,7 +351,7 @@
             showToast(`🚀 <strong>පිවිසීම සාර්ථකයි!</strong> ${name} ගේ ශිෂ්‍ය උපකරණ පුවරුව පූරණය වෙමින් පවතී...`);
             
             setTimeout(() => {
-                window.location.href = 'my-account.html';
+                window.location.href = 'student-dashboard.html';
             }, 1500);
         }
 

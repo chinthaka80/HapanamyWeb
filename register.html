@@ -561,6 +561,11 @@
                         if (!regUsers.some(u => u.email === email || u.id === data.user.id)) {
                             regUsers.push(userObj);
                             localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
+                // Fresh user starts with 0 product history
+                localStorage.removeItem('checkout_purchased_courses');
+                localStorage.setItem('hapanamy_purchased_courses_' + newUser.id.toLowerCase(), JSON.stringify([]));
+                localStorage.setItem('hapanamy_purchased_courses_' + username.toLowerCase(), JSON.stringify([]));
+                localStorage.setItem('hapanamy_purchased_courses_' + email.toLowerCase(), JSON.stringify([]));
                         }
 
                         // Always record under sponsor downline list

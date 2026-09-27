@@ -1291,12 +1291,14 @@
                                 <span>📚 Active Masterclasses</span>
                                 <button class="btn-action-sm" onclick="switchMemberTab('products')">All Courses →</button>
                             </div>
-                            <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
-                                <div>
-                                    <div style="font-weight: 800; font-size: 14.5px;">Social Media Income Masterclass</div>
-                                    <div style="font-size: 12px; color: var(--brand-green); font-weight: 700;">● LIFETIME UNLOCKED</div>
+                            <div id="overviewActiveCoursesContainer">
+                                <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--border-color);">
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් පාඨමාලා මිලදී ගෙන නොමැත (0 Courses)</div>
+                                        <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය පාඨමාලාවක් නැත</div>
+                                    </div>
+                                    <a href="index.html#courses" class="btn-action-sm btn-primary-action" style="text-decoration: none;">🛒 මිලදී ගන්න →</a>
                                 </div>
-                                <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="text-decoration: none;">Classroom →</a>
                             </div>
                         </div>
                     </div>
@@ -1877,8 +1879,36 @@
 
         function renderPurchasedProducts(products) {
             const container = document.getElementById('purchasedProductsContainer');
+            const overviewContainer = document.getElementById('overviewActiveCoursesContainer');
             const countBadge = document.getElementById('purchasedProductsCount');
-            if (countBadge) countBadge.textContent = `${(products || []).length} Active Courses`;
+            const count = (products || []).length;
+            if (countBadge) countBadge.textContent = `${count} Active Course${count !== 1 ? 's' : ''}`;
+
+            if (overviewContainer) {
+                if (!products || products.length === 0) {
+                    overviewContainer.innerHTML = `
+                        <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--border-color);">
+                            <div>
+                                <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් පාඨමාලා මිලදී ගෙන නොමැත (0 Courses)</div>
+                                <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය පාඨමාලාවක් නැත</div>
+                            </div>
+                            <a href="index.html#courses" class="btn-action-sm btn-primary-action" style="text-decoration: none;">🛒 මිලදී ගන්න →</a>
+                        </div>
+                    `;
+                } else {
+                    const topProduct = products[0];
+                    overviewContainer.innerHTML = `
+                        <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 14.5px;">${topProduct.product_name || topProduct.name || topProduct.title || 'Masterclass Program'}</div>
+                                <div style="font-size: 12px; color: var(--brand-green); font-weight: 700;">● ${topProduct.status || 'LIFETIME UNLOCKED'}</div>
+                            </div>
+                            <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="text-decoration: none;">Classroom →</a>
+                        </div>
+                    `;
+                }
+            }
+
             if (!container) return;
             if (!products || products.length === 0) {
                 container.innerHTML = `
@@ -1898,7 +1928,7 @@
                 
                 div.innerHTML = `
                     <div>
-                        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">${p.product_name || 'Masterclass'}</h3>
+                        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">${p.product_name || p.name || p.title || 'Masterclass'}</h3>
                         <p style="font-size: 13px; color: var(--text-muted);">මිලදී ගත් දිනය: ${dt} | Selling Price: ${priceStr}</p>
                         <div style="margin-top: 8px;">
                             <span class="badge-pill badge-qualified">● ${p.status || 'ACTIVATED & READY'}</span>

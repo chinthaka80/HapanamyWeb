@@ -69,6 +69,7 @@ require('./step51-member-status-logic.test');
 require('./step52-student-dashboard-user-identity.test');
 require('./step53-my-team-list-verification.test');
 require('./step54-live-registration-persistence.test');
+require('./step55-new-user-zero-products-and-purchase-flow.test');
 
 // Run
 runTests();
