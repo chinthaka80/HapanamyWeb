@@ -222,7 +222,7 @@
 
         // Submit bank slip directly to Admin Queue in localStorage
         async function submitBankSlip() {
-            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0726090050' };
+            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Student Customer', phone: '07XXXXXXXX' };
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
             
             const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];

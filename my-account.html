@@ -582,8 +582,8 @@
                     <button class="btn-toggle" id="themeToggleBtn">🌓</button>
                     
                     <div class="user-profile-badge">
-                        <div class="user-avatar" id="avatarLetter">K</div>
-                        <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Kasun Tharaka</span>
+                        <div class="user-avatar" id="avatarLetter">--</div>
+                        <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Loading profile...</span>
                     </div>
                 </div>
             </div>
@@ -786,7 +786,7 @@
                                 </div>
 
                                 <div class="form-group" style="margin-top: 15px;">
-                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Commercial Bank, Maharagama Branch</textarea>
                                     <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details)</label>
                                 </div>
 
@@ -821,7 +821,7 @@
                         <form id="unifiedSettingsForm" onsubmit="saveUserProfile(event)">
                             <div class="form-group">
                                 <label for="setUserName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setUserName" value="Kasun Tharaka" required placeholder="Kasun Tharaka">
+                                <input type="text" id="setUserName" value="" required placeholder="Your Full Name">
                             </div>
                             <div class="form-group">
                                 <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
@@ -1065,28 +1065,118 @@
             showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
         }
 
-        // Load profile datasets
+                let currentAccountUser = null;
+
+        function getInitials(name) {
+            if (!name || typeof name !== 'string') return '--';
+            const clean = name.trim();
+            if (!clean) return '--';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length === 1) {
+                return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        function updateAccountIdentityUI(user) {
+            if (!user) return;
+            currentAccountUser = user;
+            
+            const fullName = user.full_name || user.name || user.username || 'Member';
+            const initials = getInitials(fullName);
+
+            const headerName = document.getElementById('headerUserName');
+            if (headerName) headerName.textContent = fullName;
+
+            const avatarLetter = document.getElementById('avatarLetter');
+            if (avatarLetter) avatarLetter.textContent = initials;
+
+            const nameInput = document.getElementById('setUserName');
+            if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
+
+            const emailInput = document.getElementById('setUserEmail');
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = user.email || '';
+
+            const phoneInput = document.getElementById('setUserPhone');
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = user.phone || user.mobile || '';
+
+            const addressInput = document.getElementById('setUserAddress');
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = user.address || '';
+        }
+
+        async function fetchAccountProfile() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const cachedActiveUser = JSON.parse(localStorage.getItem('active_user') || 'null');
+            const cachedProfile = JSON.parse(localStorage.getItem('hapanamy_user_profile') || 'null');
+
+            if (cachedActiveUser) updateAccountIdentityUI(cachedActiveUser);
+            else if (cachedProfile) updateAccountIdentityUI(cachedProfile);
+
+            if (!token) {
+                if (!cachedActiveUser && !cachedProfile) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const user = data.user;
+                        localStorage.setItem('active_user', JSON.stringify(user));
+                        updateAccountIdentityUI(user);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not fetch server profile, using local session:', err);
+            }
+        }
+
         function loadUserProfile() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {
-                name: 'Kasun Tharaka',
-                email: 'student@hapanamy.lk',
-                phone: '0719226600',
-                address: 'No. 45, Temple Road, Maharagama',
-                bankName: 'Commercial Bank',
-                branch: 'Maharagama',
-                accNumber: '8010294851'
-            };
+            fetchAccountProfile();
+        }
 
-            document.getElementById('setUserName').value = profile.name;
-            document.getElementById('setUserEmail').value = profile.email;
-            document.getElementById('setUserPhone').value = profile.phone;
-            document.getElementById('setUserAddress').value = profile.address;
-            document.getElementById('setUserBankName').value = profile.bankName;
-            document.getElementById('setUserBankBranch').value = profile.branch;
-            document.getElementById('setUserBankAcc').value = profile.accNumber;
+        async function saveUserProfile(event) {
+            if (event) event.preventDefault();
+            const name = document.getElementById('setUserName').value.trim();
+            const email = document.getElementById('setUserEmail').value.trim();
+            const phone = document.getElementById('setUserPhone').value.trim();
+            const address = document.getElementById('setUserAddress').value.trim();
+            const bankName = document.getElementById('setUserBankName') ? document.getElementById('setUserBankName').value.trim() : '';
+            const branch = document.getElementById('setUserBankBranch') ? document.getElementById('setUserBankBranch').value.trim() : '';
+            const accNumber = document.getElementById('setUserBankAcc') ? document.getElementById('setUserBankAcc').value.trim() : '';
 
-            document.getElementById('headerUserName').textContent = profile.name;
-            document.getElementById('avatarLetter').textContent = profile.name.charAt(0);
+            const profile = { name, full_name: name, email, phone, address, bankName, branch, accNumber };
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
+
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const updatedUser = { ...activeUser, ...profile };
+            localStorage.setItem('active_user', JSON.stringify(updatedUser));
+
+            updateAccountIdentityUI(updatedUser);
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            if (token) {
+                try {
+                    await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profile)
+                    });
+                } catch (err) {
+                    console.warn('Could not sync user profile to server:', err);
+                }
+            }
+
+            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
         }
 
         // Load Payouts queue
@@ -1096,7 +1186,7 @@
             
             let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
-                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
+                if (userSlug === 'affiliate') {
                     balance = '23790';
                 } else {
                     balance = '0';
@@ -1207,7 +1297,7 @@
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
 
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-                const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
+                const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Member' };
                 
                 const payoutReq = {
                     id: 'payout-' + Math.floor(1000 + Math.random() * 9000),

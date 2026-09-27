@@ -594,11 +594,11 @@
                         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     </button>
                     
-                    <div class="student-avatar-box">
-                        <div class="student-avatar" id="headerAvatar">KT</div>
+                    <div class="student-avatar-box" onclick="switchStudentTab('settings')" style="cursor: pointer;" title="Profile Settings">
+                        <div class="student-avatar" id="headerAvatar">--</div>
                         <div class="student-avatar-info">
-                            <h4 id="headerStudentName">Kasun Tharaka</h4>
-                            <p data-translate="role_student">Student Member</p>
+                            <h4 id="headerStudentName">Loading profile...</h4>
+                            <p id="headerStudentRole" data-translate="role_student">Student Member</p>
                         </div>
                     </div>
                 </div>
@@ -630,7 +630,7 @@
 
                     <!-- Welcome Box -->
                     <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 30px; border-left: 5px solid var(--brand-orange);">
-                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeStudentTitle">Welcome back, Kasun! 👋</h2>
+                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeStudentTitle">Welcome back! 👋</h2>
                         <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;" data-translate="welcome_desc">Hapanamy.lk අධ්‍යාපන පුවරුව වෙත සාදරයෙන් පිළිගනිමු. ඔබගේ පාඨමාලා හැදෑරීම නැවත ආරම්භ කිරීමට සහ ඉදිරි සජීවී සාකච්ඡාවලට සම්බන්ධ වීමට පහතින් තෝරා ගන්න.</p>
                     </div>
                 </div>
@@ -752,7 +752,7 @@
                         <div class="live-card-info">
                             <h3 data-translate="live_title_1">Crypto Trading Live Q&A and Practical Session</h3>
                             <p><strong>Scheduled:</strong> Friday at 8:00 PM - 9:30 PM (Sri Lanka Time)</p>
-                            <p><strong>Instructor:</strong> Mr. Kasun Tharaka (Lead Mentor)</p>
+                            <p><strong>Instructor:</strong> C.N. Gunasekara (Lead Trading Mentor)</p>
                             <p style="margin-top: 10px; color: var(--brand-orange); font-weight: 700;">Status: Scheduled (Zoom link will activate 15 mins before)</p>
                         </div>
                         <button class="btn-live-zoom" onclick="showToast('Redirecting to scheduled Zoom Live Session... 🚀')">Join Zoom Class</button>
@@ -793,7 +793,7 @@
                         <form id="studentSettingsForm" onsubmit="saveStudentProfile(event)">
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setStudentName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setStudentName" value="Kasun Tharaka" required placeholder="Kasun Tharaka">
+                                <input type="text" id="setStudentName" value="" required placeholder="Your Full Name">
                             </div>
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setStudentEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
@@ -813,7 +813,7 @@
                             </div>
                             <div class="form-group" style="margin-bottom: 25px;">
                                 <label for="setStudentPassword">නව මුරපදය (New Password) *</label>
-                                <input type="password" id="setStudentPassword" value="••••••••" required placeholder="New Password">
+                                <input type="password" id="setStudentPassword" value="" placeholder="Leave blank to keep unchanged">
                             </div>
 
                             <button type="submit" class="btn-learn-action" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
@@ -904,7 +904,7 @@
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: #102A43;">CERTIFICATE OF COMPLETION</h1>
                 <p style="font-style: italic; font-size: 15px; margin-bottom: 30px; color: #486581;">This is proudly presented to</p>
                 
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Kasun Tharaka</h2>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Loading...</h2>
                 
                 <p style="font-size: 14.5px; line-height: 1.6; max-width: 500px; margin: 0 auto 35px; color: #486581;">for successfully completing the advanced competency examinations for the <strong>AI Mastery & Advanced Financial Trading Program</strong> on Hapanamy.lk.</p>
                 
@@ -1159,6 +1159,143 @@
             }
         };
 
+        let currentStudentUser = null;
+
+        function getInitials(name) {
+            if (!name || typeof name !== 'string') return '--';
+            const clean = name.trim();
+            if (!clean) return '--';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length === 1) {
+                return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        function getFirstName(fullName) {
+            if (!fullName || typeof fullName !== 'string') return '';
+            const parts = fullName.trim().split(/\s+/).filter(Boolean);
+            return parts[0] || fullName;
+        }
+
+        function updateUserIdentityUI(user) {
+            if (!user) return;
+            currentStudentUser = user;
+            
+            const fullName = user.full_name || user.name || user.username || 'Student Member';
+            const firstName = getFirstName(fullName);
+            const initials = getInitials(fullName);
+            const currentLang = localStorage.getItem('language') || 'si';
+
+            // Topbar avatar & name
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (headerAvatar) headerAvatar.textContent = initials;
+            
+            const headerName = document.getElementById('headerStudentName');
+            if (headerName) headerName.textContent = fullName;
+
+            const headerRole = document.getElementById('headerStudentRole');
+            if (headerRole) {
+                if (user.role === 'admin' || user.role === 'ADMIN') {
+                    headerRole.textContent = currentLang === 'si' ? 'ප්‍රධාන පරිපාලක (Admin)' : 'Administrator';
+                } else if (user.role === 'affiliate' || user.role === 'AFFILIATE') {
+                    headerRole.textContent = currentLang === 'si' ? 'අනුබද්ධිත සහකරු (Affiliate)' : 'Affiliate Partner';
+                } else {
+                    headerRole.textContent = currentLang === 'si' ? 'ශිෂ්‍ය සාමාජිකයා' : 'Student Member';
+                }
+            }
+
+            // Welcome message
+            const welcomeTitle = document.getElementById('welcomeStudentTitle');
+            if (welcomeTitle) {
+                if (currentLang === 'si') {
+                    welcomeTitle.textContent = `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋`;
+                } else {
+                    welcomeTitle.textContent = `Welcome back, ${firstName}! 👋`;
+                }
+            }
+
+            // Settings Form values
+            const nameInput = document.getElementById('setStudentName');
+            if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
+
+            const emailInput = document.getElementById('setStudentEmail');
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = user.email || '';
+
+            const phoneInput = document.getElementById('setStudentPhone');
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = user.phone || user.mobile || '';
+
+            const addressInput = document.getElementById('setStudentAddress');
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = user.address || '';
+
+            const districtInput = document.getElementById('setStudentDistrict');
+            if (districtInput && !districtInput.matches(':focus')) districtInput.value = user.district || user.city || '';
+
+            // Certificate student name
+            const certName = document.getElementById('certificateStudentName');
+            if (certName) certName.textContent = fullName;
+        }
+
+        async function fetchStudentProfile() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const cachedActiveUser = JSON.parse(localStorage.getItem('active_user') || 'null');
+            const cachedProfile = JSON.parse(localStorage.getItem('hapanamy_student_profile') || 'null');
+
+            // Populate cached data first for instant UI response
+            if (cachedActiveUser) {
+                updateUserIdentityUI(cachedActiveUser);
+            } else if (cachedProfile) {
+                updateUserIdentityUI(cachedProfile);
+            }
+
+            if (!token) {
+                if (!cachedActiveUser && !cachedProfile) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const user = data.user;
+                        localStorage.setItem('active_user', JSON.stringify(user));
+                        localStorage.setItem('hapanamy_student_profile', JSON.stringify({
+                            name: user.full_name || user.name,
+                            email: user.email,
+                            phone: user.phone,
+                            address: user.address,
+                            district: user.district
+                        }));
+                        updateUserIdentityUI(user);
+                        return;
+                    }
+                } else if (res.status === 401) {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('active_token');
+                    localStorage.removeItem('active_user');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } catch (err) {
+                console.warn('Could not fetch remote profile, using local session:', err);
+            }
+
+            if (!currentStudentUser && !cachedActiveUser && !cachedProfile) {
+                const headerName = document.getElementById('headerStudentName');
+                if (headerName) {
+                    headerName.innerHTML = `<span>Session error. <a href="login.html" style="color:var(--brand-orange);text-decoration:underline;">Login again</a></span>`;
+                }
+            }
+        }
+
         function applyStudentLanguage(lang) {
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
@@ -1167,10 +1304,17 @@
                 }
             });
 
-            // Update welcome name
-            const currentLang = localStorage.getItem('language') || 'si';
-            const welcomeText = currentLang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු, කසුන්! 👋' : 'Welcome back, Kasun! 👋';
-            document.getElementById('welcomeStudentTitle').textContent = welcomeText;
+            // Update welcome name dynamically with user's name
+            const user = currentStudentUser || JSON.parse(localStorage.getItem('active_user') || 'null') || JSON.parse(localStorage.getItem('hapanamy_student_profile') || 'null');
+            const firstName = user ? getFirstName(user.full_name || user.name || user.username || '') : '';
+            const welcomeTitle = document.getElementById('welcomeStudentTitle');
+            if (welcomeTitle) {
+                if (firstName) {
+                    welcomeTitle.textContent = lang === 'si' ? `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋` : `Welcome back, ${firstName}! 👋`;
+                } else {
+                    welcomeTitle.textContent = lang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු! 👋' : 'Welcome back! 👋';
+                }
+            }
 
             const langToggle = document.getElementById('langToggleBtn');
             if (langToggle) {
@@ -1191,17 +1335,16 @@
                     applyStudentLanguage(currentLang);
                     
                     // Update header title based on active tab
-                    const activeTabId = document.querySelector('.student-nav-link.active').id.replace('nav-', '');
-                    switchStudentTab(activeTabId);
+                    const activeLink = document.querySelector('.student-nav-link.active');
+                    if (activeLink) {
+                        const activeTabId = activeLink.id.replace('nav-', '');
+                        switchStudentTab(activeTabId);
+                    }
 
                     showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
                 });
             }
         }
-
-        
-        // Save profile logic
-        
 
         // Online Flipbook Reader logic
         let currentEbookPage = 1;
@@ -1244,22 +1387,17 @@
             }
         }
 
-        
-        
         // --- INTERACTIVE VIDEO PLAYBACK LOGIC ---
         let activeLessonLi = null;
-        let progressPercent = 0;
         let playInterval = null;
 
-        // Hook playlist selection
         function hookPlaylistSelection() {
             setTimeout(() => {
                 const items = document.querySelectorAll('.playlist-item');
                 if (items.length > 0) {
-                    activeLessonLi = items[0]; // default first item
+                    activeLessonLi = items[0];
                 }
                 
-                // Add click triggers to reset player overlays on lesson switch
                 items.forEach(li => {
                     li.addEventListener('click', () => {
                         activeLessonLi = li;
@@ -1270,7 +1408,7 @@
         }
 
         function resetVideoPlayerView() {
-            clearInterval(playInterval);
+            if (playInterval) clearInterval(playInterval);
             document.getElementById('videoPlayOverlay').style.display = 'block';
             document.getElementById('videoLoadingOverlay').style.display = 'none';
             document.getElementById('videoPlayingOverlay').style.display = 'none';
@@ -1281,12 +1419,10 @@
             document.getElementById('videoPlayOverlay').style.display = 'none';
             document.getElementById('videoLoadingOverlay').style.display = 'block';
 
-            // 1.5s loading buffer
             setTimeout(() => {
                 document.getElementById('videoLoadingOverlay').style.display = 'none';
                 document.getElementById('videoPlayingOverlay').style.display = 'block';
                 
-                // Animate progress bar
                 let width = 0;
                 const bar = document.getElementById('videoProgressBar');
                 bar.style.width = '0%';
@@ -1300,34 +1436,27 @@
                         document.getElementById('videoPlayingOverlay').style.display = 'none';
                         document.getElementById('videoCompleteOverlay').style.display = 'block';
                     }
-                }, 300); // Takes ~6 seconds to complete playback simulation
-            }, 1500);
+                }, 200);
+            }, 800);
         }
 
         function markLessonAsCompleted() {
             if (activeLessonLi) {
-                // Set checked status in playlist row
-                activeLessonLi.querySelector('.playlist-item-status').textContent = '✅';
+                const statusSpan = activeLessonLi.querySelector('.playlist-item-status');
+                if (statusSpan) statusSpan.textContent = '✅';
                 activeLessonLi.style.opacity = '0.7';
             }
             
             resetVideoPlayerView();
             showToast('🎉 <strong>පාඩම සාර්ථකව අවසන්!</strong> ඔබගේ ඉගෙනුම් දර්ශකය යාවත්කාලීන විය.');
             
-            // Increment progress status bar
             const fill = document.querySelector('.learning-progress-fill');
             const txt = document.querySelector('.learning-progress-text span:last-child');
             if (fill && txt) {
-                // Dynamically upgrade progress values
                 fill.style.width = '37.5%';
                 txt.textContent = '37.5% (3/8 Semesters) • මාස 2 (2 Months)';
             }
         }
-
-        // Run Hook on load
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(hookPlaylistSelection, 1000);
-        });
 
         // --- QUIZ & CERTIFICATE SYSTEM LOGIC ---
         function openCourseQuiz() {
@@ -1339,11 +1468,11 @@
         }
 
         function openCertificateModal() {
-            // Set dynamic student name from profile input/welcome title
-            const rawName = document.getElementById('setStudentName').value || 'Kasun Tharaka';
-            document.getElementById('certificateStudentName').textContent = rawName;
+            const fullName = (currentStudentUser && (currentStudentUser.full_name || currentStudentUser.name)) 
+                || document.getElementById('setStudentName').value 
+                || 'Student Member';
+            document.getElementById('certificateStudentName').textContent = fullName;
             
-            // Set dynamic date
             const today = new Date();
             const dateStr = today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
             document.getElementById('certificateDate').textContent = dateStr;
@@ -1356,78 +1485,118 @@
         }
 
         function submitCourseQuiz(event) {
-            event.preventDefault();
-            const q1 = document.querySelector('input[name="q1"]:checked').value;
-            const q2 = document.querySelector('input[name="q2"]:checked').value;
-            const q3 = document.querySelector('input[name="q3"]:checked').value;
+            if (event) event.preventDefault();
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if (!q1 || !q2 || !q3) {
+                showToast('⚠️ කරුණාකර සියලුම ප්‍රශ්න සඳහා පිළිතුරු සපයන්න.');
+                return;
+            }
 
             closeCourseQuiz();
 
-            // Correct answers: q1 = a, q2 = b, q3 = b
             let score = 0;
-            if (q1 === 'a') score++;
-            if (q2 === 'b') score++;
-            if (q3 === 'b') score++;
+            if (q1.value === 'a') score++;
+            if (q2.value === 'b') score++;
+            if (q3.value === 'b') score++;
 
             if (score >= 2) {
                 showToast('🎉 <strong>සුභ පැතුම්!</strong> ඔබ පරීක්ෂණය සමත් විය. ලකුණු: ' + score + '/3');
-                document.getElementById('btnViewCertificate').style.display = 'block';
+                const certBtn = document.getElementById('btnViewCertificate');
+                if (certBtn) certBtn.style.display = 'block';
                 
-                // Show certificate modal automatically on pass
-                setTimeout(openCertificateModal, 1500);
+                setTimeout(openCertificateModal, 1200);
             } else {
                 showToast('❌ <strong>නැවත උත්සාහ කරන්න!</strong> ඔබ පරීක්ෂණය අසමත් විය. ලකුණු: ' + score + '/3 (සමත් වීමට 2ක් නිවැරදි විය යුතුය)');
             }
+        }
+
         // Logout handler
         function logoutUser() {
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('active_token');
+            localStorage.removeItem('hapanamy_student_profile');
+            localStorage.removeItem('hapanamy_user_profile');
+            localStorage.removeItem('hapanamy_affiliate_profile');
             showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 1200);
+            }, 800);
         }
 
         // Save expanded profile
-        function saveStudentProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('setStudentName').value;
-            const email = document.getElementById('setStudentEmail').value;
-            const phone = document.getElementById('setStudentPhone').value;
-            const address = document.getElementById('setStudentAddress').value;
-            const district = document.getElementById('setStudentDistrict').value;
-            
-            const profile = { name, email, phone, address, district };
-            localStorage.setItem('hapanamy_student_profile', JSON.stringify(profile));
+        async function saveStudentProfile(event) {
+            if (event) event.preventDefault();
+            const name = document.getElementById('setStudentName').value.trim();
+            const email = document.getElementById('setStudentEmail').value.trim();
+            const phone = document.getElementById('setStudentPhone').value.trim();
+            const address = document.getElementById('setStudentAddress').value.trim();
+            const district = document.getElementById('setStudentDistrict').value.trim();
+            const password = document.getElementById('setStudentPassword').value;
 
-            // Sync dashboard headers
-            document.getElementById('headerStudentName').textContent = name;
-            document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + name.split(' ')[0] + '! 👋';
+            const profileData = {
+                full_name: name,
+                name: name,
+                email: email,
+                phone: phone,
+                address: address,
+                district: district
+            };
+            if (password) {
+                profileData.password = password;
+            }
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
             
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව Local Database එකට සුරැකිණි.');
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const updatedUser = { ...activeUser, ...profileData };
+            localStorage.setItem('active_user', JSON.stringify(updatedUser));
+            localStorage.setItem('hapanamy_student_profile', JSON.stringify(profileData));
+
+            updateUserIdentityUI(updatedUser);
+
+            if (token) {
+                try {
+                    const res = await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profileData)
+                    });
+                    if (res.ok) {
+                        const result = await res.json();
+                        if (result && result.user) {
+                            localStorage.setItem('active_user', JSON.stringify(result.user));
+                            updateUserIdentityUI(result.user);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Failed to sync profile with server:', err);
+                }
+            }
+
+            const currentLang = localStorage.getItem('language') || 'si';
+            showToast(currentLang === 'si' ? 
+                '💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව සුරැකිණි.' : 
+                '💾 <strong>Settings Saved!</strong> Your profile details have been successfully saved.');
         }
 
         // Load profile from database
         function loadStudentProfile() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_student_profile'));
-            if (profile) {
-                document.getElementById('setStudentName').value = profile.name;
-                document.getElementById('setStudentEmail').value = profile.email;
-                document.getElementById('setStudentPhone').value = profile.phone;
-                document.getElementById('setStudentAddress').value = profile.address || '';
-                document.getElementById('setStudentDistrict').value = profile.district || '';
-                
-                document.getElementById('headerStudentName').textContent = profile.name;
-                document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + profile.name.split(' ')[0] + '! 👋';
-            }
+            fetchStudentProfile();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadStudentProfile, 400);
+            initStudentLanguage();
+            fetchStudentProfile();
+            hookPlaylistSelection();
         });
 
-        initStudentLanguage();
     </script>
 </body>
 </html>

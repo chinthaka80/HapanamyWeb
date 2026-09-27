@@ -453,9 +453,9 @@
                     </button>
                     
                     <div class="affiliate-avatar-box">
-                        <div class="affiliate-avatar" id="headerAvatar">KT</div>
+                        <div class="affiliate-avatar" id="headerAvatar">--</div>
                         <div class="affiliate-avatar-info">
-                            <h4 id="headerAffName">Kasun Tharaka</h4>
+                            <h4 id="headerAffName">Loading profile...</h4>
                             <p data-translate="role_partner">Affiliate Silver Partner</p>
                         </div>
                     </div>
@@ -489,7 +489,7 @@
 
                     <!-- Welcome Box -->
                     <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 30px; border-left: 5px solid var(--brand-gold);">
-                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeAffTitle">Welcome back, Kasun! 👋</h2>
+                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeAffTitle">Welcome back! 👋</h2>
                         <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;" data-translate="welcome_desc">Hapanamy.lk Affiliate පද්ධතියට සාදරයෙන් පිළිගනිමු. ඔබගේ ප්‍රවර්ධන සබැඳි ලබාගැනීමට, කණ්ඩායමේ විස්තර බැලීමට සහ කොමිස් මුදල් බැංකුවට ලබාගැනීමේ ඉල්ලීම් ඉදිරිපත් කිරීමට වම්පස ඇති මෙනුව භාවිතා කරන්න.</p>
                     </div>
 
@@ -517,7 +517,7 @@
                                 </tr>
                                 <tr style="background-color: rgba(244,123,32,0.03);">
                                     <td>🥈 <strong>2nd Place (You)</strong></td>
-                                    <td><strong id="leaderboardName">කසුන් තාරක (Kasun Tharaka)</strong></td>
+                                    <td><strong id="leaderboardName">You</strong></td>
                                     <td><span class="badge-status active">Silver Partner</span></td>
                                     <td style="color: var(--brand-green-light); font-weight: 700;">රු. 23,790.00</td>
                                 </tr>
@@ -724,7 +724,7 @@
 
                                 <div class="form-group" style="margin-bottom: 25px;">
                                     <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details) *</label>
-                                    <textarea id="payoutBankDetails" required placeholder="Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch" rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <textarea id="payoutBankDetails" required placeholder="Commercial Bank, Maharagama Branch" rows="3" style="width: 100%;">Commercial Bank, Maharagama Branch</textarea>
                                 </div>
 
                                 <button type="submit" class="btn-learn-action" style="width: 100%;">ඉල්ලීම යොමු කරන්න (Request Bank Payout)</button>
@@ -773,7 +773,7 @@
                         <form id="affiliateSettingsForm" onsubmit="saveAffProfile(event)">
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setAffName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setAffName" value="Kasun Tharaka" required placeholder="Kasun Tharaka">
+                                <input type="text" id="setAffName" value="" required placeholder="Your Full Name">
                             </div>
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setAffEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
@@ -1014,7 +1014,7 @@
 
             // Add request to queue
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-            const profile = JSON.parse(localStorage.getItem('hapanamy_affiliate_profile')) || { name: 'Kasun Tharaka' };
+            const profile = JSON.parse(localStorage.getItem('hapanamy_affiliate_profile')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Member' };
             
             const payoutReq = {
                 id: 'payout-' + Math.floor(1000 + Math.random() * 9000),
@@ -1094,6 +1094,103 @@
             }
         };
 
+        let currentAffUser = null;
+
+        function getInitials(name) {
+            if (!name || typeof name !== 'string') return '--';
+            const clean = name.trim();
+            if (!clean) return '--';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length === 1) {
+                return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        function getFirstName(fullName) {
+            if (!fullName || typeof fullName !== 'string') return '';
+            const parts = fullName.trim().split(/\s+/).filter(Boolean);
+            return parts[0] || fullName;
+        }
+
+        function updateAffIdentityUI(user) {
+            if (!user) return;
+            currentAffUser = user;
+            
+            const fullName = user.full_name || user.name || user.username || 'Affiliate Partner';
+            const firstName = getFirstName(fullName);
+            const initials = getInitials(fullName);
+            const currentLang = localStorage.getItem('language') || 'si';
+
+            // Topbar
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (headerAvatar) headerAvatar.textContent = initials;
+
+            const headerName = document.getElementById('headerAffName');
+            if (headerName) headerName.textContent = fullName;
+
+            // Welcome
+            const welcomeTitle = document.getElementById('welcomeAffTitle');
+            if (welcomeTitle) {
+                welcomeTitle.textContent = currentLang === 'si' ? 
+                    `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋` : 
+                    `Welcome back, ${firstName}! 👋`;
+            }
+
+            // Leaderboard name
+            const lbName = document.getElementById('leaderboardName');
+            if (lbName) lbName.innerHTML = `${fullName} (You)`;
+
+            // Form
+            const nameInput = document.getElementById('setAffName');
+            if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
+
+            const emailInput = document.getElementById('setAffEmail');
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = user.email || '';
+
+            const phoneInput = document.getElementById('setAffPhone');
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = user.phone || user.mobile || '';
+
+            const addressInput = document.getElementById('setAffAddress');
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = user.address || '';
+        }
+
+        async function fetchAffProfile() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const cachedActiveUser = JSON.parse(localStorage.getItem('active_user') || 'null');
+            const cachedProfile = JSON.parse(localStorage.getItem('hapanamy_affiliate_profile') || 'null');
+
+            if (cachedActiveUser) {
+                updateAffIdentityUI(cachedActiveUser);
+            } else if (cachedProfile) {
+                updateAffIdentityUI(cachedProfile);
+            }
+
+            if (!token) {
+                if (!cachedActiveUser && !cachedProfile) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const user = data.user;
+                        localStorage.setItem('active_user', JSON.stringify(user));
+                        updateAffIdentityUI(user);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not fetch server profile, using local session:', err);
+            }
+        }
+
         function applyAffLanguage(lang) {
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
@@ -1102,10 +1199,16 @@
                 }
             });
 
-            // Update welcome name
-            const currentLang = localStorage.getItem('language') || 'si';
-            const welcomeText = currentLang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු, කසුන්! 👋' : 'Welcome back, Kasun! 👋';
-            document.getElementById('welcomeAffTitle').textContent = welcomeText;
+            const user = currentAffUser || JSON.parse(localStorage.getItem('active_user') || 'null') || JSON.parse(localStorage.getItem('hapanamy_affiliate_profile') || 'null');
+            const firstName = user ? getFirstName(user.full_name || user.name || user.username || '') : '';
+            const welcomeTitle = document.getElementById('welcomeAffTitle');
+            if (welcomeTitle) {
+                if (firstName) {
+                    welcomeTitle.textContent = lang === 'si' ? `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋` : `Welcome back, ${firstName}! 👋`;
+                } else {
+                    welcomeTitle.textContent = lang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු! 👋' : 'Welcome back! 👋';
+                }
+            }
 
             const langToggle = document.getElementById('langToggleBtn');
             if (langToggle) {
@@ -1125,20 +1228,17 @@
                     localStorage.setItem('language', currentLang);
                     applyAffLanguage(currentLang);
                     
-                    // Update header title based on active tab
-                    const activeTabId = document.querySelector('.affiliate-nav-link.active').id.replace('nav-', '');
-                    switchAffTab(activeTabId);
+                    const activeLink = document.querySelector('.affiliate-nav-link.active');
+                    if (activeLink) {
+                        const activeTabId = activeLink.id.replace('nav-', '');
+                        switchAffTab(activeTabId);
+                    }
 
                     showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
                 });
             }
         }
 
-        
-        // Save Profile Logic
-        
-
-        // Filter downlines by name
         function filterDownlineNetwork() {
             const query = document.getElementById('downlineSearchInput').value.toLowerCase();
             const members = document.querySelectorAll('.network-member-item');
@@ -1156,13 +1256,10 @@
             });
         }
 
-        // Load dynamically referred downline members
         function loadDynamicDownlines() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_affiliate_profile')) || { name: 'Kasun Tharaka' };
-            // Determine active user referrer code
-            const myRefCode = profile.name.toLowerCase().replace(/[^a-z0-9]/g, '_') || 'kasun_t';
+            const user = currentAffUser || JSON.parse(localStorage.getItem('active_user') || 'null') || JSON.parse(localStorage.getItem('hapanamy_affiliate_profile') || 'null') || { name: 'Member' };
+            const myRefCode = (user.full_name || user.name || user.username || 'member').toLowerCase().replace(/[^a-z0-9]/g, '_');
             
-            // Read list
             const dynamicMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
             const container = document.getElementById('level1DownlinesList');
             
@@ -1182,72 +1279,72 @@
             });
         }
 
-        // Run on load
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadDynamicDownlines, 600);
-        });
-
-        // Logout handler
         function logoutUser() {
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('active_token');
+            localStorage.removeItem('hapanamy_student_profile');
+            localStorage.removeItem('hapanamy_user_profile');
+            localStorage.removeItem('hapanamy_affiliate_profile');
             showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
             setTimeout(() => {
                 window.location.href = 'login.html';
-            }, 1200);
+            }, 800);
         }
 
-        // Save expanded profile
-        function saveAffProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('setAffName').value;
-            const email = document.getElementById('setAffEmail').value;
-            const phone = document.getElementById('setAffPhone').value;
-            const address = document.getElementById('setAffAddress').value;
-            const bankName = document.getElementById('setAffBankName').value;
-            const branch = document.getElementById('setAffBankBranch').value;
-            const accNumber = document.getElementById('setAffBankAcc').value;
+        async function saveAffProfile(event) {
+            if (event) event.preventDefault();
+            const name = document.getElementById('setAffName').value.trim();
+            const email = document.getElementById('setAffEmail').value.trim();
+            const phone = document.getElementById('setAffPhone').value.trim();
+            const address = document.getElementById('setAffAddress').value.trim();
+            const bankName = document.getElementById('setAffBankName').value.trim();
+            const branch = document.getElementById('setAffBankBranch').value.trim();
+            const accNumber = document.getElementById('setAffBankAcc').value.trim();
 
-            const profile = { name, email, phone, address, bankName, branch, accNumber };
+            const profile = { name, full_name: name, email, phone, address, bankName, branch, accNumber };
             localStorage.setItem('hapanamy_affiliate_profile', JSON.stringify(profile));
 
-            // Sync dashboard headers
-            document.getElementById('headerAffName').textContent = name;
-            document.getElementById('welcomeAffTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + name.split(' ')[0] + '! 👋';
-            document.getElementById('leaderboardName').innerHTML = name + ' (You)';
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const updatedUser = { ...activeUser, ...profile };
+            localStorage.setItem('active_user', JSON.stringify(updatedUser));
+
+            updateAffIdentityUI(updatedUser);
             
-            // Sync fallback value for payout requests
             const payoutField = document.getElementById('payoutBankDetails');
             if (payoutField) {
                 payoutField.value = name + ', ' + bankName + ', Acc: ' + accNumber + ', ' + branch + ' Branch';
             }
 
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු සැකසුම් සාර්ථකව Local Database එකට සුරැකිණි.');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            if (token) {
+                try {
+                    await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profile)
+                    });
+                } catch (err) {
+                    console.warn('Could not sync profile to backend:', err);
+                }
+            }
+
+            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු සැකසුම් සාර්ථකව සුරැකිණි.');
         }
 
-        // Load profile from database
         function loadAffiliateProfile() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_affiliate_profile'));
-            if (profile) {
-                document.getElementById('setAffName').value = profile.name;
-                document.getElementById('setAffEmail').value = profile.email;
-                document.getElementById('setAffPhone').value = profile.phone;
-                document.getElementById('setAffAddress').value = profile.address || '';
-                document.getElementById('setAffBankName').value = profile.bankName || 'Commercial Bank';
-                document.getElementById('setAffBankBranch').value = profile.branch || 'Maharagama';
-                document.getElementById('setAffBankAcc').value = profile.accNumber || '8010294851';
-                
-                document.getElementById('headerAffName').textContent = profile.name;
-                document.getElementById('welcomeAffTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + profile.name.split(' ')[0] + '! 👋';
-                document.getElementById('leaderboardName').innerHTML = profile.name + ' (You)';
-            }
+            fetchAffProfile();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadAffiliateProfile, 400);
+            initAffLanguage();
+            fetchAffProfile();
+            setTimeout(loadDynamicDownlines, 600);
         });
-        initAffLanguage();
+
     </script>
 </body>
 </html>

@@ -1330,21 +1330,66 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // GET /api/auth/me (Current Authenticated User Session)
-    if (req.method === 'GET' && pathname === '/api/auth/me') {
+    // GET /api/auth/me, /api/me, /api/user/profile (Current Authenticated User Session)
+    if (req.method === 'GET' && (pathname === '/api/auth/me' || pathname === '/api/me' || pathname === '/api/user/profile' || pathname === '/api/user')) {
         const authUser = getAuthenticatedUser(req);
         if (!authUser) {
             sendJSON(res, 401, { error: 'Unauthorized. Invalid or expired session token.' });
             return;
         }
+        const fullUser = mockUsers.find(u => u.id === authUser.id) || authUser;
         sendJSON(res, 200, {
             success: true,
             user: {
+                id: fullUser.id,
+                username: fullUser.username,
+                full_name: fullUser.full_name || fullUser.name || authUser.full_name || authUser.username,
+                email: fullUser.email,
+                role: fullUser.role || 'member',
+                phone: fullUser.phone || fullUser.mobile || fullUser.mobile_number || '',
+                address: fullUser.address || '',
+                district: fullUser.district || '',
+                status: fullUser.status || 'INACTIVE',
+                account_status: fullUser.account_status || 'INACTIVE',
+                qualification_status: fullUser.qualification_status || 'NOT_QUALIFIED',
+                kyc_status: fullUser.kyc_status || 'NOT_SUBMITTED'
+            }
+        });
+        return;
+    }
+
+    // POST /api/user/profile & /api/member/profile (Update Profile)
+    if (req.method === 'POST' && (pathname === '/api/user/profile' || pathname === '/api/member/profile')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const fullUser = mockUsers.find(u => u.id === authUser.id);
+        if (fullUser) {
+            if (body.full_name || body.name) fullUser.full_name = (body.full_name || body.name).trim();
+            if (body.phone || body.mobile) fullUser.phone = (body.phone || body.mobile).trim();
+            if (body.address) fullUser.address = body.address.trim();
+            if (body.district) fullUser.district = body.district.trim();
+        }
+        if (authUser) {
+            if (body.full_name || body.name) authUser.full_name = (body.full_name || body.name).trim();
+        }
+
+        sendJSON(res, 200, {
+            success: true,
+            message: 'Profile updated successfully.',
+            user: {
                 id: authUser.id,
                 username: authUser.username,
-                full_name: authUser.full_name || authUser.name,
+                full_name: (fullUser && fullUser.full_name) || authUser.full_name || authUser.username,
                 email: authUser.email,
-                role: authUser.role || 'member'
+                role: authUser.role || 'member',
+                phone: (fullUser && fullUser.phone) || '',
+                address: (fullUser && fullUser.address) || '',
+                district: (fullUser && fullUser.district) || ''
             }
         });
         return;
