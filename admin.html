@@ -901,27 +901,48 @@
 
                     <!-- Registered Users Directory Box -->
                     <div class="admin-table-box" style="margin-top: 30px;">
-                        <div class="admin-table-title">
-                            <span>ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Users & Students)</span>
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span>👥 ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Members Directory)</span>
+                                <span class="badge-status paid" style="font-size: 11px;">🟢 LIVE SYNCHRONIZED</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="text" id="memberSearchInput" oninput="renderRegisteredUsers()" placeholder="Search by name, @username, sponsor..." style="padding: 6px 12px; font-size: 12.5px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); min-width: 220px;">
+                                <select id="memberStatusFilter" onchange="renderRegisteredUsers()" style="padding: 6px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                                    <option value="all">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="suspended">Suspended</option>
+                                </select>
+                                <select id="memberQualFilter" onchange="renderRegisteredUsers()" style="padding: 6px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                                    <option value="all">All Qualifications</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="purchased">Purchased</option>
+                                    <option value="registered">Registered</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="renderRegisteredUsers()" style="padding: 6px 12px; font-size: 12px; cursor: pointer;">🔄 Refresh</button>
+                            </div>
                         </div>
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>සාමාජිකයා (Partner Name)</th>
-                                    <th>ඊමේල් / Username</th>
-                                    <th>කාර්යභාරය (Role)</th>
-                                    <th>තත්ත්වය (Status)</th>
-                                    <th>දුරකථනය (Phone)</th>
-                                    <th>දිනය (Date Registered)</th>
-                                    <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="registeredUsersTableBody">
-                                <tr>
-                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>සාමාජිකයා (Member)</th>
+                                        <th>අනුග්‍රාහකයා (Sponsor)</th>
+                                        <th>Binary Position</th>
+                                        <th>පුද්ගලික BV (Personal)</th>
+                                        <th>කණ්ඩායම් ලකුණු (L / R)</th>
+                                        <th>Wallet & Comm</th>
+                                        <th>තත්ත්වය (Status)</th>
+                                        <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registeredUsersTableBody">
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">පූරණය වෙමින් පවතී (Loading real-time registered members...)...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -1302,6 +1323,128 @@
         <div class="mobile-nav-item" onclick="switchAdminTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
             <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- MEMBER DETAIL & NETWORK INSPECTOR MODAL OVERLAY -->
+    <div class="modal-overlay" id="memberDetailModal" style="display: none;">
+        <div class="modal-box" style="max-width: 960px; padding: 25px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="modalMemberAvatar" style="width: 44px; height: 44px; border-radius: 50%; background: var(--gold-gradient); color: #102A43; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;">M</div>
+                    <div>
+                        <h3 id="modalMemberName" style="font-size: 18px; margin: 0; color:var(--text-primary);">Member Full Name</h3>
+                        <p id="modalMemberUsername" style="font-size: 12.5px; color: var(--text-muted); margin: 0;">@username (ID: user-123)</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeMemberDetailModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <!-- Modal Sub-sections Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                <!-- Card 1: Profile & KYC -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>👤</span> 1. Profile & Verification
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Email:</strong> <span id="modalMemberEmail" style="color:var(--text-primary);">user@example.com</span></div>
+                        <div><strong style="color:var(--text-muted);">Mobile:</strong> <span id="modalMemberMobile" style="color:var(--text-primary);">+94 77 123 4567</span></div>
+                        <div><strong style="color:var(--text-muted);">Account Status:</strong> <span id="modalMemberAccountStatus" class="badge-status paid">ACTIVE</span></div>
+                        <div><strong style="color:var(--text-muted);">Qualification:</strong> <span id="modalMemberQualStatus" class="badge-status" style="background:rgba(240,179,35,0.15); color:var(--brand-gold);">QUALIFIED</span></div>
+                        <div><strong style="color:var(--text-muted);">KYC Verification:</strong> <span id="modalMemberKycStatus" class="badge-status">PENDING</span></div>
+                        <div><strong style="color:var(--text-muted);">Registered Date:</strong> <span id="modalMemberJoinDate" style="color:var(--text-muted);">2026-09-01</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Genealogy & Upline Alignment -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-orange); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>🌳</span> 2. MLM Network Genealogy
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Direct Sponsor:</strong> <span id="modalMemberSponsor" style="color:var(--brand-gold); font-weight:700;">Direct Admin</span></div>
+                        <div><strong style="color:var(--text-muted);">Placement Parent:</strong> <span id="modalMemberParent" style="color:var(--text-primary);">Root (@hiru)</span></div>
+                        <div><strong style="color:var(--text-muted);">Placement Position:</strong> <span id="modalMemberPosition" class="sales-leg-badge badge-left">LEFT</span></div>
+                        <div><strong style="color:var(--text-muted);">Direct Referrals:</strong> <span id="modalMemberDirectCount" style="font-weight:700;">0 Members</span></div>
+                        <div><strong style="color:var(--text-muted);">Left Team Count:</strong> <span id="modalMemberLeftCount" style="color:#42A5F5; font-weight:700;">0</span> | <strong style="color:var(--text-muted);">Right Team:</strong> <span id="modalMemberRightCount" style="color:#BA68C8; font-weight:700;">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Business Volume (BV) & Points -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-green-light); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>📈</span> 3. Business Volume (BV)
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Personal BV:</strong> <span id="modalMemberPersonalBv" style="color:var(--brand-green-light); font-weight:800;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Left Team Volume:</strong> <span id="modalMemberLeftVol" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Right Team Volume:</strong> <span id="modalMemberRightVol" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Matched Binary Volume:</strong> <span id="modalMemberMatchedVol" style="color:var(--brand-gold); font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Carry Forward (L / R):</strong> <span id="modalMemberCarryVol">L: 0.00 | R: 0.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Financial Wallet & Commissions -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>💰</span> 4. Wallet & Commissions
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Available Wallet Balance:</strong> <span id="modalMemberAvailBalance" style="color:var(--brand-gold); font-size:15px; font-weight:800;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Lifetime Total Earned:</strong> <span id="modalMemberTotalEarned" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Direct Commissions (8%):</strong> <span id="modalMemberDirectEarned">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Binary Matching (7%):</strong> <span id="modalMemberBinaryEarned">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Total Paid / Withdrawn:</strong> <span id="modalMemberPaidBalance">රු. 0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Details Tables -->
+            <div style="margin-top: 15px;">
+                <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--text-primary);">📚 Active Products & Course Purchases</h4>
+                <div class="admin-table-box" style="margin-bottom: 20px;">
+                    <table class="admin-table" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Course / Product</th>
+                                <th>Price Paid</th>
+                                <th>Binary Volume (BV)</th>
+                                <th>Status</th>
+                                <th>Activated Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalMemberPurchasesBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 15px;">No active purchases.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--text-primary);">💸 Commission Ledger Log</h4>
+                <div class="admin-table-box" style="margin-bottom: 0;">
+                    <table class="admin-table" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Rate</th>
+                                <th>Calculated (LKR)</th>
+                                <th>Eligible (LKR)</th>
+                                <th>Capped (LKR)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalMemberCommissionsBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 15px;">No commissions recorded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -2883,74 +3026,311 @@
             }
         }
 
-        // Render Registered Users Directory
+        // Render Registered Users Directory from server API with graceful fallback
+        let adminMembersData = [];
+
         async function renderRegisteredUsers() {
             const tableBody = document.getElementById('registeredUsersTableBody');
             if (!tableBody) return;
-            
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const searchInput = document.getElementById('memberSearchInput');
+                const search = searchInput ? searchInput.value : '';
+                const statusSelect = document.getElementById('memberStatusFilter');
+                const status = statusSelect ? statusSelect.value : 'all';
+                const qualSelect = document.getElementById('memberQualFilter');
+                const qualification = qualSelect ? qualSelect.value : 'all';
+
+                const res = await fetch(`/api/admin/members?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}&qualification=${encodeURIComponent(qualification)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.members) {
+                        adminMembersData = data.members;
+                        renderAdminMembersRows(data.members);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('API fetch failed, falling back to local adapter:', err);
+            }
+
+            // Fallback: Local database adapter
             try {
                 const users = await dbGetUsers();
-                if (users.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                tableBody.innerHTML = '';
-                // Sort users: newest first
-                const sortedUsers = [...users].reverse();
-                
-                sortedUsers.forEach(user => {
-                    const tr = document.createElement('tr');
-                    
-                    const name = user.name || 'N/A';
-                    const email = user.email || 'N/A';
-                    const role = user.role || 'student';
-                    const status = user.status || 'Active';
-                    const phone = user.phone || 'N/A';
-                    const date = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
-                    
-                    const roleBadge = role === 'admin' 
-                        ? '<span class="badge-status" style="background-color: rgba(240, 179, 35, 0.15); color: var(--brand-gold);">Admin</span>' 
-                        : (role === 'affiliate' 
-                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate Partner</span>' 
-                            : '<span class="badge-status" style="background: rgba(40, 167, 69, 0.15) !important; color: #28a745 !important; border-color: #28a745 !important;">Student</span>');
-                    
-                    const statusBadge = status === 'Active'
-                        ? '<span class="badge-status paid">Active</span>'
-                        : (status === 'Pending' || status === 'Pending Approval'
-                            ? '<span class="badge-status pending">Pending Approval</span>'
-                            : '<span class="badge-status" style="background:rgba(239,83,80,0.15); color:#EF5350; border-color:#EF5350;">Suspended</span>');
+                renderAdminMembersFallbackRows(users);
+            } catch (e) {
+                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--ph-red); padding:20px;">Error loading members: ${e.message}</td></tr>`;
+            }
+        }
 
-                    tr.innerHTML = `
-                        <td><strong>${name}</strong></td>
-                        <td><code>${email}</code></td>
-                        <td>${roleBadge}</td>
-                        <td>${statusBadge}</td>
-                        <td>${phone}</td>
-                        <td>${date}</td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
-                                <button class="btn btn-primary" onclick="approveRegisteredUser('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer;">✅ Approve</button>
-                                <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
-                                <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
-                                <button class="btn btn-secondary" onclick="deleteRegisteredUserAccount('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--ph-red); color: var(--ph-red); cursor:pointer;">🗑️ Delete</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
-                });
-            } catch (err) {
-                console.error('Error rendering registered users:', err);
+        function renderAdminMembersRows(members) {
+            const tableBody = document.getElementById('registeredUsersTableBody');
+            if (!tableBody) return;
+
+            if (!members || members.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
+                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                            කිසිදු සාමාජිකයෙකු හමු නොවීය (No matching members found).
+                        </td>
                     </tr>
                 `;
+                return;
             }
+
+            tableBody.innerHTML = '';
+            members.forEach(m => {
+                const tr = document.createElement('tr');
+                const dt = m.created_at ? new Date(m.created_at).toLocaleDateString() : '2026-09-01';
+                const sponsorText = m.sponsor ? `<strong>${m.sponsor.full_name || m.sponsor.username}</strong><br><small style="color:var(--text-muted);">@${m.sponsor.username}</small>` : '<span style="color:var(--text-muted);">Direct (Company)</span>';
+                
+                let posBadge = '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>';
+                if (m.binary_node && m.binary_node.position) {
+                    const pos = m.binary_node.position.toUpperCase();
+                    if (pos === 'LEFT') posBadge = '<span class="sales-leg-badge badge-left">👈 LEFT</span>';
+                    else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
+                }
+
+                const qualBadge = m.qualification_status === 'QUALIFIED'
+                    ? '<span class="badge-status paid">★ QUALIFIED</span>'
+                    : (m.qualification_status === 'PURCHASED' ? '<span class="badge-status" style="background:rgba(33,150,243,0.15); color:#42A5F5;">● PURCHASED</span>' : '<span class="badge-status pending">● REGISTERED</span>');
+
+                const statusBadge = (m.status || 'ACTIVE').toUpperCase() === 'ACTIVE'
+                    ? '<span class="badge-status paid">Active</span>'
+                    : '<span class="badge-status" style="background:rgba(239,83,80,0.15); color:#EF5350;">Suspended</span>';
+
+                const personalBvStr = `රු. ${Number(m.personal_bv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : '0';
+                const rightVol = m.volume_summary ? Number(m.volume_summary.current_right_volume || 0).toLocaleString() : '0';
+                const teamVolStr = `<small style="color:#42A5F5;">L: ${leftVol}</small> | <small style="color:#BA68C8;">R: ${rightVol}</small>`;
+                const walletStr = `<strong style="color:var(--brand-gold);">රු. ${Number(m.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong><br><small style="color:var(--text-muted);">Earned: රු. ${Number(m.total_commission || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</small>`;
+
+                tr.innerHTML = `
+                    <td>
+                        <strong>${m.full_name || m.username}</strong><br>
+                        <code style="color:var(--text-muted);">@${m.username}</code> <small style="color:rgba(255,255,255,0.3);">(${m.id})</small>
+                    </td>
+                    <td>${sponsorText}</td>
+                    <td>${posBadge}</td>
+                    <td style="font-weight:700; color:var(--brand-green-light);">${personalBvStr}</td>
+                    <td>${teamVolStr}</td>
+                    <td>${walletStr}</td>
+                    <td>
+                        ${statusBadge}<br>
+                        <div style="margin-top:4px;">${qualBadge}</div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
+                            <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
+                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        function renderAdminMembersFallbackRows(users) {
+            const tableBody = document.getElementById('registeredUsersTableBody');
+            if (!tableBody) return;
+            tableBody.innerHTML = '';
+            users.forEach(user => {
+                const tr = document.createElement('tr');
+                const name = user.name || 'N/A';
+                const email = user.email || 'N/A';
+                const status = user.status || 'Active';
+                tr.innerHTML = `
+                    <td><strong>${name}</strong><br><code>${email}</code></td>
+                    <td><span style="color:var(--text-muted);">Direct</span></td>
+                    <td><span class="badge-status">ROOT</span></td>
+                    <td>රු. 0.00</td>
+                    <td>L: 0 | R: 0</td>
+                    <td>රු. 0.00</td>
+                    <td><span class="badge-status paid">${status}</span></td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px;">🔄 Status</button>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        async function openMemberDetailModal(memberId) {
+            const modal = document.getElementById('memberDetailModal');
+            if (!modal) return;
+            modal.classList.add('open');
+            modal.style.display = 'flex';
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch(`/api/admin/members/${encodeURIComponent(memberId)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.member) {
+                        applyMemberModalData(data.member);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching member details:', e);
+            }
+        }
+
+        function closeMemberDetailModal() {
+            const modal = document.getElementById('memberDetailModal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+        }
+
+        function applyMemberModalData(m) {
+            const p = m.profile || {};
+            const net = m.network || {};
+            const bv = m.business_volume || {};
+            const fin = m.financial || {};
+            const purch = m.purchases || [];
+
+            const name = p.full_name || p.username || 'Member';
+            document.getElementById('modalMemberAvatar').textContent = name[0].toUpperCase();
+            document.getElementById('modalMemberName').textContent = name;
+            document.getElementById('modalMemberUsername').textContent = `@${p.username} (ID: ${p.id})`;
+            document.getElementById('modalMemberEmail').textContent = p.email || 'N/A';
+            document.getElementById('modalMemberMobile').textContent = p.mobile || 'N/A';
+            document.getElementById('modalMemberAccountStatus').textContent = p.status || 'ACTIVE';
+            document.getElementById('modalMemberQualStatus').textContent = p.qualification_status || 'REGISTERED';
+            document.getElementById('modalMemberKycStatus').textContent = p.kyc_status || 'PENDING';
+            document.getElementById('modalMemberJoinDate').textContent = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A';
+
+            document.getElementById('modalMemberSponsor').textContent = net.sponsor ? `${net.sponsor.full_name} (@${net.sponsor.username})` : 'Direct Company';
+            document.getElementById('modalMemberParent').textContent = (net.binary_placement && net.binary_placement.parent_username) ? `@${net.binary_placement.parent_username}` : 'Root';
+            
+            const pos = (net.binary_placement && net.binary_placement.position) ? net.binary_placement.position.toUpperCase() : 'ROOT';
+            const posEl = document.getElementById('modalMemberPosition');
+            if (posEl) {
+                posEl.textContent = pos;
+                posEl.className = pos === 'LEFT' ? 'sales-leg-badge badge-left' : (pos === 'RIGHT' ? 'sales-leg-badge badge-right' : 'badge-status');
+            }
+
+            document.getElementById('modalMemberDirectCount').textContent = `${net.direct_referrals_count || 0} Members`;
+            document.getElementById('modalMemberLeftCount').textContent = net.left_team_count || 0;
+            document.getElementById('modalMemberRightCount').textContent = net.right_team_count || 0;
+
+            document.getElementById('modalMemberPersonalBv').textContent = `රු. ${Number(bv.personal_bv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberLeftVol').textContent = `රු. ${Number(bv.current_left_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberRightVol').textContent = `රු. ${Number(bv.current_right_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberMatchedVol').textContent = `රු. ${Number(bv.matched_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberCarryVol').textContent = `L: ${Number(bv.carry_forward_left || 0).toLocaleString()} | R: ${Number(bv.carry_forward_right || 0).toLocaleString()}`;
+
+            document.getElementById('modalMemberAvailBalance').textContent = `රු. ${Number(fin.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberTotalEarned').textContent = `රු. ${Number(fin.total_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberDirectEarned').textContent = `රු. ${Number(fin.direct_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberBinaryEarned').textContent = `රු. ${Number(fin.binary_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberPaidBalance').textContent = `රු. ${Number(fin.paid_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+            // Purchases Table
+            const pBody = document.getElementById('modalMemberPurchasesBody');
+            if (pBody) {
+                if (purch.length === 0) {
+                    pBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:12px;">No purchases recorded.</td></tr>`;
+                } else {
+                    pBody.innerHTML = purch.map(pc => `
+                        <tr>
+                            <td><code>${pc.order_number || pc.id}</code></td>
+                            <td><strong>${pc.product_name}</strong></td>
+                            <td style="font-weight:700;">රු. ${Number(pc.price_paid || 0).toLocaleString()}</td>
+                            <td style="color:var(--brand-green-light); font-weight:700;">${Number(pc.binary_volume || 0).toLocaleString()} BV</td>
+                            <td><span class="badge-status paid">${pc.status}</span></td>
+                            <td>${pc.activated_at ? new Date(pc.activated_at).toLocaleDateString() : 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            // Commissions Table
+            const cBody = document.getElementById('modalMemberCommissionsBody');
+            const comms = fin.commissions || [];
+            if (cBody) {
+                if (comms.length === 0) {
+                    cBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:12px;">No commissions recorded.</td></tr>`;
+                } else {
+                    cBody.innerHTML = comms.map(c => `
+                        <tr>
+                            <td>${c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}</td>
+                            <td><span class="badge-status" style="background:rgba(240,179,35,0.15); color:var(--brand-gold);">${c.type}</span></td>
+                            <td>${c.rate || 8}%</td>
+                            <td>රු. ${Number(c.calculated_amount || c.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td style="font-weight:700; color:var(--brand-green-light);">රු. ${Number(c.eligible_amount || c.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td style="color:var(--ph-red);">රු. ${Number(c.capped_amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td><span class="badge-status paid">${c.status || 'APPROVED'}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        let adminPollingInterval = null;
+        let adminLastEventId = null;
+
+        function startAdminLivePolling() {
+            if (adminPollingInterval) clearInterval(adminPollingInterval);
+
+            async function poll() {
+                if (document.hidden) return; // Pause polling when hidden
+
+                try {
+                    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                    const url = adminLastEventId ? `/api/admin/live-updates?sinceId=${encodeURIComponent(adminLastEventId)}` : '/api/admin/live-updates';
+                    const res = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.stats) {
+                            const salesEl = document.getElementById('dashboardMonthlySales');
+                            if (salesEl) salesEl.textContent = 'රු. ' + Number(data.stats.total_sales_lkr || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
+                            const affEl = document.getElementById('dashboardActiveAffiliates');
+                            if (affEl) affEl.textContent = data.stats.total_members || 0;
+                            const paidEl = document.getElementById('dashboardPaidComm');
+                            if (paidEl) paidEl.textContent = 'රු. ' + Number(data.stats.total_commissions_paid_lkr || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
+                        }
+
+                        if (data && data.events && data.events.length > 0) {
+                            data.events.forEach(evt => {
+                                adminLastEventId = evt.id;
+                                if (evt.type === 'NEW_MEMBER_REGISTERED') {
+                                    const d = evt.data || {};
+                                    showToast(`🟢 <strong>New Member Registered!</strong><br>${d.fullName || 'Member'} (@${d.username}) | Sponsor: <strong>${d.sponsor || 'None'}</strong> | Position: <strong>${d.position || 'Auto'}</strong>`);
+                                    renderRegisteredUsers();
+                                } else if (evt.type === 'ORDER_PAID') {
+                                    showToast(`💳 <strong>Payment Approved & Activated!</strong><br>${evt.message || 'Order Verified'}`);
+                                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                                }
+                            });
+                        }
+                    }
+                } catch (err) {
+                    // Silently retry on next tick
+                }
+            }
+
+            poll();
+            adminPollingInterval = setInterval(poll, 6000);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    poll();
+                }
+            });
         }
 
         async function approveRegisteredUser(email, name) {

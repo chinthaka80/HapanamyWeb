@@ -572,6 +572,304 @@ const mockSponsors = [];
 const mockReferralClicks = [];
 const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
+const mockLiveEvents = [];
+
+function addLiveEvent(type, data = {}, message = '') {
+    const event = {
+        id: 'evt-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
+        type,
+        data,
+        message: message || type,
+        created_at: new Date().toISOString()
+    };
+    mockLiveEvents.push(event);
+    if (mockLiveEvents.length > 200) {
+        mockLiveEvents.shift();
+    }
+    return event;
+}
+
+function getEnrichedAdminMembersList(filters = {}) {
+    const { search = '', status = 'all', qualification = 'all' } = filters;
+    const searchLower = (search || '').toLowerCase().trim();
+
+    return mockUsers.map(user => {
+        const sponsorRel = mockSponsors.find(s => s.user_id === user.id);
+        const sponsorUser = sponsorRel ? mockUsers.find(u => u.id === sponsorRel.sponsor_id || u.username === sponsorRel.sponsor_id) : null;
+        const binaryNode = mockBinaryNodes.find(n => n.user_id === user.id);
+        const parentUser = binaryNode && binaryNode.placement_parent_id ? mockUsers.find(u => u.id === binaryNode.placement_parent_id) : null;
+
+        const kyc = mockKycDocs.find(k => k.user_id === user.id);
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === user.id && p.status === 'ACTIVE');
+        const personalBv = userPurchases.reduce((sum, p) => sum + (p.binary_volume || p.price_paid || 0), 0);
+
+        const volSummary = VolumeLedger.getVolumeSummary(user.id, mockVolumeLedger);
+        const wallet = MLMNetworkEngine.getMemberWallet(user.id, { walletLedger: mockWalletLedger });
+        const earnings = MLMNetworkEngine.getMemberEarningsSummary(user.id, {
+            commissionLedger: mockCommissionTransactions,
+            walletLedger: mockWalletLedger
+        });
+
+        const hasDirect = mockSponsors.some(s => s.sponsor_id === user.id);
+        const isQualified = userPurchases.length > 0 && hasDirect;
+        const qualStatus = user.qualification_status || (isQualified ? 'QUALIFIED' : (userPurchases.length > 0 ? 'PURCHASED' : 'REGISTERED'));
+
+        return {
+            id: user.id,
+            username: user.username,
+            full_name: user.full_name || user.name || user.username,
+            email: user.email,
+            mobile: user.mobile || user.phone || 'N/A',
+            role: user.role || 'member',
+            status: user.status || 'ACTIVE',
+            qualification_status: qualStatus,
+            is_qualified: isQualified,
+            kyc_status: kyc ? kyc.status : 'PENDING',
+            sponsor: sponsorUser ? {
+                id: sponsorUser.id,
+                username: sponsorUser.username,
+                full_name: sponsorUser.full_name || sponsorUser.name || sponsorUser.username
+            } : null,
+            binary_node: binaryNode ? {
+                placement_parent_id: binaryNode.placement_parent_id,
+                parent_username: parentUser ? parentUser.username : null,
+                position: binaryNode.position || 'ROOT',
+                depth: binaryNode.depth || 1,
+                path: binaryNode.path || ''
+            } : null,
+            personal_bv: personalBv,
+            active_courses_count: userPurchases.length,
+            total_commission: earnings.total_earned,
+            available_balance: wallet.available_balance,
+            volume_summary: volSummary,
+            created_at: user.created_at || '2026-09-01T00:00:00Z'
+        };
+    }).filter(m => {
+        if (status && status !== 'all' && (m.status || '').toLowerCase() !== status.toLowerCase()) return false;
+        if (qualification && qualification !== 'all' && (m.qualification_status || '').toLowerCase() !== qualification.toLowerCase()) return false;
+        if (searchLower) {
+            const nameMatch = (m.full_name || '').toLowerCase().includes(searchLower);
+            const userMatch = (m.username || '').toLowerCase().includes(searchLower);
+            const emailMatch = (m.email || '').toLowerCase().includes(searchLower);
+            const sponsorMatch = m.sponsor && ((m.sponsor.username || '').toLowerCase().includes(searchLower) || (m.sponsor.full_name || '').toLowerCase().includes(searchLower));
+            return nameMatch || userMatch || emailMatch || sponsorMatch;
+        }
+        return true;
+    });
+}
+
+function getEnrichedAdminMemberDetail(userId) {
+    const user = mockUsers.find(u => u.id === userId || u.username === userId);
+    if (!user) return null;
+
+    const sponsorRel = mockSponsors.find(s => s.user_id === user.id);
+    const sponsorUser = sponsorRel ? mockUsers.find(u => u.id === sponsorRel.sponsor_id || u.username === sponsorRel.sponsor_id) : null;
+    const binaryNode = mockBinaryNodes.find(n => n.user_id === user.id);
+    const parentUser = binaryNode && binaryNode.placement_parent_id ? mockUsers.find(u => u.id === binaryNode.placement_parent_id) : null;
+
+    const kyc = mockKycDocs.find(k => k.user_id === user.id);
+    const bank = mockBankAccounts.find(b => b.user_id === user.id);
+    const userPurchases = mockProductPurchases.filter(p => p.user_id === user.id);
+    const activePurchases = userPurchases.filter(p => p.status === 'ACTIVE');
+    const personalBv = activePurchases.reduce((sum, p) => sum + (p.binary_volume || p.price_paid || 0), 0);
+
+    const volSummary = VolumeLedger.getVolumeSummary(user.id, mockVolumeLedger);
+    const wallet = MLMNetworkEngine.getMemberWallet(user.id, { walletLedger: mockWalletLedger });
+    const earnings = MLMNetworkEngine.getMemberEarningsSummary(user.id, {
+        commissionLedger: mockCommissionTransactions,
+        walletLedger: mockWalletLedger
+    });
+    const network = MLMNetworkEngine.getMemberNetwork(user.id, {
+        binaryNodes: mockBinaryNodes,
+        users: mockUsers,
+        purchases: mockProductPurchases,
+        volumeLedger: mockVolumeLedger,
+        sponsors: mockSponsors
+    });
+
+    const userCommissions = mockCommissionTransactions.filter(c => c.user_id === user.id);
+    const userLedger = mockWalletLedger.filter(tx => tx.user_id === user.id);
+    const userWithdrawals = mockWithdrawalRequests.filter(w => w.user_id === user.id);
+
+    return {
+        profile: {
+            id: user.id,
+            username: user.username,
+            full_name: user.full_name || user.name || user.username,
+            email: user.email,
+            mobile: user.mobile || user.phone || 'N/A',
+            role: user.role || 'member',
+            status: user.status || 'ACTIVE',
+            qualification_status: user.qualification_status || (activePurchases.length > 0 && mockSponsors.some(s => s.sponsor_id === user.id) ? 'QUALIFIED' : 'REGISTERED'),
+            kyc_status: kyc ? kyc.status : 'PENDING',
+            created_at: user.created_at || '2026-09-01T00:00:00Z',
+            bank_account: bank || null
+        },
+        network: {
+            sponsor: sponsorUser ? {
+                id: sponsorUser.id,
+                username: sponsorUser.username,
+                full_name: sponsorUser.full_name || sponsorUser.name || sponsorUser.username
+            } : null,
+            binary_placement: binaryNode ? {
+                placement_parent_id: binaryNode.placement_parent_id,
+                parent_username: parentUser ? parentUser.username : null,
+                position: binaryNode.position || 'ROOT',
+                depth: binaryNode.depth || 1,
+                path: binaryNode.path || ''
+            } : null,
+            direct_referrals: network.direct_referrals || [],
+            direct_referrals_count: (network.direct_referrals || []).length,
+            left_team_count: network.center_member ? network.center_member.left_team_count : (network.tree && network.tree.left ? 1 : 0),
+            right_team_count: network.center_member ? network.center_member.right_team_count : (network.tree && network.tree.right ? 1 : 0),
+            center_member: network.center_member,
+            left_member: network.left_member,
+            right_member: network.right_member,
+            team_list: network.team_list || []
+        },
+        business_volume: {
+            personal_bv: personalBv,
+            current_left_volume: volSummary.current_left_volume,
+            current_right_volume: volSummary.current_right_volume,
+            lifetime_left_volume: volSummary.lifetime_left_volume,
+            lifetime_right_volume: volSummary.lifetime_right_volume,
+            matched_volume: volSummary.matched_volume,
+            carry_forward_left: volSummary.carry_forward_left,
+            carry_forward_right: volSummary.carry_forward_right,
+            weaker_leg: volSummary.weaker_leg,
+            total_team_points: volSummary.lifetime_left_volume + volSummary.lifetime_right_volume
+        },
+        financial: {
+            available_balance: wallet.available_balance,
+            total_earned: earnings.total_earned,
+            direct_earned: earnings.direct_earned,
+            binary_earned: earnings.binary_earned,
+            pending_balance: earnings.pending_balance,
+            paid_balance: earnings.paid_balance,
+            withdrawal_hold_balance: earnings.withdrawal_hold_balance,
+            commissions: userCommissions,
+            ledger_transactions: userLedger,
+            withdrawals: userWithdrawals
+        },
+        purchases: userPurchases.map(p => {
+            const prod = mockProducts.find(mp => mp.id === p.product_id) || {};
+            const dep = mockPaymentDeposits.find(d => d.purchase_id === p.id);
+            return {
+                id: p.id,
+                order_number: p.order_number || ('ORD-' + p.id.substring(6).toUpperCase()),
+                product_id: p.product_id,
+                product_name: p.product_name || prod.name || prod.title || 'Masterclass',
+                price_paid: p.price_paid || prod.selling_price || 0,
+                binary_volume: p.binary_volume || prod.binary_volume || p.price_paid || 0,
+                status: p.status,
+                activated_at: p.activated_at || p.created_at,
+                created_at: p.created_at,
+                bank_reference: dep ? dep.bank_reference : null,
+                slip_url: dep ? dep.slip_url : null
+            };
+        })
+    };
+}
+
+function getEnrichedAdminOrdersList(filters = {}) {
+    const { status = 'all' } = filters;
+    const ordersMap = new Map();
+
+    // 1. Process from mockProductPurchases
+    mockProductPurchases.forEach(p => {
+        const user = mockUsers.find(u => u.id === p.user_id) || {};
+        const sponsorRel = mockSponsors.find(s => s.user_id === p.user_id);
+        const sponsorUser = sponsorRel ? mockUsers.find(u => u.id === sponsorRel.sponsor_id || u.username === sponsorRel.sponsor_id) : null;
+        const prod = mockProducts.find(mp => mp.id === p.product_id) || {};
+        const dep = mockPaymentDeposits.find(d => d.purchase_id === p.id || d.order_number === p.order_number);
+        const comms = mockCommissionTransactions.filter(c => c.source_purchase_id === p.id);
+
+        const orderNum = p.order_number || (dep && dep.order_number) || ('ORD-' + p.id.substring(6).toUpperCase());
+        const sellingPrice = p.price_paid || (dep && dep.amount) || prod.selling_price || prod.price || 0;
+        const directComm = CommissionCore.calculateDirectCommission(sellingPrice, prod.direct_commission_percent || 8.0);
+        const bv = p.binary_volume || prod.binary_volume || sellingPrice;
+        const binaryComm = CommissionCore.calculateBinaryCommission(bv, prod.binary_commission_percent || 7.0);
+
+        ordersMap.set(p.id, {
+            id: p.id,
+            order_number: orderNum,
+            user_id: p.user_id,
+            customer_name: user.full_name || user.name || user.username || 'Customer',
+            customer_username: user.username || 'customer',
+            customer_email: user.email || 'N/A',
+            product_id: p.product_id,
+            product_name: p.product_name || prod.name || prod.title || 'Course',
+            category: prod.category || 'Education',
+            amount: sellingPrice,
+            binary_volume: bv,
+            direct_commission_amount: directComm,
+            binary_commission_amount: binaryComm,
+            status: p.status || (dep ? dep.status : 'PENDING'),
+            bank_reference: dep ? dep.bank_reference : (p.bank_reference || 'N/A'),
+            transfer_date: dep ? dep.transfer_date : (p.created_at ? p.created_at.split('T')[0] : '2026-09-01'),
+            slip_url: dep ? dep.slip_url : null,
+            admin_notes: dep ? dep.notes : null,
+            sponsor: sponsorUser ? {
+                id: sponsorUser.id,
+                username: sponsorUser.username,
+                full_name: sponsorUser.full_name || sponsorUser.name || sponsorUser.username
+            } : null,
+            commissions_credited: comms,
+            created_at: p.created_at || (dep ? dep.created_at : new Date().toISOString()),
+            reviewed_at: (dep && dep.reviewed_at) || p.activated_at || null
+        });
+    });
+
+    // 2. Incorporate any deposits that don't have matching purchases yet
+    mockPaymentDeposits.forEach(d => {
+        if (!ordersMap.has(d.purchase_id)) {
+            const user = mockUsers.find(u => u.id === d.user_id) || {};
+            const sponsorRel = mockSponsors.find(s => s.user_id === d.user_id);
+            const sponsorUser = sponsorRel ? mockUsers.find(u => u.id === sponsorRel.sponsor_id || u.username === sponsorRel.sponsor_id) : null;
+            const prod = mockProducts.find(mp => mp.id === d.product_id) || {};
+            const sellingPrice = d.amount || prod.selling_price || prod.price || 0;
+            const directComm = CommissionCore.calculateDirectCommission(sellingPrice, prod.direct_commission_percent || 8.0);
+            const bv = prod.binary_volume || sellingPrice;
+            const binaryComm = CommissionCore.calculateBinaryCommission(bv, prod.binary_commission_percent || 7.0);
+
+            ordersMap.set(d.id, {
+                id: d.purchase_id || d.id,
+                order_number: d.order_number || ('ORD-' + d.id.substring(4).toUpperCase()),
+                user_id: d.user_id,
+                customer_name: user.full_name || user.name || user.username || 'Customer',
+                customer_username: user.username || 'customer',
+                customer_email: user.email || 'N/A',
+                product_id: d.product_id,
+                product_name: d.product_name || prod.name || prod.title || 'Course',
+                category: prod.category || 'Education',
+                amount: sellingPrice,
+                binary_volume: bv,
+                direct_commission_amount: directComm,
+                binary_commission_amount: binaryComm,
+                status: d.status || 'PENDING',
+                bank_reference: d.bank_reference || 'N/A',
+                transfer_date: d.transfer_date || (d.created_at ? d.created_at.split('T')[0] : '2026-09-01'),
+                slip_url: d.slip_url || null,
+                admin_notes: d.notes || null,
+                sponsor: sponsorUser ? {
+                    id: sponsorUser.id,
+                    username: sponsorUser.username,
+                    full_name: sponsorUser.full_name || sponsorUser.name || sponsorUser.username
+                } : null,
+                commissions_credited: [],
+                created_at: d.created_at || new Date().toISOString(),
+                reviewed_at: d.reviewed_at || null
+            });
+        }
+    });
+
+    const list = Array.from(ordersMap.values()).sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    if (status && status !== 'all') {
+        return list.filter(o => (o.status || '').toLowerCase() === status.toLowerCase());
+    }
+    return list;
+}
+
 
 function parseRequestBody(req, maxSizeBytes = 10 * 1024 * 1024) {
     return new Promise((resolve) => {
@@ -755,6 +1053,15 @@ const server = http.createServer(async (req, res) => {
             sendJSON(res, 400, { error: result.error });
             return;
         }
+
+        addLiveEvent('NEW_MEMBER_REGISTERED', {
+            userId: result.user.id,
+            username: result.user.username,
+            fullName: result.user.full_name,
+            sponsor: result.sponsor ? result.sponsor.sponsor_username : 'None',
+            sponsorId: result.sponsor ? result.sponsor.sponsor_id : null,
+            position: result.placement ? result.placement.position : 'N/A'
+        }, `New Member Registered: ${result.user.full_name} (@${result.user.username}) | Sponsor: ${result.sponsor ? result.sponsor.sponsor_username : 'None'} | Position: ${result.placement ? result.placement.position : 'N/A'}`);
 
         sendJSON(res, 201, result);
         return;
@@ -2889,6 +3196,14 @@ const server = http.createServer(async (req, res) => {
 
                 ProductService.triggerPurchaseActivation(activePurchase);
                 KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id, null, { snapshot_id: snapshot.id });
+
+                addLiveEvent('ORDER_PAID', {
+                    orderNumber: activePurchase.order_number,
+                    purchaseId: activePurchase.id,
+                    userId: activePurchase.user_id,
+                    amount: activePurchase.price_paid,
+                    productName: product.name || product.title
+                }, `Payment Approved: Order #${activePurchase.order_number} (${product.name || product.title}) - LKR ${activePurchase.price_paid.toFixed(2)}`);
             } else {
                 mockProductPurchases[purchIdx].status = 'CANCELLED';
             }
@@ -3415,119 +3730,8 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ========================================================
-    // MEMBER DASHBOARD API ROUTER (STEP 26)
+    // MEMBER DASHBOARD API ROUTER (STEP 26 / STEP 50)
     // ========================================================
-
-    // GET /api/member/dashboard
-    if (req.method === 'GET' && pathname === '/api/member/dashboard') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
-            return;
-        }
-
-        try {
-            const dashboardData = MemberDashboardService.getMemberDashboardData({
-                userId: authUser.id,
-                users: mockUsers,
-                kycDocs: mockKycDocs,
-                purchases: mockProductPurchases,
-                sponsors: mockSponsors,
-                binaryNodes: mockBinaryNodes,
-                walletLedger: mockWalletLedger,
-                volumeLedger: mockVolumeLedger,
-                withdrawals: mockWithdrawalRequests,
-                paymentSubmissions: mockPaymentDeposits,
-                baseUrl: `http://${req.headers.host || 'localhost:3000'}`
-            });
-
-            sendJSON(res, 200, dashboardData);
-        } catch (err) {
-            sendJSON(res, 500, { error: err.message });
-        }
-        return;
-    }
-
-    // GET /api/member/network
-    if (req.method === 'GET' && pathname === '/api/member/network') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
-            return;
-        }
-
-        try {
-            const data = MLMNetworkEngine.getMemberNetwork(authUser.id, {
-                binaryNodes: mockBinaryNodes,
-                users: mockUsers,
-                purchases: mockProductPurchases,
-                volumeLedger: mockVolumeLedger,
-                sponsors: mockSponsors
-            });
-            sendJSON(res, 200, data);
-        } catch (err) {
-            sendJSON(res, 500, { error: err.message });
-        }
-        return;
-    }
-
-    // GET /api/member/commissions
-    if (req.method === 'GET' && pathname === '/api/member/commissions') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
-            return;
-        }
-
-        try {
-            const data = MLMNetworkEngine.getMemberCommissions(authUser.id, {
-                commissionLedger: mockCommissionTransactions
-            });
-            sendJSON(res, 200, data);
-        } catch (err) {
-            sendJSON(res, 500, { error: err.message });
-        }
-        return;
-    }
-
-    // GET /api/member/wallet
-    if (req.method === 'GET' && pathname === '/api/member/wallet') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
-            return;
-        }
-
-        try {
-            const data = MLMNetworkEngine.getMemberWallet(authUser.id, {
-                walletLedger: mockWalletLedger
-            });
-            sendJSON(res, 200, data);
-        } catch (err) {
-            sendJSON(res, 500, { error: err.message });
-        }
-        return;
-    }
-
-    // GET /api/member/earnings-summary
-    if (req.method === 'GET' && pathname === '/api/member/earnings-summary') {
-        const authUser = getAuthenticatedUser(req);
-        if (!authUser) {
-            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
-            return;
-        }
-
-        try {
-            const data = MLMNetworkEngine.getMemberEarningsSummary(authUser.id, {
-                commissionLedger: mockCommissionTransactions,
-                walletLedger: mockWalletLedger
-            });
-            sendJSON(res, 200, data);
-        } catch (err) {
-            sendJSON(res, 500, { error: err.message });
-        }
-        return;
-    }
 
     // GET /api/member/dashboard (Unified Member Dashboard API)
     if (req.method === 'GET' && pathname === '/api/member/dashboard') {
@@ -3623,12 +3827,406 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /api/member/network
+    if (req.method === 'GET' && pathname === '/api/member/network') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberNetwork(authUser.id, {
+                binaryNodes: mockBinaryNodes,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/commissions
+    if (req.method === 'GET' && pathname === '/api/member/commissions') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberCommissions(authUser.id, {
+                commissionLedger: mockCommissionTransactions
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/wallet
+    if (req.method === 'GET' && pathname === '/api/member/wallet') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberWallet(authUser.id, {
+                walletLedger: mockWalletLedger
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/earnings-summary
+    if (req.method === 'GET' && pathname === '/api/member/earnings-summary') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const data = MLMNetworkEngine.getMemberEarningsSummary(authUser.id, {
+                commissionLedger: mockCommissionTransactions,
+                walletLedger: mockWalletLedger
+            });
+            sendJSON(res, 200, data);
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/team (Filterable Team List)
+    if (req.method === 'GET' && pathname === '/api/member/team') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const type = url.searchParams.get('type') || 'all'; // all, direct, left, right, level1..level7
+            const filter = url.searchParams.get('filter') || url.searchParams.get('status') || 'all'; // all, active, qualified, pending, registered, purchased
+
+            const network = MLMNetworkEngine.getMemberNetwork(authUser.id, {
+                binaryNodes: mockBinaryNodes,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors
+            });
+
+            let teamList = network.team_list || [];
+
+            // Filter by type
+            if (type === 'direct') {
+                const directIds = new Set(mockSponsors.filter(s => s.sponsor_id === authUser.id).map(s => s.user_id));
+                teamList = teamList.filter(m => directIds.has(m.id || m.user_id));
+            } else if (type === 'left') {
+                teamList = teamList.filter(m => (m.position || '').toUpperCase() === 'LEFT');
+            } else if (type === 'right') {
+                teamList = teamList.filter(m => (m.position || '').toUpperCase() === 'RIGHT');
+            } else if (type.startsWith('level')) {
+                const targetLevel = parseInt(type.replace('level', '')) || 1;
+                teamList = teamList.filter(m => (m.level || m.depth || 1) === targetLevel);
+            }
+
+            // Filter by status / qualification
+            if (filter === 'active') {
+                teamList = teamList.filter(m => m.is_active || (m.status || '').toUpperCase() === 'ACTIVE');
+            } else if (filter === 'qualified') {
+                teamList = teamList.filter(m => (m.qualification_status || '').toUpperCase() === 'QUALIFIED');
+            } else if (filter === 'purchased') {
+                teamList = teamList.filter(m => mockProductPurchases.some(p => p.user_id === (m.id || m.user_id) && p.status === 'ACTIVE'));
+            } else if (filter === 'not_purchased' || filter === 'registered') {
+                teamList = teamList.filter(m => !mockProductPurchases.some(p => p.user_id === (m.id || m.user_id) && p.status === 'ACTIVE'));
+            }
+
+            sendJSON(res, 200, {
+                success: true,
+                count: teamList.length,
+                type,
+                filter,
+                team: teamList
+            });
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/network-summary (3-Card Visualizer API)
+    if (req.method === 'GET' && pathname === '/api/member/network-summary') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const network = MLMNetworkEngine.getMemberNetwork(authUser.id, {
+                binaryNodes: mockBinaryNodes,
+                users: mockUsers,
+                purchases: mockProductPurchases,
+                volumeLedger: mockVolumeLedger,
+                sponsors: mockSponsors
+            });
+            const volSummary = VolumeLedger.getVolumeSummary(authUser.id, mockVolumeLedger);
+
+            sendJSON(res, 200, {
+                success: true,
+                center_member: network.center_member,
+                left_member: network.left_member,
+                right_member: network.right_member,
+                volume_summary: volSummary
+            });
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/volume (Business Volume Breakdown API)
+    if (req.method === 'GET' && pathname === '/api/member/volume') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const volSummary = VolumeLedger.getVolumeSummary(authUser.id, mockVolumeLedger);
+            const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id && p.status === 'ACTIVE');
+            const personalBv = userPurchases.reduce((sum, p) => sum + (p.binary_volume || p.price_paid || 0), 0);
+
+            sendJSON(res, 200, {
+                success: true,
+                personal_bv: personalBv,
+                current_left_volume: volSummary.current_left_volume,
+                current_right_volume: volSummary.current_right_volume,
+                lifetime_left_volume: volSummary.lifetime_left_volume,
+                lifetime_right_volume: volSummary.lifetime_right_volume,
+                matched_volume: volSummary.matched_volume,
+                carry_forward_left: volSummary.carry_forward_left,
+                carry_forward_right: volSummary.carry_forward_right,
+                weaker_leg: volSummary.weaker_leg,
+                total_team_points: volSummary.lifetime_left_volume + volSummary.lifetime_right_volume
+            });
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // GET /api/member/live-updates (Member Real-time Live Polling)
+    if (req.method === 'GET' && pathname === '/api/member/live-updates') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized. Please sign in.' });
+            return;
+        }
+
+        try {
+            const memberEvents = mockLiveEvents.filter(e => {
+                if (!e.data) return false;
+                if (e.data.userId === authUser.id || e.data.sponsorId === authUser.id || e.data.sponsor === authUser.username) return true;
+                return false;
+            });
+
+            const wallet = MLMNetworkEngine.getMemberWallet(authUser.id, { walletLedger: mockWalletLedger });
+            const earnings = MLMNetworkEngine.getMemberEarningsSummary(authUser.id, {
+                commissionLedger: mockCommissionTransactions,
+                walletLedger: mockWalletLedger
+            });
+            const volSummary = VolumeLedger.getVolumeSummary(authUser.id, mockVolumeLedger);
+
+            sendJSON(res, 200, {
+                success: true,
+                timestamp: new Date().toISOString(),
+                events: memberEvents.slice(-10),
+                balances: {
+                    available_balance: wallet.available_balance,
+                    total_earned: earnings.total_earned,
+                    left_volume: volSummary.current_left_volume,
+                    right_volume: volSummary.current_right_volume
+                }
+            });
+        } catch (err) {
+            sendJSON(res, 500, { error: err.message });
+        }
+        return;
+    }
+
+    // POST /api/member/payments/verify-instant (Instant Checkout & Activation Endpoint)
+    if (req.method === 'POST' && pathname === '/api/member/payments/verify-instant') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const { productId, orderNumber, amount, paymentMethod } = body;
+
+        const product = mockProducts.find(p => p.id === productId || p.code === productId) || mockProducts[0];
+        const orderAmt = parseFloat(amount) || product.selling_price || product.price;
+
+        const purchaseId = 'purch-' + Math.random().toString(36).substr(2, 9);
+        const ordNum = orderNumber || ('ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+        const now = new Date().toISOString();
+
+        const activePurchase = {
+            id: purchaseId,
+            order_number: ordNum,
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            price_paid: orderAmt,
+            binary_volume: product.binary_volume || orderAmt,
+            status: 'ACTIVE',
+            activated_at: now,
+            created_at: now
+        };
+        mockProductPurchases.push(activePurchase);
+
+        const depositId = 'dep-' + Math.random().toString(36).substr(2, 9);
+        const deposit = {
+            id: depositId,
+            order_number: ordNum,
+            purchase_id: purchaseId,
+            user_id: authUser.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            amount: orderAmt,
+            bank_reference: 'INSTANT-' + (paymentMethod || 'CARD') + '-' + Math.random().toString(36).substring(2, 7).toUpperCase(),
+            transfer_date: now.split('T')[0],
+            slip_url: 'storage/private/slips/instant-verified.jpg',
+            status: 'APPROVED',
+            reviewer_id: 'SYSTEM_GATEWAY',
+            reviewed_at: now,
+            notes: 'Instant verified via online payment gateway.',
+            created_at: now
+        };
+        mockPaymentDeposits.push(deposit);
+
+        // Create Immutable Economics Snapshot
+        const snapshot = ProductSnapshotService.createSnapshot(
+            product,
+            activePurchase.id,
+            activePurchase.activated_at
+        );
+        mockProductSnapshots.push(snapshot);
+
+        // Process Commissions & Volume Propagation
+        const commResult = CommissionCore.processPurchaseCommissions(activePurchase, snapshot, {
+            binaryNodes: mockBinaryNodes,
+            purchases: mockProductPurchases,
+            sponsors: mockSponsors,
+            commissionLedger: mockCommissionTransactions,
+            volumeLedger: mockVolumeLedger,
+            walletLedger: mockWalletLedger,
+            dailyEarningsMap: mockDailyEarningsMap
+        });
+
+        ProductService.triggerPurchaseActivation(activePurchase);
+        KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED_INSTANT', 'product_purchases', purchaseId, null, { snapshot_id: snapshot.id });
+
+        addLiveEvent('ORDER_PAID', {
+            orderNumber: ordNum,
+            purchaseId: purchaseId,
+            userId: authUser.id,
+            amount: orderAmt,
+            productName: product.name || product.title
+        }, `Instant Purchase Paid: Order #${ordNum} (${product.name || product.title}) - LKR ${orderAmt.toFixed(2)}`);
+
+        sendJSON(res, 200, {
+            success: true,
+            orderNumber: ordNum,
+            purchaseId: purchaseId,
+            depositId: depositId,
+            product: product.name || product.title,
+            amount: orderAmt,
+            commissions: commResult
+        });
+        return;
+    }
+
     // ========================================================
-    // ADMIN MLM OPERATIONS DASHBOARD API ROUTER (STEP 27)
+    // ADMIN MLM OPERATIONS DASHBOARD API ROUTER (STEP 27 / STEP 50)
     // ========================================================
 
-    // GET /api/admin/network/validate
-    if (req.method === 'GET' && pathname === '/api/admin/network/validate') {
+    // GET /api/admin/members (Enriched Real-time Members List)
+    if (req.method === 'GET' && pathname === '/api/admin/members') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const search = url.searchParams.get('search') || '';
+        const status = url.searchParams.get('status') || 'all';
+        const qualification = url.searchParams.get('qualification') || 'all';
+
+        const members = getEnrichedAdminMembersList({ search, status, qualification });
+        sendJSON(res, 200, {
+            success: true,
+            count: members.length,
+            members
+        });
+        return;
+    }
+
+    // GET /api/admin/members/:id (Deep Detail Modal Inspection)
+    if (req.method === 'GET' && pathname.startsWith('/api/admin/members/')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const memberId = pathname.replace('/api/admin/members/', '').trim();
+        const detail = getEnrichedAdminMemberDetail(memberId);
+        if (!detail) {
+            sendJSON(res, 404, { error: 'Member not found.' });
+            return;
+        }
+
+        sendJSON(res, 200, { success: true, member: detail });
+        return;
+    }
+
+    // GET /api/admin/orders (Enriched Orders Table with Commissions & BV)
+    if (req.method === 'GET' && pathname === '/api/admin/orders') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const status = url.searchParams.get('status') || 'all';
+        const orders = getEnrichedAdminOrdersList({ status });
+        sendJSON(res, 200, {
+            success: true,
+            count: orders.length,
+            orders
+        });
+        return;
+    }
+
+    // GET /api/admin/network and /api/admin/network/validate
+    if (req.method === 'GET' && (pathname === '/api/admin/network' || pathname === '/api/admin/network/validate' || pathname === '/api/admin/network/status')) {
         const authUser = getAuthenticatedUser(req);
         if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
@@ -3649,6 +4247,46 @@ const server = http.createServer(async (req, res) => {
         } catch (err) {
             sendJSON(res, 500, { error: err.message });
         }
+        return;
+    }
+
+    // GET /api/admin/live-updates (Admin Real-time Live Polling)
+    if (req.method === 'GET' && pathname === '/api/admin/live-updates') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const sinceId = url.searchParams.get('sinceId');
+        let events = mockLiveEvents;
+        if (sinceId) {
+            const idx = mockLiveEvents.findIndex(e => e.id === sinceId);
+            if (idx !== -1) {
+                events = mockLiveEvents.slice(idx + 1);
+            }
+        }
+
+        const totalMembers = mockUsers.length;
+        const activePurchases = mockProductPurchases.filter(p => p.status === 'ACTIVE');
+        const totalSales = activePurchases.reduce((sum, p) => sum + (p.price_paid || 0), 0);
+        const pendingOrders = mockPaymentDeposits.filter(d => d.status === 'PENDING').length;
+        const pendingWithdrawals = mockWithdrawalRequests.filter(w => w.status === 'PENDING').length;
+        const totalCommissionsPaid = mockWalletLedger.filter(tx => (tx.type || '').includes('COMMISSION')).reduce((sum, tx) => sum + (tx.amount || 0), 0);
+
+        sendJSON(res, 200, {
+            success: true,
+            timestamp: new Date().toISOString(),
+            events,
+            stats: {
+                total_members: totalMembers,
+                active_courses_count: activePurchases.length,
+                total_sales_lkr: totalSales,
+                pending_orders_count: pendingOrders,
+                pending_withdrawals_count: pendingWithdrawals,
+                total_commissions_paid_lkr: totalCommissionsPaid
+            }
+        });
         return;
     }
 

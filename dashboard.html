@@ -1338,6 +1338,53 @@
                         </div>
                     </div>
 
+                    <!-- BUSINESS VOLUME (BV) BREAKDOWN CARD -->
+                    <div class="dashboard-card" style="margin-top: 24px;">
+                        <div class="dashboard-card-title">
+                            <div>
+                                <span style="font-size: 16.5px; font-weight: 800;">📈 BUSINESS VOLUME (BV) BREAKDOWN (ලකුණු විස්තරය)</span>
+                                <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 4px; font-weight: normal;">සත්‍යාපිත ද්විමය (Binary) සහ පුද්ගලික BV ලකුණු ගණනය</p>
+                            </div>
+                            <span class="badge-pill badge-qualified" id="bvWeakerLegBadge">Weaker Leg: BALANCED</span>
+                        </div>
+
+                        <div class="binary-summary-grid">
+                            <div class="binary-sum-card">
+                                <div class="binary-sum-card-title">Personal BV</div>
+                                <div class="binary-sum-card-val" id="bvPersonalBv" style="color: var(--brand-gold);">LKR 0.00</div>
+                            </div>
+                            <div class="binary-sum-card">
+                                <div class="binary-sum-card-title">Current Left BV</div>
+                                <div class="binary-sum-card-val" id="bvCurrentLeft">LKR 0.00</div>
+                            </div>
+                            <div class="binary-sum-card">
+                                <div class="binary-sum-card-title">Current Right BV</div>
+                                <div class="binary-sum-card-val" id="bvCurrentRight">LKR 0.00</div>
+                            </div>
+                            <div class="binary-sum-card">
+                                <div class="binary-sum-card-title">Matched Volume (7%)</div>
+                                <div class="binary-sum-card-val" id="bvMatchedVol" style="color: var(--brand-green);">LKR 0.00</div>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px;">
+                            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">LEFT CARRY FORWARD</div>
+                                    <div style="font-size: 18px; font-weight: 800; color: var(--text-primary);" id="bvCarryLeft">LKR 0.00</div>
+                                </div>
+                                <span class="sales-leg-badge badge-left">👈 LEFT</span>
+                            </div>
+                            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 12px; color: var(--text-muted); font-weight: 700;">RIGHT CARRY FORWARD</div>
+                                    <div style="font-size: 18px; font-weight: 800; color: var(--text-primary);" id="bvCarryRight">LKR 0.00</div>
+                                </div>
+                                <span class="sales-leg-badge badge-right">👉 RIGHT</span>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- MY TEAM LIST TABLE -->
                     <div class="dashboard-card" style="margin-top: 24px;">
                         <div class="dashboard-card-title">
@@ -1358,7 +1405,11 @@
                                 <button class="team-filter-btn" data-filter="left" onclick="setTeamFilter('left', this)">Left Team</button>
                                 <button class="team-filter-btn" data-filter="right" onclick="setTeamFilter('right', this)">Right Team</button>
                                 <button class="team-filter-btn" data-filter="active" onclick="setTeamFilter('active', this)">Active</button>
-                                <button class="team-filter-btn" data-filter="inactive" onclick="setTeamFilter('inactive', this)">Inactive</button>
+                                <button class="team-filter-btn" data-filter="qualified" onclick="setTeamFilter('qualified', this)">Qualified</button>
+                                <button class="team-filter-btn" data-filter="level1" onclick="setTeamFilter('level1', this)">Level 1</button>
+                                <button class="team-filter-btn" data-filter="level2" onclick="setTeamFilter('level2', this)">Level 2</button>
+                                <button class="team-filter-btn" data-filter="level3" onclick="setTeamFilter('level3', this)">Level 3</button>
+                                <button class="team-filter-btn" data-filter="level4-7" onclick="setTeamFilter('level4-7', this)">Levels 4-7</button>
                             </div>
                         </div>
 
@@ -1836,6 +1887,14 @@
                 if (currentTeamFilter === 'right' && (m.position || '').toUpperCase() !== 'RIGHT') return false;
                 if (currentTeamFilter === 'active' && !m.is_active && (m.status || '').toUpperCase() !== 'ACTIVE') return false;
                 if (currentTeamFilter === 'inactive' && (m.is_active || (m.status || '').toUpperCase() === 'ACTIVE')) return false;
+                if (currentTeamFilter === 'qualified' && (m.qualification_status || '').toUpperCase() !== 'QUALIFIED') return false;
+                if (currentTeamFilter === 'level1' && (m.level || m.depth || 1) !== 1) return false;
+                if (currentTeamFilter === 'level2' && (m.level || m.depth || 1) !== 2) return false;
+                if (currentTeamFilter === 'level3' && (m.level || m.depth || 1) !== 3) return false;
+                if (currentTeamFilter === 'level4-7') {
+                    const lvl = m.level || m.depth || 1;
+                    if (lvl < 4 || lvl > 7) return false;
+                }
 
                 if (searchVal) {
                     const nameMatch = (m.full_name || '').toLowerCase().includes(searchVal);
@@ -2249,20 +2308,40 @@
                 document.getElementById('withdrawAmountInput').max = data.earnings.available_balance || 0;
             }
 
-            // 3. Binary Network
+            // 3. Binary Network & BV Breakdown
             if (data.binary_network) {
-                document.getElementById('quickLeftCount').textContent = `${data.binary_network.left_team_count || 0} Members`;
-                document.getElementById('quickRightCount').textContent = `${data.binary_network.right_team_count || 0} Members`;
-                document.getElementById('quickLeftVol').textContent = `LKR ${Number(data.binary_network.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
-                document.getElementById('quickRightVol').textContent = `LKR ${Number(data.binary_network.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
+                const bn = data.binary_network;
+                document.getElementById('quickLeftCount').textContent = `${bn.left_team_count || 0} Members`;
+                document.getElementById('quickRightCount').textContent = `${bn.right_team_count || 0} Members`;
+                document.getElementById('quickLeftVol').textContent = `LKR ${Number(bn.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
+                document.getElementById('quickRightVol').textContent = `LKR ${Number(bn.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})} Vol`;
 
-                document.getElementById('treeLeftCount').textContent = data.binary_network.left_team_count || 0;
-                document.getElementById('treeRightCount').textContent = data.binary_network.right_team_count || 0;
-                document.getElementById('treeLeftVol').textContent = `LKR ${Number(data.binary_network.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                document.getElementById('treeRightVol').textContent = `LKR ${Number(data.binary_network.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                document.getElementById('treeLeftCount').textContent = bn.left_team_count || 0;
+                document.getElementById('treeRightCount').textContent = bn.right_team_count || 0;
+                document.getElementById('treeLeftVol').textContent = `LKR ${Number(bn.left_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                document.getElementById('treeRightVol').textContent = `LKR ${Number(bn.right_volume_lifetime || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
 
-                globalTeamList = data.binary_network.team_list || [];
-                renderSalesTeamVisualizer(data.binary_network);
+                // Populate BV breakdown elements if present
+                const curLeft = bn.left_volume_current !== undefined ? bn.left_volume_current : bn.left_volume_lifetime;
+                const curRight = bn.right_volume_current !== undefined ? bn.right_volume_current : bn.right_volume_lifetime;
+                const matched = Math.min(curLeft || 0, curRight || 0);
+
+                if (document.getElementById('bvCurrentLeft')) document.getElementById('bvCurrentLeft').textContent = `LKR ${Number(curLeft || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                if (document.getElementById('bvCurrentRight')) document.getElementById('bvCurrentRight').textContent = `LKR ${Number(curRight || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                if (document.getElementById('bvMatchedVol')) document.getElementById('bvMatchedVol').textContent = `LKR ${Number(matched || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                const cLeft = (curLeft || 0) - matched;
+                const cRight = (curRight || 0) - matched;
+                if (document.getElementById('bvCarryLeft')) document.getElementById('bvCarryLeft').textContent = `LKR ${Number(cLeft || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                if (document.getElementById('bvCarryRight')) document.getElementById('bvCarryRight').textContent = `LKR ${Number(cRight || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+                if (document.getElementById('bvWeakerLegBadge')) {
+                    const weaker = bn.weaker_leg || (curLeft < curRight ? 'LEFT' : (curRight < curLeft ? 'RIGHT' : 'BALANCED'));
+                    document.getElementById('bvWeakerLegBadge').textContent = `Weaker Leg: ${weaker}`;
+                }
+
+                globalTeamList = bn.team_list || [];
+                renderSalesTeamVisualizer(bn);
                 handleTeamFilterChange();
             }
 
@@ -2291,12 +2370,67 @@
             }
             if (data.products) {
                 renderPurchasedProducts(data.products.list);
+                const pBv = (data.products.list || []).reduce((sum, p) => sum + (p.binary_volume || p.price_paid || p.selling_price || 0), 0);
+                if (document.getElementById('bvPersonalBv')) {
+                    document.getElementById('bvPersonalBv').textContent = `LKR ${Number(pBv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                }
             }
+        }
+
+        let memberPollingInterval = null;
+        let memberLastEventId = null;
+
+        function startMemberLivePolling() {
+            if (memberPollingInterval) clearInterval(memberPollingInterval);
+
+            async function poll() {
+                if (document.hidden) return; // Pause polling when tab is hidden
+
+                try {
+                    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                    if (!token) return;
+
+                    const res = await fetch('/api/member/live-updates', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.events && data.events.length > 0) {
+                            data.events.forEach(evt => {
+                                if (memberLastEventId !== evt.id) {
+                                    memberLastEventId = evt.id;
+                                    if (evt.type === 'NEW_MEMBER_REGISTERED') {
+                                        const d = evt.data || {};
+                                        showMemberToast(`🟢 <strong>New Team Member Joined!</strong><br>${d.fullName || 'Member'} (@${d.username}) placed in your ${d.position || 'team'}!`);
+                                    } else if (evt.type === 'ORDER_PAID') {
+                                        showMemberToast(`💳 <strong>Team Purchase & Points Activated!</strong><br>${evt.message || 'Order Verified'}`);
+                                    }
+                                }
+                            });
+                            // Reload dashboard on new events
+                            loadLiveDashboard();
+                        }
+                    }
+                } catch (err) {
+                    // Silent failover to next poll cycle
+                }
+            }
+
+            memberPollingInterval = setInterval(poll, 6000);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    poll();
+                    loadLiveDashboard();
+                }
+            });
         }
 
         // Initialize on Load
         window.addEventListener('DOMContentLoaded', () => {
             loadLiveDashboard();
+            startMemberLivePolling();
         });
     </script>
 </body>

@@ -59,10 +59,12 @@ require('./step41-product-economics-engine.test');
 require('./step42-product-economics-validation-engine.test');
 require('./step43-auth-security-audit.test');
 require('./step44-mlm-network-engine.test');
+require('./step45-live-mlm-business-flow.test');
 require('./step46-sales-team-ui-verification.test');
 require('./step47-header-cleanup-verification.test');
 require('./step48-global-ui-scale-and-banner-recovery.test');
 require('./step49-nowatrix-brand-integration.test');
+require('./step50-realtime-registration-upline-commissions.test');
 
 // Run
 runTests();

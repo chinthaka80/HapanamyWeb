@@ -361,6 +361,15 @@ async function runLiveMLMBusinessFlowVerification() {
     };
 }
 
+if (typeof test === 'function') {
+    test('Step 45: 15-Point Live MLM Business Flow End-to-End Audit & Verification Suite', async () => {
+        const res = await runLiveMLMBusinessFlowVerification();
+        if (res.failed > 0) {
+            throw new Error(`${res.failed} tests failed in Step 45 suite`);
+        }
+    });
+}
+
 if (require.main === module) {
     runLiveMLMBusinessFlowVerification().then(res => {
         process.exit(res.failed > 0 ? 1 : 0);

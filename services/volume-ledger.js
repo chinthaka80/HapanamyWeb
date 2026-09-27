@@ -260,7 +260,7 @@ const VolumeLedger = {
             sourceUserId: userId,
             sourcePurchaseId: 'MATCH-SYSTEM',
             type: 'MATCHED_VOLUME',
-            idempotencyKey: `match-${userId}-left-${Date.now()}`
+            idempotencyKey: `match-${userId}-left-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`
         });
 
         this.addEntry(ledger, {
@@ -270,7 +270,7 @@ const VolumeLedger = {
             sourceUserId: userId,
             sourcePurchaseId: 'MATCH-SYSTEM',
             type: 'MATCHED_VOLUME',
-            idempotencyKey: `match-${userId}-right-${Date.now()}`
+            idempotencyKey: `match-${userId}-right-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`
         });
 
         return {
