@@ -33,7 +33,7 @@ test('STEP 55.1: student-dashboard.html must have dynamic stat elements defaulti
 test('STEP 55.2: student-dashboard.html must have "Explore & Buy Courses / පාඨමාලා මිලදී ගන්න" navigation link and topbar button', () => {
     assert(studentDashboardContent.includes('id="nav-buy-courses"'), 'Sidebar must have buy courses nav button');
     assert(studentDashboardContent.includes('btn-buy-courses-topbar'), 'Topbar must have quick buy courses CTA button');
-    assert(studentDashboardContent.includes('index.html#courses'), 'Buy buttons must direct to course catalog');
+    assert(studentDashboardContent.includes('courses.html') || studentDashboardContent.includes('index.html#courses'), 'Buy buttons must direct to course catalog');
 });
 
 test('STEP 55.3: student-dashboard.html course grid must be dynamically populated and NOT contain static hardcoded cards', () => {

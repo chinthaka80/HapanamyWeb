@@ -71,6 +71,7 @@ require('./step53-my-team-list-verification.test');
 require('./step54-live-registration-persistence.test');
 require('./step55-new-user-zero-products-and-purchase-flow.test');
 require('./step56-admin-subadmin-role-and-registration-visibility.test');
+require('./step57-complete-purchase-active-course-mlm-flow.test');
 
 // Run
 runTests();

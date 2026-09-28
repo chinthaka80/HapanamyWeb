@@ -1958,6 +1958,168 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // GET /api/products/my-purchases and /api/student/courses
+    if (req.method === 'GET' && (pathname === '/api/products/my-purchases' || pathname === '/api/student/courses')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser) {
+            sendJSON(res, 401, { error: 'Unauthorized.' });
+            return;
+        }
+
+        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const myProducts = userPurchases.map(p => {
+            const prod = mockProducts.find(mp => mp.id === p.product_id || mp.code === p.product_id) || {};
+            return {
+                purchase_id: p.id,
+                order_number: p.order_number || ('ORD-' + p.id.substring(6).toUpperCase()),
+                product_id: p.product_id,
+                product_name: p.product_name || prod.name || prod.title || 'Masterclass',
+                category: prod.category || 'Education',
+                selling_price: p.price_paid || prod.selling_price || 0,
+                image_url: prod.image_url || 'assets/facebook_course_banner.jpg',
+                status: p.status,
+                activated_at: p.activated_at || p.created_at,
+                classroom_url: prod.course_url || 'student-dashboard.html'
+            };
+        }).reverse();
+
+        sendJSON(res, 200, { success: true, myProducts, courses: myProducts });
+        return;
+    }
+
+    // GET /api/products/:id (Public Product Details lookup by slug, id, or code)
+    if (req.method === 'GET' && pathname.startsWith('/api/products/') && !pathname.startsWith('/api/products/list') && !pathname.startsWith('/api/products/create') && !pathname.startsWith('/api/products/edit') && !pathname.startsWith('/api/products/my-purchases')) {
+        const prodParam = pathname.replace('/api/products/', '').trim().toLowerCase();
+        const product = mockProducts.find(p => 
+            p.id.toLowerCase() === prodParam || 
+            (p.code && p.code.toLowerCase() === prodParam) ||
+            (prodParam === 'trading' && (p.id === 'titan-elite' || p.id === 'forex-course')) ||
+            (prodParam === 'ai-mastery' && p.id === 'ai-mastery-course') ||
+            (prodParam === 'social' && p.id === 'social-media-masterclass')
+        );
+
+        if (!product) {
+            sendJSON(res, 404, { error: 'Product not found.' });
+            return;
+        }
+
+        sendJSON(res, 200, { success: true, product });
+        return;
+    }
+
+    // POST /api/purchase/checkout (Server-Authoritative Pricing & Checkout Session)
+    if (req.method === 'POST' && (pathname === '/api/purchase/checkout' || pathname === '/api/checkout/session')) {
+        const body = await parseRequestBody(req);
+        const { productId, userEmail, userId } = body;
+
+        const prodParam = (productId || body.product_id || body.code || '').toLowerCase().trim();
+        const product = mockProducts.find(p => 
+            p.id.toLowerCase() === prodParam || 
+            (p.code && p.code.toLowerCase() === prodParam) ||
+            (prodParam === 'trading' && p.id === 'titan-elite') ||
+            (prodParam === 'ai-mastery' && p.id === 'ai-mastery-course') ||
+            (prodParam === 'social' && p.id === 'social-media-masterclass')
+        ) || mockProducts[0];
+
+        const orderNumber = 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+        sendJSON(res, 200, {
+            success: true,
+            checkoutSession: {
+                order_number: orderNumber,
+                product_id: product.id,
+                product_name: product.name || product.title,
+                selling_price: product.selling_price || product.price,
+                original_price: product.original_price || product.price,
+                binary_volume: product.binary_volume || product.selling_price || product.price,
+                direct_commission_percent: product.direct_commission_percent || 8.00,
+                company_banks: mockCompanyBankDetails
+            }
+        });
+        return;
+    }
+
+    // POST /api/payments/verify (Payment Gateway Verification & Purchase Orchestration)
+    if (req.method === 'POST' && (pathname === '/api/payments/verify' || pathname === '/api/purchase/verify')) {
+        const authUser = getAuthenticatedUser(req);
+        const body = await parseRequestBody(req);
+        const { productId, orderNumber, amount, paymentMethod, userId, orderId } = body;
+
+        const targetUserId = (authUser && authUser.id) ? authUser.id : (userId || 'user-active');
+        const prodParam = (productId || body.product_id || body.code || '').toLowerCase().trim();
+        const product = mockProducts.find(p => 
+            p.id.toLowerCase() === prodParam || 
+            (p.code && p.code.toLowerCase() === prodParam) ||
+            (prodParam === 'trading' && p.id === 'titan-elite') ||
+            (prodParam === 'ai-mastery' && p.id === 'ai-mastery-course') ||
+            (prodParam === 'social' && p.id === 'social-media-masterclass')
+        ) || mockProducts[0];
+
+        const canonicalPrice = product.selling_price || product.price;
+        const purchaseId = orderId || ('purch-' + Math.random().toString(36).substr(2, 9));
+        const ordNum = orderNumber || ('ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+        const now = new Date().toISOString();
+
+        const activePurchase = {
+            id: purchaseId,
+            order_number: ordNum,
+            user_id: targetUserId,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            price_paid: canonicalPrice,
+            binary_volume: product.binary_volume || canonicalPrice,
+            status: 'ACTIVE',
+            activated_at: now,
+            created_at: now
+        };
+
+        // Activate User Status in DB
+        const userInDb = mockUsers.find(u => u.id === targetUserId || (u.email && authUser && u.email === authUser.email));
+        if (userInDb) {
+            userInDb.status = 'ACTIVE';
+        }
+
+        // Execute Purchase Orchestrator Workflow
+        let orchResult = null;
+        try {
+            orchResult = PurchaseOrchestrator.executeApprovedPurchaseWorkflow({
+                purchase: activePurchase,
+                product: product,
+                userId: targetUserId,
+                binaryNodes: mockBinaryNodes,
+                sponsors: mockSponsors,
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                commissionLedger: mockCommissionTransactions,
+                volumeLedger: mockVolumeLedger,
+                walletLedger: mockWalletLedger,
+                dailyEarningsMap: mockDailyEarningsMap
+            });
+        } catch (orchErr) {
+            console.warn(`Orchestration execution warning: ${orchErr.message}`);
+        }
+
+        addLiveEvent('ORDER_PAID', {
+            orderNumber: ordNum,
+            purchaseId: purchaseId,
+            userId: targetUserId,
+            amount: canonicalPrice,
+            productName: product.name || product.title
+        }, `Payment Verified: Order #${ordNum} (${product.name || product.title}) - LKR ${canonicalPrice.toFixed(2)}`);
+
+        sendJSON(res, 200, {
+            success: true,
+            status: 'ACTIVE',
+            orderNumber: ordNum,
+            purchaseId: purchaseId,
+            product: product.name || product.title,
+            amount: canonicalPrice,
+            binary_volume: product.binary_volume || canonicalPrice,
+            orchestration: orchResult
+        });
+        return;
+    }
+
     // POST /api/products/create (Admin only)
     if (req.method === 'POST' && pathname === '/api/products/create') {
         const authUser = getAuthenticatedUser(req);
@@ -4263,6 +4425,12 @@ const server = http.createServer(async (req, res) => {
             created_at: now
         };
         mockPaymentDeposits.push(deposit);
+
+        // Activate User Status in DB
+        const userInDb = mockUsers.find(u => u.id === authUser.id || (u.email && u.email === authUser.email));
+        if (userInDb) {
+            userInDb.status = 'ACTIVE';
+        }
 
         // Create Immutable Economics Snapshot
         const snapshot = ProductSnapshotService.createSnapshot(

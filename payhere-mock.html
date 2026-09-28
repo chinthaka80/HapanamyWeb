@@ -283,6 +283,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const amount = parseFloat(urlParams.get('amount')) || 0;
         const name = urlParams.get('name') || '';
+        const product = urlParams.get('product') || '';
 
         document.getElementById('phAmountText').textContent = amount.toLocaleString();
         document.getElementById('phPayButton').textContent = `Pay LKR ${amount.toLocaleString()}`;
@@ -297,8 +298,9 @@
 
             // Simulate server transaction check
             setTimeout(() => {
-                window.location.href = `order-success.html?method=payhere&amount=${amount}`;
-            }, 2500);
+                const prodParam = product ? `&product=${encodeURIComponent(product)}` : '';
+                window.location.href = `order-success.html?method=payhere&amount=${amount}${prodParam}`;
+            }, 2000);
         }
     </script>
 </body>

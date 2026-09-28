@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | පාඨමාලා නාමාවලිය (Masterclass Catalog) | NOWATRIX Global</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Core styles -->
+    <link rel="stylesheet" href="index.css">
+    
+    <style>
+        .courses-hero {
+            padding: 50px 20px 30px;
+            text-align: center;
+            background: radial-gradient(circle at 50% 20%, rgba(245, 124, 0, 0.12) 0%, transparent 70%);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .courses-hero h1 {
+            font-size: 34px;
+            font-weight: 900;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .courses-hero p {
+            font-size: 15px;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 25px;
+            line-height: 1.6;
+        }
+
+        .catalog-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .catalog-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 35px;
+            background: var(--bg-surface);
+            padding: 16px 22px;
+            border-radius: 14px;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--card-shadow);
+        }
+
+        .catalog-search-box {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .catalog-search-input {
+            width: 100%;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 11px 16px 11px 40px;
+            font-size: 14px;
+            color: var(--text-primary);
+            outline: none;
+            transition: var(--transition-smooth);
+        }
+
+        .catalog-search-input:focus {
+            border-color: var(--brand-orange);
+            box-shadow: 0 0 0 3px rgba(245, 124, 0, 0.15);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 15px;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .category-filter-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cat-pill {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 13px;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .cat-pill:hover, .cat-pill.active {
+            background: var(--brand-orange);
+            color: #FFFFFF;
+            border-color: var(--brand-orange);
+            box-shadow: 0 4px 12px rgba(245, 124, 0, 0.25);
+        }
+
+        .courses-catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 28px;
+        }
+
+        .product-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+            border-color: rgba(245, 124, 0, 0.4);
+        }
+
+        .card-banner-wrap {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            overflow: hidden;
+            background: #0B1A29;
+        }
+
+        .card-banner-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s ease;
+        }
+
+        .product-card:hover .card-banner-img {
+            transform: scale(1.05);
+        }
+
+        .card-tag {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            background: rgba(16, 42, 67, 0.85);
+            backdrop-filter: blur(4px);
+            color: var(--brand-gold);
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 10px;
+            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .card-discount-tag {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--ph-red, #EF5350);
+            color: #FFFFFF;
+            font-size: 11px;
+            font-weight: 800;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+
+        .card-body {
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .card-title {
+            font-size: 16.5px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.35;
+        }
+
+        .card-desc {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 16px;
+            flex-grow: 1;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .card-meta-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: var(--text-muted);
+            padding: 10px 0;
+            border-top: 1px dashed var(--border-color);
+            border-bottom: 1px dashed var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .card-pricing-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 16px;
+        }
+
+        .price-selling {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--brand-orange);
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .price-orig {
+            font-size: 13px;
+            text-decoration: line-through;
+            color: var(--text-muted);
+            margin-left: 6px;
+        }
+
+        .bv-points-badge {
+            font-size: 11.5px;
+            font-weight: 700;
+            color: var(--brand-gold);
+            background: rgba(212, 175, 55, 0.1);
+            padding: 3px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.25);
+        }
+
+        .card-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 10px;
+        }
+
+        .btn-view-details {
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 12.5px;
+            font-weight: 700;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .btn-view-details:hover {
+            border-color: var(--brand-orange);
+            color: var(--brand-orange);
+        }
+
+        .btn-buy-product {
+            background: linear-gradient(135deg, var(--brand-orange), #ff9800);
+            color: #FFFFFF;
+            border: none;
+            font-size: 13px;
+            font-weight: 800;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            box-shadow: 0 4px 12px rgba(245, 124, 0, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn-buy-product:hover {
+            background: linear-gradient(135deg, #e65100, var(--brand-orange));
+            transform: scale(1.02);
+        }
+
+        .btn-enrolled-product {
+            background: rgba(34, 197, 94, 0.12);
+            color: var(--brand-green);
+            border: 1px solid var(--brand-green);
+            font-size: 13px;
+            font-weight: 800;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            grid-column: span 2;
+        }
+
+        /* Detail Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2500;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.open {
+            display: flex;
+        }
+
+        .modal-card {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .modal-card-header {
+            position: relative;
+            height: 180px;
+            background: #0B1A29;
+        }
+
+        .modal-card-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .btn-close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0, 0, 0, 0.6);
+            border: none;
+            color: #FFF;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        .btn-close-modal:hover {
+            background: var(--brand-orange);
+        }
+
+        .modal-card-body {
+            padding: 28px;
+        }
+
+        .benefits-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 20px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .benefits-list li {
+            font-size: 13.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .benefits-list li span {
+            color: var(--brand-green);
+            font-weight: 800;
+        }
+    </style>
+    <meta name="google-adsense-account" content="ca-pub-8211523479069192">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8211523479069192" crossorigin="anonymous"></script>
+    <meta name="google-site-verification" content="tHlXEC0dNN4fqkvHR4zrQMOgAoFGnW_oFx-wT8YTjfs" />
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="header" style="position: sticky; top: 0; background: var(--bg-surface); z-index: 1000; border-bottom: 1px solid var(--border-color);">
+        <div class="container header-container">
+            <a href="index.html" class="logo">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" style="height: 38px; border-radius: 6px; border: 2px solid var(--brand-gold);">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif; line-height: 1.1;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                    <span style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav" id="navMenu">
+                <ul class="nav-list">
+                    <li class="nav-item"><a href="index.html" class="nav-link" data-translate="nav_home">Home</a></li>
+                    <li class="nav-item"><a href="courses.html" class="nav-link active" data-translate="nav_courses">Courses</a></li>
+                    <li class="nav-item"><a href="student-dashboard.html" class="nav-link" data-translate="nav_classroom">Classroom</a></li>
+                    <li class="nav-item"><a href="dashboard.html" class="nav-link" data-translate="nav_affiliate">Affiliate Hub</a></li>
+                    <li class="nav-item"><a href="about-us.html" class="nav-link" data-translate="nav_about">About Us</a></li>
+                </ul>
+            </nav>
+
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; height: 38px;">EN</button>
+                <a href="student-dashboard.html" class="btn btn-secondary" style="border-width: 1px; padding: 8px 16px; font-size: 13px;" id="navUserIdentityBtn">My Account</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="courses-hero">
+        <div class="container">
+            <span style="background: rgba(245, 124, 0, 0.12); color: var(--brand-orange); font-size: 12px; font-weight: 800; padding: 5px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; display: inline-block; margin-bottom: 12px;">
+                🎓 Comprehensive Online Masterclasses
+            </span>
+            <h1 data-translate="courses_page_title">Hapanamy.lk ප්‍රායෝගික පාඨමාලා නාමාවලිය</h1>
+            <p data-translate="courses_page_desc">
+                ශ්‍රී ලංකාවේ ප්‍රමුඛ පෙළේ ප්‍රායෝගික ඩිජිටල්, ආදායම් උත්පාදන, AI සහ මූල්‍ය වෙළඳපොල පාඨමාලා එකම තැනකින් තෝරාගෙන ඔබගේ ඉගෙනීම අදම අරඹන්න.
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Catalog View -->
+    <main class="catalog-container">
+        <!-- Toolbar -->
+        <div class="catalog-toolbar">
+            <div class="catalog-search-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="catalogSearchInput" class="catalog-search-input" placeholder="පාඨමාලා නම හෝ විෂය සොයන්න (Search courses...)" onkeyup="filterCatalog()">
+            </div>
+
+            <div class="category-filter-pills">
+                <button class="cat-pill active" onclick="setCategoryFilter('all', this)">සියල්ල (All)</button>
+                <button class="cat-pill" onclick="setCategoryFilter('Social Media', this)">Social Media</button>
+                <button class="cat-pill" onclick="setCategoryFilter('Trading', this)">Trading & Crypto</button>
+                <button class="cat-pill" onclick="setCategoryFilter('AI & Tech', this)">AI & Tech</button>
+                <button class="cat-pill" onclick="setCategoryFilter('E-Books', this)">E-Books</button>
+            </div>
+        </div>
+
+        <!-- Product Cards Grid -->
+        <div class="courses-catalog-grid" id="catalogCardsContainer">
+            <!-- Dynamically populated via renderCatalog() -->
+        </div>
+    </main>
+
+    <!-- Course Detail Modal -->
+    <div class="modal-overlay" id="courseDetailModal" onclick="if(event.target === this) closeCourseModal();">
+        <div class="modal-card">
+            <div class="modal-card-header">
+                <img src="assets/facebook_course_banner.jpg" alt="Course Banner" id="modalImg">
+                <button class="btn-close-modal" onclick="closeCourseModal()">&times;</button>
+                <span class="card-tag" id="modalTag">Social Media</span>
+            </div>
+            <div class="modal-card-body">
+                <h2 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;" id="modalTitle">Course Title</h2>
+                <div style="font-size: 12px; color: var(--brand-gold); font-weight: 700; margin-bottom: 14px;" id="modalDuration">4 Weeks (8 Live Zoom Sessions)</div>
+                <p style="font-size: 13.5px; color: var(--text-muted); line-height: 1.6; margin-bottom: 20px;" id="modalDesc">Description text...</p>
+                
+                <h4 style="font-size: 14px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">✨ පාඨමාලාවෙන් ඔබට ලැබෙන දේ (Key Benefits):</h4>
+                <ul class="benefits-list" id="modalBenefits">
+                    <!-- Dynamic -->
+                </ul>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 20px; border-top: 1px solid var(--border-color);">
+                    <div>
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">TOTAL INVESTMENT</div>
+                        <div style="font-size: 22px; font-weight: 900; color: var(--brand-orange);" id="modalPrice">රු. 7,425</div>
+                    </div>
+                    <a href="checkout.html" class="btn-buy-product" id="modalBuyBtn" style="padding: 12px 24px; font-size: 14px;">
+                        🛒 දැන් මිලදී ගන්න (Buy Now) ➔
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer Attribution -->
+    <footer class="footer" style="margin-top: 80px; padding: 40px 0 20px; background: var(--bg-surface); border-top: 1px solid var(--border-color); text-align: center;">
+        <div class="container">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px;">
+                <img src="assets/logo.jpg" alt="Logo" style="height: 28px; border-radius: 4px;">
+                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAMY.LK</span>
+            </div>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">© 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.</p>
+            <div style="display: flex; gap: 16px; justify-content: center; font-size: 12px;">
+                <a href="index.html" style="color: var(--text-muted); text-decoration: none;">Home</a>
+                <a href="courses.html" style="color: var(--brand-orange); text-decoration: none;">Courses</a>
+                <a href="student-dashboard.html" style="color: var(--text-muted); text-decoration: none;">Student Portal</a>
+                <a href="dashboard.html" style="color: var(--text-muted); text-decoration: none;">Affiliate Dashboard</a>
+                <a href="terms-conditions.html" style="color: var(--text-muted); text-decoration: none;">Terms & Conditions</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        // Master Catalog Dataset
+        const MASTER_PRODUCTS = [
+            {
+                id: 'facebook-course',
+                code: 'FB-MON',
+                category: 'Social Media',
+                title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+                desc: 'Facebook Pages monetization, Reels bonus program, in-stream ads, and copyright-safe viral growth strategies.',
+                price: 7425,
+                origPrice: 9900,
+                discount: '25% OFF',
+                bv: 7425,
+                duration: '4 Weeks (8 Live Zoom Sessions)',
+                modules: 8,
+                image: 'assets/facebook_course_banner.jpg',
+                benefits: [
+                    'Facebook In-Stream Ads & Stars Setup',
+                    'Viral Reel Editing & Content Automation',
+                    'Copyright Safety & Policy Compliance',
+                    'Live Q&A Support with Top Instructors'
+                ]
+            },
+            {
+                id: 'tiktok-course',
+                code: 'TIK-MON',
+                category: 'Social Media',
+                title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+                desc: 'TikTok Creativity Program Beta, TikTok Shop Affiliate, and organic viral scaling framework with US/UK account creation.',
+                price: 4500,
+                origPrice: 5000,
+                discount: '10% OFF',
+                bv: 4500,
+                duration: '2 Weeks (4 Live Zoom Sessions)',
+                modules: 5,
+                image: 'assets/tiktok_course_banner.jpg',
+                benefits: [
+                    'TikTok US/UK Account Creation & Verification',
+                    'Creativity Program Beta Payout Strategies',
+                    'Affiliate Product Sourcing & High-Converting Videos'
+                ]
+            },
+            {
+                id: 'youtube-course',
+                code: 'YT-MON',
+                category: 'Social Media',
+                title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)',
+                desc: 'Faceless YouTube automation, SEO ranking, high RPM niches, fast 4,000 watch hours, and AdSense approval acceleration.',
+                price: 7425,
+                origPrice: 9900,
+                discount: '25% OFF',
+                bv: 7425,
+                duration: '4 Weeks (8 Live Zoom Sessions)',
+                modules: 8,
+                image: 'assets/youtube_course_banner.jpg',
+                benefits: [
+                    'High RPM Niche Selection Guide',
+                    'AI Scripting & Voiceover Automation',
+                    'Fast 4,000 Watch Hours & 1,000 Subs Growth'
+                ]
+            },
+            {
+                id: 'social-media-masterclass',
+                code: 'SOC-MASTER',
+                category: 'Social Media',
+                title: '🚀 Social Media Income Masterclass 2026',
+                desc: 'Complete all-in-one digital marketing agency, personal branding, and multi-channel monetization masterclass across FB, TikTok, IG, and YouTube.',
+                price: 15992,
+                origPrice: 19990,
+                discount: '20% OFF',
+                bv: 15992,
+                duration: '6 Weeks Masterclass',
+                modules: 14,
+                image: 'assets/social_media_masterclass_banner.jpg',
+                benefits: [
+                    'All-in-one FB, TikTok, IG, and YouTube Mastery',
+                    'High-ticket client acquisition scripts',
+                    'Official Masterclass Completion Certificate'
+                ]
+            },
+            {
+                id: 'forex-course',
+                code: 'FX-BEG',
+                category: 'Trading',
+                title: '🟢 Beginner – Forex Trading Course (Online Zoom)',
+                desc: 'From candlestick basics and currency pair analysis to MT4/MT5 setup, risk management, and profitable trading psychology.',
+                price: 7920,
+                origPrice: 9900,
+                discount: '20% OFF',
+                bv: 7920,
+                duration: '3 Weeks (6 Sessions)',
+                modules: 6,
+                image: 'assets/forex_course_banner.jpg',
+                benefits: [
+                    'Live Market Analysis & Execution',
+                    'Proper Lot Sizing & Risk Calculator',
+                    'VIP Trading Signal Group Access'
+                ]
+            },
+            {
+                id: 'crypto-course',
+                code: 'CRYPTO-BEG',
+                category: 'Trading',
+                title: '🟠 Beginner – Crypto Trading Course (Online Zoom)',
+                desc: 'Binance, Bybit spot & futures trading, wallet security, technical indicators, and on-chain analysis from scratch.',
+                price: 7920,
+                origPrice: 9900,
+                discount: '20% OFF',
+                bv: 7920,
+                duration: '3 Weeks (6 Sessions)',
+                modules: 6,
+                image: 'assets/crypto_course_banner.jpg',
+                benefits: [
+                    'Exchange Setup & P2P Deposit/Withdrawal Guide',
+                    'Futures Leverage Risk Mitigation',
+                    'Altcoin Gem Research Blueprint'
+                ]
+            },
+            {
+                id: 'options-course',
+                code: 'OPT-INT',
+                category: 'Trading',
+                title: '🔵 Intermediate – Options Trading Course (Online Zoom)',
+                desc: 'Call/Put options strategies, implied volatility, spreads, synthetic indices, and defined-risk hedging techniques.',
+                price: 7920,
+                origPrice: 9900,
+                discount: '20% OFF',
+                bv: 7920,
+                duration: '3 Weeks (6 Sessions)',
+                modules: 6,
+                image: 'assets/options_course_banner.jpg',
+                benefits: [
+                    'Options Greeks Decoded (Delta, Theta, Gamma)',
+                    'Defined-Risk Spreads Strategy',
+                    'Deribit & US Options Practice Setup'
+                ]
+            },
+            {
+                id: 'titan-elite',
+                code: 'SMC-ADV',
+                category: 'Trading',
+                title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)',
+                desc: 'Smart Money Concepts, Order Blocks, Liquidity Sweeps, Fair Value Gaps, and Prop Firm Passing system ($50k-$200k).',
+                price: 19900,
+                origPrice: 24900,
+                discount: '20% OFF',
+                bv: 19900,
+                duration: '8 Weeks Intensive',
+                modules: 16,
+                image: 'assets/advanced_trading_banner.jpg',
+                benefits: [
+                    'Institutional Order Flow & FVG Identification',
+                    'Prop Firm Funded Account Blueprint ($50k - $200k)',
+                    'Weekly Live Market Breakdown Webinars'
+                ]
+            },
+            {
+                id: 'ai-video-course',
+                code: 'AI-VID',
+                category: 'AI & Tech',
+                title: '🎬 AI Video Generation Masterclass 2026',
+                desc: 'Runway Gen-3, Midjourney, Kling, ElevenLabs voice cloning, cinematic prompts, and commercial AI film creation.',
+                price: 5200,
+                origPrice: 6500,
+                discount: '20% OFF',
+                bv: 5200,
+                duration: '2 Weeks (4 Sessions)',
+                modules: 5,
+                image: 'assets/ai_video_course_banner.jpg',
+                benefits: [
+                    'Cinematic Prompt Engineering for Video',
+                    'Hyper-Realistic AI Avatars & Voice Syncing',
+                    'Commercial Video Production for Clients'
+                ]
+            },
+            {
+                id: 'ai-mastery-course',
+                code: 'AI-MAST',
+                category: 'AI & Tech',
+                title: '🤖 AI Mastery Program 2026',
+                desc: 'Advanced ChatGPT prompting, custom GPTs, AI agent workflows, and practical business automation for 10x productivity.',
+                price: 15000,
+                origPrice: 18750,
+                discount: '20% OFF',
+                bv: 15000,
+                duration: '6 Weeks Comprehensive',
+                modules: 12,
+                image: 'assets/ai_mastery_banner.jpg',
+                benefits: [
+                    'Building Custom AI Agents & Workflows',
+                    'Automating Business Operations with AI',
+                    'Certificate in Applied Artificial Intelligence'
+                ]
+            },
+            {
+                id: 'coding-course',
+                code: 'CODE-WEB',
+                category: 'AI & Tech',
+                title: '💻 Coding & Web Development Masterclass 2026',
+                desc: 'HTML, CSS, JavaScript, WordPress, eCommerce store building, and freelancing web developer career roadmap.',
+                price: 7200,
+                origPrice: 9000,
+                discount: '20% OFF',
+                bv: 7200,
+                duration: '4 Weeks (8 Sessions)',
+                modules: 8,
+                image: 'assets/coding_banner.jpg',
+                benefits: [
+                    'Custom Website & Online Store Creation',
+                    'Freelancing Client Acquisition on Fiverr/Upwork',
+                    'Lifetime Code Template Repository Access'
+                ]
+            },
+            {
+                id: 'trading-ebook',
+                code: 'EB-TRD',
+                category: 'E-Books',
+                title: '📘 Trading E-Book A to Z (PDF Manual)',
+                desc: 'Comprehensive 120-page Sinhala trading handbook covering chart patterns, risk rules, psychology, and trading checklists.',
+                price: 3990,
+                origPrice: 4990,
+                discount: '20% OFF',
+                bv: 3990,
+                duration: 'Instant PDF Download',
+                modules: 8,
+                image: 'assets/trading_ebook_banner.jpg',
+                benefits: [
+                    '120 Pages High-Quality Sinhala PDF Guide',
+                    'Candlestick Pattern Cheat Sheet',
+                    'Daily Trading Journal & Checklist'
+                ]
+            },
+            {
+                id: 'motivation-ebook',
+                code: 'EB-MOT',
+                category: 'E-Books',
+                title: '📖 Motivation & Self-Development Master E-Book',
+                desc: 'Mindset conditioning, discipline, goal setting, financial independence mindset, and daily success habits.',
+                price: 5592,
+                origPrice: 6990,
+                discount: '20% OFF',
+                bv: 5592,
+                duration: 'Instant PDF Download',
+                modules: 7,
+                image: 'assets/motivation_ebook_banner.jpg',
+                benefits: [
+                    'Practical Habit Building Blueprint',
+                    'Daily Motivation Planner',
+                    'Overcoming Procrastination System'
+                ]
+            },
+            {
+                id: 'ai-prompts-ebook',
+                code: 'EB-PRM',
+                category: 'E-Books',
+                title: '💡 AI Prompts & Templates Ultimate Collection',
+                desc: '1,000+ Ready-to-use prompts for ChatGPT, Claude, Midjourney, FLUX, and video generation for business and marketing.',
+                price: 4990,
+                origPrice: 5990,
+                discount: '17% OFF',
+                bv: 4990,
+                duration: 'Instant PDF Download',
+                modules: 7,
+                image: 'assets/ai_prompts_ebook_banner.jpg',
+                benefits: [
+                    '1,000+ Verified High-Quality AI Prompts',
+                    'Marketing Copy & Sales Scripts Templates',
+                    'Midjourney & FLUX Image Styles Library'
+                ]
+            }
+        ];
+
+        let currentCategory = 'all';
+        let userPurchasedIds = new Set();
+
+        // Get Active User Purchased courses
+        function getUserPurchasedSet() {
+            const purchased = new Set();
+            try {
+                const activeUser = JSON.parse(localStorage.getItem('active_user'));
+                if (activeUser && activeUser.id) {
+                    const key = 'hapanamy_purchased_courses_' + activeUser.id.toLowerCase();
+                    const list = JSON.parse(localStorage.getItem(key)) || [];
+                    list.forEach(c => {
+                        if (c.id) purchased.add(c.id.toLowerCase());
+                        if (c.product_id) purchased.add(c.product_id.toLowerCase());
+                        if (c.code) purchased.add(c.code.toLowerCase());
+                    });
+                }
+            } catch (e) {}
+            return purchased;
+        }
+
+        function renderCatalog() {
+            userPurchasedIds = getUserPurchasedSet();
+            const container = document.getElementById('catalogCardsContainer');
+            const searchVal = (document.getElementById('catalogSearchInput')?.value || '').toLowerCase().trim();
+
+            const filtered = MASTER_PRODUCTS.filter(p => {
+                const matchesCat = currentCategory === 'all' || p.category === currentCategory;
+                const matchesSearch = !searchVal || 
+                    p.title.toLowerCase().includes(searchVal) || 
+                    p.desc.toLowerCase().includes(searchVal) || 
+                    p.code.toLowerCase().includes(searchVal) ||
+                    p.category.toLowerCase().includes(searchVal);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 16px; padding: 50px 20px; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">🔍</div>
+                        <h3 style="font-size: 18px; font-weight: 800; color: var(--text-primary); margin-bottom: 8px;">පාඨමාලා කිසිවක් හමු නොවීය</h3>
+                        <p style="font-size: 13.5px; color: var(--text-muted);">වෙනත් නමක් හෝ කාණ්ඩයක් තෝරා නැවත උත්සාහ කරන්න.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            filtered.forEach(p => {
+                const isEnrolled = userPurchasedIds.has(p.id.toLowerCase()) || userPurchasedIds.has(p.code.toLowerCase());
+                
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="card-banner-wrap">
+                        <img src="${p.image}" alt="${p.title}" class="card-banner-img" onerror="this.src='assets/trading_banner.jpg'">
+                        <span class="card-tag">${p.category}</span>
+                        ${p.discount ? `<span class="card-discount-tag">${p.discount}</span>` : ''}
+                    </div>
+                    <div class="card-body">
+                        <h3 class="card-title">${p.title}</h3>
+                        <p class="card-desc">${p.desc}</p>
+                        
+                        <div class="card-meta-row">
+                            <span>⏱️ ${p.duration}</span>
+                            <span>📚 ${p.modules} Modules</span>
+                        </div>
+
+                        <div class="card-pricing-row">
+                            <div>
+                                <span class="price-selling">රු. ${p.price.toLocaleString()}</span>
+                                ${p.origPrice ? `<span class="price-orig">රු. ${p.origPrice.toLocaleString()}</span>` : ''}
+                            </div>
+                            <span class="bv-points-badge">BV ${p.bv.toLocaleString()}</span>
+                        </div>
+
+                        <div class="card-actions-grid">
+                            ${isEnrolled ? `
+                                <a href="student-dashboard.html" class="btn-enrolled-product">
+                                    <span>✓ Enrolled</span> • <span>📚 Start Learning ➔</span>
+                                </a>
+                            ` : `
+                                <button class="btn-view-details" onclick="openCourseModal('${p.id}')">
+                                    <span>🔍 Details</span>
+                                </button>
+                                <a href="checkout.html?product=${p.id}" class="btn-buy-product">
+                                    <span>🛒 Buy Now</span>
+                                </a>
+                            `}
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function setCategoryFilter(cat, btn) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-pill').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderCatalog();
+        }
+
+        function filterCatalog() {
+            renderCatalog();
+        }
+
+        function openCourseModal(prodId) {
+            const product = MASTER_PRODUCTS.find(p => p.id === prodId || p.code === prodId);
+            if (!product) return;
+
+            document.getElementById('modalImg').src = product.image;
+            document.getElementById('modalTag').textContent = product.category;
+            document.getElementById('modalTitle').textContent = product.title;
+            document.getElementById('modalDuration').textContent = `⏱️ ${product.duration} • 📚 ${product.modules} Modules • BV ${product.bv.toLocaleString()}`;
+            document.getElementById('modalDesc').textContent = product.desc;
+            document.getElementById('modalPrice').textContent = 'රු. ' + product.price.toLocaleString();
+            document.getElementById('modalBuyBtn').href = `checkout.html?product=${product.id}`;
+
+            const benefitsUl = document.getElementById('modalBenefits');
+            benefitsUl.innerHTML = '';
+            product.benefits.forEach(b => {
+                const li = document.createElement('li');
+                li.innerHTML = `<span>✓</span> <div>${b}</div>`;
+                benefitsUl.appendChild(li);
+            });
+
+            document.getElementById('courseDetailModal').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeCourseModal() {
+            document.getElementById('courseDetailModal').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Initialize Theme & Lang
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        // Language settings
+        const translations = {
+            si: {
+                nav_home: 'ප්‍රධාන පිටුව',
+                nav_courses: 'පාඨමාලා',
+                nav_classroom: 'ශිෂ්‍ය පුවරුව',
+                nav_affiliate: 'අනුබද්ධිත පිවිසුම',
+                nav_about: 'අප ගැන',
+                courses_page_title: 'Hapanamy.lk ප්‍රායෝගික පාඨමාලා නාමාවලිය',
+                courses_page_desc: 'ශ්‍රී ලංකාවේ ප්‍රමුඛ පෙළේ ප්‍රායෝගික ඩිජිටල්, ආදායම් උත්පාදන, AI සහ මූල්‍ය වෙළඳපොල පාඨමාලා එකම තැනකින් තෝරාගෙන ඔබගේ ඉගෙනීම අදම අරඹන්න.'
+            },
+            en: {
+                nav_home: 'Home',
+                nav_courses: 'Courses',
+                nav_classroom: 'Classroom',
+                nav_affiliate: 'Affiliate Hub',
+                nav_about: 'About Us',
+                courses_page_title: 'Hapanamy.lk Masterclasses & E-Books Catalog',
+                courses_page_desc: 'Discover cutting-edge masterclasses in Social Media Monetization, Financial Trading, and Artificial Intelligence. Learn practical skills and build recurring online income.'
+            }
+        };
+
+        function applyLanguage(lang) {
+            document.querySelectorAll('[data-translate]').forEach(el => {
+                const key = el.getAttribute('data-translate');
+                if (translations[lang] && translations[lang][key]) {
+                    el.innerHTML = translations[lang][key];
+                }
+            });
+            const btn = document.getElementById('langToggleBtn');
+            if (btn) btn.textContent = lang === 'si' ? 'EN' : 'සිං';
+        }
+
+        document.getElementById('langToggleBtn')?.addEventListener('click', () => {
+            let cur = localStorage.getItem('language') || 'si';
+            cur = cur === 'si' ? 'en' : 'si';
+            localStorage.setItem('language', cur);
+            applyLanguage(cur);
+        });
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            const curLang = localStorage.getItem('language') || 'si';
+            applyLanguage(curLang);
+            renderCatalog();
+
+            // Update user button if signed in
+            const activeUser = JSON.parse(localStorage.getItem('active_user'));
+            if (activeUser && activeUser.full_name) {
+                const btn = document.getElementById('navUserIdentityBtn');
+                if (btn) btn.textContent = activeUser.full_name.split(' ')[0];
+            }
+        });
+    </script>
+</body>
+</html>

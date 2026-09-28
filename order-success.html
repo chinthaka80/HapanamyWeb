@@ -208,9 +208,24 @@
         // Save purchases on payhere success
         if (method === 'payhere') {
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
-            const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [
-                { id: 'trading', title: 'Titan Elite Trading Academy', price: amount || 19900, status: 'ACTIVE' }
-            ];
+            const paramProduct = urlParams.get('product') || urlParams.get('course') || urlParams.get('id');
+            let purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
+            
+            if (purchasedList.length === 0 && paramProduct) {
+                purchasedList = [{
+                    id: paramProduct,
+                    title: paramProduct.replace(/-/g, ' ').toUpperCase(),
+                    price: amount || 7425,
+                    status: 'ACTIVE'
+                }];
+            } else if (purchasedList.length === 0) {
+                purchasedList = [{
+                    id: 'facebook-course',
+                    title: 'Facebook Monetization Masterclass',
+                    price: amount || 7425,
+                    status: 'ACTIVE'
+                }];
+            }
             
             if (activeUser && (activeUser.id || activeUser.email || activeUser.username)) {
                 const uid = (activeUser.id || 'user-active').toLowerCase();
@@ -227,6 +242,8 @@
                 if (uname) localStorage.setItem('hapanamy_purchased_courses_' + uname, JSON.stringify(existing));
                 if (uemail) localStorage.setItem('hapanamy_purchased_courses_' + uemail, JSON.stringify(existing));
                 activeUser.purchased_courses = existing;
+                activeUser.account_status = 'ACTIVE';
+                activeUser.status = 'ACTIVE';
                 localStorage.setItem('active_user', JSON.stringify(activeUser));
             }
         }
