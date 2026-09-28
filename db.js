@@ -32,6 +32,7 @@ async function dbGetUsers() {
 }
 
 async function dbAddUser(user) {
+    if (!user) return false;
     if (supabaseClient) {
         try {
             const { error } = await supabaseClient.from('registered_users').insert([user]);
@@ -42,8 +43,15 @@ async function dbAddUser(user) {
         }
     }
     const users = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-    users.push(user);
-    localStorage.setItem('hapanamy_registered_users', JSON.stringify(users));
+    const exists = users.some(u => 
+        (user.email && u.email && u.email.toLowerCase() === user.email.toLowerCase()) ||
+        (user.id && u.id && u.id === user.id) ||
+        (user.username && u.username && u.username.toLowerCase() === user.username.toLowerCase())
+    );
+    if (!exists) {
+        users.push(user);
+        localStorage.setItem('hapanamy_registered_users', JSON.stringify(users));
+    }
     return true;
 }
 

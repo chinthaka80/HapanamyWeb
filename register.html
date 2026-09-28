@@ -568,27 +568,32 @@
                             localStorage.setItem('hapanamy_purchased_courses_' + (email || '').toLowerCase(), JSON.stringify([]));
                         }
 
-                        // Always record under sponsor downline list
+                        // Always record under sponsor downline list (both raw and lowercase keys)
                         if (effectiveSponsor) {
-                            let referredList = JSON.parse(localStorage.getItem('referred_users_' + effectiveSponsor)) || [];
-                            if (!referredList.some(r => r.email === email || r.username === userObj.username)) {
-                                referredList.push({
-                                    id: data.user.id,
-                                    name: fullName,
-                                    full_name: fullName,
-                                    username: userObj.username,
-                                    email: email,
-                                    mobile: phone,
-                                    position: effectivePosition,
-                                    role: currentRole,
-                                    status: 'Active',
-                                    account_status: 'ACTIVE',
-                                    qualification_status: userObj.qualification_status,
-                                    date: new Date().toLocaleDateString(),
-                                    created_at: userObj.created_at
-                                });
-                                localStorage.setItem('referred_users_' + effectiveSponsor, JSON.stringify(referredList));
-                            }
+                            const entry = {
+                                id: data.user.id,
+                                user_id: data.user.id,
+                                name: fullName,
+                                full_name: fullName,
+                                username: userObj.username,
+                                email: email,
+                                mobile: phone,
+                                position: effectivePosition,
+                                role: currentRole,
+                                status: 'Active',
+                                account_status: 'ACTIVE',
+                                qualification_status: userObj.qualification_status,
+                                date: new Date().toLocaleDateString(),
+                                created_at: userObj.created_at
+                            };
+
+                            [effectiveSponsor, effectiveSponsor.toLowerCase()].forEach(k => {
+                                let list = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
+                                if (!list.some(r => r.email === email || r.username === userObj.username || r.id === data.user.id)) {
+                                    list.push(entry);
+                                    localStorage.setItem('referred_users_' + k, JSON.stringify(list));
+                                }
+                            });
                         }
 
                         if (typeof dbAddUser === 'function') {
@@ -636,6 +641,8 @@
                     sponsor: effectiveSponsor,
                     position: effectivePosition,
                     status: 'ACTIVE',
+                    account_status: 'ACTIVE',
+                    qualification_status: 'NOT_QUALIFIED',
                     created_at: new Date().toISOString()
                 };
 
@@ -648,18 +655,30 @@
 
                 // Record under sponsor downline list
                 if (effectiveSponsor) {
-                    let referredList = JSON.parse(localStorage.getItem('referred_users_' + effectiveSponsor)) || [];
-                    referredList.push({
+                    const fallbackEntry = {
+                        id: newUser.id,
+                        user_id: newUser.id,
                         name: fullName,
+                        full_name: fullName,
                         username: username,
                         email: email,
                         mobile: phone,
                         position: effectivePosition,
                         role: currentRole,
+                        status: 'Active',
+                        account_status: 'ACTIVE',
+                        qualification_status: 'NOT_QUALIFIED',
                         date: new Date().toLocaleDateString(),
-                        created_at: new Date().toISOString()
+                        created_at: newUser.created_at
+                    };
+
+                    [effectiveSponsor, effectiveSponsor.toLowerCase()].forEach(k => {
+                        let referredList = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
+                        if (!referredList.some(r => r.email === email || r.username === username)) {
+                            referredList.push(fallbackEntry);
+                            localStorage.setItem('referred_users_' + k, JSON.stringify(referredList));
+                        }
                     });
-                    localStorage.setItem('referred_users_' + effectiveSponsor, JSON.stringify(referredList));
                 }
 
                 const userSessionToken = 'token-member-' + newUser.id;

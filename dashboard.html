@@ -2314,20 +2314,103 @@
             const uEmail = (user.email || '').toLowerCase().trim();
 
             const downlines = [];
-            const addedHandles = new Set();
-            if (uHandle) addedHandles.add(uHandle);
-            if (uId) addedHandles.add(uId);
+            const addedMap = new Map();
+
+            // Ignore current logged-in user themselves
+            const selfKeys = new Set();
+            if (uHandle) selfKeys.add(uHandle);
+            if (uId) selfKeys.add(uId);
+            if (uEmail) selfKeys.add(uEmail);
+            if (uName) selfKeys.add(uName);
+
+            function extractSponsorStrings(raw) {
+                if (!raw) return [];
+                if (typeof raw === 'string') return [raw.trim()];
+                if (typeof raw === 'object') {
+                    const list = [];
+                    if (raw.username) list.push(String(raw.username).trim());
+                    if (raw.sponsor_username) list.push(String(raw.sponsor_username).trim());
+                    if (raw.name) list.push(String(raw.name).trim());
+                    if (raw.full_name) list.push(String(raw.full_name).trim());
+                    if (raw.sponsor_id) list.push(String(raw.sponsor_id).trim());
+                    if (raw.id) list.push(String(raw.id).trim());
+                    if (raw.referral_code) list.push(String(raw.referral_code).trim());
+                    return list;
+                }
+                return [String(raw).trim()];
+            }
 
             function matchesMySponsor(rawSponsor) {
                 if (!rawSponsor) return false;
-                const sp = String(rawSponsor).replace('@', '').toLowerCase().trim();
-                if (!sp) return false;
-                if (sp === uHandle || sp === uId || sp === uName || sp === uEmail) return true;
-                if (uHandle === 'hiru' && (sp === 'hiru' || sp === 'user-hiru-root' || sp === 'sponsor-uuid-1' || sp.includes('hiru'))) return true;
+                const candidates = extractSponsorStrings(rawSponsor);
+                for (const c of candidates) {
+                    const sp = c.replace('@', '').toLowerCase().trim();
+                    if (!sp) continue;
+                    if (sp === uHandle || sp === uId || sp === uName || sp === uEmail) return true;
+                    if ((uHandle === 'hiru' || uId === 'user-hiru-root') && (sp === 'hiru' || sp === 'user-hiru-root' || sp === 'sponsor-uuid-1' || sp.includes('hiru') || sp === 'sales leader' || sp === 'root')) return true;
+                }
                 return false;
             }
 
-            // 1. Check ALL referred_users_* keys in localStorage (case-insensitive)
+            function processCandidateUser(r, defaultPos = 'LEFT') {
+                if (!r) return;
+                const rawUname = r.username || (r.email ? r.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_') : (r.id || ''));
+                const unameLower = (rawUname || '').toLowerCase().trim();
+                const emLower = (r.email || '').toLowerCase().trim();
+                const idLower = (r.id || r.user_id || '').toLowerCase().trim();
+                const roleLower = (r.role || 'member').toLowerCase().trim();
+
+                // Skip admin/subadmin and current user themselves
+                if (roleLower === 'admin' || roleLower === 'subadmin' || roleLower === 'sub_admin' || roleLower === 'super_admin') return;
+                if ((unameLower && selfKeys.has(unameLower)) || (emLower && selfKeys.has(emLower)) || (idLower && selfKeys.has(idLower))) return;
+
+                // Identify if user is downline
+                const sp = r.sponsor || r.sponsor_id || r.sponsor_username || r.referrer || r.sponsorCode || '';
+                const isDownline = matchesMySponsor(sp) || ((uHandle === 'hiru' || uId === 'user-hiru-root') && (!sp || sp === 'Hiru' || sp === 'hiru' || sp === 'user-hiru-root' || sp === 'None'));
+
+                if (!isDownline) return;
+
+                const dedupeKey = unameLower || emLower || idLower;
+                if (!dedupeKey) return;
+
+                const pos = (r.position || r.requestedPosition || r.tree_position || r.branch_leg || defaultPos || 'LEFT').toUpperCase();
+                const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
+                const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                const uid = r.id || r.user_id || ('usr-reg-' + dedupeKey);
+
+                const downlineItem = {
+                    id: uid,
+                    user_id: uid,
+                    username: rawUname || dedupeKey,
+                    full_name: r.full_name || r.name || 'Member',
+                    position: (pos === 'RIGHT') ? 'RIGHT' : 'LEFT',
+                    status: isAct ? 'Active' : 'Inactive',
+                    account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                    qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                    is_active: isAct,
+                    is_qualified: isQual,
+                    balance_points: Number(r.balance_points || 0),
+                    left_volume: Number(r.left_volume || 0),
+                    right_volume: Number(r.right_volume || 0),
+                    team_count: Number(r.team_size || r.team_count || 0),
+                    team_size: Number(r.team_size || r.team_count || 0),
+                    level: Number(r.level || r.depth || r.relative_depth || 1),
+                    depth: Number(r.depth || r.relative_depth || r.level || 1),
+                    relative_depth: Number(r.relative_depth || r.level || 1),
+                    join_date: r.created_at || r.date || new Date().toISOString()
+                };
+
+                if (!addedMap.has(dedupeKey)) {
+                    addedMap.set(dedupeKey, downlineItem);
+                    downlines.push(downlineItem);
+                } else {
+                    // Merge properties if needed
+                    const existing = addedMap.get(dedupeKey);
+                    Object.assign(existing, downlineItem);
+                }
+            }
+
+            // 1. Scan ALL referred_users_* keys in localStorage
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
                 if (k && k.toLowerCase().startsWith('referred_users_')) {
@@ -2335,83 +2418,21 @@
                     if (matchesMySponsor(sponsorKey)) {
                         try {
                             const refList = JSON.parse(localStorage.getItem(k)) || [];
-                            refList.forEach((r, idx) => {
-                                const rawUname = r.username || (r.email ? r.email.split('@')[0] : 'member_' + idx);
-                                const unameLower = rawUname.toLowerCase().trim();
-                                const uid = r.id || 'usr-ref-' + rawUname;
-                                if (!addedHandles.has(unameLower) && unameLower !== uHandle) {
-                                    addedHandles.add(unameLower);
-                                    const pos = (r.position || 'LEFT').toUpperCase();
-                                    const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
-                                    const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
-                                    downlines.push({
-                                        id: uid,
-                                        user_id: uid,
-                                        username: rawUname,
-                                        full_name: r.full_name || r.name || 'Member',
-                                        position: pos,
-                                        status: isAct ? 'Active' : 'Inactive',
-                                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
-                                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
-                                        is_active: isAct,
-                                        is_qualified: isQual,
-                                        balance_points: Number(r.balance_points || 0),
-                                        left_volume: Number(r.left_volume || 0),
-                                        right_volume: Number(r.right_volume || 0),
-                                        team_count: Number(r.team_size || r.team_count || 0),
-                                        team_size: Number(r.team_size || r.team_count || 0),
-                                        level: r.level || 1,
-                                        depth: r.depth || 1,
-                                        relative_depth: r.relative_depth || 1,
-                                        join_date: r.created_at || r.date || new Date().toISOString()
-                                    });
-                                }
-                            });
+                            refList.forEach(r => processCandidateUser(r, 'LEFT'));
                         } catch (e) {}
                     }
                 }
             }
 
-            // 2. Check general registered users
-            let regUsers = [];
-            try {
-                regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-            } catch (e) {}
-
-            regUsers.forEach((u, idx) => {
-                const sp = u.sponsor || u.sponsor_id || u.sponsor_username || u.referrer || '';
-                const isDownline = matchesMySponsor(sp) || (uHandle === 'hiru' && (!sp || sp === 'hiru' || sp === 'Hiru' || sp === 'user-hiru-root'));
-                const rawUname = u.username || (u.email ? u.email.split('@')[0] : 'member_' + idx);
-                const unameLower = rawUname.toLowerCase().trim();
-                const uid = u.id || 'usr-reg-' + rawUname;
-
-                if (isDownline && !addedHandles.has(unameLower) && unameLower !== uHandle) {
-                    addedHandles.add(unameLower);
-                    const pos = (u.position || 'LEFT').toUpperCase();
-                    const isAct = Boolean(u.is_active || (u.status || u.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
-                    const isQual = Boolean(u.is_qualified || (u.qualification_status || '').toUpperCase() === 'QUALIFIED');
-                    downlines.push({
-                        id: uid,
-                        user_id: uid,
-                        username: rawUname,
-                        full_name: u.full_name || u.name || 'Member',
-                        position: pos,
-                        status: isAct ? 'Active' : 'Inactive',
-                        account_status: isAct ? 'ACTIVE' : 'INACTIVE',
-                        qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
-                        is_active: isAct,
-                        is_qualified: isQual,
-                        balance_points: Number(u.balance_points || 0),
-                        left_volume: Number(u.left_volume || 0),
-                        right_volume: Number(u.right_volume || 0),
-                        team_count: Number(u.team_size || u.team_count || 0),
-                        team_size: Number(u.team_size || u.team_count || 0),
-                        level: u.level || 1,
-                        depth: u.depth || 1,
-                        relative_depth: u.relative_depth || 1,
-                        join_date: u.created_at || u.date || new Date().toISOString()
-                    });
-                }
+            // 2. Scan hapanamy_registered_users & general registered user stores
+            const storeKeys = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users'];
+            storeKeys.forEach(storeKey => {
+                try {
+                    const rawList = JSON.parse(localStorage.getItem(storeKey)) || [];
+                    if (Array.isArray(rawList)) {
+                        rawList.forEach(r => processCandidateUser(r, 'LEFT'));
+                    }
+                } catch (e) {}
             });
 
             return downlines;
@@ -2775,6 +2796,12 @@
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
                     poll();
+                    loadLiveDashboard();
+                }
+            });
+
+            window.addEventListener('storage', (e) => {
+                if (!e.key || e.key.startsWith('referred_users_') || e.key.includes('registered_users') || e.key.includes('active_user') || e.key.includes('payout_requests')) {
                     loadLiveDashboard();
                 }
             });

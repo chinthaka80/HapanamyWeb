@@ -3177,38 +3177,50 @@
             // Merge and deduplicate all member sources
             const mergedMap = new Map();
 
+            function addOrMergeUser(u) {
+                if (!u) return;
+                const emailKey = (u.email || '').toLowerCase().trim();
+                const unameKey = (u.username || (u.email ? u.email.split('@')[0] : (u.id || ''))).toLowerCase().trim();
+                const idKey = (u.id || '').toLowerCase().trim();
+
+                let key = unameKey || emailKey || idKey;
+                if (!key) return;
+
+                for (const [k, existing] of mergedMap.entries()) {
+                    if ((emailKey && existing.email && existing.email.toLowerCase().trim() === emailKey) ||
+                        (unameKey && existing.username && existing.username.toLowerCase().trim() === unameKey) ||
+                        (idKey && existing.id && existing.id.toLowerCase().trim() === idKey)) {
+                        key = k;
+                        break;
+                    }
+                }
+                const existing = mergedMap.get(key) || {};
+                mergedMap.set(key, { ...existing, ...u });
+            }
+
             // 1. Seed base users
-            seedUsers.forEach(u => {
-                mergedMap.set(u.username.toLowerCase(), u);
-            });
+            seedUsers.forEach(u => addOrMergeUser(u));
 
             // 2. Add local storage users
-            localRegUsers.forEach(u => {
-                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
-                const existing = mergedMap.get(uname) || {};
-                mergedMap.set(uname, { ...existing, ...u });
+            localRegUsers.forEach(u => addOrMergeUser(u));
+
+            // 3. Scan other storage keys
+            const altStores = ['registered_users', 'all_members', 'hapanamy_users'];
+            altStores.forEach(sk => {
+                try {
+                    const list = JSON.parse(localStorage.getItem(sk)) || [];
+                    if (Array.isArray(list)) list.forEach(u => addOrMergeUser(u));
+                } catch (e) {}
             });
 
-            // 3. Add IndexedDB users
-            indexedDbUsers.forEach(u => {
-                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
-                const existing = mergedMap.get(uname) || {};
-                mergedMap.set(uname, { ...existing, ...u });
-            });
+            // 4. Add IndexedDB users
+            indexedDbUsers.forEach(u => addOrMergeUser(u));
 
-            // 4. Add referred users
-            referredUsers.forEach(u => {
-                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
-                const existing = mergedMap.get(uname) || {};
-                mergedMap.set(uname, { ...existing, ...u });
-            });
+            // 5. Add referred users
+            referredUsers.forEach(u => addOrMergeUser(u));
 
-            // 5. Add server API users (authoritative for volume & financial stats)
-            apiMembers.forEach(u => {
-                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
-                const existing = mergedMap.get(uname) || {};
-                mergedMap.set(uname, { ...existing, ...u });
-            });
+            // 6. Add server API users (authoritative for volume & financial stats)
+            apiMembers.forEach(u => addOrMergeUser(u));
 
             let allMembers = Array.from(mergedMap.values());
             adminMembersData = allMembers;
@@ -3813,6 +3825,13 @@
             renderRegisteredUsers(); // Initial load of registered users
             setTimeout(loadSystemSettings, 300);
             setTimeout(runEconomicsSimulation, 400);
+
+            window.addEventListener('storage', (e) => {
+                if (!e.key || e.key.startsWith('referred_users_') || e.key.includes('registered_users') || e.key.includes('bank_orders') || e.key.includes('bank_slips') || e.key.includes('payout_requests')) {
+                    renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                }
+            });
         });
     </script>
 </body>

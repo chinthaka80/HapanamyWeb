@@ -21,7 +21,7 @@ class ReferralService {
             return { valid: false, error: 'Referral code is required.' };
         }
 
-        const trimmed = code.trim();
+        const trimmed = code.replace(/^@+/, '').trim();
         if (trimmed.length < 3 || trimmed.length > 50) {
             return { valid: false, error: 'Referral code length must be between 3 and 50 characters.' };
         }
@@ -38,7 +38,7 @@ class ReferralService {
                 (u.id && u.id.toLowerCase() === trimmedLower) ||
                 (u.referral_code && u.referral_code.toLowerCase() === trimmedLower) ||
                 (u.email && u.email.toLowerCase() === trimmedLower) ||
-                (trimmedLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+                ((trimmedLower === 'hiru' || trimmedLower === 'user-hiru-root' || trimmedLower === 'sponsor-uuid-1') && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
             );
             if (!sponsor) {
                 return { valid: false, error: `Sponsor with referral code '${trimmed}' does not exist.` };

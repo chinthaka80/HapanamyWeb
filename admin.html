@@ -3422,13 +3422,22 @@
             // 2. Add local storage users
             localRegUsers.forEach(u => addOrMergeUser(u));
 
-            // 3. Add IndexedDB users
+            // 3. Scan other storage keys
+            const altStores = ['registered_users', 'all_members', 'hapanamy_users'];
+            altStores.forEach(sk => {
+                try {
+                    const list = JSON.parse(localStorage.getItem(sk)) || [];
+                    if (Array.isArray(list)) list.forEach(u => addOrMergeUser(u));
+                } catch (e) {}
+            });
+
+            // 4. Add IndexedDB users
             indexedDbUsers.forEach(u => addOrMergeUser(u));
 
-            // 4. Add referred users
+            // 5. Add referred users
             referredUsers.forEach(u => addOrMergeUser(u));
 
-            // 5. Add server API users (authoritative for volume & financial stats)
+            // 6. Add server API users (authoritative for volume & financial stats)
             apiMembers.forEach(u => addOrMergeUser(u));
 
             let allMembers = Array.from(mergedMap.values());
@@ -4034,6 +4043,13 @@
             renderRegisteredUsers(); // Initial load of registered users
             setTimeout(loadSystemSettings, 300);
             setTimeout(runEconomicsSimulation, 400);
+
+            window.addEventListener('storage', (e) => {
+                if (!e.key || e.key.startsWith('referred_users_') || e.key.includes('registered_users') || e.key.includes('bank_orders') || e.key.includes('bank_slips') || e.key.includes('payout_requests')) {
+                    renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                }
+            });
         });
     </script>
 </body>

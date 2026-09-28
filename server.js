@@ -598,6 +598,117 @@ const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
 const mockLiveEvents = [];
 
+const DB_STORE_FILE = path.join(__dirname, 'data', 'mlm-db-store.json');
+
+function saveDbStore() {
+    try {
+        const dir = path.dirname(DB_STORE_FILE);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        const data = {
+            users: mockUsers,
+            binaryNodes: mockBinaryNodes,
+            sponsors: mockSponsors,
+            productPurchases: mockProductPurchases,
+            paymentDeposits: mockPaymentDeposits,
+            walletLedger: mockWalletLedger,
+            volumeLedger: mockVolumeLedger,
+            withdrawalRequests: mockWithdrawalRequests,
+            refundRequests: mockRefundRequests,
+            kycDocs: mockKycDocs,
+            fraudAlerts: mockFraudAlerts,
+            referralConversions: mockReferralConversions,
+            referralClicks: mockReferralClicks
+        };
+        fs.writeFileSync(DB_STORE_FILE, JSON.stringify(data, null, 2), 'utf-8');
+    } catch (e) {
+        console.error('Failed to save persistent DB store:', e.message);
+    }
+}
+
+function loadDbStore() {
+    try {
+        if (fs.existsSync(DB_STORE_FILE)) {
+            const raw = fs.readFileSync(DB_STORE_FILE, 'utf-8');
+            const data = JSON.parse(raw);
+            if (Array.isArray(data.users)) {
+                data.users.forEach(u => {
+                    if (!mockUsers.some(ex => ex.id === u.id || (ex.email && u.email && ex.email.toLowerCase() === u.email.toLowerCase()))) {
+                        mockUsers.push(u);
+                    }
+                });
+            }
+            if (Array.isArray(data.binaryNodes)) {
+                data.binaryNodes.forEach(n => {
+                    if (!mockBinaryNodes.some(ex => ex.id === n.id || ex.user_id === n.user_id)) {
+                        mockBinaryNodes.push(n);
+                    }
+                });
+            }
+            if (Array.isArray(data.sponsors)) {
+                data.sponsors.forEach(s => {
+                    if (!mockSponsors.some(ex => ex.user_id === s.user_id && ex.sponsor_id === s.sponsor_id)) {
+                        mockSponsors.push(s);
+                    }
+                });
+            }
+            if (Array.isArray(data.productPurchases)) {
+                data.productPurchases.forEach(p => {
+                    if (!mockProductPurchases.some(ex => ex.id === p.id)) {
+                        mockProductPurchases.push(p);
+                    }
+                });
+            }
+            if (Array.isArray(data.paymentDeposits)) {
+                data.paymentDeposits.forEach(d => {
+                    if (!mockPaymentDeposits.some(ex => ex.id === d.id)) {
+                        mockPaymentDeposits.push(d);
+                    }
+                });
+            }
+            if (Array.isArray(data.walletLedger)) {
+                data.walletLedger.forEach(w => {
+                    if (!mockWalletLedger.some(ex => ex.id === w.id)) {
+                        mockWalletLedger.push(w);
+                    }
+                });
+            }
+            if (Array.isArray(data.volumeLedger)) {
+                data.volumeLedger.forEach(v => {
+                    if (!mockVolumeLedger.some(ex => ex.id === v.id)) {
+                        mockVolumeLedger.push(v);
+                    }
+                });
+            }
+            if (Array.isArray(data.withdrawalRequests)) {
+                data.withdrawalRequests.forEach(w => {
+                    if (!mockWithdrawalRequests.some(ex => ex.id === w.id)) {
+                        mockWithdrawalRequests.push(w);
+                    }
+                });
+            }
+            if (Array.isArray(data.refundRequests)) {
+                data.refundRequests.forEach(r => {
+                    if (!mockRefundRequests.some(ex => ex.id === r.id)) {
+                        mockRefundRequests.push(r);
+                    }
+                });
+            }
+            if (Array.isArray(data.kycDocs)) {
+                data.kycDocs.forEach(k => {
+                    if (!mockKycDocs.some(ex => ex.id === k.id || ex.user_id === k.user_id)) {
+                        mockKycDocs.push(k);
+                    }
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Failed to load persistent DB store:', e.message);
+    }
+}
+
+// Load persisted entities on startup
+loadDbStore();
+
 function addLiveEvent(type, data = {}, message = '') {
     const event = {
         id: 'evt-' + Date.now() + '-' + Math.random().toString(36).substr(2, 6),
@@ -1153,6 +1264,7 @@ const server = http.createServer(async (req, res) => {
             position: result.placement ? result.placement.position : 'N/A'
         }, `New Member Registered: ${result.user.full_name} (@${result.user.username}) | Sponsor: ${result.sponsor ? result.sponsor.sponsor_username : 'None'} | Position: ${result.placement ? result.placement.position : 'N/A'}`);
 
+        saveDbStore();
         sendJSON(res, 201, result);
         return;
     }
@@ -3314,6 +3426,8 @@ const server = http.createServer(async (req, res) => {
             bank_reference: deposit.bank_reference
         });
 
+        saveDbStore();
+
         sendJSON(res, 201, {
             success: true,
             orderNumber: purchase.order_number,
@@ -3528,6 +3642,8 @@ const server = http.createServer(async (req, res) => {
         const auditAction = action === 'APPROVED' ? 'DEPOSIT_APPROVED' : 'DEPOSIT_REJECTED';
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'payment_deposits', depositId, { status: oldStatus }, { status: action });
 
+        saveDbStore();
+
         sendJSON(res, 200, { 
             success: true, 
             message: `Deposit status has been updated to ${action}.`,
@@ -3613,6 +3729,8 @@ const server = http.createServer(async (req, res) => {
             amount: activePurchase.price_paid,
             productName: product.name || product.title
         }, `Payment Approved: Order #${activePurchase.order_number} (${product.name || product.title}) - LKR ${activePurchase.price_paid.toFixed(2)}`);
+
+        saveDbStore();
 
         sendJSON(res, 200, {
             success: true,
