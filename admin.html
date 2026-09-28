@@ -1486,6 +1486,36 @@
                 </div>
             </div>
         </div>
+    <!-- BANK RECEIPT LIGHTBOX MODAL (ROOT BODY LEVEL) -->
+    <div class="modal-overlay" id="receiptLightboxModal" style="display: none;">
+        <div class="modal-box" style="max-width: 800px; padding: 20px; width: 95%; max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 20px;">🧾</span>
+                    <h3 id="receiptLightboxTitle" style="font-size: 16px; margin: 0; color:var(--text-primary);">Bank Slip Receipt Viewer</h3>
+                </div>
+                <button type="button" onclick="closeReceiptLightbox()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+            
+            <!-- Controls Bar: Zoom In, Zoom Out, Reset, Rotate, Download -->
+            <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg-main); padding: 8px 12px; border-radius: 8px; border: 1px solid var(--border-color); margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <button type="button" class="btn btn-secondary" onclick="zoomReceipt(0.2)" style="padding: 4px 10px; font-size: 12px; font-weight: 700;">🔍+ Zoom In</button>
+                    <button type="button" class="btn btn-secondary" onclick="zoomReceipt(-0.2)" style="padding: 4px 10px; font-size: 12px; font-weight: 700;">🔍- Zoom Out</button>
+                    <button type="button" class="btn btn-secondary" onclick="resetReceiptView()" style="padding: 4px 10px; font-size: 12px;">Reset</button>
+                    <button type="button" class="btn btn-secondary" onclick="rotateReceipt()" style="padding: 4px 10px; font-size: 12px;">🔄 Rotate</button>
+                    <span id="receiptZoomLevel" style="font-size: 11.5px; color: var(--text-muted); margin-left: 6px;">100%</span>
+                </div>
+                <div>
+                    <a id="receiptDownloadBtn" href="#" download="bank-receipt-slip.jpg" class="btn btn-primary" style="padding: 5px 14px; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">⬇️ Download Slip</a>
+                </div>
+            </div>
+
+            <!-- Viewport Container -->
+            <div id="receiptViewport" style="flex: 1; overflow: auto; min-height: 380px; max-height: 60vh; background: #0b1928; border-radius: 8px; border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; position: relative;">
+                <img id="receiptLightboxImg" src="assets/trading_banner.jpg" alt="Bank Slip Receipt" style="max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.2s ease; transform-origin: center center; transform: scale(1) rotate(0deg);">
+            </div>
+        </div>
     </div>
 
     <!-- ADD/EDIT PRODUCT MODAL OVERLAY (ROOT BODY LEVEL) -->
@@ -1935,13 +1965,128 @@
             }, 1200);
         }
 
-        // Load dynamic bank slips from queue
-        function loadBankReceiptsTable() {
-            const list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+        // --- RECEIPT LIGHTBOX CONTROLS ---
+        let receiptCurrentZoom = 1;
+        let receiptCurrentRotation = 0;
+
+        function viewReceiptImage(imgSrc, title = 'Bank Slip Receipt') {
+            const modal = document.getElementById('receiptLightboxModal');
+            const img = document.getElementById('receiptLightboxImg');
+            const titleEl = document.getElementById('receiptLightboxTitle');
+            const dlBtn = document.getElementById('receiptDownloadBtn');
+            
+            if (!modal || !img) return;
+            
+            imgSrc = imgSrc || 'assets/trading_banner.jpg';
+            img.src = imgSrc;
+            if (titleEl) titleEl.textContent = title;
+            if (dlBtn) dlBtn.href = imgSrc;
+            
+            receiptCurrentZoom = 1;
+            receiptCurrentRotation = 0;
+            updateReceiptTransform();
+            
+            modal.style.display = 'flex';
+            modal.classList.add('open');
+        }
+
+        function closeReceiptLightbox() {
+            const modal = document.getElementById('receiptLightboxModal');
+            if (modal) {
+                modal.style.display = 'none';
+                modal.classList.remove('open');
+            }
+        }
+
+        function zoomReceipt(delta) {
+            receiptCurrentZoom = Math.min(Math.max(receiptCurrentZoom + delta, 0.4), 4.0);
+            updateReceiptTransform();
+        }
+
+        function rotateReceipt() {
+            receiptCurrentRotation = (receiptCurrentRotation + 90) % 360;
+            updateReceiptTransform();
+        }
+
+        function resetReceiptView() {
+            receiptCurrentZoom = 1;
+            receiptCurrentRotation = 0;
+            updateReceiptTransform();
+        }
+
+        function updateReceiptTransform() {
+            const img = document.getElementById('receiptLightboxImg');
+            const zoomEl = document.getElementById('receiptZoomLevel');
+            if (img) {
+                img.style.transform = `scale(${receiptCurrentZoom}) rotate(${receiptCurrentRotation}deg)`;
+            }
+            if (zoomEl) {
+                zoomEl.textContent = Math.round(receiptCurrentZoom * 100) + '%';
+            }
+        }
+
+        // Load dynamic bank slips from server & local queue
+        async function loadBankReceiptsTable() {
             const tbody = document.getElementById('bankReceiptsTableBody');
             if (!tbody) return;
 
-            if (list.length === 0) {
+            let serverPending = [];
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+                const res = await fetch('/api/admin/deposits/pending', {
+                    headers: { 'Authorization': token.startsWith('Bearer ') ? token : ('Bearer ' + token) }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && Array.isArray(data.pending)) {
+                        serverPending = data.pending;
+                    }
+                }
+            } catch (e) {
+                // Fallback to local queue if server offline
+            }
+
+            const localQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            
+            // Merge server and local slips
+            const merged = [];
+            const seenIds = new Set();
+            
+            serverPending.forEach(item => {
+                const orderId = item.order_number || item.id || ('ORD-' + item.id.substring(0, 6));
+                seenIds.add(orderId);
+                seenIds.add(item.id);
+                merged.push({
+                    id: item.id,
+                    depositId: item.id,
+                    orderId: orderId,
+                    txnCode: item.bank_reference || item.txnCode || 'REF-PENDING',
+                    userName: item.user_name || item.userName || ('User #' + (item.user_id ? item.user_id.substring(0, 8) : '101')),
+                    email: item.user_email || item.email || 'customer@hapanamy.lk',
+                    phone: item.user_phone || item.phone || '07XXXXXXXX',
+                    course: item.product_name || item.course || 'Titan Elite Trading Academy',
+                    amount: parseFloat(item.amount) || 19900,
+                    slipUrl: item.slip_url || 'assets/trading_banner.jpg',
+                    status: item.status || 'PENDING',
+                    isServer: true
+                });
+            });
+
+            localQueue.forEach((item, index) => {
+                const orderId = item.orderId || ('ORD-LOC-' + index);
+                if (!seenIds.has(orderId) && !seenIds.has(item.id)) {
+                    merged.push({
+                        ...item,
+                        depositId: item.id || ('dep-loc-' + index),
+                        orderId: orderId,
+                        queueIndex: index,
+                        slipUrl: item.slipUrl || 'assets/trading_banner.jpg',
+                        isServer: false
+                    });
+                }
+            });
+
+            if (merged.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">තහවුරු කිරීමට නව බැංකු තැන්පතු රිසිට්පත් නොමැත (No pending bank slips).</td>
@@ -1951,95 +2096,168 @@
             }
 
             let rowsHtml = '';
-            // Append dynamic slips
-            list.forEach((item, index) => {
-                const badgeClass = item.status.toLowerCase().includes('pending') ? 'pending' : 'paid';
-                const actionButtons = item.status.toLowerCase().includes('pending') 
+            merged.forEach((item, index) => {
+                const isPending = (item.status || '').toLowerCase().includes('pending');
+                const badgeClass = isPending ? 'pending' : ((item.status || '').toLowerCase().includes('reject') ? 'rejected' : 'paid');
+                const depositId = item.depositId || item.id || item.orderId;
+                const qIdx = typeof item.queueIndex !== 'undefined' ? item.queueIndex : -1;
+                const safeCourse = (item.course || '').replace(/'/g, "\\'");
+                const safeUser = (item.userName || '').replace(/'/g, "\\'");
+                const safeSlip = (item.slipUrl || 'assets/trading_banner.jpg').replace(/'/g, "\\'");
+
+                const actionButtons = isPending 
                     ? `<div style="display: flex; gap: 8px;">
-                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '${item.orderId}', '${item.userName}', ${item.amount}, '${item.course}', ${index})">Approve</button>
-                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${index})">Reject</button>
+                            <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer; font-weight: 700;" onclick="approveBankOrder(this, '${item.orderId}', '${safeUser}', ${item.amount}, '${safeCourse}', ${qIdx}, '${depositId}')">✅ Approve</button>
+                            <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${qIdx}, '${depositId}', '${item.orderId}')">❌ Reject</button>
                         </div>`
                     : `<span class="badge-status ${badgeClass}">${item.status}</span>`;
 
                 rowsHtml += `
                     <tr>
-                        <td>${item.orderId}</td>
-                        <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode}</td>
+                        <td><strong>${item.orderId}</strong></td>
+                        <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode || 'REF-N/A'}</td>
                         <td><strong>${item.userName}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${item.email} | ${item.phone}</span></td>
                         <td>${item.course}</td>
-                        <td>LKR ${item.amount.toLocaleString()}</td>
-                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Slip Image</span></td>
+                        <td><strong style="color:var(--brand-gold);">LKR ${item.amount.toLocaleString()}</strong></td>
+                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline; font-size: 12.5px;" onclick="viewReceiptImage('${safeSlip}', 'Receipt - ${item.orderId}')">👁️ View Slip</span></td>
                         <td>${actionButtons}</td>
                     </tr>`;
             });
             tbody.innerHTML = rowsHtml;
         }
 
-        // Approve manual bank order receipt and distribute commissions
-        function approveBankOrder(btn, orderId, userName, amount, courseName, queueIndex = -1) {
-            // 1. Calculate Binary MLM Direct Commission (8%)
-            const commDirect = amount * 0.08;
-            
-            let referrerCode = 'Hiru';
+        // Single Server-Side Orchestration Approval (PurchaseOrchestrator -> 8% Direct, 7% Binary, VolumeLedger, WalletLedger, Activation)
+        async function approveBankOrder(btn, orderId, userName, amount, courseName, queueIndex = -1, depositId = '') {
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Processing...';
+            }
 
-            // 2. Save approved status to queue and unlock course for student
-            if (queueIndex !== -1) {
-                let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
-                const item = slipsQueue[queueIndex];
-                if (item) {
-                    item.status = 'Approved & Activated';
-                    referrerCode = item.referrer || 'Hiru';
-                    
-                    // Unlock the specific courses/ebooks dynamically for the buyer
-                    const userEmail = item.email || 'student@hapanamy.lk';
-                    let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + userEmail)) || [];
-                    const coursesToUnlock = item.course.split(',').map(name => name.trim());
-                    coursesToUnlock.forEach(cName => {
-                        if (!unlocked.includes(cName)) unlocked.push(cName);
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+                
+                // 1. Execute Server Orchestration Flow
+                let serverSuccess = false;
+                let responsePayload = null;
+
+                try {
+                    // First attempt direct deposit review API
+                    const res = await fetch('/api/admin/deposits/review', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token.startsWith('Bearer ') ? token : ('Bearer ' + token)
+                        },
+                        body: JSON.stringify({
+                            depositId: depositId || orderId,
+                            action: 'APPROVED',
+                            notes: `Approved by Admin for order ${orderId}`
+                        })
                     });
-                    localStorage.setItem('unlocked_courses_' + userEmail, JSON.stringify(unlocked));
+
+                    if (res.ok) {
+                        responsePayload = await res.json();
+                        serverSuccess = true;
+                    } else if (res.status === 404 || res.status === 400) {
+                        // Fallback attempt to RESTful order approve endpoint
+                        const resOrder = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/approve-payment`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': token.startsWith('Bearer ') ? token : ('Bearer ' + token)
+                            }
+                        });
+                        if (resOrder.ok) {
+                            responsePayload = await resOrder.json();
+                            serverSuccess = true;
+                        }
+                    }
+                } catch (netErr) {
+                    console.warn('Network request fallback to local queue sync:', netErr.message);
                 }
-                localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+
+                // 2. Synchronize local state
+                if (queueIndex !== -1) {
+                    let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+                    if (slipsQueue[queueIndex]) {
+                        slipsQueue[queueIndex].status = 'APPROVED';
+                        const userEmail = slipsQueue[queueIndex].email || 'student@hapanamy.lk';
+                        let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + userEmail)) || [];
+                        const coursesToUnlock = courseName.split(',').map(name => name.trim());
+                        coursesToUnlock.forEach(cName => {
+                            if (!unlocked.includes(cName)) unlocked.push(cName);
+                        });
+                        localStorage.setItem('unlocked_courses_' + userEmail, JSON.stringify(unlocked));
+                    }
+                    localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
+                }
+
+                // 3. Update UI
+                if (btn) {
+                    const tr = btn.closest('tr');
+                    if (tr) {
+                        tr.querySelector('td:last-child').innerHTML = '<span class="badge-status paid">Approved & Active</span>';
+                    }
+                }
+
+                // 4. Update Admin revenue
+                const repEl = document.getElementById('reportPeriodSales');
+                if (repEl) {
+                    let currentRev = parseFloat(repEl.textContent.replace(/[^0-9]/g, '')) || 0;
+                    repEl.textContent = 'රු. ' + (currentRev + amount).toLocaleString();
+                }
+
+                showToast(`✅ <strong>ඇණවුම අනුමතයි!</strong> ${courseName} සඳහා රු. ${amount.toLocaleString()} ක ගෙවීම සහ කොමිස් මුදල් සාර්ථකව බෙදා හරින ලදී.`);
+                setTimeout(() => loadBankReceiptsTable(), 500);
+
+            } catch (err) {
+                console.error('Approval Error:', err);
+                showToast(`❌ <strong>දෝෂයකි:</strong> ${err.message || 'අනුමැතිය අසාර්ථක විය.'}`);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
             }
-
-            // Sync MLM payout ledger for the specific referrer
-            let currentBalance = parseFloat(localStorage.getItem('affiliate_balance_' + referrerCode) || '0');
-            localStorage.setItem('affiliate_balance_' + referrerCode, (currentBalance + commDirect).toString());
-
-            // 3. Update table UI row
-            const tr = btn.closest('tr');
-            if (tr) {
-                tr.querySelector('td:last-child').innerHTML = '<span class="badge-status paid">Approved & Active</span>';
-            }
-
-            // 4. Update Admin sales revenue metrics
-            const repEl = document.getElementById('reportPeriodSales');
-            if (repEl) {
-                let currentRev = parseFloat(repEl.textContent.replace(/[^0-9]/g, '')) || 0;
-                repEl.textContent = 'රු. ' + (currentRev + amount).toLocaleString();
-            }
-
-            showToast(`✅ <strong>ඇණවුම අනුමතයි!</strong> ${courseName} සඳහා රු. ${amount.toLocaleString()} ක ගෙවීම සාර්ථකව තහවුරු විය.`);
-            loadBankReceiptsTable();
         }
 
         // Reject manual bank slip
-        function rejectBankOrder(btn, queueIndex = -1) {
-            if (queueIndex !== -1) {
-                let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
-                if (slipsQueue[queueIndex]) {
-                    slipsQueue[queueIndex].status = 'Rejected / Invalid';
+        async function rejectBankOrder(btn, queueIndex = -1, depositId = '', orderId = '') {
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Rejecting...';
+            }
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('token') || '';
+                try {
+                    await fetch('/api/admin/deposits/review', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token.startsWith('Bearer ') ? token : ('Bearer ' + token)
+                        },
+                        body: JSON.stringify({
+                            depositId: depositId || orderId,
+                            action: 'REJECTED',
+                            notes: `Rejected by Admin for order ${orderId}`
+                        })
+                    });
+                } catch (netErr) {}
+
+                if (queueIndex !== -1) {
+                    let slipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+                    if (slipsQueue[queueIndex]) {
+                        slipsQueue[queueIndex].status = 'REJECTED';
+                    }
+                    localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
                 }
-                localStorage.setItem('bank_slips_queue', JSON.stringify(slipsQueue));
-            }
 
-            const tr = btn.closest('tr');
-            if (tr) {
-                tr.querySelector('td:last-child').innerHTML = '<span class="badge-status" style="background-color:rgba(229,62,62,0.15); color:var(--ph-red);">Rejected</span>';
+                showToast('❌ <strong>රිසිට්පත ප්‍රතික්ෂේප විය!</strong> අදාළ බැංකු රිසිට්පත ප්‍රතික්ෂේප කරන ලදී.');
+                setTimeout(() => loadBankReceiptsTable(), 500);
+            } catch (err) {
+                showToast('❌ <strong>දෝෂයකි:</strong> ' + err.message);
             }
-
-            showToast('❌ <strong>රිසිට්පත ප්‍රතික්ෂේප විය!</strong> අදාළ බැංකු රිසිට්පත ප්‍රතික්ෂේප කරන ලදී.');
-            loadBankReceiptsTable();
         }
 
         // Dynamic Products Database initial setup

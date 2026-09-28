@@ -3410,8 +3410,8 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/deposits/pending
     if (req.method === 'GET' && pathname === '/api/admin/deposits/pending') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
-            sendJSON(res, 403, { error: 'Access Denied.' });
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
 
@@ -3423,8 +3423,8 @@ const server = http.createServer(async (req, res) => {
     // POST /api/admin/deposits/review
     if (req.method === 'POST' && pathname === '/api/admin/deposits/review') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || authUser.role !== 'admin') {
-            sendJSON(res, 403, { error: 'Access Denied.' });
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
 
@@ -3524,7 +3524,7 @@ const server = http.createServer(async (req, res) => {
     // POST /api/admin/orders/:orderId/approve-payment (Direct RESTful Approval Endpoint)
     if (req.method === 'POST' && pathname.startsWith('/api/admin/orders/') && pathname.endsWith('/approve-payment')) {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
