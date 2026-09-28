@@ -75,6 +75,7 @@ require('./step57-complete-purchase-active-course-mlm-flow.test');
 require('./step58-manual-bank-transfer-admin-approval-mlm-flow.test');
 require('./step59-realtime-downline-and-admin-persistence-verification.test');
 require('./step60-user-registration-identity-and-account-switching-verification.test');
+require('./step61-production-system-architecture-and-authoritative-data-flow-audit.test');
 
 // Run
 runTests();
