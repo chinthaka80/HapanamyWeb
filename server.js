@@ -44,6 +44,12 @@ const MIME_TYPES = {
 // Simulated Database Sessions (Token store)
 const activeSessions = new Map();
 
+function isAdminUser(user) {
+    if (!user) return false;
+    const role = (user.role || '').toLowerCase();
+    return role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin' || role === 'finance_admin' || role === 'compliance';
+}
+
 // Mock Databases for Phase 3/4/5/8/11/12/13/26/27
 const mockWallets = [];
 const mockReferralIntents = [];
@@ -530,6 +536,17 @@ const mockUsers = [
         referral_code: 'NAMOBUDDHAYA',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-01T00:00:00Z' 
+    },
+    { 
+        id: 'user-subadmin-manager', 
+        username: 'subadmin', 
+        full_name: 'Sub Admin (Operations Manager)', 
+        email: 'manager@hapanamy.lk', 
+        role: 'subadmin', 
+        status: 'ACTIVE', 
+        referral_code: 'SUBADMIN',
+        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
+        created_at: '2026-09-01T00:00:00Z' 
     }
 ];
 
@@ -547,6 +564,13 @@ activeSessions.set('token-namobuddhaya-root', {
     full_name: 'NAMOBUDDHAYA', 
     email: 'admin@hapanamy.lk', 
     role: 'admin' 
+});
+activeSessions.set('token-subadmin-manager', { 
+    id: 'user-subadmin-manager', 
+    username: 'subadmin', 
+    full_name: 'Sub Admin (Operations Manager)', 
+    email: 'manager@hapanamy.lk', 
+    role: 'subadmin' 
 });
 
 const mockWalletLedger = [];
@@ -1161,6 +1185,14 @@ const server = http.createServer(async (req, res) => {
 
             SecurityCore.recordLoginAttempt(normalizedEmail, true);
             const token = AuthService.generateToken();
+            const userRole = (foundUser.role || 'member').toLowerCase();
+            let redirect_url = 'dashboard.html';
+            if (userRole === 'admin' || userRole === 'subadmin' || userRole === 'sub_admin' || userRole === 'super_admin') {
+                redirect_url = 'hapanamy-admin-portal-9226.html';
+            } else if (userRole === 'student') {
+                redirect_url = 'student-dashboard.html';
+            }
+
             activeSessions.set(token, {
                 id: foundUser.id,
                 username: foundUser.username,
@@ -1171,6 +1203,7 @@ const server = http.createServer(async (req, res) => {
             sendJSON(res, 200, {
                 success: true,
                 token,
+                redirect_url,
                 user: {
                     id: foundUser.id,
                     username: foundUser.username,

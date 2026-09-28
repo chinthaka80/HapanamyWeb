@@ -5,7 +5,7 @@
 const QualificationEngine = require('./qualification-engine');
 const EarningsCapEngine = require('./earnings-cap-engine');
 
-const ALLOWED_ADMIN_ROLES = ['ADMIN', 'SUPER_ADMIN', 'FINANCE_ADMIN', 'COMPLIANCE'];
+const ALLOWED_ADMIN_ROLES = ['ADMIN', 'SUPER_ADMIN', 'FINANCE_ADMIN', 'COMPLIANCE', 'SUBADMIN', 'SUB_ADMIN'];
 
 const AdminDashboardService = {
     /**

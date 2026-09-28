@@ -70,6 +70,7 @@ require('./step52-student-dashboard-user-identity.test');
 require('./step53-my-team-list-verification.test');
 require('./step54-live-registration-persistence.test');
 require('./step55-new-user-zero-products-and-purchase-flow.test');
+require('./step56-admin-subadmin-role-and-registration-visibility.test');
 
 // Run
 runTests();

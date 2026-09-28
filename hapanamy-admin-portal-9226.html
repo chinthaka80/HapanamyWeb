@@ -3073,15 +3073,16 @@
             const tableBody = document.getElementById('registeredUsersTableBody');
             if (!tableBody) return;
 
+            const searchInput = document.getElementById('memberSearchInput');
+            const search = (searchInput ? searchInput.value : '').toLowerCase().trim();
+            const statusSelect = document.getElementById('memberStatusFilter');
+            const status = (statusSelect ? statusSelect.value : 'all').toLowerCase();
+            const qualSelect = document.getElementById('memberQualFilter');
+            const qualification = (qualSelect ? qualSelect.value : 'all').toLowerCase();
+
+            let apiMembers = [];
             try {
                 const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
-                const searchInput = document.getElementById('memberSearchInput');
-                const search = searchInput ? searchInput.value : '';
-                const statusSelect = document.getElementById('memberStatusFilter');
-                const status = statusSelect ? statusSelect.value : 'all';
-                const qualSelect = document.getElementById('memberQualFilter');
-                const qualification = qualSelect ? qualSelect.value : 'all';
-
                 const res = await fetch(`/api/admin/members?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}&qualification=${encodeURIComponent(qualification)}`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
@@ -3089,22 +3090,164 @@
                 if (res.ok) {
                     const data = await res.json();
                     if (data && data.members) {
-                        adminMembersData = data.members;
-                        renderAdminMembersRows(data.members);
-                        return;
+                        apiMembers = data.members;
                     }
                 }
             } catch (err) {
-                console.warn('API fetch failed, falling back to local adapter:', err);
+                console.warn('API fetch failed, utilizing full offline store:', err);
             }
 
-            // Fallback: Local database adapter
+            // Gather all local storage & database sources
+            let localRegUsers = [];
             try {
-                const users = await dbGetUsers();
-                renderAdminMembersFallbackRows(users);
-            } catch (e) {
-                tableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; color:var(--ph-red); padding:20px;">Error loading members: ${e.message}</td></tr>`;
+                localRegUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            } catch (e) {}
+
+            let indexedDbUsers = [];
+            try {
+                if (typeof dbGetUsers === 'function') {
+                    indexedDbUsers = await dbGetUsers();
+                }
+            } catch (e) {}
+
+            // Gather referred_users_* lists across localStorage
+            const referredUsers = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.toLowerCase().startsWith('referred_users_')) {
+                    try {
+                        const refList = JSON.parse(localStorage.getItem(k)) || [];
+                        refList.forEach(r => referredUsers.push(r));
+                    } catch (e) {}
+                }
             }
+
+            // Core pre-seeded users
+            const seedUsers = [
+                {
+                    id: 'user-namobuddhaya-root',
+                    username: 'NAMOBUDDHAYA',
+                    full_name: 'Main Admin (NAMOBUDDHAYA)',
+                    name: 'Main Admin (NAMOBUDDHAYA)',
+                    email: 'admin@hapanamy.lk',
+                    role: 'admin',
+                    status: 'ACTIVE',
+                    account_status: 'ACTIVE',
+                    qualification_status: 'QUALIFIED',
+                    kyc_status: 'APPROVED',
+                    position: 'ROOT',
+                    sponsor: null,
+                    personal_bv: 0,
+                    created_at: '2026-09-01T00:00:00Z'
+                },
+                {
+                    id: 'user-subadmin-manager',
+                    username: 'subadmin',
+                    full_name: 'Sub Admin (Operations Manager)',
+                    name: 'Sub Admin (Operations Manager)',
+                    email: 'manager@hapanamy.lk',
+                    role: 'subadmin',
+                    status: 'ACTIVE',
+                    account_status: 'ACTIVE',
+                    qualification_status: 'QUALIFIED',
+                    kyc_status: 'APPROVED',
+                    position: 'ROOT',
+                    sponsor: null,
+                    personal_bv: 0,
+                    created_at: '2026-09-01T00:00:00Z'
+                },
+                {
+                    id: 'user-hiru-root',
+                    username: 'Hiru',
+                    full_name: 'Hiru (Sales Leader)',
+                    name: 'Hiru (Sales Leader)',
+                    email: 'hiru@hapanamy.lk',
+                    role: 'member',
+                    status: 'ACTIVE',
+                    account_status: 'ACTIVE',
+                    qualification_status: 'QUALIFIED',
+                    kyc_status: 'APPROVED',
+                    position: 'ROOT',
+                    sponsor: null,
+                    personal_bv: 15992,
+                    created_at: '2026-09-01T00:00:00Z'
+                }
+            ];
+
+            // Merge and deduplicate all member sources
+            const mergedMap = new Map();
+
+            // 1. Seed base users
+            seedUsers.forEach(u => {
+                mergedMap.set(u.username.toLowerCase(), u);
+            });
+
+            // 2. Add local storage users
+            localRegUsers.forEach(u => {
+                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
+                const existing = mergedMap.get(uname) || {};
+                mergedMap.set(uname, { ...existing, ...u });
+            });
+
+            // 3. Add IndexedDB users
+            indexedDbUsers.forEach(u => {
+                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
+                const existing = mergedMap.get(uname) || {};
+                mergedMap.set(uname, { ...existing, ...u });
+            });
+
+            // 4. Add referred users
+            referredUsers.forEach(u => {
+                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
+                const existing = mergedMap.get(uname) || {};
+                mergedMap.set(uname, { ...existing, ...u });
+            });
+
+            // 5. Add server API users (authoritative for volume & financial stats)
+            apiMembers.forEach(u => {
+                const uname = (u.username || (u.email ? u.email.split('@')[0] : u.id)).toLowerCase();
+                const existing = mergedMap.get(uname) || {};
+                mergedMap.set(uname, { ...existing, ...u });
+            });
+
+            let allMembers = Array.from(mergedMap.values());
+            adminMembersData = allMembers;
+
+            // Update topbar & overview stats
+            const totalMembersEl = document.getElementById('dashboardActiveAffiliates');
+            if (totalMembersEl) {
+                totalMembersEl.textContent = allMembers.filter(m => (m.role || 'member').toLowerCase() !== 'admin' && (m.role || 'member').toLowerCase() !== 'subadmin').length;
+            }
+
+            // Apply filter criteria
+            if (search) {
+                allMembers = allMembers.filter(m => {
+                    const fn = (m.full_name || m.name || '').toLowerCase();
+                    const un = (m.username || '').toLowerCase();
+                    const em = (m.email || '').toLowerCase();
+                    const sp = typeof m.sponsor === 'object' && m.sponsor ? (m.sponsor.username || m.sponsor.full_name || '').toLowerCase() : (m.sponsor || '').toLowerCase();
+                    return fn.includes(search) || un.includes(search) || em.includes(search) || sp.includes(search);
+                });
+            }
+
+            if (status !== 'all') {
+                allMembers = allMembers.filter(m => {
+                    const st = (m.account_status || m.status || 'ACTIVE').toLowerCase();
+                    return st === status;
+                });
+            }
+
+            if (qualification !== 'all') {
+                allMembers = allMembers.filter(m => {
+                    const q = (m.qualification_status || '').toLowerCase();
+                    if (qualification === 'qualified') return q === 'qualified';
+                    if (qualification === 'purchased') return (Number(m.personal_bv || 0) > 0);
+                    if (qualification === 'registered') return (Number(m.personal_bv || 0) === 0);
+                    return true;
+                });
+            }
+
+            renderAdminMembersRows(allMembers);
         }
 
         function renderAdminMembersRows(members) {
@@ -3126,26 +3269,50 @@
             members.forEach(m => {
                 const tr = document.createElement('tr');
                 const dt = m.created_at ? new Date(m.created_at).toLocaleDateString() : '2026-09-01';
-                const sponsorText = m.sponsor ? `<strong>${m.sponsor.full_name || m.sponsor.username}</strong><br><small style="color:var(--text-muted);">@${m.sponsor.username}</small>` : '<span style="color:var(--text-muted);">Direct (Company)</span>';
                 
-                let posBadge = '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>';
-                if (m.binary_node && m.binary_node.position) {
-                    const pos = m.binary_node.position.toUpperCase();
-                    if (pos === 'LEFT') posBadge = '<span class="sales-leg-badge badge-left">👈 LEFT</span>';
-                    else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
+                // Sponsor info
+                let sponsorText = '<span style="color:var(--text-muted);">Direct (Company)</span>';
+                if (m.sponsor) {
+                    if (typeof m.sponsor === 'object') {
+                        sponsorText = `<strong>${m.sponsor.full_name || m.sponsor.username}</strong><br><small style="color:var(--text-muted);">@${m.sponsor.username}</small>`;
+                    } else if (typeof m.sponsor === 'string' && m.sponsor.trim()) {
+                        sponsorText = `<strong>${m.sponsor}</strong><br><small style="color:var(--text-muted);">@${m.sponsor}</small>`;
+                    }
                 }
 
-                const isAccountActive = (m.account_status || m.status || '').toUpperCase() === 'ACTIVE';
+                // Role badge
+                const r = (m.role || 'member').toLowerCase();
+                let roleBadge = '<span class="badge-status" style="background:#E65100; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">💼 SALES TEAM</span>';
+                if (r === 'admin') {
+                    roleBadge = '<span class="badge-status" style="background:#0D47A1; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">👑 MAIN ADMIN</span>';
+                } else if (r === 'subadmin' || r === 'sub_admin') {
+                    roleBadge = '<span class="badge-status" style="background:#4A148C; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">⚡ SUB ADMIN</span>';
+                } else if (r === 'student') {
+                    roleBadge = '<span class="badge-status" style="background:#004D40; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">🎓 STUDENT</span>';
+                }
+
+                // Position badge
+                let pos = (m.position || (m.binary_node && m.binary_node.position) || 'LEFT').toUpperCase();
+                if (r === 'admin' || r === 'subadmin' || (m.username || '').toLowerCase() === 'hiru') pos = 'ROOT';
+                
+                let posBadge = '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>';
+                if (pos === 'LEFT') posBadge = '<span class="sales-leg-badge badge-left">👈 LEFT</span>';
+                else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
+
+                // Account status badge
+                const isAccountActive = (m.account_status || m.status || 'ACTIVE').toUpperCase() === 'ACTIVE';
                 const accountBadge = isAccountActive
                     ? '<span class="badge-status badge-account-active">● ACTIVE</span>'
                     : '<span class="badge-status badge-account-inactive">● INACTIVE</span>';
 
+                // Qualification badge
                 const isQualified = (m.qualification_status || '').toUpperCase() === 'QUALIFIED';
                 const qualProgress = m.qualification_progress || `${m.sales_team_purchases_count || 0} / 2 Sales`;
                 const qualBadge = isQualified
                     ? '<span class="badge-status badge-qual-qualified">★ QUALIFIED</span>'
                     : `<span class="badge-status badge-qual-unqualified">★ NOT QUALIFIED</span><br><small class="badge-progress" style="display:inline-block; margin-top:3px;">${qualProgress}</small>`;
 
+                // KYC badge
                 const kycSt = (m.kyc_status || 'NOT_SUBMITTED').toUpperCase();
                 let kycBadgeClass = 'badge-kyc-none';
                 let kycLabel = '🛡️ KYC NOT SUBMITTED';
@@ -3169,8 +3336,11 @@
 
                 tr.innerHTML = `
                     <td>
-                        <strong>${m.full_name || m.username}</strong><br>
-                        <code style="color:var(--text-muted);">@${m.username}</code> <small style="color:rgba(255,255,255,0.3);">(${m.id})</small>
+                        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+                            <strong>${m.full_name || m.name || m.username}</strong>
+                            ${roleBadge}
+                        </div>
+                        <code style="color:var(--brand-gold);">@${m.username || 'member'}</code> <small style="color:rgba(255,255,255,0.4);">(${m.email || m.id || ''})</small>
                     </td>
                     <td>${sponsorText}</td>
                     <td>${posBadge}</td>
@@ -3185,56 +3355,9 @@
                     <td style="text-align: center;">
                         <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
                             <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
-                            <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
-                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
+                            <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name || m.name || m.username}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
+                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name || m.name || m.username}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
                         </div>
-                    </td>
-                `;
-                tableBody.appendChild(tr);
-            });
-        }
-
-        function renderAdminMembersFallbackRows(users) {
-            const tableBody = document.getElementById('registeredUsersTableBody');
-            if (!tableBody) return;
-            tableBody.innerHTML = '';
-
-            const allUsers = [...(users || [])];
-            // Include core root users if missing
-            if (!allUsers.some(u => (u.username || '').toLowerCase() === 'hiru')) {
-                allUsers.unshift({ id: 'user-hiru-root', name: 'Hiru', full_name: 'Hiru', username: 'Hiru', email: 'hiru@hapanamy.lk', role: 'member', status: 'ACTIVE', position: 'ROOT' });
-            }
-            if (!allUsers.some(u => (u.username || '').toLowerCase() === 'namobuddhaya')) {
-                allUsers.unshift({ id: 'user-namobuddhaya-root', name: 'NAMOBUDDHAYA', full_name: 'NAMOBUDDHAYA', username: 'NAMOBUDDHAYA', email: 'admin@hapanamy.lk', role: 'admin', status: 'ACTIVE', position: 'ROOT' });
-            }
-
-            allUsers.forEach(user => {
-                const tr = document.createElement('tr');
-                const name = user.full_name || user.name || 'Member';
-                const uname = user.username || (user.email ? user.email.split('@')[0] : 'member');
-                const email = user.email || 'N/A';
-                const status = (user.status || user.account_status || 'ACTIVE').toUpperCase();
-                const pos = (user.position || 'LEFT').toUpperCase();
-                const posBadge = pos === 'ROOT'
-                    ? '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>'
-                    : (pos === 'LEFT' ? '<span class="sales-leg-badge badge-left">👈 LEFT</span>' : '<span class="sales-leg-badge badge-right">👉 RIGHT</span>');
-                const sp = user.sponsor ? `<strong>${user.sponsor}</strong>` : '<span style="color:var(--text-muted);">Direct (Company)</span>';
-                
-                tr.innerHTML = `
-                    <td>
-                        <strong>${name}</strong><br>
-                        <code style="color:var(--brand-gold);">@${uname}</code> <small style="color:var(--text-muted);">(${email})</small>
-                    </td>
-                    <td>${sp}</td>
-                    <td>${posBadge}</td>
-                    <td style="font-weight:700; color:var(--brand-green-light);">රු. 0.00</td>
-                    <td>L: 0 | R: 0</td>
-                    <td>රු. 0.00</td>
-                    <td>
-                        <span class="badge-status ${status === 'ACTIVE' ? 'badge-account-active' : 'badge-account-inactive'}">● ${status}</span>
-                    </td>
-                    <td style="text-align: center;">
-                        <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
                     </td>
                 `;
                 tableBody.appendChild(tr);

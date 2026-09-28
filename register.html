@@ -561,11 +561,11 @@
                         if (!regUsers.some(u => u.email === email || u.id === data.user.id)) {
                             regUsers.push(userObj);
                             localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
-                // Fresh user starts with 0 product history
-                localStorage.removeItem('checkout_purchased_courses');
-                localStorage.setItem('hapanamy_purchased_courses_' + newUser.id.toLowerCase(), JSON.stringify([]));
-                localStorage.setItem('hapanamy_purchased_courses_' + username.toLowerCase(), JSON.stringify([]));
-                localStorage.setItem('hapanamy_purchased_courses_' + email.toLowerCase(), JSON.stringify([]));
+                            // Fresh user starts with 0 product history
+                            localStorage.removeItem('checkout_purchased_courses');
+                            localStorage.setItem('hapanamy_purchased_courses_' + (data.user.id || '').toLowerCase(), JSON.stringify([]));
+                            localStorage.setItem('hapanamy_purchased_courses_' + (username || '').toLowerCase(), JSON.stringify([]));
+                            localStorage.setItem('hapanamy_purchased_courses_' + (email || '').toLowerCase(), JSON.stringify([]));
                         }
 
                         // Always record under sponsor downline list
@@ -596,8 +596,9 @@
                         }
 
                         showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
+                        const targetDashboard = currentRole === 'student' ? 'student-dashboard.html' : 'dashboard.html';
                         setTimeout(() => {
-                            window.location.replace('dashboard.html');
+                            window.location.replace(targetDashboard);
                         }, 1000);
                         return;
                     } else if (data.error) {
@@ -693,8 +694,9 @@
                 }
 
                 showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
+                const targetDashboard = currentRole === 'student' ? 'student-dashboard.html' : 'dashboard.html';
                 setTimeout(() => {
-                    window.location.replace('dashboard.html');
+                    window.location.replace(targetDashboard);
                 }, 1000);
             } catch (e2) {
                 btnSubmit.disabled = false;
