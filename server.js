@@ -3521,6 +3521,94 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /api/admin/orders/:orderId/approve-payment (Direct RESTful Approval Endpoint)
+    if (req.method === 'POST' && pathname.startsWith('/api/admin/orders/') && pathname.endsWith('/approve-payment')) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const parts = pathname.split('/');
+        const orderId = parts[4]; // /api/admin/orders/:orderId/approve-payment
+
+        const purchIdx = mockProductPurchases.findIndex(p => p.id === orderId || p.order_number === orderId);
+        if (purchIdx === -1) {
+            sendJSON(res, 404, { error: `Order ${orderId} not found.` });
+            return;
+        }
+
+        const activePurchase = mockProductPurchases[purchIdx];
+        if (activePurchase.status === 'ACTIVE') {
+            sendJSON(res, 400, { error: `Order ${orderId} is already approved and active.` });
+            return;
+        }
+
+        activePurchase.status = 'ACTIVE';
+        activePurchase.activated_at = new Date().toISOString();
+
+        // 1. Fetch Product
+        const product = mockProducts.find(p => p.id === activePurchase.product_id || p.code === activePurchase.product_id) || mockProducts[0];
+
+        // 2. Activate Buyer
+        const buyer = mockUsers.find(u => u.id === activePurchase.user_id);
+        if (buyer) {
+            buyer.status = 'ACTIVE';
+        }
+
+        // 3. Mark Matching Deposit as APPROVED if present
+        const depIdx = mockPaymentDeposits.findIndex(d => d.purchase_id === activePurchase.id || d.order_number === activePurchase.order_number);
+        if (depIdx !== -1) {
+            mockPaymentDeposits[depIdx].status = 'APPROVED';
+            mockPaymentDeposits[depIdx].reviewer_id = authUser.id;
+            mockPaymentDeposits[depIdx].reviewed_at = activePurchase.activated_at;
+        }
+
+        // 4. Execute PurchaseOrchestrator
+        let orchResult = null;
+        try {
+            orchResult = PurchaseOrchestrator.executeApprovedPurchaseWorkflow({
+                purchase: activePurchase,
+                product: product,
+                userId: activePurchase.user_id,
+                binaryNodes: mockBinaryNodes,
+                sponsors: mockSponsors,
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                commissionLedger: mockCommissionTransactions,
+                volumeLedger: mockVolumeLedger,
+                walletLedger: mockWalletLedger,
+                dailyEarningsMap: mockDailyEarningsMap
+            });
+        } catch (orchErr) {
+            console.warn(`Orchestrator warning during order approval: ${orchErr.message}`);
+        }
+
+        ProductService.triggerPurchaseActivation(activePurchase);
+        KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', activePurchase.id, null, { 
+            snapshot_id: activePurchase.economics_snapshot ? activePurchase.economics_snapshot.id : null 
+        });
+
+        addLiveEvent('ORDER_PAID', {
+            orderNumber: activePurchase.order_number,
+            purchaseId: activePurchase.id,
+            userId: activePurchase.user_id,
+            amount: activePurchase.price_paid,
+            productName: product.name || product.title
+        }, `Payment Approved: Order #${activePurchase.order_number} (${product.name || product.title}) - LKR ${activePurchase.price_paid.toFixed(2)}`);
+
+        sendJSON(res, 200, {
+            success: true,
+            orderId: activePurchase.id,
+            orderNumber: activePurchase.order_number,
+            status: 'ACTIVE',
+            message: `Order ${orderId} has been successfully approved and activated.`,
+            orchestration: orchResult
+        });
+        return;
+    }
+
     // ========================================================
     // WALLET & WITHDRAWAL SYSTEM API ROUTER (PHASE 8)
     // ========================================================
