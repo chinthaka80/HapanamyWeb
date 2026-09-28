@@ -30,7 +30,13 @@ const MemberDashboardService = {
         if (!userId) throw new Error('User ID is required.');
 
         // 1. Resolve User
-        const user = users.find(u => u.id === userId || u.username === userId);
+        const uLower = (userId || '').toLowerCase();
+        const user = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
         if (!user) {
             throw new Error(`Member ${userId} not found.`);
         }

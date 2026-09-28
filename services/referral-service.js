@@ -32,7 +32,14 @@ class ReferralService {
         }
 
         if (users && users.length > 0) {
-            const sponsor = users.find(u => u.username === trimmed || u.id === trimmed);
+            const trimmedLower = trimmed.toLowerCase();
+            const sponsor = users.find(u => 
+                (u.username && u.username.toLowerCase() === trimmedLower) || 
+                (u.id && u.id.toLowerCase() === trimmedLower) ||
+                (u.referral_code && u.referral_code.toLowerCase() === trimmedLower) ||
+                (u.email && u.email.toLowerCase() === trimmedLower) ||
+                (trimmedLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+            );
             if (!sponsor) {
                 return { valid: false, error: `Sponsor with referral code '${trimmed}' does not exist.` };
             }

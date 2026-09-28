@@ -149,7 +149,13 @@ const AuthService = {
             return { success: false, error: sponsorValidation.error };
         }
 
-        const sponsor = sponsorValidation.sponsor || users.find(u => u.username === effectiveSponsorCode || u.id === effectiveSponsorCode);
+        const effLower = effectiveSponsorCode.toLowerCase();
+        const sponsor = sponsorValidation.sponsor || users.find(u => 
+            (u.username && u.username.toLowerCase() === effLower) || 
+            (u.id && u.id.toLowerCase() === effLower) ||
+            (u.referral_code && u.referral_code.toLowerCase() === effLower) ||
+            (effLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
         const sponsorId = sponsor ? sponsor.id : effectiveSponsorCode;
 
         const posValidation = ReferralService.validatePosition(effectivePosition || 'LEFT');

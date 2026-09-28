@@ -11,7 +11,13 @@ const PlacementEngine = {
      */
     validateSponsor(sponsorId, users) {
         if (!sponsorId || !users) return false;
-        const sponsor = users.find(u => u.id === sponsorId || u.username === sponsorId);
+        const spLower = (sponsorId || '').toLowerCase();
+        const sponsor = users.find(u => 
+            (u.id && u.id.toLowerCase() === spLower) || 
+            (u.username && u.username.toLowerCase() === spLower) ||
+            (u.referral_code && u.referral_code.toLowerCase() === spLower) ||
+            (spLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
         if (!sponsor) return false;
         if (sponsor.status === 'SUSPENDED' || sponsor.status === 'BANNED' || sponsor.status === 'TERMINATED' || sponsor.status === 'BLOCKED') {
             return false;
@@ -593,7 +599,11 @@ const PlacementEngine = {
      * Returns direct referrals genealogy sponsored by a user.
      */
     getDirectReferrals(sponsorId, sponsors = [], users = [], purchases = [], binaryNodes = []) {
-        const directSponsorRecords = sponsors.filter(s => s.sponsor_id === sponsorId);
+        const spLower = (sponsorId || '').toLowerCase();
+        const directSponsorRecords = sponsors.filter(s => {
+            const sid = (s.sponsor_id || '').toLowerCase();
+            return sid === spLower || (spLower === 'hiru' && (sid === 'hiru' || sid === 'user-hiru-root' || sid === 'sponsor-uuid-1'));
+        });
 
         return directSponsorRecords.map(record => {
             const user = users.find(u => u.id === record.user_id || u.username === record.user_id) || {

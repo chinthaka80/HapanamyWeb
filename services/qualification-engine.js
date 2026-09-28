@@ -71,7 +71,13 @@ const QualificationEngine = {
     getMemberAccountStatus(userId, context = {}) {
         const users = context.users || [];
         const purchases = context.purchases || [];
-        const user = users.find(u => u.id === userId || u.username === userId);
+        const uLower = (userId || '').toLowerCase();
+        const user = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
 
         if (user && (user.status === 'SUSPENDED' || user.status === 'BANNED')) {
             return {
@@ -120,7 +126,13 @@ const QualificationEngine = {
         const binaryNodes = context.binaryNodes || [];
         const purchases = context.purchases || [];
 
-        const user = users.find(u => u.id === userId || u.username === userId);
+        const uLower = (userId || '').toLowerCase();
+        const user = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
         const actualUserId = user ? user.id : userId;
 
         // If explicitly preset or already qualified via custom rule:
@@ -208,7 +220,13 @@ const QualificationEngine = {
     getMemberKycStatus(userId, context = {}) {
         const users = context.users || [];
         const kycDocs = context.kycDocs || [];
-        const user = users.find(u => u.id === userId || u.username === userId);
+        const uLower = (userId || '').toLowerCase();
+        const user = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
         const actualUserId = user ? user.id : userId;
 
         const doc = kycDocs.find(d => d.user_id === actualUserId || d.user_id === userId);
@@ -279,7 +297,13 @@ const QualificationEngine = {
         const binaryNodes = context.binaryNodes || [];
         const volumeLedger = context.volumeLedger || [];
 
-        const user = users.find(u => u.id === userId || u.username === userId) || { id: userId, username: userId, status: 'ACTIVE' };
+        const uLower = (userId || '').toLowerCase();
+        const user = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        ) || { id: userId, username: userId, status: 'ACTIVE' };
         const actualUserId = user.id || userId;
         const kycDoc = kycDocs.find(d => d.user_id === userId || d.user_id === actualUserId);
         const kycStatus = kycDoc ? kycDoc.status : (user.kyc_status || 'NOT_SUBMITTED');

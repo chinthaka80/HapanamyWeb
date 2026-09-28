@@ -539,12 +539,21 @@ const MLMNetworkEngine = {
             sponsors = context.sponsors || [];
         }
 
-        const tree = PlacementEngine.buildTreeHierarchy(userId, binaryNodes, users, purchases, volumeLedger, 4);
-        const directs = PlacementEngine.getDirectReferrals(userId, sponsors, users, purchases, binaryNodes);
-        const volumeSummary = VolumeLedger.getVolumeSummary(userId, volumeLedger);
+        const uLower = (userId || '').toLowerCase();
+        const targetUser = users.find(u => 
+            (u.id && u.id.toLowerCase() === uLower) || 
+            (u.username && u.username.toLowerCase() === uLower) ||
+            (u.email && u.email.toLowerCase() === uLower) ||
+            (uLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
+        const resolvedUserId = targetUser ? targetUser.id : userId;
 
-        const directLeftNode = binaryNodes.find(n => n.placement_parent_id === userId && n.position === 'LEFT');
-        const directRightNode = binaryNodes.find(n => n.placement_parent_id === userId && n.position === 'RIGHT');
+        const tree = PlacementEngine.buildTreeHierarchy(resolvedUserId, binaryNodes, users, purchases, volumeLedger, 4);
+        const directs = PlacementEngine.getDirectReferrals(resolvedUserId, sponsors, users, purchases, binaryNodes);
+        const volumeSummary = VolumeLedger.getVolumeSummary(resolvedUserId, volumeLedger);
+
+        const directLeftNode = binaryNodes.find(n => (n.placement_parent_id === resolvedUserId || n.placement_parent_id === userId) && n.position === 'LEFT');
+        const directRightNode = binaryNodes.find(n => (n.placement_parent_id === resolvedUserId || n.placement_parent_id === userId) && n.position === 'RIGHT');
 
         let leftMember = null;
         if (directLeftNode) {
@@ -584,7 +593,7 @@ const MLMNetworkEngine = {
             };
         }
 
-        const descendants = PlacementEngine.getDescendants(userId, binaryNodes);
+        const descendants = PlacementEngine.getDescendants(resolvedUserId, binaryNodes);
         const teamList = descendants.map(d => {
             const u = users.find(usr => usr.id === d.user_id) || { id: d.user_id, username: d.user_id, full_name: 'Member ' + d.user_id };
             const hasPurch = purchases.some(p => p.user_id === d.user_id && (p.status === 'ACTIVE' || p.status === 'PAID'));
