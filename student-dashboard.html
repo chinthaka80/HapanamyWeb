@@ -1124,17 +1124,16 @@
                 courses = user.purchased_courses;
             }
 
-            // 3. Fallback: Check checkout_purchased_courses only if owned by this user
+            // 4. Fallback: Check unlocked_courses from admin approvals
             if (courses.length === 0) {
                 try {
-                    const billing = JSON.parse(localStorage.getItem('checkout_billing') || 'null');
-                    const checkoutList = JSON.parse(localStorage.getItem('checkout_purchased_courses') || 'null');
-                    if (billing && Array.isArray(checkoutList) && checkoutList.length > 0) {
-                        const bEmail = (billing.email || '').toLowerCase().trim();
-                        const bName = (billing.name || '').toLowerCase().trim();
-                        if ((uemail && bEmail === uemail) || (uname && bName === uname)) {
-                            courses = checkoutList;
-                        }
+                    const unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + uemail) || localStorage.getItem('unlocked_courses_' + uid) || '[]');
+                    if (Array.isArray(unlocked) && unlocked.length > 0) {
+                        courses = unlocked.map(name => ({
+                            id: name.toLowerCase().includes('trading') ? 'crypto' : (name.toLowerCase().includes('ai') ? 'ai' : (name.toLowerCase().includes('social') ? 'social' : 'coding')),
+                            title: name,
+                            status: 'ACTIVE'
+                        }));
                     }
                 } catch (e) {}
             }

@@ -3456,6 +3456,7 @@ const server = http.createServer(async (req, res) => {
         if (notes) mockPaymentDeposits[depIdx].notes = SecurityCore.sanitizeInput(notes);
 
         const purchIdx = mockProductPurchases.findIndex(p => p.id === deposit.purchase_id);
+        let orchResult = null;
         if (purchIdx !== -1) {
             if (action === 'APPROVED') {
                 const activePurchase = mockProductPurchases[purchIdx];
@@ -3463,29 +3464,38 @@ const server = http.createServer(async (req, res) => {
                 activePurchase.activated_at = new Date().toISOString();
 
                 // 1. Fetch Product definition
-                const product = mockProducts.find(p => p.id === activePurchase.product_id) || mockProducts[0];
+                const product = mockProducts.find(p => p.id === activePurchase.product_id || p.code === activePurchase.product_id) || mockProducts[0];
 
-                // 2. Create Immutable Economics Snapshot
-                const snapshot = ProductSnapshotService.createSnapshot(
-                    product, 
-                    activePurchase.id, 
-                    activePurchase.activated_at
-                );
-                mockProductSnapshots.push(snapshot);
+                // 2. Activate Buyer Member Status in Users DB
+                const buyer = mockUsers.find(u => u.id === activePurchase.user_id);
+                if (buyer) {
+                    buyer.status = 'ACTIVE';
+                }
 
-                // 3. Process Commissions and Volume Propagation via Snapshot
-                CommissionCore.processPurchaseCommissions(activePurchase, snapshot, {
-                    binaryNodes: mockBinaryNodes,
-                    purchases: mockProductPurchases,
-                    sponsors: mockSponsors,
-                    commissionLedger: mockCommissionTransactions,
-                    volumeLedger: mockVolumeLedger,
-                    walletLedger: mockWalletLedger,
-                    dailyEarningsMap: mockDailyEarningsMap
-                });
+                // 3. Execute Centralized Purchase Orchestrator Workflow (Snapshot, BV Propagation, 8% Direct, 7% Binary, 7-Level Upline, Wallet Ledger, Idempotency)
+                try {
+                    orchResult = PurchaseOrchestrator.executeApprovedPurchaseWorkflow({
+                        purchase: activePurchase,
+                        product: product,
+                        userId: activePurchase.user_id,
+                        binaryNodes: mockBinaryNodes,
+                        sponsors: mockSponsors,
+                        users: mockUsers,
+                        kycDocs: mockKycDocs,
+                        purchases: mockProductPurchases,
+                        commissionLedger: mockCommissionTransactions,
+                        volumeLedger: mockVolumeLedger,
+                        walletLedger: mockWalletLedger,
+                        dailyEarningsMap: mockDailyEarningsMap
+                    });
+                } catch (orchErr) {
+                    console.warn(`Orchestrator warning during deposit review: ${orchErr.message}`);
+                }
 
                 ProductService.triggerPurchaseActivation(activePurchase);
-                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id, null, { snapshot_id: snapshot.id });
+                KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_ACTIVATED', 'product_purchases', deposit.purchase_id, null, { 
+                    snapshot_id: activePurchase.economics_snapshot ? activePurchase.economics_snapshot.id : null 
+                });
 
                 addLiveEvent('ORDER_PAID', {
                     orderNumber: activePurchase.order_number,
@@ -3502,7 +3512,12 @@ const server = http.createServer(async (req, res) => {
         const auditAction = action === 'APPROVED' ? 'DEPOSIT_APPROVED' : 'DEPOSIT_REJECTED';
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'payment_deposits', depositId, { status: oldStatus }, { status: action });
 
-        sendJSON(res, 200, { success: true, message: `Deposit status has been updated to ${action}.` });
+        sendJSON(res, 200, { 
+            success: true, 
+            message: `Deposit status has been updated to ${action}.`,
+            action: action,
+            orchestration: orchResult
+        });
         return;
     }
 

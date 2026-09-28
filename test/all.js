@@ -72,6 +72,7 @@ require('./step54-live-registration-persistence.test');
 require('./step55-new-user-zero-products-and-purchase-flow.test');
 require('./step56-admin-subadmin-role-and-registration-visibility.test');
 require('./step57-complete-purchase-active-course-mlm-flow.test');
+require('./step58-manual-bank-transfer-admin-approval-mlm-flow.test');
 
 // Run
 runTests();
