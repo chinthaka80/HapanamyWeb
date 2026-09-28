@@ -16,7 +16,10 @@ const PlacementEngine = {
             (u.id && u.id.toLowerCase() === spLower) || 
             (u.username && u.username.toLowerCase() === spLower) ||
             (u.referral_code && u.referral_code.toLowerCase() === spLower) ||
-            (spLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+            (u.email && u.email.toLowerCase() === spLower) ||
+            (u.name && u.name.toLowerCase() === spLower) ||
+            (u.full_name && u.full_name.toLowerCase() === spLower) ||
+            ((spLower === 'hiru' || spLower === 'user-hiru-root' || spLower === 'sponsor-uuid-1') && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
         );
         if (!sponsor) return false;
         if (sponsor.status === 'SUSPENDED' || sponsor.status === 'BANNED' || sponsor.status === 'TERMINATED' || sponsor.status === 'BLOCKED') {

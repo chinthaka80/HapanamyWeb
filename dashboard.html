@@ -2334,137 +2334,212 @@
             }, 600);
         }
 
-        // Helper function to extract local downlines for a given user
+        // Multi-Tier BFS Genealogy Downline Extractor (Traverses Levels 1 through 7)
         function getLocalDownlinesForUser(user) {
             if (!user) return [];
-            const uHandle = (user.username || user.name || '').replace('@', '').toLowerCase().trim();
-            const uId = (user.id || '').toLowerCase().trim();
-            const uName = (user.full_name || user.name || '').toLowerCase().trim();
-            const uEmail = (user.email || '').toLowerCase().trim();
 
-            const downlines = [];
-            const addedMap = new Map();
+            // 1. Gather all candidates from all localStorage sources
+            const rawCandidates = [];
 
-            // Ignore current logged-in user themselves
-            const selfKeys = new Set();
-            if (uHandle) selfKeys.add(uHandle);
-            if (uId) selfKeys.add(uId);
-            if (uEmail) selfKeys.add(uEmail);
-            if (uName) selfKeys.add(uName);
-
-            function extractSponsorStrings(raw) {
-                if (!raw) return [];
-                if (typeof raw === 'string') return [raw.trim()];
-                if (typeof raw === 'object') {
-                    const list = [];
-                    if (raw.username) list.push(String(raw.username).trim());
-                    if (raw.sponsor_username) list.push(String(raw.sponsor_username).trim());
-                    if (raw.name) list.push(String(raw.name).trim());
-                    if (raw.full_name) list.push(String(raw.full_name).trim());
-                    if (raw.sponsor_id) list.push(String(raw.sponsor_id).trim());
-                    if (raw.id) list.push(String(raw.id).trim());
-                    if (raw.referral_code) list.push(String(raw.referral_code).trim());
-                    return list;
-                }
-                return [String(raw).trim()];
-            }
-
-            function matchesMySponsor(rawSponsor) {
-                if (!rawSponsor) return false;
-                const candidates = extractSponsorStrings(rawSponsor);
-                for (const c of candidates) {
-                    const sp = c.replace('@', '').toLowerCase().trim();
-                    if (!sp) continue;
-                    if (sp === uHandle || sp === uId || sp === uName || sp === uEmail) return true;
-                    if ((uHandle === 'hiru' || uId === 'user-hiru-root') && (sp === 'hiru' || sp === 'user-hiru-root' || sp === 'sponsor-uuid-1' || sp.includes('hiru') || sp === 'sales leader' || sp === 'root')) return true;
-                }
-                return false;
-            }
-
-            function processCandidateUser(r, defaultPos = 'LEFT') {
-                if (!r) return;
-                const rawUname = r.username || (r.email ? r.email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_') : (r.id || ''));
-                const unameLower = (rawUname || '').toLowerCase().trim();
-                const emLower = (r.email || '').toLowerCase().trim();
-                const idLower = (r.id || r.user_id || '').toLowerCase().trim();
-                const roleLower = (r.role || 'member').toLowerCase().trim();
-
-                // Skip admin/subadmin and current user themselves
-                if (roleLower === 'admin' || roleLower === 'subadmin' || roleLower === 'sub_admin' || roleLower === 'super_admin') return;
-                if ((unameLower && selfKeys.has(unameLower)) || (emLower && selfKeys.has(emLower)) || (idLower && selfKeys.has(idLower))) return;
-
-                // Identify if user is downline
-                const sp = r.sponsor || r.sponsor_id || r.sponsor_username || r.referrer || r.sponsorCode || '';
-                const isDownline = matchesMySponsor(sp) || ((uHandle === 'hiru' || uId === 'user-hiru-root') && (!sp || sp === 'Hiru' || sp === 'hiru' || sp === 'user-hiru-root' || sp === 'None'));
-
-                if (!isDownline) return;
-
-                const dedupeKey = unameLower || emLower || idLower;
-                if (!dedupeKey) return;
-
-                const pos = (r.position || r.requestedPosition || r.tree_position || r.branch_leg || defaultPos || 'LEFT').toUpperCase();
-                const isAct = Boolean(r.is_active || (r.status || r.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
-                const isQual = Boolean(r.is_qualified || (r.qualification_status || '').toUpperCase() === 'QUALIFIED');
-                const uid = r.id || r.user_id || ('usr-reg-' + dedupeKey);
-
-                const downlineItem = {
-                    id: uid,
-                    user_id: uid,
-                    username: rawUname || dedupeKey,
-                    full_name: r.full_name || r.name || 'Member',
-                    position: (pos === 'RIGHT') ? 'RIGHT' : 'LEFT',
-                    status: isAct ? 'Active' : 'Inactive',
-                    account_status: isAct ? 'ACTIVE' : 'INACTIVE',
-                    qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
-                    is_active: isAct,
-                    is_qualified: isQual,
-                    balance_points: Number(r.balance_points || 0),
-                    left_volume: Number(r.left_volume || 0),
-                    right_volume: Number(r.right_volume || 0),
-                    team_count: Number(r.team_size || r.team_count || 0),
-                    team_size: Number(r.team_size || r.team_count || 0),
-                    level: Number(r.level || r.depth || r.relative_depth || 1),
-                    depth: Number(r.depth || r.relative_depth || r.level || 1),
-                    relative_depth: Number(r.relative_depth || r.level || 1),
-                    join_date: r.created_at || r.date || new Date().toISOString()
-                };
-
-                if (!addedMap.has(dedupeKey)) {
-                    addedMap.set(dedupeKey, downlineItem);
-                    downlines.push(downlineItem);
-                } else {
-                    // Merge properties if needed
-                    const existing = addedMap.get(dedupeKey);
-                    Object.assign(existing, downlineItem);
+            function tryParse(key) {
+                try {
+                    const data = localStorage.getItem(key);
+                    if (!data) return [];
+                    const parsed = JSON.parse(data);
+                    return Array.isArray(parsed) ? parsed : [];
+                } catch (e) {
+                    return [];
                 }
             }
 
-            // 1. Scan ALL referred_users_* keys in localStorage
+            // A. Scan referred_users_* keys
             for (let i = 0; i < localStorage.length; i++) {
                 const k = localStorage.key(i);
                 if (k && k.toLowerCase().startsWith('referred_users_')) {
-                    const sponsorKey = k.substring('referred_users_'.length).replace('@', '').toLowerCase().trim();
-                    if (matchesMySponsor(sponsorKey)) {
-                        try {
-                            const refList = JSON.parse(localStorage.getItem(k)) || [];
-                            refList.forEach(r => processCandidateUser(r, 'LEFT'));
-                        } catch (e) {}
-                    }
+                    const sponsorKey = k.substring('referred_users_'.length).replace(/^@+/, '').trim();
+                    const list = tryParse(k);
+                    list.forEach(item => {
+                        if (item && typeof item === 'object') {
+                            if (!item.sponsor && !item.sponsor_id && !item.sponsor_username && sponsorKey) {
+                                item.sponsor = sponsorKey;
+                            }
+                            rawCandidates.push(item);
+                        }
+                    });
                 }
             }
 
-            // 2. Scan hapanamy_registered_users & general registered user stores
-            const storeKeys = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users'];
-            storeKeys.forEach(storeKey => {
-                try {
-                    const rawList = JSON.parse(localStorage.getItem(storeKey)) || [];
-                    if (Array.isArray(rawList)) {
-                        rawList.forEach(r => processCandidateUser(r, 'LEFT'));
+            // B. Scan registered user stores
+            const userStores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users'];
+            userStores.forEach(sKey => {
+                const list = tryParse(sKey);
+                list.forEach(item => {
+                    if (item && typeof item === 'object') {
+                        rawCandidates.push(item);
                     }
-                } catch (e) {}
+                });
             });
 
-            return downlines;
+            // Helper to normalize sponsor reference strings
+            function extractSponsorStrings(raw) {
+                if (!raw) return [];
+                if (typeof raw === 'string') {
+                    const clean = raw.replace(/^@+/, '').toLowerCase().trim();
+                    return clean ? [clean] : [];
+                }
+                if (typeof raw === 'object') {
+                    const keys = [];
+                    ['username', 'sponsor_username', 'name', 'full_name', 'sponsor_id', 'id', 'referral_code', 'sponsorCode'].forEach(prop => {
+                        if (raw[prop]) {
+                            const clean = String(raw[prop]).replace(/^@+/, '').toLowerCase().trim();
+                            if (clean && !keys.includes(clean)) keys.push(clean);
+                        }
+                    });
+                    return keys;
+                }
+                return [];
+            }
+            const extractSponsorKeys = extractSponsorStrings;
+
+            // Helper to process candidate downline user
+            function processCandidateUser(r, defaultPos = 'LEFT') {
+                if (r && typeof r === 'object') {
+                    rawCandidates.push(r);
+                }
+            }
+
+            // Helper to extract identity keys for a user node
+            function extractUserKeys(u) {
+                if (!u) return [];
+                const keys = [];
+                const addKey = (val) => {
+                    if (!val) return;
+                    const str = String(val).replace(/^@+/, '').toLowerCase().trim();
+                    if (str && !keys.includes(str)) keys.push(str);
+                };
+                addKey(u.id);
+                addKey(u.user_id);
+                addKey(u.username);
+                addKey(u.full_name);
+                addKey(u.name);
+                addKey(u.email);
+                addKey(u.referral_code);
+
+                // Special root aliases
+                if (keys.some(k => k === 'hiru' || k === 'user-hiru-root' || k === 'sponsor-uuid-1')) {
+                    addKey('hiru');
+                    addKey('user-hiru-root');
+                    addKey('sponsor-uuid-1');
+                    addKey('root');
+                    addKey('sales leader');
+                }
+                return keys;
+            }
+
+            // Deduplicate candidate users
+            const candidateMap = new Map();
+            rawCandidates.forEach(cand => {
+                if (!cand || typeof cand !== 'object') return;
+                const roleLower = (cand.role || 'member').toLowerCase().trim();
+                if (roleLower === 'admin' || roleLower === 'subadmin' || roleLower === 'sub_admin' || roleLower === 'super_admin') return;
+
+                const uid = cand.id || cand.user_id || (cand.username ? 'usr-' + cand.username : null) || (cand.email ? 'usr-' + cand.email : null);
+                if (!uid) return;
+
+                const primaryKey = String(uid).toLowerCase().trim();
+                if (!candidateMap.has(primaryKey)) {
+                    candidateMap.set(primaryKey, Object.assign({}, cand));
+                } else {
+                    const existing = candidateMap.get(primaryKey);
+                    Object.assign(existing, cand);
+                }
+            });
+
+            const allCandidates = Array.from(candidateMap.values());
+
+            // 2. Multi-tier BFS Downline Traversal
+            const rootKeys = extractUserKeys(user);
+            const visitedKeys = new Set(rootKeys);
+            const addedUserIds = new Set();
+            const resultDownlines = [];
+
+            const queue = [{ nodeUser: user, level: 0, inheritedLeg: null, isRoot: true }];
+
+            while (queue.length > 0) {
+                const current = queue.shift();
+                if (current.level >= 7) continue;
+
+                const currentKeys = extractUserKeys(current.nodeUser);
+
+                allCandidates.forEach(cand => {
+                    const candKeys = extractUserKeys(cand);
+                    const isSelfOrVisited = candKeys.some(k => visitedKeys.has(k));
+                    if (isSelfOrVisited) return;
+
+                    const spRaw = cand.sponsor || cand.sponsor_id || cand.sponsor_username || cand.referrer || cand.sponsorCode;
+                    const candSponsorKeys = extractSponsorKeys(spRaw);
+
+                    const isRootNode = current.isRoot && (rootKeys.includes('hiru') || rootKeys.includes('user-hiru-root'));
+                    let isChild = false;
+
+                    if (candSponsorKeys.some(sk => currentKeys.includes(sk))) {
+                        isChild = true;
+                    } else if (isRootNode && (!spRaw || candSponsorKeys.length === 0 || candSponsorKeys.includes('none'))) {
+                        isChild = true;
+                    }
+
+                    if (isChild) {
+                        candKeys.forEach(k => visitedKeys.add(k));
+
+                        const candPos = (cand.position || cand.requestedPosition || cand.tree_position || cand.branch_leg || 'LEFT').toUpperCase();
+                        const branchLeg = current.isRoot ? (candPos === 'RIGHT' ? 'RIGHT' : 'LEFT') : (current.inheritedLeg || (candPos === 'RIGHT' ? 'RIGHT' : 'LEFT'));
+
+                        const childLevel = current.level + 1;
+                        const isAct = Boolean(cand.is_active || (cand.status || cand.account_status || 'ACTIVE').toUpperCase() === 'ACTIVE');
+                        const isQual = Boolean(cand.is_qualified || (cand.qualification_status || '').toUpperCase() === 'QUALIFIED');
+                        const candUid = cand.id || cand.user_id || ('usr-reg-' + (cand.username || Math.random().toString(36).substring(2, 8)));
+
+                        const downlineItem = {
+                            id: candUid,
+                            user_id: candUid,
+                            username: cand.username || (cand.email ? cand.email.split('@')[0] : candUid),
+                            full_name: cand.full_name || cand.name || cand.username || 'Member',
+                            position: branchLeg,
+                            branch_leg: branchLeg,
+                            sponsor: current.nodeUser.username || current.nodeUser.name || 'Sponsor',
+                            sponsor_username: current.nodeUser.username || current.nodeUser.name || 'Sponsor',
+                            status: isAct ? 'Active' : 'Inactive',
+                            account_status: isAct ? 'ACTIVE' : 'INACTIVE',
+                            qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
+                            is_active: isAct,
+                            is_qualified: isQual,
+                            balance_points: Number(cand.balance_points || 0),
+                            left_volume: Number(cand.left_volume || 0),
+                            right_volume: Number(cand.right_volume || 0),
+                            team_count: Number(cand.team_size || cand.team_count || 0),
+                            team_size: Number(cand.team_size || cand.team_count || 0),
+                            level: childLevel,
+                            depth: childLevel,
+                            relative_depth: childLevel,
+                            join_date: cand.created_at || cand.date || new Date().toISOString()
+                        };
+
+                        if (!addedUserIds.has(candUid.toLowerCase())) {
+                            addedUserIds.add(candUid.toLowerCase());
+                            resultDownlines.push(downlineItem);
+                        }
+
+                        queue.push({
+                            nodeUser: cand,
+                            level: childLevel,
+                            inheritedLeg: branchLeg,
+                            isRoot: false
+                        });
+                    }
+                });
+            }
+
+            return resultDownlines;
         }
 
         // Live API Data Fetching with Graceful Fallback
@@ -2680,15 +2755,35 @@
                 position: 'ROOT'
             });
 
-            // 2. Registered users
+            // 2. Scan registered users across all storage stores
             try {
-                const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-                regUsers.forEach(u => {
-                    const k = (u.username || u.email || u.id || '').toLowerCase();
-                    if (k && !accountMap.has(k)) {
-                        accountMap.set(k, u);
+                const userStores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users'];
+                userStores.forEach(sKey => {
+                    const regUsers = JSON.parse(localStorage.getItem(sKey)) || [];
+                    if (Array.isArray(regUsers)) {
+                        regUsers.forEach(u => {
+                            const k = (u.username || u.email || u.id || '').toLowerCase().trim();
+                            if (k && !accountMap.has(k)) {
+                                accountMap.set(k, u);
+                            }
+                        });
                     }
                 });
+
+                for (let i = 0; i < localStorage.length; i++) {
+                    const k = localStorage.key(i);
+                    if (k && k.toLowerCase().startsWith('referred_users_')) {
+                        const refList = JSON.parse(localStorage.getItem(k)) || [];
+                        if (Array.isArray(refList)) {
+                            refList.forEach(u => {
+                                const uk = (u.username || u.email || u.id || '').toLowerCase().trim();
+                                if (uk && !accountMap.has(uk)) {
+                                    accountMap.set(uk, u);
+                                }
+                            });
+                        }
+                    }
+                }
             } catch (e) {}
 
             list.innerHTML = '';

@@ -854,8 +854,7 @@
                             }, 1000);
                             return;
                         } else if (data.error) {
-                            showToast(`⚠️ <strong>දෝෂයකි:</strong> ${data.error}`);
-                            return;
+                            console.warn('Backend API registration returned error, proceeding to local store:', data.error);
                         }
                     }
                 } catch (apiErr) {
@@ -938,9 +937,13 @@
                         earnings: 0
                     };
 
-                    [refCode, refCode.toLowerCase()].forEach(k => {
+                    const cleanRef = refCode.replace(/^@+/, '').trim();
+                    const refKeys = [refCode, refCode.toLowerCase(), cleanRef, cleanRef.toLowerCase(), '@' + cleanRef, '@' + cleanRef.toLowerCase()];
+                    const uniqueRefKeys = Array.from(new Set(refKeys.filter(Boolean)));
+
+                    uniqueRefKeys.forEach(k => {
                         let referredList = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
-                        if (!referredList.some(r => r.email === email || r.username === cleanUsername)) {
+                        if (!referredList.some(r => r.email === email || r.username === cleanUsername || r.id === newUser.id)) {
                             referredList.push(fallbackEntry);
                             localStorage.setItem('referred_users_' + k, JSON.stringify(referredList));
                         }

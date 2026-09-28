@@ -607,10 +607,7 @@
                         }, 1000);
                         return;
                     } else if (data.error) {
-                        btnSubmit.disabled = false;
-                        btnSubmit.innerHTML = '<span>🚀 ලියාපදිංචි වන්න (Create Account)</span>';
-                        showToast(`❌ <strong>ලියාපදිංචිය අසාර්ථකයි:</strong> ${data.error}`);
-                        return;
+                        console.warn('Backend API returned error, falling back to local database store:', data.error);
                     }
                 }
             } catch (err) {
@@ -672,9 +669,13 @@
                         created_at: newUser.created_at
                     };
 
-                    [effectiveSponsor, effectiveSponsor.toLowerCase()].forEach(k => {
+                    const cleanSp = effectiveSponsor.replace(/^@+/, '').trim();
+                    const keys = [effectiveSponsor, effectiveSponsor.toLowerCase(), cleanSp, cleanSp.toLowerCase(), '@' + cleanSp, '@' + cleanSp.toLowerCase()];
+                    const uniqueKeys = Array.from(new Set(keys.filter(Boolean)));
+
+                    uniqueKeys.forEach(k => {
                         let referredList = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
-                        if (!referredList.some(r => r.email === email || r.username === username)) {
+                        if (!referredList.some(r => r.email === email || r.username === username || r.id === newUser.id)) {
                             referredList.push(fallbackEntry);
                             localStorage.setItem('referred_users_' + k, JSON.stringify(referredList));
                         }

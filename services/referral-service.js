@@ -38,6 +38,8 @@ class ReferralService {
                 (u.id && u.id.toLowerCase() === trimmedLower) ||
                 (u.referral_code && u.referral_code.toLowerCase() === trimmedLower) ||
                 (u.email && u.email.toLowerCase() === trimmedLower) ||
+                (u.name && u.name.toLowerCase() === trimmedLower) ||
+                (u.full_name && u.full_name.toLowerCase() === trimmedLower) ||
                 ((trimmedLower === 'hiru' || trimmedLower === 'user-hiru-root' || trimmedLower === 'sponsor-uuid-1') && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
             );
             if (!sponsor) {
