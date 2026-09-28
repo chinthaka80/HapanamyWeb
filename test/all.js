@@ -74,6 +74,7 @@ require('./step56-admin-subadmin-role-and-registration-visibility.test');
 require('./step57-complete-purchase-active-course-mlm-flow.test');
 require('./step58-manual-bank-transfer-admin-approval-mlm-flow.test');
 require('./step59-realtime-downline-and-admin-persistence-verification.test');
+require('./step60-user-registration-identity-and-account-switching-verification.test');
 
 // Run
 runTests();

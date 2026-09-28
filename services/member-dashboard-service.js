@@ -193,6 +193,19 @@ const MemberDashboardService = {
                 monthly_remaining: capSummary.monthly_remaining
             },
             binary_network: {
+                center_member: {
+                    user_id: actualUserId,
+                    username: user.username,
+                    full_name: user.full_name,
+                    left_team_count: leftTeamCount,
+                    right_team_count: rightTeamCount,
+                    total_team_count: teamList.length,
+                    left_points: volumeSummary.lifetime_left_volume || 0,
+                    right_points: volumeSummary.lifetime_right_volume || 0,
+                    qualification_status: compStatus.qualification_status
+                },
+                left_member: teamList.find(t => t.position === 'LEFT' && t.level === 1) || null,
+                right_member: teamList.find(t => t.position === 'RIGHT' && t.level === 1) || null,
                 left_team_count: leftTeamCount,
                 right_team_count: rightTeamCount,
                 left_volume_lifetime: volumeSummary.lifetime_left_volume,

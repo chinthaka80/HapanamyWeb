@@ -1147,6 +1147,7 @@
                 </div>
 
                 <div class="member-topbar-controls">
+                    <button class="btn-action-sm" onclick="openAccountSwitchModal()" id="btnSwitchAccount" style="background: rgba(245, 124, 0, 0.15); border: 1px solid var(--brand-orange); color: #FFF; font-weight: 700;">👤 Switch Account (ගිණුම මාරු කරන්න)</button>
                     <a id="topbarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Panel</a>
                     <button class="btn-action-sm" onclick="toggleDashboardTheme()" id="themeToggleBtn">🌓 Theme</button>
                     <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 Withdraw (මුදල් ලබාගන්න)</button>
@@ -1174,6 +1175,10 @@
                     <div class="profile-id-box">
                         <div class="profile-id-label">Member ID & Username</div>
                         <div class="profile-id-val" id="profileUsernameDisplay">@Hiru (<span id="profileUserId">user-hiru-root</span>)</div>
+                        <div class="profile-sponsor-info" id="profileSponsorInfoBox" style="margin-top: 6px; font-size: 11.5px; color: var(--text-muted); display: flex; align-items: center; gap: 6px; justify-content: flex-end; flex-wrap: wrap;">
+                            <span>👑 Sponsor: <strong id="profileSponsorName" style="color: var(--brand-gold);">Direct (Sales Leader)</strong></span>
+                            <span id="profilePositionBadge" class="sales-leg-badge badge-left" style="font-size: 10px; padding: 2px 6px;">👈 LEFT</span>
+                        </div>
                     </div>
                 </section>
 
@@ -1659,6 +1664,30 @@
 
                 <button type="submit" class="btn-action-sm btn-primary-action" style="width: 100%; padding: 12px; justify-content: center; font-size: 14px;">ඉල්ලුම් කරන්න (Submit Withdrawal Request)</button>
             </form>
+        </div>
+    </div>
+
+    <!-- ACCOUNT SWITCHER MODAL -->
+    <div class="modal-overlay" id="accountSwitchModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 2500; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+        <div class="modal-card" style="background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 16px; padding: 24px; width: 90%; max-width: 480px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <h3 style="font-size: 17px; font-weight: 800; color: var(--text-primary); margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <span>👥</span> Switch Active Account (ගිණුම් මාරු කරන්න)
+                </h3>
+                <button type="button" onclick="closeAccountSwitchModal()" style="background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer;">✕</button>
+            </div>
+            
+            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
+                පහත ගිණුම් අතරින් ඔබට පරීක්ෂා කිරීමට අවශ්‍ය සාමාජිකයා හෝ පරිපාලක ගිණුම තෝරන්න (Select an account to view):
+            </p>
+
+            <div id="accountSwitchList" style="display: flex; flex-direction: column; gap: 10px; max-height: 320px; overflow-y: auto; padding-right: 4px;">
+                <!-- Dynamically populated -->
+            </div>
+
+            <div style="margin-top: 18px; padding-top: 12px; border-top: 1px solid var(--border-color); display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" class="btn-action-sm" onclick="closeAccountSwitchModal()">වසන්න (Close)</button>
+            </div>
         </div>
     </div>
 
@@ -2581,6 +2610,23 @@
             renderSalesTeamVisualizer(initBn);
             renderTeamListRows(initialTeam);
 
+            // Update sponsor & placement info
+            const rawSp = user.sponsor || user.sponsor_username || user.sponsorCode || '';
+            const spDisplay = (uHandle === 'hiru' || uId === 'user-hiru-root') ? 'Direct (Sales Leader)' : (rawSp ? (typeof rawSp === 'object' ? (rawSp.username || rawSp.full_name || 'Hiru') : rawSp) : 'Hiru');
+            const posLeg = (user.position || user.requestedPosition || 'LEFT').toUpperCase();
+            const spNameEl = document.getElementById('profileSponsorName');
+            const legBadgeEl = document.getElementById('profilePositionBadge');
+            if (spNameEl) spNameEl.textContent = spDisplay.startsWith('@') ? spDisplay : `@${spDisplay}`;
+            if (legBadgeEl) {
+                if (uHandle === 'hiru' || uId === 'user-hiru-root') {
+                    legBadgeEl.textContent = '👑 ROOT';
+                    legBadgeEl.className = 'sales-leg-badge badge-center';
+                } else {
+                    legBadgeEl.textContent = posLeg === 'RIGHT' ? '👉 RIGHT LEG' : '👈 LEFT LEG';
+                    legBadgeEl.className = posLeg === 'RIGHT' ? 'sales-leg-badge badge-right' : 'sales-leg-badge badge-left';
+                }
+            }
+
             // Populate bank select with profile bank if available
             const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {};
             const bSelect = document.getElementById('withdrawBankSelect');
@@ -2594,6 +2640,103 @@
                 const tBtn = document.getElementById('topbarAdminBtn');
                 if (sBtn) sBtn.style.display = 'flex';
                 if (tBtn) tBtn.style.display = 'inline-flex';
+            }
+        }
+
+        function openAccountSwitchModal() {
+            const modal = document.getElementById('accountSwitchModal');
+            const list = document.getElementById('accountSwitchList');
+            if (!modal || !list) return;
+
+            const curUser = window.currentActiveUser || JSON.parse(localStorage.getItem('active_user')) || { username: 'Hiru' };
+            const curUname = (curUser.username || curUser.name || '').toLowerCase();
+            const curUid = (curUser.id || '').toLowerCase();
+
+            const accountMap = new Map();
+
+            // 1. Core accounts
+            accountMap.set('hiru', {
+                id: 'user-hiru-root',
+                username: 'Hiru',
+                full_name: 'Hiru (Sales Leader)',
+                role: 'member',
+                sponsor: null,
+                position: 'ROOT'
+            });
+            accountMap.set('namobuddhaya', {
+                id: 'user-namobuddhaya-root',
+                username: 'NAMOBUDDHAYA',
+                full_name: 'Main Admin (NAMOBUDDHAYA)',
+                role: 'admin',
+                sponsor: null,
+                position: 'ROOT'
+            });
+            accountMap.set('subadmin', {
+                id: 'user-subadmin-manager',
+                username: 'subadmin',
+                full_name: 'Sub Admin (Operations Manager)',
+                role: 'subadmin',
+                sponsor: null,
+                position: 'ROOT'
+            });
+
+            // 2. Registered users
+            try {
+                const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                regUsers.forEach(u => {
+                    const k = (u.username || u.email || u.id || '').toLowerCase();
+                    if (k && !accountMap.has(k)) {
+                        accountMap.set(k, u);
+                    }
+                });
+            } catch (e) {}
+
+            list.innerHTML = '';
+            accountMap.forEach((acc, key) => {
+                const isCurrent = (acc.username && acc.username.toLowerCase() === curUname) || (acc.id && acc.id.toLowerCase() === curUid);
+                const roleBadge = acc.role === 'admin' ? '👑 Main Admin' : (acc.role === 'subadmin' ? '⚡ Sub Admin' : (acc.username === 'Hiru' ? '🌟 Sales Leader' : '👤 Member'));
+                const btn = document.createElement('div');
+                btn.style.cssText = `padding: 12px 14px; border-radius: 10px; border: 1px solid ${isCurrent ? 'var(--brand-orange)' : 'var(--border-color)'}; background: ${isCurrent ? 'rgba(244,123,32,0.12)' : 'var(--bg-main)'}; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: 0.2s;`;
+                btn.innerHTML = `
+                    <div>
+                        <div style="font-weight: 700; color: #FFF; font-size: 13.5px; display: flex; align-items: center; gap: 6px;">
+                            ${acc.full_name || acc.name || acc.username}
+                            <span class="badge-pill" style="font-size: 10px; padding: 2px 6px; background: rgba(255,255,255,0.08);">${roleBadge}</span>
+                            ${isCurrent ? '<span style="color: var(--brand-green); font-size: 11px; font-weight: 800;">(ACTIVE)</span>' : ''}
+                        </div>
+                        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 2px;">
+                            <code style="color: var(--brand-gold);">@${acc.username || ''}</code> • <small>${acc.id || ''}</small>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-action-sm ${isCurrent ? 'btn-primary-action' : ''}" style="padding: 6px 12px; font-size: 11.5px; font-weight: 700; border-radius: 6px;">
+                        ${isCurrent ? '✓ Current' : '🔄 Switch'}
+                    </button>
+                `;
+                btn.onclick = () => switchActiveAccount(acc);
+                list.appendChild(btn);
+            });
+
+            modal.style.display = 'flex';
+        }
+
+        function closeAccountSwitchModal() {
+            const modal = document.getElementById('accountSwitchModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        function switchActiveAccount(acc) {
+            const token = 'token-' + (acc.role || 'member') + '-' + (acc.id || Date.now());
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('active_token', token);
+            localStorage.setItem('active_user', JSON.stringify(acc));
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(acc));
+            closeAccountSwitchModal();
+            showMemberToast(`🔄 Switched active view to <strong>${acc.full_name || acc.name || acc.username}</strong> (@${acc.username})`);
+            
+            if (acc.role === 'admin' || acc.role === 'subadmin') {
+                setTimeout(() => { window.location.href = 'hapanamy-admin-portal-9226.html'; }, 600);
+            } else {
+                setTimeout(() => { loadLiveDashboard(); }, 400);
             }
         }
 
@@ -2637,6 +2780,25 @@
                 if (kycEl) {
                     kycEl.textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
                     kycEl.className = `badge-pill ${kycSt === 'APPROVED' ? 'badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
+                }
+
+                // Update sponsor & placement info
+                const uH = (data.profile.username || '').toLowerCase();
+                const uI = (data.profile.id || '').toLowerCase();
+                const rawSp = data.profile.sponsor || data.profile.sponsor_username || data.profile.sponsorCode || '';
+                const spDisplay = (uH === 'hiru' || uI === 'user-hiru-root') ? 'Direct (Sales Leader)' : (rawSp ? (typeof rawSp === 'object' ? (rawSp.username || rawSp.full_name || 'Hiru') : rawSp) : 'Hiru');
+                const posLeg = (data.profile.position || data.profile.requestedPosition || 'LEFT').toUpperCase();
+                const spNameEl = document.getElementById('profileSponsorName');
+                const legBadgeEl = document.getElementById('profilePositionBadge');
+                if (spNameEl) spNameEl.textContent = spDisplay.startsWith('@') ? spDisplay : `@${spDisplay}`;
+                if (legBadgeEl) {
+                    if (uH === 'hiru' || uI === 'user-hiru-root') {
+                        legBadgeEl.textContent = '👑 ROOT';
+                        legBadgeEl.className = 'sales-leg-badge badge-center';
+                    } else {
+                        legBadgeEl.textContent = posLeg === 'RIGHT' ? '👉 RIGHT LEG' : '👈 LEFT LEG';
+                        legBadgeEl.className = posLeg === 'RIGHT' ? 'sales-leg-badge badge-right' : 'sales-leg-badge badge-left';
+                    }
                 }
             }
 

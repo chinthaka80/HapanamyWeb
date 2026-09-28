@@ -3366,6 +3366,7 @@
                     </td>
                     <td style="text-align: center;">
                         <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="viewMemberDashboard('${m.id}', '${m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.role || 'member'}', '${typeof m.sponsor === 'object' ? (m.sponsor?.username || 'Hiru') : (m.sponsor || 'Hiru')}', '${m.position || 'LEFT'}', '${m.email || ''}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-orange); color:#FFF; font-weight:700;">👁️ Dashboard</button>
                             <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
                             <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name || m.name || m.username}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
                             <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name || m.name || m.username}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
@@ -3374,6 +3375,25 @@
                 `;
                 tableBody.appendChild(tr);
             });
+        }
+
+        function viewMemberDashboard(id, username, fullName, role, sponsor, position, email) {
+            const userObj = {
+                id: id,
+                username: username || 'member',
+                full_name: fullName || 'Member',
+                name: fullName || 'Member',
+                role: role || 'member',
+                sponsor: sponsor || 'Hiru',
+                position: position || 'LEFT',
+                email: email || ''
+            };
+            const token = 'token-' + (role || 'member') + '-' + id;
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('active_token', token);
+            localStorage.setItem('active_user', JSON.stringify(userObj));
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(userObj));
+            window.open('dashboard.html', '_blank');
         }
 
         async function openMemberDetailModal(memberId) {
