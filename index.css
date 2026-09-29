@@ -494,7 +494,7 @@ section {
 }
 
 .mobile-only-auth {
-    display: none;
+    display: none !important;
 }
 
 .theme-toggle svg {
@@ -1135,64 +1135,140 @@ section {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
     margin-bottom: 35px;
     flex-wrap: wrap;
+    width: 100%;
 }
 
 .search-box {
     position: relative;
-    flex-grow: 1;
-    max-width: 400px;
+    flex: 1 1 280px;
+    max-width: 420px;
+    min-width: 240px;
 }
 
 .search-box input {
     width: 100%;
-    padding: 12px 18px 12px 42px;
+    height: 44px;
+    padding: 10px 16px 10px 42px;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-color);
     background: var(--bg-surface);
     color: var(--text-primary);
-    font-size: 14px;
+    font-size: 13.5px;
     outline: none;
     transition: var(--transition-smooth);
+    box-sizing: border-box;
 }
 
 .search-box input:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.15);
+    box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.18);
 }
 
 .search-icon {
     position: absolute;
-    left: 15px;
+    left: 14px;
     top: 50%;
     transform: translateY(-50%);
+    width: 18px !important;
+    height: 18px !important;
+    min-width: 18px !important;
+    min-height: 18px !important;
+    max-width: 18px !important;
+    max-height: 18px !important;
     color: var(--text-muted);
+    pointer-events: none;
+    display: block;
 }
 
 .filter-tabs {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .filter-btn {
-    padding: 8px 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 16px;
+    height: 38px;
     border-radius: var(--radius-full);
     border: 1px solid var(--border-color);
     background: var(--bg-surface);
     color: var(--text-secondary);
-    font-size: 13.5px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 700;
     cursor: pointer;
     transition: var(--transition-smooth);
+    white-space: nowrap;
+    user-select: none;
+    box-sizing: border-box;
 }
 
-.filter-btn:hover, .filter-btn.active {
-    background: var(--primary);
-    color: #FFFFFF;
+.filter-btn .cat-icon {
+    width: 16px !important;
+    height: 16px !important;
+    min-width: 16px !important;
+    min-height: 16px !important;
+    max-width: 16px !important;
+    max-height: 16px !important;
+    stroke-width: 2.2;
+    flex-shrink: 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.filter-btn:hover {
+    background: var(--primary-soft);
+    color: var(--primary);
     border-color: var(--primary);
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--gold-gradient);
+    color: #FFFFFF;
+    border-color: transparent;
+    box-shadow: 0 4px 14px rgba(244, 123, 32, 0.3);
+}
+
+.filter-btn.active .cat-icon {
+    stroke: #FFFFFF;
+}
+
+@media (max-width: 900px) {
+    .course-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 14px;
+    }
+    
+    .search-box {
+        max-width: 100%;
+        width: 100%;
+        min-width: 100%;
+    }
+    
+    .filter-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        padding: 4px 2px 8px 2px;
+        scrollbar-width: none;
+        width: 100%;
+    }
+    
+    .filter-tabs::-webkit-scrollbar {
+        display: none;
+    }
+    
+    .filter-btn {
+        flex-shrink: 0;
+    }
 }
 
 /* Courses Grid */
@@ -2719,6 +2795,234 @@ ins.adsbygoogle {
 .text-orange { color: var(--orange) !important; }
 .text-green { color: var(--light-green) !important; }
 .bg-glass { background: var(--bg-surface-glass); backdrop-filter: var(--glass-blur); }
+
+/* --------------------------------------------------------------------------
+   24. COMPREHENSIVE MOBILE DEVICE & VIEWPORT SCALING
+   -------------------------------------------------------------------------- */
+@media (max-width: 768px) {
+    body {
+        font-size: 14.5px;
+    }
+
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    /* Header & Mobile Menu */
+    .header {
+        height: 60px;
+    }
+
+    .logo-img {
+        width: 36px;
+        height: 36px;
+    }
+
+    .logo-text {
+        font-size: 17px;
+    }
+
+    .logo-slogan {
+        font-size: 7.5px;
+    }
+
+    /* Hero Section */
+    .hero {
+        padding: 40px 0 30px 0;
+    }
+
+    .hero-slide-glass-card {
+        padding: 20px 16px;
+        border-radius: 20px;
+    }
+
+    .hero-title {
+        font-size: 1.85rem;
+        line-height: 1.25;
+        margin-bottom: 10px;
+    }
+
+    .hero-sub-badge {
+        font-size: 11.5px;
+        padding: 4px 8px;
+        margin-bottom: 12px;
+    }
+
+    .hero-subtitle {
+        font-size: 13.5px;
+        line-height: 1.6;
+        margin-bottom: 16px;
+    }
+
+    .hero-slide-highlights {
+        grid-template-columns: 1fr;
+        gap: 8px;
+        padding: 12px 0;
+        margin-bottom: 18px;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        gap: 10px;
+    }
+
+    .hero-buttons .btn,
+    .hero-buttons .btn-whatsapp-hero {
+        width: 100%;
+        justify-content: center;
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+
+    .hero-visual {
+        min-height: auto;
+        margin-top: 20px;
+    }
+
+    .hero-glass-card-panel {
+        padding: 18px 14px;
+        border-radius: 20px;
+    }
+
+    .hero-stats-container, .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-top: 18px;
+    }
+
+    .hero-stats-card, .stat-card {
+        padding: 12px 8px;
+    }
+
+    .hero-stats-card h3, .stat-card h3 {
+        font-size: 1.35rem;
+    }
+
+    /* Course Controls & Filters */
+    .course-controls {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        margin-bottom: 24px;
+    }
+
+    .search-box {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .search-box input {
+        height: 44px;
+        font-size: 14px;
+    }
+
+    .filter-tabs {
+        width: 100%;
+        display: flex;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        gap: 8px;
+        padding: 2px 2px 8px 2px;
+    }
+
+    .filter-btn {
+        flex-shrink: 0;
+        padding: 7px 14px;
+        font-size: 12.5px;
+        height: 36px;
+    }
+
+    /* Course Cards Grid */
+    .courses-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .course-card {
+        border-radius: var(--radius-md);
+    }
+
+    .card-content {
+        padding: 16px;
+    }
+
+    .card-title {
+        font-size: 16px;
+    }
+
+    .card-intro {
+        font-size: 12.5px;
+    }
+
+    /* Modal Responsive Adjustments */
+    .modal-overlay {
+        padding: 10px;
+    }
+
+    .modal-box {
+        max-height: 94vh;
+        border-radius: var(--radius-lg);
+    }
+
+    .modal-header-banner {
+        height: 160px;
+    }
+
+    .modal-body-content {
+        grid-template-columns: 1fr;
+        padding: 18px 16px;
+        gap: 18px;
+    }
+
+    /* Section Headings */
+    .section-title-wrapper {
+        margin-bottom: 30px;
+    }
+
+    .section-main-title {
+        font-size: 1.65rem;
+    }
+
+    .section-desc {
+        font-size: 13.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    .header-actions {
+        gap: 5px;
+    }
+
+    .lang-toggle {
+        padding: 0 6px;
+        font-size: 11px;
+    }
+
+    .hero-title {
+        font-size: 1.55rem;
+    }
+
+    .hero-stats-container, .hero-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+
+    .hero-stats-card p, .stat-label {
+        font-size: 10.5px;
+    }
+
+    .card-pricing-box {
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+
+    .price-current {
+        font-size: 18px;
+    }
+}
 
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after {
