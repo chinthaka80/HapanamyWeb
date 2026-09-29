@@ -728,14 +728,20 @@ function loadDbStore() {
             const data = JSON.parse(raw);
             if (Array.isArray(data.users)) {
                 data.users.forEach(u => {
-                    if (!mockUsers.some(ex => ex.id === u.id || (ex.email && u.email && ex.email.toLowerCase() === u.email.toLowerCase()))) {
+                    const ex = mockUsers.find(e => e.id === u.id || (e.email && u.email && e.email.toLowerCase() === u.email.toLowerCase()));
+                    if (ex) {
+                        Object.assign(ex, u);
+                    } else {
                         mockUsers.push(u);
                     }
                 });
             }
             if (Array.isArray(data.binaryNodes)) {
                 data.binaryNodes.forEach(n => {
-                    if (!mockBinaryNodes.some(ex => ex.id === n.id || ex.user_id === n.user_id)) {
+                    const ex = mockBinaryNodes.find(e => e.id === n.id || (e.user_id && n.user_id && e.user_id === n.user_id));
+                    if (ex) {
+                        Object.assign(ex, n);
+                    } else {
                         mockBinaryNodes.push(n);
                     }
                 });
@@ -749,14 +755,20 @@ function loadDbStore() {
             }
             if (Array.isArray(data.productPurchases)) {
                 data.productPurchases.forEach(p => {
-                    if (!mockProductPurchases.some(ex => ex.id === p.id)) {
+                    const ex = mockProductPurchases.find(e => e.id === p.id);
+                    if (ex) {
+                        Object.assign(ex, p);
+                    } else {
                         mockProductPurchases.push(p);
                     }
                 });
             }
             if (Array.isArray(data.paymentDeposits)) {
                 data.paymentDeposits.forEach(d => {
-                    if (!mockPaymentDeposits.some(ex => ex.id === d.id)) {
+                    const ex = mockPaymentDeposits.find(e => e.id === d.id);
+                    if (ex) {
+                        Object.assign(ex, d);
+                    } else {
                         mockPaymentDeposits.push(d);
                     }
                 });
@@ -777,21 +789,30 @@ function loadDbStore() {
             }
             if (Array.isArray(data.withdrawalRequests)) {
                 data.withdrawalRequests.forEach(w => {
-                    if (!mockWithdrawalRequests.some(ex => ex.id === w.id)) {
+                    const ex = mockWithdrawalRequests.find(e => e.id === w.id);
+                    if (ex) {
+                        Object.assign(ex, w);
+                    } else {
                         mockWithdrawalRequests.push(w);
                     }
                 });
             }
             if (Array.isArray(data.refundRequests)) {
                 data.refundRequests.forEach(r => {
-                    if (!mockRefundRequests.some(ex => ex.id === r.id)) {
+                    const ex = mockRefundRequests.find(e => e.id === r.id);
+                    if (ex) {
+                        Object.assign(ex, r);
+                    } else {
                         mockRefundRequests.push(r);
                     }
                 });
             }
             if (Array.isArray(data.kycDocs)) {
                 data.kycDocs.forEach(k => {
-                    if (!mockKycDocs.some(ex => ex.id === k.id || ex.user_id === k.user_id)) {
+                    const ex = mockKycDocs.find(e => e.id === k.id || e.user_id === k.user_id);
+                    if (ex) {
+                        Object.assign(ex, k);
+                    } else {
                         mockKycDocs.push(k);
                     }
                 });
@@ -1191,17 +1212,20 @@ function getAuthenticatedUser(req) {
         return activeSessions.get(token);
     }
     const tLower = token.toLowerCase();
-    const foundUser = mockUsers.find(u => 
-        u.id === token || 
-        (u.id && u.id.toLowerCase() === tLower) ||
-        ('token-' + (u.username || '').toLowerCase()) === tLower || 
-        ('token-' + (u.id || '').toLowerCase()) === tLower ||
-        ('token-member-' + (u.id || '').toLowerCase()) === tLower ||
-        ('token-admin-' + (u.id || '').toLowerCase()) === tLower ||
-        tLower.includes((u.username || '').toLowerCase()) ||
-        (tLower.includes('namobuddhaya') && (u.username === 'NAMOBUDDHAYA' || u.role === 'admin')) ||
-        (tLower.includes('admin') && (u.role === 'admin' || u.role === 'subadmin'))
-    );
+    const foundUser = mockUsers.find(u => {
+        const uid = (u.id || '').toLowerCase();
+        const uname = (u.username || '').toLowerCase();
+        const role = (u.role || 'member').toLowerCase();
+        return (
+            uid === tLower ||
+            ('token-' + uname) === tLower ||
+            ('token-' + uid) === tLower ||
+            ('token-' + role + '-' + uid) === tLower ||
+            ('token-' + role + '-' + uname) === tLower ||
+            ('token-member-' + uid) === tLower ||
+            ('token-admin-' + uid) === tLower
+        );
+    });
     if (foundUser) {
         return {
             id: foundUser.id,
