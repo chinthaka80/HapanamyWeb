@@ -3910,6 +3910,8 @@ const server = http.createServer(async (req, res) => {
 
         KycService.logAction(mockAuditLogs, authUser.id, 'WITHDRAWAL_REQUESTED', 'withdrawal_requests', reqId, null, { amount });
 
+        saveDbStore();
+
         sendJSON(res, 201, { success: true, request });
         return;
     }
@@ -3971,6 +3973,8 @@ const server = http.createServer(async (req, res) => {
         const auditAction = action === 'APPROVED' ? 'WITHDRAWAL_APPROVED' : 'WITHDRAWAL_REJECTED';
         KycService.logAction(mockAuditLogs, authUser.id, auditAction, 'withdrawal_requests', requestId, { status: oldStatus }, { status: action, notes });
 
+        saveDbStore();
+
         sendJSON(res, 200, { success: true, message: `Request status has been updated to ${action}.` });
         return;
     }
@@ -4018,6 +4022,8 @@ const server = http.createServer(async (req, res) => {
         });
 
         KycService.logAction(mockAuditLogs, authUser.id, 'WITHDRAWAL_PAID', 'withdrawal_requests', requestId, { status: 'APPROVED' }, { status: 'PAID' });
+
+        saveDbStore();
 
         sendJSON(res, 200, { success: true, message: 'Withdrawal marked as paid successfully.' });
         return;
@@ -4236,6 +4242,7 @@ const server = http.createServer(async (req, res) => {
                 usageTelemetry,
                 auditLogs: mockAuditLogs
             });
+            saveDbStore();
             sendJSON(res, 201, result);
         } catch (err) {
             sendJSON(res, 400, { error: err.message });
@@ -4266,6 +4273,7 @@ const server = http.createServer(async (req, res) => {
                 refundRequests: mockRefundRequests,
                 auditLogs: mockAuditLogs
             });
+            saveDbStore();
             sendJSON(res, 200, result);
         } catch (err) {
             sendJSON(res, 400, { error: err.message });
@@ -4310,6 +4318,7 @@ const server = http.createServer(async (req, res) => {
                 refundRequests: mockRefundRequests,
                 auditLogs: mockAuditLogs
             });
+            saveDbStore();
             sendJSON(res, 200, result);
         } catch (err) {
             sendJSON(res, 400, { error: err.message });
@@ -4345,6 +4354,7 @@ const server = http.createServer(async (req, res) => {
                 auditLogs: mockAuditLogs,
                 bankPayoutReference
             });
+            saveDbStore();
             sendJSON(res, 200, result);
         } catch (err) {
             sendJSON(res, 400, { error: err.message });
