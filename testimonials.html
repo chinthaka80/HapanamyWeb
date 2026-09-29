@@ -1,12 +1,322 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" data-theme="dark">
 <head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/#testimonials">
-    <script>window.location.href = '/#testimonials';</script>
-    <title>Redirecting to Testimonials - Hapanamy.lk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | සාමාජික අදහස් (Testimonials & Success Stories)</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Hapanamy.lk සාර්ථක සිසුන්ගේ සහ Affiliate සාමාජිකයන්ගේ සැබෑ අත්දැකීම් සහ අදහස් (Testimonials). ශ්‍රී ලංකාවේ විශ්වාසනීයම ඩිජිටල් ඉගෙනුම් වේදිකාව.">
+    <link rel="canonical" href="https://www.hapanamy.lk/testimonials.html">
+    
+    <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | සාමාජික අදහස් (Testimonials)">
+    <meta property="og:description" content="Hapanamy.lk සිසුන්ගේ සාර්ථකත්වයේ සැබෑ කථා.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/testimonials.html">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="index.css">
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <style>
+        .testi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 28px;
+            margin-top: 40px;
+        }
+        .testi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 18px;
+            padding: 30px 26px;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .testi-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-orange);
+        }
+        .testi-stars {
+            color: #FFD700;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+        .testi-quote {
+            font-size: 14.5px;
+            color: var(--text-primary);
+            line-height: 1.7;
+            font-style: italic;
+            margin-bottom: 20px;
+        }
+        .testi-author {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            border-top: 1px solid var(--border-color);
+            padding-top: 16px;
+        }
+        .testi-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold));
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to <a href="/#testimonials">Testimonials</a>...</p>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo" title="Hapanamy.lk">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="courses.html" class="nav-link">Courses</a>
+                <a href="affiliate.html" class="nav-link">Affiliate</a>
+                <a href="earnings-calculator.html" class="nav-link">Calculator</a>
+                <a href="testimonials.html" class="nav-link active">Testimonials</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🔐 LOGIN</span></a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🚀 REGISTER FREE</span></a>
+                </div>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="header-login-btn">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="header-register-btn">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div style="padding: 90px 0 30px 0; text-align: center; background: linear-gradient(180deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <span class="badge-category" style="margin-bottom: 12px; display: inline-block;">STUDENT & AFFILIATE REVIEWS</span>
+            <h1 style="font-size: 34px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">සාමාජික අදහස් (Testimonials)</h1>
+            <p style="font-size: 15px; color: var(--text-muted); max-width: 650px; margin: 0 auto;">Hapanamy.lk හරහා ඉගෙනුම ලබමින් ආදායම් උපයන සිසුන්ගේ සැබෑ අත්දැකීම්.</p>
+        </div>
+    </div>
+
+    <!-- Testimonials Grid -->
+    <section style="padding: 50px 0 80px 0;">
+        <div class="container">
+            <div class="testi-grid">
+                <!-- Testimonial 1 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"Facebook Monetization Masterclass එකෙන් මම ඉගෙනගත්ත Viral Reel strategies නිසා මගේ Page එක සති 3ක් ඇතුළත In-Stream Ads වලට qualify වුණා. ගුරුවරුන්ගේ Live support එක විශිෂ්ටයි!"</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">K</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Kasun Perera</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">Content Creator • Colombo</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"Titan Elite Forex Trading පාඨමාලාවෙන් මගේ Risk Management සම්පූර්ණයෙන්ම වෙනස් වුණා. Smart Money Concept (SMC) ඉතා සරලව සිංහලෙන් පැහැදිලි කරලා දෙනවා."</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">D</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Dineth Fernando</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">Full-time Trader • Kandy</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"Affiliate Network එකෙන් මම මගේ යහළුවන්ට පාඨමාලා හඳුන්වා දීලා පළමු මාසයේදීම රු. 45,000 කට වඩා කොමිස් මුදල් මගේ බැංකු ගිණුමටම ක්ෂණිකව ලබාගත්තා. සුපිරිම platform එකක්!"</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">N</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Nadeesha Silva</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">Affiliate Marketer • Galle</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 4 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"AI & Automation Masterclass එකෙන් ChatGPT සහ Claude හරහා මගේ freelance business එක automatic කරගන්න ලැබුණා. පාඨමාලා ගාස්තුව වගේ කිහිප ගුණයක වටිනාකමක් තියෙනවා."</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">S</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Sachithra Bandara</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">AI Prompt Engineer • Kurunegala</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 5 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"TikTok Monetization Course එකෙන් මම මගේ TikTok account එක සති දෙකෙන් 50k followers කරගත්තා. දැන් මට Brand Deals ලැබෙනවා. Hapanamy කණ්ඩායමට බොහොම ස්තූතියි!"</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">A</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Anuki Wijesinghe</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">Digital Influencer • Gampaha</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Testimonial 6 -->
+                <div class="testi-card">
+                    <div>
+                        <div class="testi-stars">★★★★★</div>
+                        <p class="testi-quote">"Student Dashboard එක සහ Lesson Videos playback system එක හරිම පහසුයි. ඕනෑම වෙලාවක phone එකෙන් record sessions බලන්න පුළුවන් වීම ලොකු පහසුවක්."</p>
+                    </div>
+                    <div class="testi-author">
+                        <div class="testi-avatar">R</div>
+                        <div>
+                            <h4 style="font-size: 15px; font-weight: 800; color: var(--text-primary);">Ravindu Jayakody</h4>
+                            <p style="font-size: 12px; color: var(--brand-orange);">Web Developer Student • Matara</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px;">
+                <a href="register.html" class="btn btn-primary" style="padding: 14px 36px; font-size: 16px; font-weight: 800; border-radius: 30px;">🚀 අදම නොමිලේ ලියාපදිංචි වී එකතු වන්න</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+                <div class="footer-parent-attribution" style="margin: 12px 0 16px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.06); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 10px;">
+                    <img src="assets/brand/nowatrix/nowatrix_global_logo.jpg" alt="NOWATRIX Global" style="height: 22px; width: auto; object-fit: contain; border-radius: 4px;">
+                    <div style="text-align: left;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--brand-gold); letter-spacing: 0.5px; text-transform: uppercase;">A NOWATRIX Global Company</span>
+                        <div style="font-size: 9.5px; color: var(--text-muted);">Mother Company • Parent Brand</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="affiliate.html">Affiliate Program</a></li>
+                    <li><a href="earnings-calculator.html">Earnings Calculator</a></li>
+                    <li><a href="testimonials.html">Testimonials</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+    </script>
 </body>
 </html>

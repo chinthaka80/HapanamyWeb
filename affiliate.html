@@ -1,12 +1,282 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" data-theme="dark">
 <head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/affiliate-dashboard.html">
-    <script>window.location.href = '/affiliate-dashboard.html';</script>
-    <title>Redirecting to Affiliate Dashboard - Hapanamy.lk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | Affiliate Program — උපයන්න (Earn with Us)</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Hapanamy.lk Affiliate වැඩසටහන හරහා 8% සෘජු කොමිස් සහ 7% Binary Volume කොමිස් උපයන්න. ශ්‍රී ලංකාවේ විශ්වාසනීයම ඩිජිටල් ඉගෙනුම් සහ ආදායම් වේදිකාව.">
+    <link rel="canonical" href="https://www.hapanamy.lk/affiliate.html">
+    
+    <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | Affiliate Program — උපයන්න (Earn with Us)">
+    <meta property="og:description" content="Hapanamy.lk සමඟින් ඩිජිටල් කුසලතා හදාරමින් ස්ථාවර ආදායමක් ගොඩනගා ගන්න.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/affiliate.html">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="index.css">
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <style>
+        .affiliate-hero {
+            padding: 90px 0 50px 0;
+            text-align: center;
+            background: radial-gradient(circle at top, rgba(244, 123, 32, 0.15) 0%, rgba(10, 10, 15, 0) 70%);
+            border-bottom: 1px solid var(--border-color);
+        }
+        .aff-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+        .aff-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 30px 24px;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            text-align: left;
+        }
+        .aff-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--brand-orange);
+        }
+        .aff-icon {
+            font-size: 36px;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+        .aff-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+        .aff-card p {
+            font-size: 14px;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+        .plan-box {
+            background: linear-gradient(135deg, rgba(244, 123, 32, 0.1) 0%, rgba(212, 175, 55, 0.05) 100%);
+            border: 1px solid rgba(244, 123, 32, 0.3);
+            border-radius: 20px;
+            padding: 40px 30px;
+            margin: 50px 0;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <p>Redirecting to <a href="/affiliate-dashboard.html">Affiliate Dashboard</a>...</p>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo" title="Hapanamy.lk">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="courses.html" class="nav-link">Courses</a>
+                <a href="affiliate.html" class="nav-link active">Affiliate</a>
+                <a href="earnings-calculator.html" class="nav-link">Calculator</a>
+                <a href="testimonials.html" class="nav-link">Testimonials</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🔐 LOGIN</span></a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🚀 REGISTER FREE</span></a>
+                </div>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="header-login-btn">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="header-register-btn">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="affiliate-hero">
+        <div class="container">
+            <span class="badge-category" style="margin-bottom: 15px; display: inline-block;">HAPANAMY AFFILIATE NETWORK</span>
+            <h1 style="font-size: 38px; font-weight: 900; color: var(--text-primary); margin-bottom: 16px; line-height: 1.2;">
+                ඩිජිටල් කුසලතා හදාරමින් <br><span style="color: var(--brand-orange);">ස්ථාවර ආදායමක්</span> උපයන්න
+            </h1>
+            <p style="font-size: 16px; color: var(--text-muted); max-width: 680px; margin: 0 auto 30px auto; line-height: 1.6;">
+                Hapanamy.lk අධ්‍යාපනික පාඨමාලා ඔබේ මිතුරන් හා සම්බන්ධ කරමින් 8% සෘජු කොමිස් සහ 7% කණ්ඩායම් Matching ආදායම් ක්ෂණිකව ඔබේ Wallet එකට ලබාගන්න.
+            </p>
+            <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                <a href="register.html" class="btn btn-primary" style="padding: 14px 32px; font-size: 16px; font-weight: 800; border-radius: 30px;">🚀 නොමිලේ ලියාපදිංචි වන්න (Register Free)</a>
+                <a href="earnings-calculator.html" class="btn btn-secondary" style="padding: 14px 28px; font-size: 16px; font-weight: 700; border-radius: 30px;">📊 ආදායම් ගණනය කරන්න (Calculator)</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section style="padding: 60px 0;">
+        <div class="container">
+            <div style="text-align: center; max-width: 700px; margin: 0 auto 40px auto;">
+                <span class="badge-category">COMPENSATION STRUCTURE</span>
+                <h2 style="font-size: 30px; font-weight: 800; margin-top: 10px;">විනිවිදභාවයෙන් යුතු ආදායම් සැලැස්ම</h2>
+                <p style="color: var(--text-muted); font-size: 15px; margin-top: 8px;">සෑම සාමාජිකයෙකුටම සාධාරණ, ගණිතමය වශයෙන් තහවුරු කළ සහ ක්ෂණික ගෙවීම් සහිත ආදායම් මාර්ග.</p>
+            </div>
+
+            <div class="aff-grid">
+                <div class="aff-card">
+                    <span class="aff-icon">🎯</span>
+                    <h3>8% සෘජු කොමිස් (Direct Commission)</h3>
+                    <p>ඔබගේ Referral Link එක හරහා ලියාපදිංචි වන සාමාජිකයෙකු ඕනෑම පාඨමාලාවක් මිලදී ගත් සැනින් එම මුදලින් 8% ක් සෘජුවම ඔබගේ Wallet ගිණුමට බැර වේ.</p>
+                </div>
+
+                <div class="aff-card">
+                    <span class="aff-icon">⚖️</span>
+                    <h3>7% Binary Team Matching</h3>
+                    <p>ඔබගේ Left සහ Right කණ්ඩායම් දෙකෙහි එකතුවන Binary Volume (BV) ගැලපීමෙන් (Pair Matching) දුර්වල පාර්ශ්වයේ පරිමාවෙන් 7% ක Matching කොමිස් හිමිවේ.</p>
+                </div>
+
+                <div class="aff-card">
+                    <span class="aff-icon">🌟</span>
+                    <h3>7 Generations Qualified Depth</h3>
+                    <p>ඔබගේ කණ්ඩායමේ පරම්පරා 7ක් (7 Qualified Levels) දක්වා පහළට විහිදෙන සියලුම සාමාජිකයන්ගේ ක්‍රියාකාරී විකුණුම් පරිමාවන් (BV) ඔබට හිමිවේ.</p>
+                </div>
+
+                <div class="aff-card">
+                    <span class="aff-icon">🛡️</span>
+                    <h3>රු. 30,000 දෛනික සීමාව (Daily Cap)</h3>
+                    <p>පද්ධතියේ මූල්‍ය ස්ථාවරත්වය සහ සියලු දෙනාගේ ආදායම් සුරක්ෂිතතාව වෙනුවෙන් දිනකට උපරිම රු. 30,000.00 (මසකට රු. 900,000.00) දක්වා උපයා ගැනීමේ අවස්ථාව.</p>
+                </div>
+
+                <div class="aff-card">
+                    <span class="aff-icon">⚡</span>
+                    <h3>ක්ෂණික Wallet ගිණුම (Instant Payouts)</h3>
+                    <p>ඔබ උපයන සියලුම කොමිස් මුදල් සජීවීව Wallet එකට එක්වන අතර, ශ්‍රී ලංකාවේ ඕනෑම වාණිජ බැංකු ගිණුමකට ක්ෂණිකව මුදල් ආපසු ගැනීමේ (Withdrawal) පහසුකම.</p>
+                </div>
+
+                <div class="aff-card">
+                    <span class="aff-icon">📱</span>
+                    <h3>සජීවී Sales Team උපකරණ පුවරුව</h3>
+                    <p>My Sales Team, Left/Right Leg Counts, Binary Matching Points, සහ Referral Links සියල්ල තත්‍ය කාලීනව (Real-time) නිරීක්ෂණය කළ හැකි Dashboard පහසුකම.</p>
+                </div>
+            </div>
+
+            <!-- Call to Action Box -->
+            <div class="plan-box">
+                <h2 style="font-size: 28px; font-weight: 800; color: var(--text-primary); margin-bottom: 12px;">අදම ආරම්භ කර ඔබගේ ඩිජිටල් ව්‍යාපාරය ගොඩනගන්න</h2>
+                <p style="color: var(--text-muted); font-size: 15px; max-width: 600px; margin: 0 auto 25px auto;">කිසිදු මූලික ගාස්තුවකින් තොරව Free Register වී ඔබේ මිතුරන්ට උසස්ම ඩිජිටල් පාඨමාලා හඳුන්වා දෙන්න.</p>
+                <a href="register.html" class="btn btn-primary" style="padding: 14px 36px; font-size: 16px; font-weight: 800; border-radius: 30px;">🚀 REGISTER NOW FREE</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+                <div class="footer-parent-attribution" style="margin: 12px 0 16px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.06); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 10px;">
+                    <img src="assets/brand/nowatrix/nowatrix_global_logo.jpg" alt="NOWATRIX Global" style="height: 22px; width: auto; object-fit: contain; border-radius: 4px;">
+                    <div style="text-align: left;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--brand-gold); letter-spacing: 0.5px; text-transform: uppercase;">A NOWATRIX Global Company</span>
+                        <div style="font-size: 9.5px; color: var(--text-muted);">Mother Company • Parent Brand</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="affiliate.html">Affiliate Program</a></li>
+                    <li><a href="earnings-calculator.html">Earnings Calculator</a></li>
+                    <li><a href="testimonials.html">Testimonials</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+    </script>
 </body>
 </html>

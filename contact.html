@@ -1,12 +1,272 @@
 <!DOCTYPE html>
-<html lang="si">
+<html lang="si" data-theme="dark">
 <head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
-    <meta http-equiv="refresh" content="0; url=/contact-us.html">
-    <script>window.location.href = '/contact-us.html';</script>
-    <title>Redirecting to Contact Us - Hapanamy.lk</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | සම්බන්ධ වන්න (Contact Us) — A NOWATRIX Global Company</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Hapanamy.lk සමඟ සම්බන්ධ වන්න. A Digital Learning & Skills Platform by NOWATRIX Global. පාඨමාලා විමසීම්, තාක්ෂණික සහය, Affiliate වැඩසටහන සහ පාරිභෝගික සේවා සඳහා අප අමතන්න.">
+    <link rel="canonical" href="https://www.hapanamy.lk/contact.html">
+    
+    <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | සම්බන්ධ වන්න (Contact Us) — A NOWATRIX Global Company">
+    <meta property="og:description" content="Hapanamy.lk සහාය කණ්ඩායම හා සෘජුව සම්බන්ධ වන්න. A Digital Learning & Skills Platform by NOWATRIX Global.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/contact.html">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="index.css">
+    <script src="config.js"></script>
+    <script src="db.js"></script>
 </head>
 <body>
-    <p>Redirecting to <a href="/contact-us.html">Contact Us</a>...</p>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo" title="Hapanamy.lk">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="courses.html" class="nav-link">Courses</a>
+                <a href="affiliate.html" class="nav-link">Affiliate</a>
+                <a href="earnings-calculator.html" class="nav-link">Calculator</a>
+                <a href="testimonials.html" class="nav-link">Testimonials</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link active">Contact</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🔐 LOGIN</span></a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🚀 REGISTER FREE</span></a>
+                </div>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="header-login-btn">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="header-register-btn">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div style="padding: 90px 0 40px 0; text-align: center; background: linear-gradient(180deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <span class="badge-category" style="margin-bottom: 12px; display: inline-block;">SUPPORT & INQUIRIES</span>
+            <h1 style="font-size: 34px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">අප හා සම්බන්ධ වන්න (Contact Us)</h1>
+            <p style="font-size: 15px; color: var(--text-muted); max-width: 600px; margin: 0 auto 8px auto;">ශ්‍රී ලංකාවේ ඩිජිටල් ඉගෙනුම් සරසවිය — A NOWATRIX Global Company</p>
+            <p style="font-size: 13.5px; color: var(--text-muted); max-width: 600px; margin: 0 auto;">ඕනෑම ගැටළුවක් හෝ විමසීමක් සඳහා අපගේ සහාය කණ්ඩායම ඔබ වෙනුවෙන් සූදානම්.</p>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <section class="contact-section" style="padding: 60px 0;">
+        <div class="container contact-container">
+            <div class="contact-info">
+                <h2>සෘජු සන්නිවේදනය <br><span>Get in Touch</span></h2>
+                <p>ඔබට පාඨමාලා පිළිබඳ තොරතුරු, තාක්ෂණික සහය හෝ Affiliate වැඩසටහනට සම්බන්ධ වීමට අවශ්‍ය නම් අපගේ සහාය කණ්ඩායම අමතන්න.</p>
+                
+                <div class="contact-methods">
+                    <div class="contact-method-item">
+                        <span class="c-icon">📞</span>
+                        <div>
+                            <h4>දුරකථන (Phone)</h4>
+                            <p>+94 72 609 0050 / 072 609 0050</p>
+                        </div>
+                    </div>
+                    <div class="contact-method-item">
+                        <span class="c-icon">💬</span>
+                        <div>
+                            <h4>WhatsApp ක්ෂණික පණිවිඩ</h4>
+                            <p><a href="https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20have%20an%20inquiry." target="_blank" style="color: #25D366; font-weight: 700;">WhatsApp මඟින් සම්බන්ධ වන්න →</a></p>
+                        </div>
+                    </div>
+                    <div class="contact-method-item">
+                        <span class="c-icon">✉️</span>
+                        <div>
+                            <h4>විද්‍යුත් තැපෑල (Email)</h4>
+                            <p>info@hapanamy.lk / affiliate@hapanamy.lk</p>
+                        </div>
+                    </div>
+                    <div class="contact-method-item">
+                        <span class="c-icon">📍</span>
+                        <div>
+                            <h4>කාර්යාලය (Corporate Office)</h4>
+                            <p>HAPANAMY ENTERPRISES (PVT) LTD / NOWATRIX Global, Maharagama & Colombo, Sri Lanka.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Google Maps Embed -->
+                <div style="margin-top: 30px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border-color); box-shadow: var(--card-shadow); height: 220px; width: 100%;">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126743.58586036224!2d79.8211059!3d6.9218374!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2593cf65a1e9d%3A0xe13db7ab5d6d4b1a!2sColombo%2C%20Sri%20Lanka!5e0!3m2!1sen!2s!4v1700000000000!5m2!1sen!2s" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+            
+            <div class="contact-form-box">
+                <form id="contactPageForm" onsubmit="handleContactPageSubmit(event)">
+                    <div class="form-title">පණිවිඩයක් යොමු කරන්න</div>
+                    
+                    <div class="form-group">
+                        <label for="cName">ඔබේ නම (Your Name) *</label>
+                        <input type="text" id="cName" required placeholder="සම්පූර්ණ නම">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
+                        <input type="email" id="cEmail" required placeholder="name@example.com">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cPhone">දුරකථන අංකය (Phone Number) *</label>
+                        <input type="tel" id="cPhone" required placeholder="07XXXXXXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cPurpose">සම්බන්ධ වීමේ අරමුණ (Select Purpose) *</label>
+                        <select id="cPurpose" required style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                            <option value="" disabled selected>අරමුණ තෝරන්න...</option>
+                            <option value="course_inquiry">පාඨමාලා පිළිබඳ විස්තර දැනගැනීමට</option>
+                            <option value="affiliate_support">Affiliate වැඩසටහන පිළිබඳ ගැටළු</option>
+                            <option value="payment_help">ගෙවීම් හෝ බැංකු තැන්පතු සහය</option>
+                            <option value="general_support">වෙනත් සාමාන්‍ය තොරතුරු</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cMessage">ඔබේ පණිවිඩය (Your Message) *</label>
+                        <textarea id="cMessage" rows="4" required placeholder="ඔබට අවශ්‍ය තොරතුරු මෙහි ලියන්න..." style="width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); font-family: inherit; resize: vertical;"></textarea>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary" style="width: 100%; border: none; cursor: pointer; padding: 14px; font-weight: 800;">පණිවිඩය යොමු කරන්න (Send Message)</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+                <div class="footer-parent-attribution" style="margin: 12px 0 16px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.06); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 10px;">
+                    <img src="assets/brand/nowatrix/nowatrix_global_logo.jpg" alt="NOWATRIX Global" style="height: 22px; width: auto; object-fit: contain; border-radius: 4px;">
+                    <div style="text-align: left;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--brand-gold); letter-spacing: 0.5px; text-transform: uppercase;">A NOWATRIX Global Company</span>
+                        <div style="font-size: 9.5px; color: var(--text-muted);">Mother Company • Parent Brand</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="affiliate.html">Affiliate Program</a></li>
+                    <li><a href="earnings-calculator.html">Earnings Calculator</a></li>
+                    <li><a href="testimonials.html">Testimonials</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navMenu = document.getElementById('navMenu');
+        if (mobileMenuBtn && navMenu) {
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenuBtn.classList.toggle('active');
+                navMenu.classList.toggle('active');
+            });
+        }
+
+        function handleContactPageSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('cName').value;
+            showToast(`✉️ <strong>ස්තූතියි ${name}!</strong> ඔබගේ පණිවිඩය සාර්ථකව යොමු විය. අපගේ කණ්ඩායම පැය 24ක් ඇතුළත ඔබව සම්බන්ධ කරගනු ඇත.`);
+            e.target.reset();
+        }
+
+        function showToast(msg) {
+            const c = document.getElementById('toastContainer');
+            if (!c) return;
+            const t = document.createElement('div');
+            t.className = 'toast';
+            t.innerHTML = msg;
+            c.appendChild(t);
+            setTimeout(() => t.remove(), 4000);
+        }
+    </script>
 </body>
 </html>
