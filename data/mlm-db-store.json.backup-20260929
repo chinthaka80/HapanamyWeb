@@ -1,0 +1,163 @@
+{
+  "users": [
+    {
+      "id": "user-hiru-root",
+      "username": "Hiru",
+      "full_name": "Hiru (Sales Leader)",
+      "name": "Hiru (Sales Leader)",
+      "email": "hiru@hapanamy.lk",
+      "role": "member",
+      "status": "ACTIVE",
+      "account_status": "ACTIVE",
+      "qualification_status": "QUALIFIED",
+      "kyc_status": "APPROVED",
+      "position": "ROOT",
+      "referral_code": "Hiru",
+      "password_hash": "8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed",
+      "created_at": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "user-namobuddhaya-root",
+      "username": "NAMOBUDDHAYA",
+      "full_name": "Main Admin (NAMOBUDDHAYA)",
+      "name": "Main Admin (NAMOBUDDHAYA)",
+      "email": "admin@hapanamy.lk",
+      "role": "admin",
+      "status": "ACTIVE",
+      "account_status": "ACTIVE",
+      "qualification_status": "QUALIFIED",
+      "kyc_status": "APPROVED",
+      "position": "ROOT",
+      "referral_code": "NAMOBUDDHAYA",
+      "password_hash": "8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed",
+      "created_at": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "user-subadmin-manager",
+      "username": "subadmin",
+      "full_name": "Sub Admin (Operations Manager)",
+      "name": "Sub Admin (Operations Manager)",
+      "email": "manager@hapanamy.lk",
+      "role": "subadmin",
+      "status": "ACTIVE",
+      "account_status": "ACTIVE",
+      "qualification_status": "QUALIFIED",
+      "kyc_status": "APPROVED",
+      "position": "ROOT",
+      "referral_code": "SUBADMIN",
+      "password_hash": "8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed",
+      "created_at": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "user-sun-101",
+      "username": "Sun",
+      "full_name": "Sun",
+      "name": "Sun",
+      "email": "sun@hapanamy.lk",
+      "phone": "0771234567",
+      "role": "member",
+      "status": "ACTIVE",
+      "account_status": "ACTIVE",
+      "qualification_status": "NOT_QUALIFIED",
+      "kyc_status": "PENDING",
+      "position": "LEFT",
+      "branch_leg": "LEFT",
+      "sponsor": "Hiru",
+      "sponsor_id": "user-hiru-root",
+      "sponsor_username": "Hiru",
+      "referral_code": "Sun",
+      "password_hash": "8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed",
+      "created_at": "2026-09-02T00:00:00Z"
+    },
+    {
+      "id": "user-sundd-102",
+      "username": "SUNDD",
+      "full_name": "SUNDD",
+      "name": "SUNDD",
+      "email": "sundd@hapanamy.lk",
+      "phone": "0779876543",
+      "role": "member",
+      "status": "ACTIVE",
+      "account_status": "ACTIVE",
+      "qualification_status": "NOT_QUALIFIED",
+      "kyc_status": "PENDING",
+      "position": "LEFT",
+      "branch_leg": "LEFT",
+      "sponsor": "Sun",
+      "sponsor_id": "user-sun-101",
+      "sponsor_username": "Sun",
+      "referral_code": "SUNDD",
+      "password_hash": "8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed",
+      "created_at": "2026-09-03T00:00:00Z"
+    }
+  ],
+  "binaryNodes": [
+    {
+      "id": "node-hiru-root",
+      "user_id": "user-hiru-root",
+      "placement_parent_id": null,
+      "position": null,
+      "depth": 1,
+      "path": "",
+      "left_child_id": "node-sun-101",
+      "right_child_id": null,
+      "created_at": "2026-09-01T00:00:00Z"
+    },
+    {
+      "id": "node-sun-101",
+      "user_id": "user-sun-101",
+      "placement_parent_id": "user-hiru-root",
+      "position": "LEFT",
+      "depth": 2,
+      "path": "user-hiru-root",
+      "left_child_id": "node-sundd-102",
+      "right_child_id": null,
+      "created_at": "2026-09-02T00:00:00Z"
+    },
+    {
+      "id": "node-sundd-102",
+      "user_id": "user-sundd-102",
+      "placement_parent_id": "user-sun-101",
+      "position": "LEFT",
+      "depth": 3,
+      "path": "user-hiru-root/user-sun-101",
+      "left_child_id": null,
+      "right_child_id": null,
+      "created_at": "2026-09-03T00:00:00Z"
+    }
+  ],
+  "sponsors": [
+    {
+      "id": "spon-sun-101",
+      "user_id": "user-sun-101",
+      "sponsor_id": "user-hiru-root",
+      "created_at": "2026-09-02T00:00:00Z"
+    },
+    {
+      "id": "spon-sundd-102",
+      "user_id": "user-sundd-102",
+      "sponsor_id": "user-sun-101",
+      "created_at": "2026-09-03T00:00:00Z"
+    }
+  ],
+  "productPurchases": [],
+  "paymentDeposits": [],
+  "walletLedger": [],
+  "volumeLedger": [],
+  "withdrawalRequests": [],
+  "refundRequests": [],
+  "kycDocs": [
+    {
+      "id": "kyc-hiru",
+      "user_id": "user-hiru-root",
+      "id_type": "NIC",
+      "id_number": "199012345678",
+      "full_name": "Hiru",
+      "status": "APPROVED",
+      "created_at": "2026-09-01T00:00:00Z"
+    }
+  ],
+  "fraudAlerts": [],
+  "referralConversions": [],
+  "referralClicks": []
+}

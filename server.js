@@ -26,7 +26,7 @@ const SimulationEngine = require('./services/simulation-engine');
 const PurchaseOrchestrator = require('./services/purchase-orchestrator');
 const MLMNetworkEngine = require('./services/mlm-network-engine');
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 const MIME_TYPES = {
     '.html': 'text/html',
@@ -5265,6 +5265,7 @@ const server = http.createServer(async (req, res) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}/`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running at http://0.0.0.0:${PORT}/ (Port: ${PORT})`);
 });
+
