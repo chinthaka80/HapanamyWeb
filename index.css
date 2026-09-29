@@ -1328,18 +1328,38 @@ section {
     color: var(--primary);
 }
 
-.card-affiliate-badge {
-    background: var(--light-green-soft);
-    border: 1px solid rgba(16, 185, 129, 0.25);
+.card-affiliate-badge, .card-offer-badge {
+    background: rgba(244, 123, 32, 0.12);
+    border: 1px solid rgba(244, 123, 32, 0.35);
     border-radius: var(--radius-sm);
     padding: 6px 12px;
     font-size: 12px;
     font-weight: 700;
-    color: var(--light-green);
+    color: var(--brand-orange, #f47b20);
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+}
+
+.badge-offer-label {
+    font-weight: 800;
+    color: var(--brand-orange, #f47b20);
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+}
+
+.badge-offer-discount {
+    background: rgba(239, 68, 68, 0.18);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #EF4444;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 800;
+    font-size: 11.5px;
+    letter-spacing: 0.3px;
 }
 
 .card-footer {
@@ -2270,9 +2290,11 @@ section {
     transition: opacity 0.3s ease;
 }
 
-.modal-overlay.active {
-    display: flex;
-    opacity: 1;
+.modal-overlay.active,
+.modal-overlay.open {
+    display: flex !important;
+    opacity: 1 !important;
+    visibility: visible !important;
 }
 
 .modal-box {
@@ -2290,7 +2312,8 @@ section {
     transition: transform 0.3s ease;
 }
 
-.modal-overlay.active .modal-box {
+.modal-overlay.active .modal-box,
+.modal-overlay.open .modal-box {
     transform: scale(1);
 }
 

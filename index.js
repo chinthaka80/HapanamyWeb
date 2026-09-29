@@ -1917,20 +1917,28 @@ function initCalculator() {
 
 
 // Course details modal controller
-const modalOverlay = document.getElementById('courseModal');
-const modalCloseBtn = document.getElementById('modalCloseBtn');
+function getModalElements() {
+    const modalOverlay = document.getElementById('courseModal') || document.getElementById('courseDetailModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn') || (modalOverlay ? modalOverlay.querySelector('.modal-close-btn, .btn-close-modal') : null);
+    return { modalOverlay, modalCloseBtn };
+}
 
 function openCourseModal(courseId) {
+    if (typeof courseData === 'undefined') return;
     const course = courseData[courseId];
     if (!course) return;
 
     window.currentActiveModalCourseId = courseId; // Save active modal course ID
 
-    // Load data into elements
-    document.getElementById('modalBanner').src = course.banner;
-    document.getElementById('modalCategory').textContent = course.category;
-    document.getElementById('modalTitle').textContent = course.title;
-    document.getElementById('modalDesc').innerHTML = course.desc;
+    // Load data into elements if they exist
+    const bannerEl = document.getElementById('modalBanner');
+    if (bannerEl) bannerEl.src = course.banner;
+    const catEl = document.getElementById('modalCategory');
+    if (catEl) catEl.textContent = course.category;
+    const titleEl = document.getElementById('modalTitle');
+    if (titleEl) titleEl.textContent = course.title;
+    const descEl = document.getElementById('modalDesc');
+    if (descEl) descEl.innerHTML = course.desc;
 
     // Grab elements to toggle for custom service
     const origPriceEl = document.getElementById('modalOriginalPrice');
@@ -1955,7 +1963,8 @@ function openCourseModal(courseId) {
         if (discountEl) discountEl.style.display = 'none';
         if (commBox) commBox.style.display = 'none';
         
-        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        const currPriceEl = document.getElementById('modalCurrentPrice');
+        if (currPriceEl) currPriceEl.textContent = course.currentPrice;
         if (buyBtn) {
             buyBtn.textContent = '📞 සේවාව ගැන විමසන්න →';
             buyBtn.style.background = 'var(--brand-orange)';
@@ -1976,9 +1985,11 @@ function openCourseModal(courseId) {
         if (commBox) commBox.style.display = 'block';
         
         if (origPriceEl) origPriceEl.textContent = course.originalPrice;
-        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        const currPriceEl = document.getElementById('modalCurrentPrice');
+        if (currPriceEl) currPriceEl.textContent = course.currentPrice;
         if (discountEl) discountEl.textContent = course.discount;
-        document.getElementById('modalCommission').textContent = course.commission;
+        const commEl = document.getElementById('modalCommission');
+        if (commEl) commEl.textContent = course.commission || '50% Direct Commission';
         
         if (buyBtn) {
             buyBtn.textContent = 'Enroll / Buy Course';
@@ -1986,7 +1997,11 @@ function openCourseModal(courseId) {
             buyBtn.onclick = () => {
                 closeModal();
                 const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
-                addToCart(courseId, course.title, numericPrice);
+                if (typeof addToCart === 'function') {
+                    addToCart(courseId, course.title, numericPrice);
+                } else {
+                    window.location.href = `checkout.html?product=${courseId}`;
+                }
             };
         }
     }
@@ -1996,7 +2011,7 @@ function openCourseModal(courseId) {
     if (socialContainer) {
         socialContainer.innerHTML = '';
         
-        // WhatsApp button (Always present for conversion optimization & support)
+        // WhatsApp button
         const waLink = document.createElement('a');
         waLink.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
         waLink.target = '_blank';
@@ -2018,45 +2033,58 @@ function openCourseModal(courseId) {
 
     // Clear and build syllabus list
     const syllabusList = document.getElementById('modalSyllabus');
-    syllabusList.innerHTML = '';
-    course.syllabus.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        syllabusList.appendChild(li);
-    });
-
-    // Hook buy button action
-    if (buyBtn) {
-        buyBtn.onclick = () => {
-            closeModal();
-            const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
-            addToCart(courseId, course.title, numericPrice);
-        };
+    if (syllabusList && Array.isArray(course.syllabus)) {
+        syllabusList.innerHTML = '';
+        course.syllabus.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            syllabusList.appendChild(li);
+        });
     }
 
-    // Show modal
-    if (modalOverlay) modalOverlay.classList.add('open');
+    // Show modal dynamically
+    const { modalOverlay, modalCloseBtn } = getModalElements();
+    if (modalOverlay) {
+        modalOverlay.classList.add('open', 'active');
+        modalOverlay.style.display = 'flex';
+        modalOverlay.style.opacity = '1';
+        modalOverlay.style.visibility = 'visible';
+        
+        if (modalCloseBtn) {
+            modalCloseBtn.onclick = closeModal;
+        }
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) closeModal();
+        };
+    }
     document.body.style.overflow = 'hidden'; // Stop page scrolling background
 }
 
 function closeModal() {
     window.currentActiveModalCourseId = null;
-    if (modalOverlay) modalOverlay.classList.remove('open');
+    const { modalOverlay } = getModalElements();
+    if (modalOverlay) {
+        modalOverlay.classList.remove('open', 'active');
+        modalOverlay.style.display = 'none';
+        modalOverlay.style.opacity = '0';
+        modalOverlay.style.visibility = 'hidden';
+    }
     document.body.style.overflow = ''; // Restore page scrolling
 }
 
-if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', closeModal);
-}
-
-// Close modal if clicked on overlay area outside the modal-box
-if (modalOverlay) {
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            closeModal();
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const { modalOverlay, modalCloseBtn } = getModalElements();
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeModal);
+    }
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+    }
+});
 
 // Form Submission handlers & Toasts
 function showToast(message) {
