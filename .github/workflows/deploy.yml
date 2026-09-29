@@ -58,13 +58,81 @@ jobs:
       - name: Restart Node.js Backend Service via SSH
         continue-on-error: true
         run: |
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} "
-            cd /public_html 2>/dev/null || cd ~/public_html 2>/dev/null || cd .
-            if command -v pm2 >/dev/null 2>&1; then
-              pm2 restart server.js || pm2 restart hapanamy-backend || pm2 start server.js --name hapanamy-backend || pm2 reload all || true
-            elif command -v node >/dev/null 2>&1; then
-              pkill -f 'node server.js' || true
-              nohup node server.js > server.log 2>&1 &
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} '
+            export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.nvm/versions/node/$(ls $HOME/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:$HOME/.local/bin:$HOME/bin:$HOME/.npm-global/bin:/opt/cpanel/ea-nodejs20/bin:/opt/cpanel/ea-nodejs18/bin:/opt/plesk/node/current/bin:/root/.nvm/versions/node/$(ls /root/.nvm/versions/node 2>/dev/null | tail -n 1)/bin:$PATH"
+            [ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh" 2>/dev/null || true
+            [ -s "$HOME/.profile" ] && \. "$HOME/.profile" 2>/dev/null || true
+            [ -s "$HOME/.bashrc" ] && \. "$HOME/.bashrc" 2>/dev/null || true
+
+            echo "=== Host Identification ==="
+            hostname 2>/dev/null || true
+            whoami 2>/dev/null || true
+            pwd
+
+            echo "=== Locating Application Directory ==="
+            APP_DIR=""
+            for d in "$HOME/public_html" "/public_html" "/var/www/html" "/var/www/hapanamy.lk" "$PWD/public_html" "$PWD"; do
+              if [ -f "$d/server.js" ]; then
+                APP_DIR="$d"
+                break
+              fi
+            done
+            if [ -z "$APP_DIR" ]; then
+              APP_DIR=$(find "$HOME" /var/www /public_html /srv -name "server.js" 2>/dev/null | head -n 1 | xargs dirname 2>/dev/null)
             fi
-          " || echo "SSH command execution non-fatal fallback"
+            echo "Target APP_DIR: $APP_DIR"
+            if [ -n "$APP_DIR" ] && [ -d "$APP_DIR" ]; then
+              cd "$APP_DIR"
+            fi
+
+            echo "=== Locating Node and PM2 ==="
+            NODE_EXEC=$(command -v node || find /usr /opt $HOME -name node -type f -perm /111 2>/dev/null | head -n 1)
+            PM2_EXEC=$(command -v pm2 || find /usr /opt $HOME -name pm2 -type f -perm /111 2>/dev/null | head -n 1)
+            echo "NODE_EXEC: $NODE_EXEC"
+            echo "PM2_EXEC: $PM2_EXEC"
+
+            if [ -n "$PM2_EXEC" ]; then
+              echo "Starting/Reloading backend with PM2..."
+              if [ -f "ecosystem.config.js" ]; then
+                $PM2_EXEC startOrReload ecosystem.config.js --env production || $PM2_EXEC restart ecosystem.config.js --env production || $PM2_EXEC start ecosystem.config.js --env production || true
+              else
+                $PM2_EXEC restart server.js || $PM2_EXEC restart hapanamy-live || $PM2_EXEC start server.js --name hapanamy-live || true
+              fi
+              $PM2_EXEC save || true
+            elif [ -n "$NODE_EXEC" ]; then
+              echo "Starting backend via nohup Node.js..."
+              pkill -f 'server.js' || true
+              sleep 1
+              PORT=3000 nohup "$NODE_EXEC" server.js > server.log 2>&1 &
+            else
+              echo "WARNING: Neither PM2 nor Node found in PATH."
+            fi
+
+            sleep 2
+            echo "=== Local Port 3000 Probe ==="
+            if command -v curl >/dev/null 2>&1; then
+              curl -s -i http://127.0.0.1:3000/api/health || echo "Local curl failed"
+            elif command -v wget >/dev/null 2>&1; then
+              wget -qO- http://127.0.0.1:3000/api/health || echo "Local wget failed"
+            fi
+          ' || echo "SSH command execution non-fatal fallback"
+
+      - name: Verify Live Production Health Endpoint
+        run: |
+          echo "Waiting 5 seconds for backend initialization..."
+          sleep 5
+          for i in 1 2 3 4 5; do
+            echo "Attempt $i: Probing https://hapanamy.lk/api/health ..."
+            HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://hapanamy.lk/api/health || echo "000")
+            echo "HTTP Status: $HTTP_STATUS"
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "✅ LIVE PRODUCTION API IS 200 OK!"
+              curl -s https://hapanamy.lk/api/health
+              exit 0
+            fi
+            sleep 3
+          done
+          echo "Final check response:"
+          curl -i -s https://hapanamy.lk/api/health || true
+
 
