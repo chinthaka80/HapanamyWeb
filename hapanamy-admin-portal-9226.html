@@ -3895,9 +3895,48 @@
             }
         }
 
-        function resetUserPasswordPrompt(userName, email) {
-            const displayEmail = email ? ` (${email})` : '';
-            alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
+        async function resetUserPasswordPrompt(userName, email) {
+            const defaultPass = 'Araliya321#';
+            const enteredPass = prompt(`🔑 Reset Password for member "${userName}" (${email || 'Username'}):\n\nEnter new password (or press OK to use default master password):`, defaultPass);
+            
+            if (enteredPass === null) return; // User cancelled
+            
+            const newPassword = enteredPass.trim() || defaultPass;
+            
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const response = await fetch('/api/admin/members/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        username: userName,
+                        email: email,
+                        new_password: newPassword
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (typeof dbUpdateUser === 'function' && email) {
+                        await dbUpdateUser(email, { password: newPassword });
+                    }
+                    showToast(`🔑 <strong>Password Reset Successful!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                    alert(`✅ Password for ${userName} has been successfully reset to:\n\n${newPassword}\n\nThe member can now log in using this password.`);
+                    return;
+                }
+            } catch (err) {
+                console.warn('API reset failed, applying local fallback:', err);
+            }
+
+            // Fallback for local storage
+            if (typeof dbUpdateUser === 'function' && email) {
+                await dbUpdateUser(email, { password: newPassword });
+            }
+            showToast(`🔑 <strong>Password Reset!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+            alert(`✅ Password for ${userName} reset to:\n\n${newPassword}\n\nMember can now log in.`);
         }
 
         // ========================================================

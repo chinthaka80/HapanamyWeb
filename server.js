@@ -4927,6 +4927,52 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /api/admin/members/reset-password or /api/admin/members/:id/reset-password
+    if (req.method === 'POST' && (pathname === '/api/admin/members/reset-password' || (pathname.startsWith('/api/admin/members/') && pathname.endsWith('/reset-password')))) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN' && authUser.role !== 'subadmin' && authUser.role !== 'SUPER_ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        let targetUserId = body.memberId || body.member_id || body.userId || body.user_id || body.username || body.email;
+        if (!targetUserId && pathname.startsWith('/api/admin/members/')) {
+            const segs = pathname.split('/');
+            targetUserId = segs[4];
+        }
+
+        const newPassword = body.new_password || body.newPassword || body.password || 'Araliya321#';
+        const cleanTarget = String(targetUserId || '').replace(/^@/, '').toLowerCase();
+
+        const member = state.users.find(u => 
+            u.id === targetUserId || 
+            String(u.username || '').toLowerCase() === cleanTarget || 
+            String(u.email || '').toLowerCase() === cleanTarget ||
+            String(u.id || '').toLowerCase() === cleanTarget
+        );
+
+        if (!member) {
+            sendJSON(res, 404, { success: false, error: `Member '${targetUserId}' not found.` });
+            return;
+        }
+
+        member.password = newPassword;
+        if (member.password_hash) {
+            member.password_hash = sha256Hex(newPassword);
+        }
+        saveJsonState();
+
+        sendJSON(res, 200, {
+            success: true,
+            message: `Password for ${member.full_name || member.name || member.username} (@${member.username}) successfully reset to '${newPassword}'.`,
+            username: member.username,
+            email: member.email,
+            reset_password: newPassword
+        });
+        return;
+    }
+
     // POST /api/admin/members/manual-purchase or /api/admin/orders/manual-enrollment
     if (req.method === 'POST' && (pathname === '/api/admin/members/manual-purchase' || pathname === '/api/admin/orders/manual-enrollment' || pathname === '/api/admin/orders/manual-purchase' || (pathname.startsWith('/api/admin/members/') && pathname.endsWith('/manual-purchase')))) {
         const authUser = getAuthenticatedUser(req);

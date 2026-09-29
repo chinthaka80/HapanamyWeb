@@ -1468,9 +1468,62 @@ try {
     }
 
     // --------------------------------------------------------------------------
+    // Route: /api/admin/members/reset-password or /api/admin/members/:id/reset-password
+    // --------------------------------------------------------------------------
+    if (($route === 'admin/members/reset-password' || (str_starts_with($route, 'admin/members/') && str_ends_with($route, '/reset-password'))) && $method === 'POST') {
+        $input = getJsonInput();
+        $targetUserId = trim($input['member_id'] ?? $input['userId'] ?? $input['user_id'] ?? $input['username'] ?? $input['email'] ?? '');
+        if (empty($targetUserId) && str_starts_with($route, 'admin/members/')) {
+            $parts = explode('/', $route);
+            $targetUserId = $parts[2] ?? '';
+        }
+
+        $newPassword = trim($input['new_password'] ?? $input['password'] ?? 'Araliya321#');
+        if (empty($newPassword)) {
+            $newPassword = 'Araliya321#';
+        }
+
+        $cleanTarget = strtolower(ltrim($targetUserId, '@'));
+        $memberIndex = -1;
+        foreach ($db['users'] as $idx => $u) {
+            if ($u['id'] === $targetUserId || strtolower($u['username'] ?? '') === $cleanTarget || strtolower($u['email'] ?? '') === $cleanTarget || strtolower($u['id'] ?? '') === $cleanTarget) {
+                $memberIndex = $idx;
+                break;
+            }
+        }
+
+        if ($memberIndex === -1) {
+            http_response_code(404);
+            echo json_encode(['success' => false, 'error' => "Member '{$targetUserId}' not found"]);
+            exit;
+        }
+
+        // Update password
+        $db['users'][$memberIndex]['password'] = $newPassword;
+        if (isset($db['users'][$memberIndex]['password_hash'])) {
+            $db['users'][$memberIndex]['password_hash'] = hash('sha256', $newPassword);
+        }
+
+        saveDatabase($DB_FILE, $db);
+
+        $mUser = $db['users'][$memberIndex];
+        $uName = $mUser['full_name'] ?? $mUser['name'] ?? $mUser['username'] ?? 'User';
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => "Password for {$uName} (@{$mUser['username']}) successfully reset to '{$newPassword}'.",
+            'username' => $mUser['username'],
+            'email' => $mUser['email'] ?? '',
+            'reset_password' => $newPassword
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
     // Route: /api/admin/members/:id (Detailed single member profile)
     // --------------------------------------------------------------------------
-    if (str_starts_with($route, 'admin/members/') && $method === 'GET' && !str_ends_with($route, '/manual-purchase')) {
+    if (str_starts_with($route, 'admin/members/') && $method === 'GET' && !str_ends_with($route, '/manual-purchase') && !str_ends_with($route, '/reset-password')) {
         $parts = explode('/', $route);
         $targetId = $parts[2] ?? '';
         $cleanTarget = strtolower(ltrim($targetId, '@'));
