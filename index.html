@@ -1038,17 +1038,23 @@
                 <div class="modal-sidebar-detail">
                     <div class="modal-price-card">
                         <div class="sidebar-price-label">මිල ගණන් සහ ප්‍රවර්ධන</div>
-                        <div class="sidebar-price-original" id="modalOriginalPrice">රු. 9,900</div>
-                        <div class="sidebar-price-current" id="modalCurrentPrice">රු. 7,425</div>
-                        <div class="sidebar-discount" id="modalDiscount">25% OFF</div>
                         
-                        <div class="sidebar-affiliate-box">
-                            <div class="sidebar-aff-label">Affiliate කොමිස් මුදල (50%)</div>
-                            <div class="sidebar-aff-val" id="modalCommission">Up to 50%</div>
+                        <!-- Original Course Fee (Strikethrough / Bold Prominent) -->
+                        <div class="sidebar-fee-row" id="modalOriginalFeeRow">
+                            <span class="sidebar-fee-title">සාමාන්‍ය ගාස්තුව:</span>
+                            <span class="sidebar-price-original" id="modalOriginalPrice">රු. 9,900</span>
                         </div>
+
+                        <!-- Limited Offer Discounted Price -->
+                        <div class="sidebar-offer-row" id="modalOfferRow">
+                            <span class="sidebar-offer-title">විශේෂ දීමනාව:</span>
+                            <div class="sidebar-price-current" id="modalCurrentPrice">රු. 7,425</div>
+                        </div>
+
+                        <div class="sidebar-discount" id="modalDiscount">🔥 25% OFF • Limited Offer</div>
                         
-                        <button class="sidebar-buy-btn" id="modalBuyBtn" style="border: none; width: 100%; text-align: center; cursor: pointer; text-decoration: none; display: block;">Enroll / Buy Course</button>
-                        <div id="modalSocialLinksContainer" style="margin-top: 15px; display: flex; flex-direction: column; gap: 8px;"></div>
+                        <button class="sidebar-buy-btn" id="modalBuyBtn" style="border: none; width: 100%; text-align: center; cursor: pointer; text-decoration: none; display: block; margin-top: 14px;">Enroll / Buy Course</button>
+                        <div id="modalSocialLinksContainer" style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;"></div>
                     </div>
                 </div>
             </div>

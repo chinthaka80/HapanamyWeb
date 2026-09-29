@@ -1941,9 +1941,9 @@ function openCourseModal(courseId) {
     if (descEl) descEl.innerHTML = course.desc;
 
     // Grab elements to toggle for custom service
+    const origFeeRow = document.getElementById('modalOriginalFeeRow');
     const origPriceEl = document.getElementById('modalOriginalPrice');
     const discountEl = document.getElementById('modalDiscount');
-    const commBox = document.querySelector('.sidebar-affiliate-box');
     const buyBtn = document.getElementById('modalBuyBtn');
 
     // Dynamic headers based on course type and language
@@ -1959,9 +1959,9 @@ function openCourseModal(courseId) {
             syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
         }
 
+        if (origFeeRow) origFeeRow.style.display = 'none';
         if (origPriceEl) origPriceEl.style.display = 'none';
         if (discountEl) discountEl.style.display = 'none';
-        if (commBox) commBox.style.display = 'none';
         
         const currPriceEl = document.getElementById('modalCurrentPrice');
         if (currPriceEl) currPriceEl.textContent = course.currentPrice;
@@ -1980,16 +1980,19 @@ function openCourseModal(courseId) {
             syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
         }
 
-        if (origPriceEl) origPriceEl.style.display = 'block';
-        if (discountEl) discountEl.style.display = 'block';
-        if (commBox) commBox.style.display = 'block';
+        if (origFeeRow) origFeeRow.style.display = 'flex';
+        if (origPriceEl) {
+            origPriceEl.style.display = 'inline';
+            origPriceEl.textContent = course.originalPrice;
+        }
+        if (discountEl) {
+            discountEl.style.display = 'inline-flex';
+            const discText = course.discount ? (course.discount.includes('OFF') ? `🔥 ${course.discount} • Limited Offer` : course.discount) : '🔥 Limited Offer';
+            discountEl.textContent = discText;
+        }
         
-        if (origPriceEl) origPriceEl.textContent = course.originalPrice;
         const currPriceEl = document.getElementById('modalCurrentPrice');
         if (currPriceEl) currPriceEl.textContent = course.currentPrice;
-        if (discountEl) discountEl.textContent = course.discount;
-        const commEl = document.getElementById('modalCommission');
-        if (commEl) commEl.textContent = course.commission || '50% Direct Commission';
         
         if (buyBtn) {
             buyBtn.textContent = 'Enroll / Buy Course';
