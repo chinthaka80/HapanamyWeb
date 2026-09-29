@@ -21,12 +21,10 @@ Options -Indexes
     RewriteRule ^(ecosystem\.config\.js|package\.json|package-lock\.json|server\.js)$ - [F,L,NC]
     RewriteRule \.(sql|log|bak|cfg|ini|sh|bat)$ - [F,L,NC]
 
-    # 3. Dedicated API Reverse Proxy (ONLY for /api/* routes if mod_proxy is enabled)
-    <IfModule mod_proxy.c>
-        RewriteCond %{REQUEST_URI} ^/api/ [NC,OR]
-        RewriteCond %{REQUEST_URI} ^/api$ [NC]
-        RewriteRule ^api/?(.*)$ http://127.0.0.1:3000/api/$1 [P,L,QSA]
-    </IfModule>
+    # 3. Dedicated API Engine (Hetzner konsoleH Native Routing)
+    RewriteCond %{REQUEST_URI} ^/api/ [NC,OR]
+    RewriteCond %{REQUEST_URI} ^/api$ [NC]
+    RewriteRule ^api/?(.*)$ api/index.php?route=$1 [L,QSA]
 
 
     # 4. Serve Existing Physical Files & Directories Directly
