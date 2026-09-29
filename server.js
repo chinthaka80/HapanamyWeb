@@ -1206,35 +1206,67 @@ function getAuthenticatedUser(req) {
         const match = req.headers['cookie'].match(/auth_token=([^;]+)/);
         if (match) token = decodeURIComponent(match[1]);
     }
-    if (!token) return null;
 
-    if (activeSessions.has(token)) {
-        return activeSessions.get(token);
+    let queryUserId = '';
+    try {
+        const u = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
+        if (!token) token = u.searchParams.get('token') || '';
+        queryUserId = u.searchParams.get('user_id') || u.searchParams.get('userId') || u.searchParams.get('username') || '';
+    } catch (e) {}
+
+    if (token) {
+        if (activeSessions.has(token)) {
+            return activeSessions.get(token);
+        }
+        const tLower = token.toLowerCase();
+        const foundUser = mockUsers.find(u => {
+            const uid = (u.id || '').toLowerCase();
+            const uname = (u.username || '').toLowerCase();
+            const role = (u.role || 'member').toLowerCase();
+            return (
+                uid === tLower ||
+                uname === tLower ||
+                ('token-' + uname) === tLower ||
+                ('token-' + uid) === tLower ||
+                ('token-' + role + '-' + uid) === tLower ||
+                ('token-' + role + '-' + uname) === tLower ||
+                ('token-member-' + uid) === tLower ||
+                ('token-member-' + uname) === tLower ||
+                ('token-admin-' + uid) === tLower ||
+                ('token_' + uid) === tLower ||
+                ('token_' + uname) === tLower
+            );
+        });
+        if (foundUser) {
+            return {
+                id: foundUser.id,
+                username: foundUser.username,
+                full_name: foundUser.full_name || foundUser.name,
+                email: foundUser.email,
+                role: foundUser.role || 'member'
+            };
+        }
     }
-    const tLower = token.toLowerCase();
-    const foundUser = mockUsers.find(u => {
-        const uid = (u.id || '').toLowerCase();
-        const uname = (u.username || '').toLowerCase();
-        const role = (u.role || 'member').toLowerCase();
-        return (
-            uid === tLower ||
-            ('token-' + uname) === tLower ||
-            ('token-' + uid) === tLower ||
-            ('token-' + role + '-' + uid) === tLower ||
-            ('token-' + role + '-' + uname) === tLower ||
-            ('token-member-' + uid) === tLower ||
-            ('token-admin-' + uid) === tLower
+
+    if (queryUserId) {
+        const qLower = queryUserId.toLowerCase().replace(/^@+/, '').trim();
+        const foundByQuery = mockUsers.find(u => 
+            (u.id && u.id.toLowerCase() === qLower) ||
+            (u.username && u.username.toLowerCase() === qLower) ||
+            (u.email && u.email.toLowerCase() === qLower) ||
+            (u.referral_code && u.referral_code.toLowerCase() === qLower)
         );
-    });
-    if (foundUser) {
-        return {
-            id: foundUser.id,
-            username: foundUser.username,
-            full_name: foundUser.full_name || foundUser.name,
-            email: foundUser.email,
-            role: foundUser.role || 'member'
-        };
+        if (foundByQuery) {
+            return {
+                id: foundByQuery.id,
+                username: foundByQuery.username,
+                full_name: foundByQuery.full_name || foundByQuery.name,
+                email: foundByQuery.email,
+                role: foundByQuery.role || 'member'
+            };
+        }
     }
+
     return null;
 }
 

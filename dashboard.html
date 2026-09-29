@@ -2601,8 +2601,9 @@
             } catch (e) {}
 
             const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const uidParam = localUser && (localUser.id || localUser.username) ? encodeURIComponent(localUser.id || localUser.username) : '';
             try {
-                const res = await fetch('/api/member/dashboard', {
+                const res = await fetch(`/api/member/dashboard?user_id=${uidParam}`, {
                     headers: token ? { 'Authorization': `Bearer ${token}` } : {}
                 });
 
@@ -2899,9 +2900,31 @@
         function applyDashboardData(data) {
             if (!data) return;
             
+            // Validate that profile belongs to expected active user if present
+            const localUserStr = localStorage.getItem('active_user');
+            let expectedUsername = '';
+            let expectedId = '';
+            if (localUserStr) {
+                try {
+                    const parsed = JSON.parse(localUserStr);
+                    expectedUsername = (parsed.username || '').toLowerCase();
+                    expectedId = (parsed.id || '').toLowerCase();
+                } catch(e) {}
+            }
+
             // 1. Profile
             if (data.profile) {
+                const resUsername = (data.profile.username || '').toLowerCase();
+                const resId = (data.profile.id || '').toLowerCase();
+                if ((expectedUsername || expectedId) && (resUsername !== expectedUsername && resId !== expectedId && !resId.includes(expectedUsername))) {
+                    console.warn('Received mismatched profile data. Retaining active user profile.');
+                    return;
+                }
+
                 window.currentActiveUser = data.profile;
+                localStorage.setItem('active_user', JSON.stringify(data.profile));
+                localStorage.setItem('hapanamy_user_profile', JSON.stringify(data.profile));
+
                 document.getElementById('profileFullName').textContent = data.profile.full_name || 'Member';
                 document.getElementById('sidebarName').textContent = data.profile.full_name || 'Member';
                 document.getElementById('profileUsernameDisplay').innerHTML = `@${data.profile.username} (<span>${data.profile.id}</span>)`;
@@ -3040,15 +3063,15 @@
             // 4. Referral Links
             if (data.referral_tools) {
                 if (data.referral_tools.left_link) {
-                    document.getElementById('leftRefLinkInput').value = data.referral_tools.left_link;
-                    document.getElementById('tabLeftRefLink').value = data.referral_tools.left_link;
+                    if (document.getElementById('leftRefLinkInput')) document.getElementById('leftRefLinkInput').value = data.referral_tools.left_link;
+                    if (document.getElementById('tabLeftRefLink')) document.getElementById('tabLeftRefLink').value = data.referral_tools.left_link;
                 }
                 if (data.referral_tools.right_link) {
-                    document.getElementById('rightRefLinkInput').value = data.referral_tools.right_link;
-                    document.getElementById('tabRightRefLink').value = data.referral_tools.right_link;
+                    if (document.getElementById('rightRefLinkInput')) document.getElementById('rightRefLinkInput').value = data.referral_tools.right_link;
+                    if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = data.referral_tools.right_link;
                 }
                 if (data.referral_tools.general_link) {
-                    document.getElementById('tabGeneralRefLink').value = data.referral_tools.general_link;
+                    if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = data.referral_tools.general_link;
                 }
             }
 
@@ -3082,16 +3105,21 @@
                     const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
                     if (!token) return;
 
-                    const res = await fetch('/api/member/live-updates', {
+                    const curUser = window.currentActiveUser || (localStorage.getItem('active_user') ? JSON.parse(localStorage.getItem('active_user')) : null);
+                    const uidParam = curUser && (curUser.id || curUser.username) ? encodeURIComponent(curUser.id || curUser.username) : '';
+
+                    const res = await fetch(`/api/member/live-updates?user_id=${uidParam}`, {
                         headers: { 'Authorization': `Bearer ${token}` }
                     });
 
                     if (res.ok) {
                         const data = await res.json();
                         if (data && data.events && data.events.length > 0) {
+                            let hasNewRelevantEvent = false;
                             data.events.forEach(evt => {
                                 if (memberLastEventId !== evt.id) {
                                     memberLastEventId = evt.id;
+                                    hasNewRelevantEvent = true;
                                     if (evt.type === 'NEW_MEMBER_REGISTERED') {
                                         const d = evt.data || {};
                                         showMemberToast(`🟢 <strong>New Team Member Joined!</strong><br>${d.fullName || 'Member'} (@${d.username}) placed in your ${d.position || 'team'}!`);
@@ -3100,8 +3128,10 @@
                                     }
                                 }
                             });
-                            // Reload dashboard on new events
-                            loadLiveDashboard();
+                            // Reload dashboard ONLY on new events
+                            if (hasNewRelevantEvent) {
+                                loadLiveDashboard();
+                            }
                         }
                     }
                 } catch (err) {
@@ -3109,18 +3139,30 @@
                 }
             }
 
-            memberPollingInterval = setInterval(poll, 6000);
+            memberPollingInterval = setInterval(poll, 8000);
 
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
                     poll();
-                    loadLiveDashboard();
                 }
             });
 
+            let lastActiveUserId = '';
+            try {
+                const u = JSON.parse(localStorage.getItem('active_user'));
+                lastActiveUserId = u ? (u.id || u.username) : '';
+            } catch(e) {}
+
             window.addEventListener('storage', (e) => {
-                if (!e.key || e.key.startsWith('referred_users_') || e.key.includes('registered_users') || e.key.includes('active_user') || e.key.includes('payout_requests')) {
-                    loadLiveDashboard();
+                if (e.key === 'active_user') {
+                    try {
+                        const newU = JSON.parse(e.newValue);
+                        const newId = newU ? (newU.id || newU.username) : '';
+                        if (newId && newId !== lastActiveUserId) {
+                            lastActiveUserId = newId;
+                            loadLiveDashboard();
+                        }
+                    } catch(err) {}
                 }
             });
         }

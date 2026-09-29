@@ -274,6 +274,7 @@ try {
         if (!isset($data['refundRequests'])) $data['refundRequests'] = [];
         if (!isset($data['kycDocs'])) $data['kycDocs'] = [];
         if (!isset($data['liveEvents'])) $data['liveEvents'] = [];
+        if (!isset($data['sessions']) || !is_array($data['sessions'])) $data['sessions'] = [];
 
         return $data;
     }
@@ -291,6 +292,91 @@ try {
             }
         }
         return $_POST;
+    }
+
+    function getAuthUserFromRequest(&$db) {
+        // 1. Extract Authorization Token
+        $authHeader = '';
+        if (isset($_SERVER['HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['HTTP_AUTHORIZATION'];
+        } elseif (isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
+            $authHeader = $_SERVER['REDIRECT_HTTP_AUTHORIZATION'];
+        } elseif (function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+            } elseif (isset($headers['authorization'])) {
+                $authHeader = $headers['authorization'];
+            }
+        } elseif (function_exists('getallheaders')) {
+            $headers = getallheaders();
+            if (isset($headers['Authorization'])) {
+                $authHeader = $headers['Authorization'];
+            } elseif (isset($headers['authorization'])) {
+                $authHeader = $headers['authorization'];
+            }
+        }
+
+        $token = '';
+        if (!empty($authHeader)) {
+            if (preg_match('/Bearer\s+(.+)/i', $authHeader, $m)) {
+                $token = trim($m[1]);
+            } else {
+                $token = trim($authHeader);
+            }
+        }
+
+        if (empty($token) && !empty($_GET['token'])) {
+            $token = trim($_GET['token']);
+        }
+        if (empty($token) && !empty($_POST['token'])) {
+            $token = trim($_POST['token']);
+        }
+
+        // 2. Resolve from Session DB or Token Structure
+        if (!empty($token)) {
+            if (isset($db['sessions']) && isset($db['sessions'][$token])) {
+                $sUserId = $db['sessions'][$token];
+                foreach ($db['users'] as $u) {
+                    if ($u['id'] === $sUserId || strtolower($u['username'] ?? '') === strtolower($sUserId) || strtolower($u['email'] ?? '') === strtolower($sUserId)) {
+                        return $u;
+                    }
+                }
+            }
+
+            // Pattern match token strings
+            $tLower = strtolower($token);
+            foreach ($db['users'] as $u) {
+                $uid = strtolower($u['id'] ?? '');
+                $uname = strtolower($u['username'] ?? '');
+                $role = strtolower($u['role'] ?? 'member');
+                if ($uid === $tLower || $uname === $tLower ||
+                    ('token-' . $uname) === $tLower ||
+                    ('token-' . $uid) === $tLower ||
+                    ('token-' . $role . '-' . $uid) === $tLower ||
+                    ('token-' . $role . '-' . $uname) === $tLower ||
+                    ('token-member-' . $uid) === $tLower ||
+                    ('token-member-' . $uname) === $tLower ||
+                    ('token-admin-' . $uid) === $tLower ||
+                    ('token_' . $uid) === $tLower ||
+                    ('token_' . $uname) === $tLower) {
+                    return $u;
+                }
+            }
+        }
+
+        // 3. Resolve from explicit User Parameter
+        $targetId = $_GET['user_id'] ?? $_GET['userId'] ?? $_GET['username'] ?? $_POST['user_id'] ?? $_POST['userId'] ?? '';
+        if (!empty($targetId)) {
+            $cleanTarget = strtolower(ltrim(trim($targetId), '@'));
+            foreach ($db['users'] as $u) {
+                if ($u['id'] === $targetId || strtolower($u['id'] ?? '') === $cleanTarget || strtolower($u['username'] ?? '') === $cleanTarget || strtolower($u['email'] ?? '') === $cleanTarget || strtolower($u['referral_code'] ?? '') === $cleanTarget) {
+                    return $u;
+                }
+            }
+        }
+
+        return null;
     }
 
     // --------------------------------------------------------------------------
@@ -1018,12 +1104,25 @@ try {
 
         saveDatabase($DB_FILE, $db);
 
+        $token = 'token_' . md5($newUserId . time());
+        if (!isset($db['sessions']) || !is_array($db['sessions'])) {
+            $db['sessions'] = [];
+        }
+        $db['sessions'][$token] = $newUserId;
+        $db['sessions']['token-member-' . $newUserId] = $newUserId;
+        $db['sessions']['token-' . $newUserId] = $newUserId;
+        $db['sessions']['token-' . strtolower($username)] = $newUserId;
+        $db['sessions']['token-member-' . strtolower($username)] = $newUserId;
+
+        $enrichedNewUser = enrichUserSummary($db, $newUser);
+        saveDatabase($DB_FILE, $db);
+
         http_response_code(201);
         echo json_encode([
             'success' => true,
             'message' => 'Registration successful',
-            'user' => $newUser,
-            'token' => 'token_' . md5($newUserId . time())
+            'user' => $enrichedNewUser,
+            'token' => $token
         ]);
         exit;
     }
@@ -1074,6 +1173,17 @@ try {
 
         if ($matched && $isPassValid) {
             $token = 'token_' . md5($matched['id'] . time());
+            if (!isset($db['sessions']) || !is_array($db['sessions'])) {
+                $db['sessions'] = [];
+            }
+            $db['sessions'][$token] = $matched['id'];
+            $db['sessions']['token-member-' . $matched['id']] = $matched['id'];
+            $db['sessions']['token-' . $matched['id']] = $matched['id'];
+            $db['sessions']['token-' . strtolower($matched['username'] ?? '')] = $matched['id'];
+            $db['sessions']['token-member-' . strtolower($matched['username'] ?? '')] = $matched['id'];
+
+            saveDatabase($DB_FILE, $db);
+
             $userRole = strtolower($matched['role'] ?? 'member');
             $redirectUrl = 'dashboard.html';
             if ($userRole === 'admin' || $userRole === 'subadmin' || $userRole === 'super_admin') {
@@ -1104,7 +1214,10 @@ try {
     // Route: /api/auth/me or /api/me or /api/user/profile
     // --------------------------------------------------------------------------
     if ($route === 'auth/me' || $route === 'me' || $route === 'user/profile') {
-        $user = $db['users'][2] ?? $db['users'][0];
+        $user = getAuthUserFromRequest($db);
+        if (!$user) {
+            $user = $db['users'][2] ?? $db['users'][0];
+        }
         $enriched = enrichUserSummary($db, $user);
         http_response_code(200);
         echo json_encode([
@@ -1423,15 +1536,7 @@ try {
     // Route: /api/member/dashboard (Authoritative Unified Member Dashboard API)
     // --------------------------------------------------------------------------
     if ($route === 'member/dashboard') {
-        $userId = $_GET['user_id'] ?? $_GET['userId'] ?? 'user-hiru-root';
-        $user = null;
-        $cleanUid = strtolower(ltrim($userId, '@'));
-        foreach ($db['users'] as $u) {
-            if ($u['id'] === $userId || strtolower($u['username'] ?? '') === $cleanUid || strtolower($u['email'] ?? '') === $cleanUid) {
-                $user = $u;
-                break;
-            }
-        }
+        $user = getAuthUserFromRequest($db);
         if (!$user) {
             $user = $db['users'][2] ?? $db['users'][0];
         }
@@ -1568,14 +1673,7 @@ try {
     // Route: /api/member/volume
     // --------------------------------------------------------------------------
     if ($route === 'member/volume') {
-        $userId = $_GET['user_id'] ?? $_GET['userId'] ?? 'user-hiru-root';
-        $user = null;
-        foreach ($db['users'] as $u) {
-            if ($u['id'] === $userId || strtolower($u['username'] ?? '') === strtolower($userId)) {
-                $user = $u;
-                break;
-            }
-        }
+        $user = getAuthUserFromRequest($db);
         if (!$user) $user = $db['users'][2] ?? $db['users'][0];
         $enriched = enrichUserSummary($db, $user);
 
@@ -1600,14 +1698,7 @@ try {
     // Route: /api/member/network or /api/member/network-summary
     // --------------------------------------------------------------------------
     if ($route === 'member/network' || $route === 'member/network-summary') {
-        $userId = $_GET['user_id'] ?? $_GET['userId'] ?? 'user-hiru-root';
-        $user = null;
-        foreach ($db['users'] as $u) {
-            if ($u['id'] === $userId || strtolower($u['username'] ?? '') === strtolower($userId)) {
-                $user = $u;
-                break;
-            }
-        }
+        $user = getAuthUserFromRequest($db);
         if (!$user) $user = $db['users'][2] ?? $db['users'][0];
         $enriched = enrichUserSummary($db, $user);
 
@@ -1647,14 +1738,7 @@ try {
     // Route: /api/member/wallet or /api/wallet/balance or /api/member/earnings-summary
     // --------------------------------------------------------------------------
     if ($route === 'member/wallet' || $route === 'wallet/balance' || $route === 'member/earnings-summary') {
-        $userId = $_GET['user_id'] ?? $_GET['userId'] ?? 'user-hiru-root';
-        $user = null;
-        foreach ($db['users'] as $u) {
-            if ($u['id'] === $userId || strtolower($u['username'] ?? '') === strtolower($userId)) {
-                $user = $u;
-                break;
-            }
-        }
+        $user = getAuthUserFromRequest($db);
         if (!$user) $user = $db['users'][2] ?? $db['users'][0];
         $enriched = enrichUserSummary($db, $user);
 
@@ -1678,7 +1762,8 @@ try {
         $input = getJsonInput();
         $amount = floatval($input['amount'] ?? 0);
         $bankDetails = trim($input['bankDetails'] ?? $input['bank_details'] ?? 'Bank Account');
-        $userId = $input['user_id'] ?? 'user-hiru-root';
+        $user = getAuthUserFromRequest($db);
+        $userId = $user ? $user['id'] : ($input['user_id'] ?? 'user-hiru-root');
 
         if ($amount < 1000) {
             http_response_code(400);
@@ -1712,7 +1797,8 @@ try {
     // Route: /api/member/live-updates or /api/admin/live-updates
     // --------------------------------------------------------------------------
     if ($route === 'member/live-updates' || $route === 'admin/live-updates') {
-        $userId = $_GET['user_id'] ?? 'user-hiru-root';
+        $user = getAuthUserFromRequest($db);
+        $userId = $user ? $user['id'] : ($_GET['user_id'] ?? 'user-hiru-root');
         $events = $db['liveEvents'] ?? [];
         $lastTen = array_slice($events, -10);
 
