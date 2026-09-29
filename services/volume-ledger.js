@@ -108,12 +108,19 @@ const VolumeLedger = {
         const currentLeft = this.getLegBalance(userId, 'LEFT', ledger);
         const currentRight = this.getLegBalance(userId, 'RIGHT', ledger);
 
+        const validLeft = Math.max(0, currentLeft);
+        const validRight = Math.max(0, currentRight);
+        const matched = Math.min(validLeft, validRight);
+
         return {
             user_id: userId,
             lifetime_left_volume: Math.round(lifetimeLeft * 100) / 100,
             lifetime_right_volume: Math.round(lifetimeRight * 100) / 100,
-            current_left_volume: Math.max(0, currentLeft),
-            current_right_volume: Math.max(0, currentRight),
+            current_left_volume: validLeft,
+            current_right_volume: validRight,
+            matched_volume: matched,
+            carry_forward_left: Math.max(0, validLeft - validRight),
+            carry_forward_right: Math.max(0, validRight - validLeft),
             matched_left_volume: Math.round(matchedLeft * 100) / 100,
             matched_right_volume: Math.round(matchedRight * 100) / 100,
             reversed_left_volume: Math.round(reversedLeft * 100) / 100,

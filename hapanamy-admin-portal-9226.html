@@ -3485,11 +3485,16 @@
                 }
                 const kycBadge = `<span class="badge-status ${kycBadgeClass}" style="margin-top:3px; display:inline-block;">${kycLabel}</span>`;
 
-                const personalBvStr = `රු. ${Number(m.personal_bv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : '0';
-                const rightVol = m.volume_summary ? Number(m.volume_summary.current_right_volume || 0).toLocaleString() : '0';
+                const personalBvNum = Number(m.personal_bv !== undefined ? m.personal_bv : (m.business_volume ? m.business_volume.personal_bv : 0));
+                const personalBvStr = `රු. ${personalBvNum.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_left_volume || 0).toLocaleString() : Number(m.left_volume || 0).toLocaleString());
+                const rightVol = m.volume_summary ? Number(m.volume_summary.current_right_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_right_volume || 0).toLocaleString() : Number(m.right_volume || 0).toLocaleString());
                 const teamVolStr = `<small style="color:#42A5F5;">L: ${leftVol}</small> | <small style="color:#BA68C8;">R: ${rightVol}</small>`;
-                const walletStr = `<strong style="color:var(--brand-gold);">රු. ${Number(m.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong><br><small style="color:var(--text-muted);">Earned: රු. ${Number(m.total_commission || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</small>`;
+                
+                const availBal = m.available_balance !== undefined ? Number(m.available_balance || 0) : (m.financial ? Number(m.financial.available_balance || 0) : 0);
+                const totComm = m.total_commission !== undefined ? Number(m.total_commission || 0) : (m.financial ? Number(m.financial.total_earned || 0) : 0);
+                const walletStr = `<strong style="color:var(--brand-gold);">රු. ${availBal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong><br><small style="color:var(--text-muted);">Earned: රු. ${totComm.toLocaleString(undefined, {minimumFractionDigits: 2})}</small>`;
 
                 tr.innerHTML = `
                     <td>
