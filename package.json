@@ -2,9 +2,12 @@
   "name": "hapanamy-web",
   "version": "1.0.0",
   "description": "Hapanamy.lk Premium Website",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "npx -y serve -l 3000"
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node test/all.js"
   },
   "dependencies": {}
 }
+

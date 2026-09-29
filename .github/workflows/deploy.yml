@@ -54,3 +54,17 @@ jobs:
               ./ /public_html
           "
           # Hapanamy deployment with Nexus Prime exclusion protection
+
+      - name: Restart Node.js Backend Service via SSH
+        continue-on-error: true
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SFTP_USERNAME }}@${{ secrets.SFTP_HOST }} "
+            cd /public_html 2>/dev/null || cd ~/public_html 2>/dev/null || cd .
+            if command -v pm2 >/dev/null 2>&1; then
+              pm2 restart server.js || pm2 restart hapanamy-backend || pm2 start server.js --name hapanamy-backend || pm2 reload all || true
+            elif command -v node >/dev/null 2>&1; then
+              pkill -f 'node server.js' || true
+              nohup node server.js > server.log 2>&1 &
+            fi
+          " || echo "SSH command execution non-fatal fallback"
+
