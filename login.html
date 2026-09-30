@@ -329,15 +329,6 @@
             </button>
         </form>
 
-        <!-- Quick Demo Account Switcher -->
-        <div style="margin-top: 16px; padding: 12px; background: rgba(255,255,255,0.03); border: 1px dashed rgba(255,255,255,0.12); border-radius: 12px; text-align: center;">
-            <div style="font-size: 11px; font-weight: 700; color: var(--brand-gold); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Quick Demo Login (ක්ෂණික පිවිසුම)</div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                <button type="button" onclick="quickLogin('hiru', 'Araliya321#')" style="padding: 8px 10px; background: rgba(244,123,32,0.15); border: 1px solid var(--brand-orange); border-radius: 8px; color: #FFF; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: 0.2s;">🌟 Hiru (Sales Leader)</button>
-                <button type="button" onclick="quickLogin('admin@hapanamy.lk', 'Araliya321#')" style="padding: 8px 10px; background: rgba(33,150,243,0.15); border: 1px solid #2196F3; border-radius: 8px; color: #FFF; font-size: 11.5px; font-weight: 700; cursor: pointer; transition: 0.2s;">👑 Admin Portal</button>
-            </div>
-        </div>
-
         <div class="auth-footer">
             <span>නව සාමාජිකයෙක්ද?</span>
             <a href="register.html">නොමිලේ ලියාපදිංචි වන්න (Register Free)</a>
@@ -364,12 +355,6 @@
             const enc = new TextEncoder().encode(text);
             const buf = await crypto.subtle.digest('SHA-256', enc);
             return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
-        }
-
-        function quickLogin(ident, pass) {
-            document.getElementById('identifier').value = ident;
-            document.getElementById('password').value = pass;
-            loginForm.dispatchEvent(new Event('submit', { cancelable: true }));
         }
 
         loginForm.addEventListener('submit', async (e) => {
@@ -439,6 +424,8 @@
             // 2. Local Fallback for Offline / Standalone Testing
             try {
                 const normId = identifier.toLowerCase();
+                const cleanNorm = normId.replace(/^@+/, '').trim();
+                const prefixNorm = cleanNorm.split('@')[0];
                 let matched = null;
 
                 // Check pre-seeded administrative and leader accounts
@@ -469,16 +456,42 @@
                         email: 'hiru@hapanamy.lk',
                         role: 'member'
                     };
+                } else if ((normId === 'star01@hapanamy.lk' || normId === 'star01' || prefixNorm === 'star01') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                    matched = {
+                        id: 'user-star01-103',
+                        name: 'Star01',
+                        full_name: 'Star01',
+                        username: 'Star01',
+                        email: 'star01@hapanamy.lk',
+                        role: 'member'
+                    };
+                } else if ((normId === 'sun@hapanamy.lk' || normId === 'sun' || prefixNorm === 'sun') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                    matched = {
+                        id: 'user-sun-101',
+                        name: 'Sun',
+                        full_name: 'Sun',
+                        username: 'Sun',
+                        email: 'sun@hapanamy.lk',
+                        role: 'member'
+                    };
+                } else if ((normId === 'sundd@hapanamy.lk' || normId === 'sundd' || prefixNorm === 'sundd') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                    matched = {
+                        id: 'user-sundd-102',
+                        name: 'SUNDD',
+                        full_name: 'SUNDD',
+                        username: 'SUNDD',
+                        email: 'sundd@hapanamy.lk',
+                        role: 'member'
+                    };
                 } else {
-                    const cleanNorm = normId.replace(/^@+/, '').trim();
                     const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
                     const found = regUsers.find(u => 
                         (u.email && u.email.toLowerCase() === normId) || 
-                        (u.username && (u.username.toLowerCase() === normId || u.username.toLowerCase() === cleanNorm)) ||
-                        (u.name && (u.name.toLowerCase() === normId || u.name.toLowerCase() === cleanNorm)) ||
-                        (u.full_name && (u.full_name.toLowerCase() === normId || u.full_name.toLowerCase() === cleanNorm)) ||
-                        (u.id && (u.id.toLowerCase() === normId || u.id.toLowerCase() === cleanNorm)) ||
-                        (u.user_id && (u.user_id.toLowerCase() === normId || u.user_id.toLowerCase() === cleanNorm))
+                        (u.username && (u.username.toLowerCase() === normId || u.username.toLowerCase() === cleanNorm || u.username.toLowerCase() === prefixNorm)) ||
+                        (u.name && (u.name.toLowerCase() === normId || u.name.toLowerCase() === cleanNorm || u.name.toLowerCase() === prefixNorm)) ||
+                        (u.full_name && (u.full_name.toLowerCase() === normId || u.full_name.toLowerCase() === cleanNorm || u.full_name.toLowerCase() === prefixNorm)) ||
+                        (u.id && (u.id.toLowerCase() === normId || u.id.toLowerCase() === cleanNorm || u.id.toLowerCase() === prefixNorm)) ||
+                        (u.user_id && (u.user_id.toLowerCase() === normId || u.user_id.toLowerCase() === cleanNorm || u.user_id.toLowerCase() === prefixNorm))
                     );
 
                     if (found) {

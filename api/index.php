@@ -1368,6 +1368,7 @@ try {
 
         $matched = null;
         $cleanId = ltrim($loginId, '@');
+        $prefixId = explode('@', $cleanId)[0];
         foreach ($db['users'] as $u) {
             $uUname = strtolower($u['username'] ?? '');
             $uEmail = strtolower($u['email'] ?? '');
@@ -1376,7 +1377,8 @@ try {
             $uName = strtolower($u['full_name'] ?? $u['name'] ?? '');
 
             if ($uUname === $loginId || $uEmail === $loginId || $uRef === $loginId || $uId === $loginId ||
-                $uUname === $cleanId || $uRef === $cleanId || $uName === $loginId) {
+                $uUname === $cleanId || $uRef === $cleanId || $uName === $loginId ||
+                $uUname === $prefixId || $uRef === $prefixId) {
                 $matched = $u;
                 break;
             }

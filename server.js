@@ -1596,11 +1596,12 @@ const server = http.createServer(async (req, res) => {
         }
 
         const cleanNorm = normalizedEmail.replace(/^@+/, '').trim();
+        const prefixNorm = cleanNorm.split('@')[0];
         const foundUser = mockUsers.find(u => 
             (u.email && u.email.toLowerCase() === normalizedEmail) || 
-            (u.username && (u.username.toLowerCase() === normalizedEmail || u.username.toLowerCase() === cleanNorm)) ||
-            (u.referral_code && (u.referral_code.toLowerCase() === normalizedEmail || u.referral_code.toLowerCase() === cleanNorm)) ||
-            (u.id && (u.id.toLowerCase() === normalizedEmail || u.id.toLowerCase() === cleanNorm)) ||
+            (u.username && (u.username.toLowerCase() === normalizedEmail || u.username.toLowerCase() === cleanNorm || u.username.toLowerCase() === prefixNorm)) ||
+            (u.referral_code && (u.referral_code.toLowerCase() === normalizedEmail || u.referral_code.toLowerCase() === cleanNorm || u.referral_code.toLowerCase() === prefixNorm)) ||
+            (u.id && (u.id.toLowerCase() === normalizedEmail || u.id.toLowerCase() === cleanNorm || u.id.toLowerCase() === prefixNorm)) ||
             (u.full_name && u.full_name.toLowerCase() === normalizedEmail) ||
             (u.name && u.name.toLowerCase() === normalizedEmail)
         );
