@@ -1436,6 +1436,31 @@ try {
     }
 
     // --------------------------------------------------------------------------
+    // Route: /api/auth/logout or /api/logout
+    // --------------------------------------------------------------------------
+    if (($route === 'auth/logout' || $route === 'logout') && ($method === 'POST' || $method === 'GET')) {
+        $token = '';
+        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? $_SERVER['REDIRECT_HTTP_AUTHORIZATION'] ?? '';
+        if (preg_match('/Bearer\s+(.+)/i', $authHeader, $m)) {
+            $token = trim($m[1]);
+        }
+        if (empty($token) && !empty($_GET['token'])) $token = trim($_GET['token']);
+        if (empty($token) && !empty($_POST['token'])) $token = trim($_POST['token']);
+
+        if (!empty($token) && isset($db['sessions'][$token])) {
+            unset($db['sessions'][$token]);
+            saveDatabase($DB_FILE, $db);
+        }
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'Logged out successfully'
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
     // Route: /api/auth/me or /api/me or /api/user/profile
     // --------------------------------------------------------------------------
     if ($route === 'auth/me' || $route === 'me' || $route === 'user/profile') {

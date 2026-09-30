@@ -1808,17 +1808,29 @@
         }
 
         // Logout handler
-        function logoutUser() {
+        async function logoutUser() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                }
+            } catch (e) {}
+
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('active_token');
+            localStorage.removeItem('is_admin_session');
             localStorage.removeItem('hapanamy_student_profile');
             localStorage.removeItem('hapanamy_user_profile');
             localStorage.removeItem('hapanamy_affiliate_profile');
-            showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
+            sessionStorage.clear();
+            showToast('🚪 <strong>පද්ධතියෙන් සාර්ථකව පිටවිය (Logged Out)!</strong> ප්‍රධාන වෙබ් අඩවියට යොමු වෙමින්...');
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 800);
+                window.location.href = 'index.html';
+            }, 600);
         }
 
         // Save expanded profile

@@ -1111,7 +1111,7 @@
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('products')" id="nav-products">
                     <span class="member-nav-icon">📚</span>
-                    <span>My Courses (පාඨමාලා)</span>
+                    <span>MY Products (මගේ නිෂ්පාදන)</span>
                 </li>
                 <li class="member-nav-link" onclick="switchMemberTab('financial')" id="nav-financial">
                     <span class="member-nav-icon">💳</span>
@@ -1135,7 +1135,7 @@
                 <a id="sidebarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; justify-content: center; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Portal</a>
                 <div style="display: flex; gap: 8px;">
                     <a href="index.html" class="btn-action-sm" style="flex: 1; justify-content: center; background: rgba(255,255,255,0.05); color: #FFF; border: 1px solid rgba(255,255,255,0.1);">🏠 Home</a>
-                    <button onclick="logoutMember()" class="btn-action-sm" style="background: rgba(239,83,80,0.15); color: #EF5350; border: 1px solid rgba(239,83,80,0.3);">🚪 Exit</button>
+                    <button onclick="logoutMember()" class="btn-action-sm" style="flex: 1; justify-content: center; background: rgba(239,83,80,0.18); color: #FF5252; border: 1px solid rgba(239,83,80,0.4); font-weight: 700; cursor: pointer;">🚪 LOGOUT</button>
                 </div>
             </div>
         </aside>
@@ -1298,14 +1298,14 @@
                         <!-- Active Products Quick View -->
                         <div class="dashboard-card">
                             <div class="dashboard-card-title">
-                                <span>📚 Active Masterclasses</span>
-                                <button class="btn-action-sm" onclick="switchMemberTab('products')">All Courses →</button>
+                                <span>📚 Active Products</span>
+                                <button class="btn-action-sm" onclick="switchMemberTab('products')">All Products →</button>
                             </div>
                             <div id="overviewActiveCoursesContainer">
                                 <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--border-color);">
                                     <div>
-                                        <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් පාඨමාලා මිලදී ගෙන නොමැත (0 Courses)</div>
-                                        <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය පාඨමාලාවක් නැත</div>
+                                        <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් නිෂ්පාදන හෝ පාඨමාලා මිලදී ගෙන නොමැත (0 Products)</div>
+                                        <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය නිෂ්පාදනයක් නැත</div>
                                     </div>
                                     <a href="courses.html" class="btn-action-sm btn-primary-action" style="text-decoration: none;">🛒 මිලදී ගන්න →</a>
                                 </div>
@@ -1570,8 +1570,8 @@
                 <div class="tab-panel" id="panel-products">
                     <div class="dashboard-card">
                         <div class="dashboard-card-title">
-                            <span>📚 Purchased & Active Masterclasses</span>
-                            <span class="badge-pill badge-qualified" id="purchasedProductsCount">0 Active Courses</span>
+                            <span>📚 Purchased & Active Products</span>
+                            <span class="badge-pill badge-qualified" id="purchasedProductsCount">0 Active Products</span>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr; gap: 20px;" id="purchasedProductsContainer">
@@ -1836,7 +1836,7 @@
                 'network': 'My Sales Team (විකුණුම් කණ්ඩායම)',
                 'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
                 'links': 'ප්‍රවර්ධන සබැඳි (Referral Link Tools)',
-                'products': 'පාඨමාලා (Masterclasses & Courses)',
+                'products': 'මගේ නිෂ්පාදන සහ පාඨමාලා (MY Products)',
                 'financial': 'මූල්‍ය ලෙජරය (Double-Entry Wallet Ledger)',
                 'settings': 'ගිණුම් විස්තර සහ මුරපදය (Profile & Security Settings)'
             };
@@ -2110,15 +2110,15 @@
             const overviewContainer = document.getElementById('overviewActiveCoursesContainer');
             const countBadge = document.getElementById('purchasedProductsCount');
             const count = (products || []).length;
-            if (countBadge) countBadge.textContent = `${count} Active Course${count !== 1 ? 's' : ''}`;
+            if (countBadge) countBadge.textContent = `${count} Active Product${count !== 1 ? 's' : ''}`;
 
             if (overviewContainer) {
                 if (!products || products.length === 0) {
                     overviewContainer.innerHTML = `
                         <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px dashed var(--border-color);">
                             <div>
-                                <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් පාඨමාලා මිලදී ගෙන නොමැත (0 Courses)</div>
-                                <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය පාඨමාලාවක් නැත</div>
+                                <div style="font-weight: 700; font-size: 13.5px; color: var(--text-muted);">තවමත් නිෂ්පාදන හෝ පාඨමාලා මිලදී ගෙන නොමැත (0 Products)</div>
+                                <div style="font-size: 11.5px; color: var(--brand-orange);">● කිසිදු සක්‍රීය නිෂ්පාදනයක් නැත</div>
                             </div>
                             <a href="courses.html" class="btn-action-sm btn-primary-action" style="text-decoration: none;">🛒 මිලදී ගන්න →</a>
                         </div>
@@ -2128,7 +2128,7 @@
                     overviewContainer.innerHTML = `
                         <div style="padding: 15px; background: var(--bg-main); border-radius: 12px; display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <div style="font-weight: 800; font-size: 14.5px;">${topProduct.product_name || topProduct.name || topProduct.title || 'Masterclass Program'}</div>
+                                <div style="font-weight: 800; font-size: 14.5px;">${topProduct.product_name || topProduct.name || topProduct.title || 'Product / Masterclass Program'}</div>
                                 <div style="font-size: 12px; color: var(--brand-green); font-weight: 700;">● ${topProduct.status || 'LIFETIME UNLOCKED'}</div>
                             </div>
                             <a href="student-dashboard.html" class="btn-action-sm btn-primary-action" style="text-decoration: none;">Classroom →</a>
@@ -2141,8 +2141,8 @@
             if (!products || products.length === 0) {
                 container.innerHTML = `
                     <div style="background: var(--bg-main); border: 1px dashed var(--border-color); border-radius: 14px; padding: 30px; text-align: center;">
-                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත (No purchased courses yet).</p>
-                        <a href="courses.html" class="btn-action-sm btn-primary-action" style="text-decoration: none; padding: 10px 20px;">පාඨමාලා නාමාවලිය බලන්න (Explore Courses) →</a>
+                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 15px;">ඔබ තවමත් කිසිදු නිෂ්පාදනයක් හෝ පාඨමාලාවක් මිලදී ගෙන නොමැත (No purchased products yet).</p>
+                        <a href="courses.html" class="btn-action-sm btn-primary-action" style="text-decoration: none; padding: 10px 20px;">නිෂ්පාදන නාමාවලිය බලන්න (Explore Products) →</a>
                     </div>
                 `;
                 return;
@@ -2522,14 +2522,20 @@
                     });
                 }
             } catch (e) {}
+
+            // Comprehensive session & active credentials cleanup
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('active_token');
             localStorage.removeItem('hapanamy_user_profile');
+            localStorage.removeItem('is_admin_session');
+            localStorage.removeItem('hapanamy_student_profile');
+            localStorage.removeItem('hapanamy_affiliate_profile');
             sessionStorage.clear();
-            showMemberToast('👋 Logged out successfully.');
+
+            showMemberToast('👋 <strong>පද්ධතියෙන් සාර්ථකව පිටවිය (Logged Out)!</strong> ප්‍රධාන වෙබ් අඩවියට යොමු වෙමින්...');
             setTimeout(() => {
-                window.location.replace('login.html');
+                window.location.href = 'index.html';
             }, 600);
         }
 
