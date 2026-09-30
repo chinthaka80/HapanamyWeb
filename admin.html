@@ -581,6 +581,10 @@
                     <span class="admin-nav-icon">⚙️</span>
                     <span>System Settings</span>
                 </li>
+                <li class="admin-nav-link" onclick="switchAdminTab('recovery')" id="nav-recovery">
+                    <span class="admin-nav-icon">🛠️</span>
+                    <span>Storage Recovery</span>
+                </li>
             </ul>
 
             <div style="margin-top: auto; padding-top: 20px; border-top: 1px solid rgba(255, 249, 240, 0.1); display: flex; flex-direction: column; gap: 8px;">
@@ -1321,6 +1325,146 @@
                     </div>
                 </div>
 
+                <!-- TAB 8: STORAGE RECOVERY & SYNC CENTER -->
+                <div class="admin-panel" id="panel-recovery">
+                    <!-- Overview Banner -->
+                    <div style="background: linear-gradient(135deg, rgba(244, 123, 32, 0.12) 0%, rgba(16, 42, 67, 0.3) 100%); border: 1px solid rgba(244, 123, 32, 0.3); border-radius: 12px; padding: 22px; margin-bottom: 25px;">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <h3 style="font-size: 18px; color: var(--brand-gold); margin-bottom: 6px; display: flex; align-items: center; gap: 8px;">
+                                    <span>🛠️</span> <span>Local Browser Storage Data Recovery & Sync Center</span>
+                                </h3>
+                                <p style="font-size: 13px; color: var(--text-secondary); margin: 0; max-width: 800px; line-height: 1.5;">
+                                    Recovers offline or unsynced member registrations (<code style="color:var(--brand-orange)">hapanamy_registered_users</code>) and pending bank slips (<code style="color:var(--brand-orange)">bank_slips_queue</code>) stored in client browsers.
+                                    <br><strong>Two-Phase Approval Gate:</strong> Records are validated against existing server users and products. <strong>Zero data is written to the Server DB until you explicitly click "Approve & Commit".</strong>
+                                </p>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <button type="button" class="btn btn-secondary" onclick="toggleJsonImportDrawer()" style="padding: 8px 14px; font-size: 12.5px; display: flex; align-items: center; gap: 6px;">
+                                    <span>📋</span> <span>Import / Export JSON</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="scanAndPreviewLocalRecovery()" style="padding: 8px 16px; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                    <span>🔍</span> <span>Scan & Validate Local Storage</span>
+                                </button>
+                                <button type="button" class="btn btn-primary" id="btnCommitAllRecovery" onclick="commitAllReadyRecoveryCandidates()" style="padding: 8px 16px; font-size: 12.5px; font-weight: 700; background: var(--brand-green-light); color: #102A43; display: flex; align-items: center; gap: 6px;">
+                                    <span>🚀</span> <span>Approve & Commit All Ready</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JSON Import / Export Drawer (Collapsible) -->
+                    <div id="recoveryJsonDrawer" style="display: none; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 25px;">
+                        <h4 style="font-size: 14px; color: var(--brand-gold); margin-bottom: 10px; display: flex; align-items: center; gap: 6px;">
+                            <span>📥</span> <span>Cross-Device JSON Payload Import & Backup Export</span>
+                        </h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+                            If missing registrations occurred on another user's device or browser, paste their exported <code style="color:var(--brand-orange)">localStorage</code> JSON below, or upload a JSON backup file to validate and preview for approval.
+                        </p>
+                        <textarea id="recoveryJsonInput" placeholder='Paste JSON array of candidate users e.g. [{"username":"...", "email":"...", "sponsor":"Hiru"}] or full export payload...' style="width: 100%; height: 110px; padding: 10px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-family: monospace; font-size: 12px; box-sizing: border-box; resize: vertical;"></textarea>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; gap: 8px;">
+                                <button type="button" class="btn btn-primary" onclick="parseAndValidateImportedJson()" style="padding: 6px 14px; font-size: 12px; font-weight: 700;">
+                                    <span>⚡</span> Parse & Validate Payload
+                                </button>
+                                <button type="button" class="btn btn-secondary" onclick="document.getElementById('recoveryJsonInput').value=''" style="padding: 6px 12px; font-size: 12px;">
+                                    Clear
+                                </button>
+                            </div>
+                            <div>
+                                <button type="button" class="btn btn-secondary" onclick="exportLocalRecoveryJson()" style="padding: 6px 14px; font-size: 12px;">
+                                    <span>📤</span> Export Current Browser Storage as JSON
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat Cards Summary -->
+                    <div class="admin-stats-grid" style="margin-bottom: 25px;">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">ස්ථානීය සාමාජිකයන් (Local Candidate Members)</div>
+                            <div class="admin-stat-val" id="recStatMembersCount">0</div>
+                        </div>
+                        <div class="admin-stat-card orange">
+                            <div class="admin-stat-label">ස්ථානීය ඇණවුම් (Local Candidate Orders)</div>
+                            <div class="admin-stat-val" id="recStatOrdersCount">0</div>
+                        </div>
+                        <div class="admin-stat-card green">
+                            <div class="admin-stat-label">අනුමැතියට සුදුසු (Ready For Commit)</div>
+                            <div class="admin-stat-val" id="recStatReadyCount" style="color: var(--brand-green-light);">0</div>
+                        </div>
+                        <div class="admin-stat-card navy">
+                            <div class="admin-stat-label">දැනටමත් සර්වර්හි පවතී (Already On Server)</div>
+                            <div class="admin-stat-val" id="recStatExistsCount">0</div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 1: CANDIDATE MEMBERS PREVIEW TABLE -->
+                    <div class="admin-table-box" style="margin-bottom: 30px;">
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span>👥 ප්‍රතිසාධනය කළ හැකි සාමාජිකයන් (Candidate Member Registrations)</span>
+                                <span class="badge-status pending" id="recBadgeUsersCount">0 Candidates</span>
+                            </div>
+                            <span style="font-size: 12px; color: var(--text-muted);">Source: <code style="color:var(--brand-gold);">localStorage.hapanamy_registered_users</code></span>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>සාමාජික විස්තර (Member Profile)</th>
+                                        <th>අනුග්‍රාහකයා (Sponsor & Leg)</th>
+                                        <th>සත්‍යාපන තත්ත්වය (Validation Status)</th>
+                                        <th>පණිවිඩය (Diagnostic Notes)</th>
+                                        <th style="text-align: center;">ක්‍රියාව (Action)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recoveryUsersPreviewTableBody">
+                                    <tr>
+                                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                                            "Scan & Validate Local Storage" බොත්තම ඔබන්න (Click Scan to inspect client storage).
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 2: CANDIDATE ORDERS / BANK SLIPS PREVIEW TABLE -->
+                    <div class="admin-table-box">
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span>🛒 ප්‍රතිසාධනය කළ හැකි මිලදී ගැනීම් (Candidate Course Purchases & Bank Slips)</span>
+                                <span class="badge-status pending" id="recBadgeOrdersCount">0 Candidates</span>
+                            </div>
+                            <span style="font-size: 12px; color: var(--text-muted);">Source: <code style="color:var(--brand-gold);">localStorage.bank_slips_queue</code></span>
+                        </div>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>ඇණවුම (Order ID / Ref)</th>
+                                        <th>ගැණුම්කරු (Buyer Details)</th>
+                                        <th>පාඨමාලාව (Course Product)</th>
+                                        <th>මුදල (Amount LKR)</th>
+                                        <th>රිසිට්පත (Slip)</th>
+                                        <th>සත්‍යාපන තත්ත්වය (Validation Status)</th>
+                                        <th style="text-align: center;">ක්‍රියාව (Action)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recoveryOrdersPreviewTableBody">
+                                    <tr>
+                                        <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                                            "Scan & Validate Local Storage" බොත්තම ඔබන්න (Click Scan to inspect candidate orders).
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
@@ -1363,6 +1507,10 @@
         <div class="mobile-nav-item" onclick="switchAdminTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
             <span>Settings</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchAdminTab('recovery')" id="mob-nav-recovery">
+            <span class="mobile-nav-icon">🛠️</span>
+            <span>Recovery</span>
         </div>
     </div>
 
@@ -2940,6 +3088,9 @@
             if (tabId === 'settings') {
                 if (typeof loadSystemSettings === 'function') loadSystemSettings();
             }
+            if (tabId === 'recovery') {
+                scanAndPreviewLocalRecovery();
+            }
 
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
@@ -2957,12 +3108,505 @@
                 'reports': 'Daily Sales & Commission Reports',
                 'settings': 'Global System & Gateway Config',
                 'blog': 'Hapanamy.lk Blog Post Manager',
-                'receipts': 'Manual Bank Slip Approvals'
+                'receipts': 'Manual Bank Slip Approvals',
+                'recovery': 'Browser Storage Data Recovery & Sync Center'
             };
             if (headerTitles[tabId]) {
                 document.getElementById('adminHeaderTitle').textContent = headerTitles[tabId];
             }
         }
+
+        // ========================================================
+        // BROWSER STORAGE RECOVERY & APPROVAL-GATED SYNC CENTER
+        // ========================================================
+        let currentRecoveryData = {
+            users: [],
+            orders: []
+        };
+
+        function toggleJsonImportDrawer() {
+            const drawer = document.getElementById('recoveryJsonDrawer');
+            if (drawer) {
+                drawer.style.display = (drawer.style.display === 'none' || drawer.style.display === '') ? 'block' : 'none';
+            }
+        }
+
+        async function scanAndPreviewLocalRecovery(customUsers = null, customOrders = null) {
+            const usersTableBody = document.getElementById('recoveryUsersPreviewTableBody');
+            const ordersTableBody = document.getElementById('recoveryOrdersPreviewTableBody');
+            
+            if (usersTableBody) {
+                usersTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--brand-gold); padding: 25px;">⏳ Scanning local browser storage and validating with server...</td></tr>`;
+            }
+            if (ordersTableBody) {
+                ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--brand-gold); padding: 25px;">⏳ Scanning candidate orders and validating with server...</td></tr>`;
+            }
+
+            try {
+                // 1. Extract candidate users from localStorage if not custom provided
+                let candidateUsers = customUsers;
+                if (!candidateUsers) {
+                    candidateUsers = [];
+                    const seenUserKeys = new Set();
+
+                    const primaryRegUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                    const allUsersList = JSON.parse(localStorage.getItem('registered_users')) || [];
+                    const allMembersList = JSON.parse(localStorage.getItem('all_members')) || [];
+                    const hapanamyUsers = JSON.parse(localStorage.getItem('hapanamy_users')) || [];
+
+                    const combined = [...primaryRegUsers, ...allUsersList, ...allMembersList, ...hapanamyUsers];
+                    
+                    // Also scan referred_users_*
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i);
+                        if (k && k.toLowerCase().startsWith('referred_users_')) {
+                            try {
+                                const refArr = JSON.parse(localStorage.getItem(k)) || [];
+                                if (Array.isArray(refArr)) {
+                                    refArr.forEach(u => combined.push(u));
+                                }
+                            } catch (e) {}
+                        }
+                    }
+
+                    combined.forEach(u => {
+                        if (!u) return;
+                        const key = (u.username || u.email || u.id || '').toLowerCase().trim();
+                        if (key && !seenUserKeys.has(key)) {
+                            seenUserKeys.add(key);
+                            candidateUsers.push(u);
+                        }
+                    });
+                }
+
+                // 2. Extract candidate orders / bank slips from localStorage if not custom provided
+                let candidateOrders = customOrders;
+                if (!candidateOrders) {
+                    candidateOrders = [];
+                    const seenOrderKeys = new Set();
+
+                    const bankSlipsQueue = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+                    const bankOrdersQueue = JSON.parse(localStorage.getItem('bank_orders_queue')) || [];
+                    const combinedOrders = [...bankSlipsQueue, ...bankOrdersQueue];
+
+                    combinedOrders.forEach(o => {
+                        if (!o) return;
+                        const key = (o.orderId || o.id || o.txnCode || '').toLowerCase().trim();
+                        if (key && !seenOrderKeys.has(key)) {
+                            seenOrderKeys.add(key);
+                            candidateOrders.push(o);
+                        }
+                    });
+                }
+
+                // 3. Send to Server for Validation Preview (Zero database changes at this stage)
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch('/api/admin/recovery/validate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        candidates: candidateUsers,
+                        orders: candidateOrders
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    currentRecoveryData = {
+                        users: data.users || [],
+                        orders: data.orders || []
+                    };
+                    renderRecoveryPreviewTables(currentRecoveryData.users, currentRecoveryData.orders);
+                    showToast(`🔍 Scan complete: <strong>${currentRecoveryData.users.length}</strong> candidate users, <strong>${currentRecoveryData.orders.length}</strong> candidate orders evaluated.`);
+                } else {
+                    const errData = await res.json().catch(() => ({}));
+                    showToast(`❌ Validation error: ${errData.error || 'Server error occurred'}`);
+                    if (usersTableBody) {
+                        usersTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--ph-red); padding: 20px;">Validation request failed (${res.status}).</td></tr>`;
+                    }
+                    if (ordersTableBody) {
+                        ordersTableBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--ph-red); padding: 20px;">Validation request failed (${res.status}).</td></tr>`;
+                    }
+                }
+            } catch (err) {
+                console.error('Error in scanAndPreviewLocalRecovery:', err);
+                showToast(`❌ Scan failed: ${err.message}`);
+                if (usersTableBody) {
+                    usersTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--ph-red); padding: 20px;">Error: ${err.message}</td></tr>`;
+                }
+            }
+        }
+
+        function renderRecoveryPreviewTables(validatedUsers, validatedOrders) {
+            const usersTableBody = document.getElementById('recoveryUsersPreviewTableBody');
+            const ordersTableBody = document.getElementById('recoveryOrdersPreviewTableBody');
+
+            // Summary counters
+            const totalMembers = validatedUsers.length;
+            const totalOrders = validatedOrders.length;
+            const readyUsers = validatedUsers.filter(u => u.validation_status === 'READY_FOR_COMMIT').length;
+            const readyOrders = validatedOrders.filter(o => o.validation_status === 'READY_FOR_COMMIT').length;
+            const existsUsers = validatedUsers.filter(u => u.validation_status === 'ALREADY_EXISTS_ON_SERVER').length;
+
+            const recStatMembersCount = document.getElementById('recStatMembersCount');
+            const recStatOrdersCount = document.getElementById('recStatOrdersCount');
+            const recStatReadyCount = document.getElementById('recStatReadyCount');
+            const recStatExistsCount = document.getElementById('recStatExistsCount');
+            const recBadgeUsersCount = document.getElementById('recBadgeUsersCount');
+            const recBadgeOrdersCount = document.getElementById('recBadgeOrdersCount');
+
+            if (recStatMembersCount) recStatMembersCount.textContent = totalMembers;
+            if (recStatOrdersCount) recStatOrdersCount.textContent = totalOrders;
+            if (recStatReadyCount) recStatReadyCount.textContent = readyUsers + readyOrders;
+            if (recStatExistsCount) recStatExistsCount.textContent = existsUsers;
+            if (recBadgeUsersCount) recBadgeUsersCount.textContent = `${totalMembers} Candidate${totalMembers !== 1 ? 's' : ''}`;
+            if (recBadgeOrdersCount) recBadgeOrdersCount.textContent = `${totalOrders} Candidate${totalOrders !== 1 ? 's' : ''}`;
+
+            // 1. Render Users Preview Table
+            if (usersTableBody) {
+                if (validatedUsers.length === 0) {
+                    usersTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                ℹ️ No candidate member registrations found in local browser storage.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    let html = '';
+                    validatedUsers.forEach((u, idx) => {
+                        let statusBadge = '';
+                        let canCommit = u.can_commit;
+                        
+                        if (u.validation_status === 'READY_FOR_COMMIT') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(16, 185, 129, 0.15); color: #10B981; font-weight:700;">✅ READY FOR COMMIT</span>`;
+                        } else if (u.validation_status === 'ALREADY_EXISTS_ON_SERVER') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(148, 163, 184, 0.15); color: #94A3B8;">ℹ️ ALREADY ON SERVER</span>`;
+                        } else if (u.validation_status === 'SPONSOR_NOT_FOUND') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(245, 124, 0, 0.15); color: #F57C00;">⚠️ SPONSOR DEFAULTED</span>`;
+                        } else {
+                            statusBadge = `<span class="badge-status" style="background: rgba(239, 68, 68, 0.15); color: #EF4444;">❌ INVALID</span>`;
+                        }
+
+                        const userJsonEscaped = encodeURIComponent(JSON.stringify(u));
+                        const btnAction = canCommit
+                            ? `<button type="button" class="btn btn-primary" style="padding: 5px 12px; font-size: 11.5px; font-weight: 700; background: var(--brand-green-light); color: #102A43;" onclick="commitRecoveryMember(this, '${userJsonEscaped}')">✅ Approve & Commit</button>`
+                            : `<button type="button" class="btn btn-secondary" style="padding: 5px 10px; font-size: 11px; opacity: 0.5; cursor: not-allowed;" disabled>Committed</button>`;
+
+                        html += `
+                            <tr>
+                                <td>${idx + 1}</td>
+                                <td>
+                                    <strong>${u.full_name || 'Member'}</strong>
+                                    <br><span style="font-family: monospace; font-size: 11.5px; color: var(--brand-gold);">@${u.username}</span>
+                                    <br><span style="font-size: 11px; color: var(--text-muted);">${u.email} | ${u.mobile}</span>
+                                </td>
+                                <td>
+                                    <strong>@${u.sponsor}</strong>
+                                    <br><span class="sales-leg-badge ${u.position === 'LEFT' ? 'badge-left' : 'badge-right'}" style="font-size: 10px;">${u.position} LEG</span>
+                                </td>
+                                <td>${statusBadge}</td>
+                                <td style="font-size: 12px; color: var(--text-secondary); max-width: 250px;">${u.validation_message}</td>
+                                <td style="text-align: center;">${btnAction}</td>
+                            </tr>
+                        `;
+                    });
+                    usersTableBody.innerHTML = html;
+                }
+            }
+
+            // 2. Render Orders Preview Table
+            if (ordersTableBody) {
+                if (validatedOrders.length === 0) {
+                    ordersTableBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 30px;">
+                                ℹ️ No candidate course purchase orders found in local browser storage.
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    let html = '';
+                    validatedOrders.forEach((o, idx) => {
+                        let statusBadge = '';
+                        let canCommit = o.can_commit;
+
+                        if (o.validation_status === 'READY_FOR_COMMIT') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(16, 185, 129, 0.15); color: #10B981; font-weight:700;">✅ READY FOR COMMIT</span>`;
+                        } else if (o.validation_status === 'BUYER_PENDING_REGISTRATION') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(245, 124, 0, 0.15); color: #F57C00;">⚠️ BUYER PENDING</span>`;
+                        } else if (o.validation_status === 'ALREADY_EXISTS_ON_SERVER') {
+                            statusBadge = `<span class="badge-status" style="background: rgba(148, 163, 184, 0.15); color: #94A3B8;">ℹ️ ALREADY PROCESSED</span>`;
+                        } else {
+                            statusBadge = `<span class="badge-status" style="background: rgba(239, 68, 68, 0.15); color: #EF4444;">❌ INVALID</span>`;
+                        }
+
+                        const orderJsonEscaped = encodeURIComponent(JSON.stringify(o));
+                        const btnAction = canCommit
+                            ? `<button type="button" class="btn btn-primary" style="padding: 5px 12px; font-size: 11.5px; font-weight: 700; background: var(--brand-green-light); color: #102A43;" onclick="commitRecoveryOrder(this, '${orderJsonEscaped}')">✅ Approve & Commit</button>`
+                            : `<button type="button" class="btn btn-secondary" style="padding: 5px 10px; font-size: 11px; opacity: 0.5; cursor: not-allowed;" disabled>${o.validation_status === 'BUYER_PENDING_REGISTRATION' ? 'Register Buyer First' : 'Unavailable'}</button>`;
+
+                        const safeSlip = (o.slip_url || 'assets/trading_banner.jpg').replace(/'/g, "\\'");
+
+                        html += `
+                            <tr>
+                                <td>
+                                    <strong>${o.source_order_id}</strong>
+                                    <br><span style="font-family: monospace; font-size: 11px; color: var(--brand-gold);">${o.bank_reference}</span>
+                                </td>
+                                <td>
+                                    <strong>${o.user_name}</strong>
+                                    <br><span style="font-size: 11px; color: var(--text-muted);">${o.email || (o.user_id ? 'ID: ' + o.user_id : '')}</span>
+                                </td>
+                                <td><strong>${o.product_name}</strong></td>
+                                <td><strong style="color: var(--brand-gold);">රු. ${Number(o.amount).toLocaleString(undefined, {minimumFractionDigits: 2})}</strong></td>
+                                <td>
+                                    <span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline; font-size: 12px;" onclick="viewReceiptImage('${safeSlip}', 'Receipt - ${o.source_order_id}')">👁️ View Slip</span>
+                                </td>
+                                <td>${statusBadge}<br><span style="font-size: 11px; color: var(--text-muted);">${o.validation_message}</span></td>
+                                <td style="text-align: center;">${btnAction}</td>
+                            </tr>
+                        `;
+                    });
+                    ordersTableBody.innerHTML = html;
+                }
+            }
+        }
+
+        async function commitRecoveryMember(btn, candidateJsonEscaped) {
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Committing...';
+            }
+
+            try {
+                const candidate = JSON.parse(decodeURIComponent(candidateJsonEscaped));
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+
+                const res = await fetch('/api/admin/recovery/commit-member', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        candidate: candidate
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showToast(`✅ Member <strong>@${candidate.username}</strong> successfully committed and registered to Server DB!`);
+                    // Refresh table and full members list
+                    await scanAndPreviewLocalRecovery();
+                    if (typeof renderRegisteredUsers === 'function') renderRegisteredUsers();
+                } else {
+                    showToast(`❌ Commit failed: ${data.error || 'Server error'}`);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                }
+            } catch (err) {
+                console.error('Error in commitRecoveryMember:', err);
+                showToast(`❌ Commit error: ${err.message}`);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
+        async function commitRecoveryOrder(btn, orderJsonEscaped) {
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Orchestrating...';
+            }
+
+            try {
+                const orderData = JSON.parse(decodeURIComponent(orderJsonEscaped));
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+
+                const res = await fetch('/api/admin/recovery/commit-order', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        order: orderData
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showToast(`✅ Order <strong>${orderData.source_order_id}</strong> committed! Purchase Orchestrator triggered and course access unlocked.`);
+                    await scanAndPreviewLocalRecovery();
+                    if (typeof renderRegisteredUsers === 'function') renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                } else {
+                    showToast(`❌ Order commit failed: ${data.error || 'Server error'}`);
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.innerHTML = originalText;
+                    }
+                }
+            } catch (err) {
+                console.error('Error in commitRecoveryOrder:', err);
+                showToast(`❌ Commit error: ${err.message}`);
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
+        async function commitAllReadyRecoveryCandidates() {
+            const readyUsers = currentRecoveryData.users.filter(u => u.validation_status === 'READY_FOR_COMMIT');
+            const readyOrders = currentRecoveryData.orders.filter(o => o.validation_status === 'READY_FOR_COMMIT');
+            const totalReady = readyUsers.length + readyOrders.length;
+
+            if (totalReady === 0) {
+                showToast('ℹ️ No validated candidates currently ready for commit.');
+                return;
+            }
+
+            if (!confirm(`🚀 Confirm Approval & Database Commit:\n\nYou are about to commit ${readyUsers.length} member registrations and ${readyOrders.length} product purchases to the authoritative Server Database.\n\nCommissions will be orchestrated and course access will be granted.\n\nProceed?`)) {
+                return;
+            }
+
+            const btn = document.getElementById('btnCommitAllRecovery');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Committing All...';
+            }
+
+            let userSuccess = 0;
+            let orderSuccess = 0;
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+
+            // 1. Commit members first
+            for (const user of readyUsers) {
+                try {
+                    const res = await fetch('/api/admin/recovery/commit-member', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ candidate: user })
+                    });
+                    if (res.ok) userSuccess++;
+                } catch (e) {
+                    console.error('Failed committing user:', user, e);
+                }
+            }
+
+            // 2. Commit orders
+            for (const order of readyOrders) {
+                try {
+                    const res = await fetch('/api/admin/recovery/commit-order', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ order: order })
+                    });
+                    if (res.ok) orderSuccess++;
+                } catch (e) {
+                    console.error('Failed committing order:', order, e);
+                }
+            }
+
+            showToast(`🎉 Bulk Commit Complete! ${userSuccess} members registered, ${orderSuccess} orders orchestrated and unlocked.`);
+            
+            if (btn) {
+                btn.disabled = false;
+                btn.innerHTML = '<span>🚀</span> <span>Approve & Commit All Ready</span>';
+            }
+
+            await scanAndPreviewLocalRecovery();
+            if (typeof renderRegisteredUsers === 'function') renderRegisteredUsers();
+            if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+        }
+
+        function parseAndValidateImportedJson() {
+            const raw = document.getElementById('recoveryJsonInput').value.trim();
+            if (!raw) {
+                showToast('⚠️ Please paste a valid JSON string.');
+                return;
+            }
+
+            try {
+                const parsed = JSON.parse(raw);
+                let users = [];
+                let orders = [];
+
+                if (Array.isArray(parsed)) {
+                    // Check if array of users or orders
+                    if (parsed.length > 0 && (parsed[0].orderId || parsed[0].course || parsed[0].slipUrl)) {
+                        orders = parsed;
+                    } else {
+                        users = parsed;
+                    }
+                } else if (typeof parsed === 'object') {
+                    if (Array.isArray(parsed.users)) users = parsed.users;
+                    if (Array.isArray(parsed.candidates)) users = parsed.candidates;
+                    if (Array.isArray(parsed.orders)) orders = parsed.orders;
+                    if (Array.isArray(parsed.slips)) orders = parsed.slips;
+                    if (Array.isArray(parsed.hapanamy_registered_users)) users = parsed.hapanamy_registered_users;
+                    if (Array.isArray(parsed.bank_slips_queue)) orders = parsed.bank_slips_queue;
+                }
+
+                showToast(`📥 Parsed JSON: ${users.length} users, ${orders.length} orders. Validating...`);
+                scanAndPreviewLocalRecovery(users, orders);
+            } catch (err) {
+                showToast(`❌ Invalid JSON format: ${err.message}`);
+            }
+        }
+
+        function exportLocalRecoveryJson() {
+            try {
+                const exportPayload = {
+                    exported_at: new Date().toISOString(),
+                    hapanamy_registered_users: JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [],
+                    bank_slips_queue: JSON.parse(localStorage.getItem('bank_slips_queue')) || [],
+                    bank_orders_queue: JSON.parse(localStorage.getItem('bank_orders_queue')) || [],
+                    registered_users: JSON.parse(localStorage.getItem('registered_users')) || []
+                };
+
+                const jsonStr = JSON.stringify(exportPayload, null, 2);
+                const blob = new Blob([jsonStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `hapanamy-storage-backup-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                showToast('📤 Local browser storage exported as JSON file!');
+            } catch (err) {
+                showToast(`❌ Export failed: ${err.message}`);
+            }
+        }
+
+        // Global exports
+        window.toggleJsonImportDrawer = toggleJsonImportDrawer;
+        window.scanAndPreviewLocalRecovery = scanAndPreviewLocalRecovery;
+        window.renderRecoveryPreviewTables = renderRecoveryPreviewTables;
+        window.commitRecoveryMember = commitRecoveryMember;
+        window.commitRecoveryOrder = commitRecoveryOrder;
+        window.commitAllReadyRecoveryCandidates = commitAllReadyRecoveryCandidates;
+        window.parseAndValidateImportedJson = parseAndValidateImportedJson;
+        window.exportLocalRecoveryJson = exportLocalRecoveryJson;
 
         // Toast alert helper
         function showToast(message) {

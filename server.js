@@ -5370,6 +5370,307 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // ========================================================
+    // BROWSER STORAGE DATA RECOVERY & SYNC CONTROLLER
+    // ========================================================
+
+    // POST /api/admin/recovery/validate (Validate Extracted Local Candidates for Preview)
+    if (req.method === 'POST' && pathname === '/api/admin/recovery/validate') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const candidates = Array.isArray(body.candidates) ? body.candidates : (Array.isArray(body.users) ? body.users : []);
+        const orderCandidates = Array.isArray(body.orders) ? body.orders : (Array.isArray(body.slips) ? body.slips : []);
+
+        const validatedUsers = candidates.map(c => {
+            const cleanUname = (c.username || c.name || '').trim().replace(/^@+/, '');
+            const cleanEmail = (c.email || '').trim().toLowerCase();
+            const sponsorCode = (c.sponsor || c.sponsor_username || c.referrer || 'Hiru').trim().replace(/^@+/, '');
+
+            // Check if user already exists on server
+            const existingUser = mockUsers.find(u => 
+                (u.id && u.id === c.id) ||
+                (u.username && u.username.toLowerCase() === cleanUname.toLowerCase()) ||
+                (u.email && u.email.toLowerCase() === cleanEmail)
+            );
+
+            // Check if sponsor exists
+            const sponsorUser = mockUsers.find(u => 
+                (u.username && u.username.toLowerCase() === sponsorCode.toLowerCase()) ||
+                (u.id && u.id.toLowerCase() === sponsorCode.toLowerCase()) ||
+                (u.referral_code && u.referral_code.toLowerCase() === sponsorCode.toLowerCase())
+            );
+
+            let status = 'READY_FOR_COMMIT';
+            let message = 'Validated: Ready to commit to server database';
+
+            if (existingUser) {
+                status = 'ALREADY_EXISTS_ON_SERVER';
+                message = `User already exists on server with ID ${existingUser.id} (@${existingUser.username})`;
+            } else if (!sponsorUser && sponsorCode.toLowerCase() !== 'hiru') {
+                status = 'SPONSOR_NOT_FOUND';
+                message = `Sponsor code '${sponsorCode}' not found. Will default to Root Sponsor (Hiru).`;
+            }
+
+            return {
+                source_id: c.id || 'loc-usr-' + Math.random().toString(36).substr(2, 6),
+                full_name: c.full_name || c.name || cleanUname || 'Recovered Member',
+                username: cleanUname || ('user_' + Math.random().toString(36).substr(2, 6)),
+                email: cleanEmail || `recovered_${Math.random().toString(36).substr(2, 6)}@hapanamy.lk`,
+                mobile: c.mobile || c.phone || '0700000000',
+                role: c.role || 'member',
+                sponsor: sponsorUser ? sponsorUser.username : 'Hiru',
+                position: (c.position || 'LEFT').toUpperCase(),
+                account_status: c.account_status || c.status || 'INACTIVE',
+                created_at: c.created_at || new Date().toISOString(),
+                validation_status: status,
+                validation_message: message,
+                can_commit: status !== 'ALREADY_EXISTS_ON_SERVER'
+            };
+        });
+
+        const validatedOrders = orderCandidates.map(o => {
+            const cleanUser = (o.userName || o.username || o.user_id || o.email || '').trim().replace(/^@+/, '');
+            const matchingBuyer = mockUsers.find(u => 
+                (u.username && u.username.toLowerCase() === cleanUser.toLowerCase()) ||
+                (u.id && u.id.toLowerCase() === cleanUser.toLowerCase()) ||
+                (u.email && u.email.toLowerCase() === cleanUser.toLowerCase())
+            );
+
+            const courseName = o.course || o.product_name || 'Titan Elite Trading Academy';
+            const matchedProduct = mockProducts.find(p => 
+                p.id.toLowerCase() === courseName.toLowerCase() ||
+                p.name.toLowerCase().includes(courseName.toLowerCase()) ||
+                p.title.toLowerCase().includes(courseName.toLowerCase()) ||
+                courseName.toLowerCase().includes(p.id.toLowerCase())
+            ) || mockProducts[0];
+
+            let status = 'READY_FOR_COMMIT';
+            let message = 'Validated: Ready to create server order and distribute commissions';
+
+            if (!matchingBuyer) {
+                status = 'BUYER_PENDING_REGISTRATION';
+                message = `Buyer '${cleanUser}' must be registered before order commit.`;
+            }
+
+            return {
+                source_order_id: o.orderId || o.id || ('ORD-LOC-' + Math.random().toString(36).substr(2, 6)),
+                user_name: matchingBuyer ? matchingBuyer.full_name : cleanUser,
+                user_id: matchingBuyer ? matchingBuyer.id : null,
+                email: matchingBuyer ? matchingBuyer.email : o.email,
+                product_id: matchedProduct.id,
+                product_name: matchedProduct.name || matchedProduct.title,
+                amount: parseFloat(o.amount) || matchedProduct.selling_price || 19900,
+                bank_reference: o.txnCode || o.bank_reference || ('REF-REC-' + Math.random().toString(36).substr(2, 6).toUpperCase()),
+                slip_url: o.slipUrl || 'storage/private/slips/recovered-slip.jpg',
+                status: 'APPROVED',
+                validation_status: status,
+                validation_message: message,
+                can_commit: status === 'READY_FOR_COMMIT'
+            };
+        });
+
+        sendJSON(res, 200, {
+            success: true,
+            count_users: validatedUsers.length,
+            count_orders: validatedOrders.length,
+            users: validatedUsers,
+            orders: validatedOrders
+        });
+        return;
+    }
+
+    // POST /api/admin/recovery/commit-member (Commit Approved Recovery Member to Server DB)
+    if (req.method === 'POST' && pathname === '/api/admin/recovery/commit-member') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const candidate = body.candidate || body.member || body;
+
+        const cleanUname = (candidate.username || candidate.name || '').trim().replace(/^@+/, '');
+        const cleanEmail = (candidate.email || '').trim().toLowerCase();
+
+        // Check if already registered
+        const existingUser = mockUsers.find(u => 
+            (u.username && u.username.toLowerCase() === cleanUname.toLowerCase()) ||
+            (u.email && u.email.toLowerCase() === cleanEmail)
+        );
+
+        if (existingUser) {
+            sendJSON(res, 200, {
+                success: true,
+                message: `User @${existingUser.username} already exists on server with ID ${existingUser.id}.`,
+                user: existingUser
+            });
+            return;
+        }
+
+        const regResult = AuthService.registerMember({
+            fullName: candidate.full_name || candidate.name || cleanUname,
+            username: cleanUname,
+            email: cleanEmail,
+            mobile: candidate.mobile || candidate.phone || '0700000000',
+            password: candidate.password || 'Hapana123',
+            confirmPassword: candidate.password || 'Hapana123',
+            sponsorCode: candidate.sponsor || 'Hiru',
+            position: candidate.position || 'LEFT',
+            role: candidate.role || 'member'
+        }, {
+            users: mockUsers,
+            sponsors: mockSponsors,
+            binaryNodes: mockBinaryNodes,
+            volumeLedger: mockVolumeLedger,
+            wallets: mockWallets,
+            kycDocs: mockKycDocs,
+            bankAccounts: mockBankAccounts,
+            auditLogs: mockAuditLogs,
+            referralConversions: mockReferralConversions,
+            intentStore: mockReferralIntents
+        });
+
+        if (!regResult.success) {
+            sendJSON(res, 400, { error: regResult.error || 'Failed to commit member to server DB.' });
+            return;
+        }
+
+        KycService.logAction(mockAuditLogs, authUser.id, 'RECOVERY_MEMBER_COMMITTED', 'users', regResult.user.id, null, {
+            recovered_from: 'browser_storage',
+            username: cleanUname,
+            sponsor: candidate.sponsor
+        });
+
+        saveDbStore();
+
+        sendJSON(res, 201, {
+            success: true,
+            message: `Successfully recovered and committed member @${cleanUname} to authoritative server database!`,
+            user: regResult.user,
+            placement: regResult.placement
+        });
+        return;
+    }
+
+    // POST /api/admin/recovery/commit-order (Commit Approved Recovery Order to Server DB)
+    if (req.method === 'POST' && pathname === '/api/admin/recovery/commit-order') {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const body = await parseRequestBody(req);
+        const orderData = body.order || body;
+
+        const cleanUser = (orderData.user_id || orderData.username || orderData.email || '').trim().replace(/^@+/, '');
+        const buyer = mockUsers.find(u => 
+            (u.id && u.id.toLowerCase() === cleanUser.toLowerCase()) ||
+            (u.username && u.username.toLowerCase() === cleanUser.toLowerCase()) ||
+            (u.email && u.email.toLowerCase() === cleanUser.toLowerCase())
+        );
+
+        if (!buyer) {
+            sendJSON(res, 404, { error: `Buyer '${cleanUser}' not found on server. Please commit member first.` });
+            return;
+        }
+
+        const prodParam = (orderData.product_id || orderData.course || 'titan-elite').toLowerCase().trim();
+        const product = mockProducts.find(p => 
+            p.id.toLowerCase() === prodParam || 
+            (p.code && p.code.toLowerCase() === prodParam) ||
+            p.name.toLowerCase().includes(prodParam) ||
+            p.title.toLowerCase().includes(prodParam)
+        ) || mockProducts[0];
+
+        const canonicalPrice = parseFloat(orderData.amount) || product.selling_price || product.price || 19900;
+        const purchaseId = 'purch-rec-' + Math.random().toString(36).substr(2, 9);
+        const orderNumber = orderData.order_number || ('ORD-REC-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+        const now = new Date().toISOString();
+
+        const activePurchase = {
+            id: purchaseId,
+            order_number: orderNumber,
+            user_id: buyer.id,
+            buyer_id: buyer.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            price_paid: canonicalPrice,
+            binary_volume: product.binary_volume || canonicalPrice,
+            status: 'ACTIVE',
+            activated_at: now,
+            created_at: now
+        };
+
+        const depositId = 'dep-rec-' + Math.random().toString(36).substr(2, 9);
+        const deposit = {
+            id: depositId,
+            order_number: orderNumber,
+            purchase_id: purchaseId,
+            user_id: buyer.id,
+            product_id: product.id,
+            product_name: product.name || product.title,
+            amount: canonicalPrice,
+            bank_reference: orderData.bank_reference || ('RECOVERED-' + orderNumber),
+            transfer_date: now.split('T')[0],
+            status: 'APPROVED',
+            reviewer_id: authUser.id,
+            reviewed_at: now,
+            created_at: now
+        };
+
+        mockProductPurchases.push(activePurchase);
+        mockPaymentDeposits.push(deposit);
+
+        buyer.status = 'ACTIVE';
+        buyer.account_status = 'ACTIVE';
+
+        let orchResult = null;
+        try {
+            orchResult = PurchaseOrchestrator.executeApprovedPurchaseWorkflow({
+                purchase: activePurchase,
+                product: product,
+                userId: buyer.id,
+                binaryNodes: mockBinaryNodes,
+                sponsors: mockSponsors,
+                users: mockUsers,
+                kycDocs: mockKycDocs,
+                purchases: mockProductPurchases,
+                commissionLedger: mockCommissionTransactions,
+                volumeLedger: mockVolumeLedger,
+                walletLedger: mockWalletLedger,
+                dailyEarningsMap: mockDailyEarningsMap
+            });
+        } catch (orchErr) {
+            console.warn(`Recovery purchase orchestrator warning: ${orchErr.message}`);
+        }
+
+        ProductService.triggerPurchaseActivation(activePurchase);
+        KycService.logAction(mockAuditLogs, authUser.id, 'RECOVERY_ORDER_COMMITTED', 'product_purchases', purchaseId, null, {
+            buyer_id: buyer.id,
+            product_id: product.id,
+            amount: canonicalPrice,
+            order_number: orderNumber
+        });
+
+        saveDbStore();
+
+        sendJSON(res, 201, {
+            success: true,
+            message: `Recovery order #${orderNumber} successfully committed and approved! Course access unlocked for ${buyer.full_name || buyer.username}.`,
+            order: activePurchase,
+            deposit: deposit,
+            orchestration: orchResult
+        });
+        return;
+    }
+
     // GET /api/admin/orders (Enriched Orders Table with Commissions & BV)
     if (req.method === 'GET' && pathname === '/api/admin/orders') {
         const authUser = getAuthenticatedUser(req);
