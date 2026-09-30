@@ -1695,6 +1695,65 @@ try {
     }
 
     // --------------------------------------------------------------------------
+    // Route: /api/admin/members/delete or /api/admin/delete-user or DELETE /api/admin/members/:id
+    // --------------------------------------------------------------------------
+    if (($route === 'admin/members/delete' || $route === 'admin/delete-user' || $route === 'admin/users/delete') && $method === 'POST' ||
+        (str_starts_with($route, 'admin/members/') && $method === 'DELETE')) {
+        $input = getJsonInput();
+        $targetUserId = trim($input['member_id'] ?? $input['userId'] ?? $input['user_id'] ?? $input['username'] ?? $input['email'] ?? $input['id'] ?? '');
+        if (empty($targetUserId) && str_starts_with($route, 'admin/members/')) {
+            $parts = explode('/', $route);
+            $targetUserId = urldecode($parts[2] ?? '');
+        }
+
+        $cleanTarget = strtolower(ltrim($targetUserId, '@'));
+        $protected = ['namobuddhaya', 'admin@hapanamy.lk', 'subadmin', 'manager@hapanamy.lk', 'subadmin2', 'finance@hapanamy.lk', 'subadmin3', 'support@hapanamy.lk', 'user-namobuddhaya-root', 'user-subadmin-manager', 'user-subadmin-finance', 'user-subadmin-support'];
+        
+        if (in_array($cleanTarget, $protected)) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'Cannot delete core administrative accounts.']);
+            exit;
+        }
+
+        $deletedUser = null;
+        if (isset($db['users']) && is_array($db['users'])) {
+            foreach ($db['users'] as $idx => $u) {
+                if ($u['id'] === $targetUserId || strtolower($u['username'] ?? '') === $cleanTarget || strtolower($u['email'] ?? '') === $cleanTarget || strtolower($u['id'] ?? '') === $cleanTarget) {
+                    $deletedUser = $u;
+                    array_splice($db['users'], $idx, 1);
+                    break;
+                }
+            }
+        }
+
+        $matchId = $deletedUser ? $deletedUser['id'] : $targetUserId;
+        $matchUname = $deletedUser ? strtolower($deletedUser['username']) : $cleanTarget;
+        $matchEmail = $deletedUser ? strtolower($deletedUser['email'] ?? '') : $cleanTarget;
+
+        if (isset($db['binaryNodes']) && is_array($db['binaryNodes'])) {
+            $db['binaryNodes'] = array_values(array_filter($db['binaryNodes'], function($n) use ($matchId, $matchUname) {
+                return !($n['id'] === $matchId || ($n['user_id'] ?? '') === $matchId || strtolower($n['user_id'] ?? '') === $matchUname);
+            }));
+        }
+
+        if (isset($db['sponsors']) && is_array($db['sponsors'])) {
+            $db['sponsors'] = array_values(array_filter($db['sponsors'], function($s) use ($matchId) {
+                return !(($s['user_id'] ?? '') === $matchId || ($s['sponsor_id'] ?? '') === $matchId);
+            }));
+        }
+
+        saveDatabase($DB_FILE, $db);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => "User '{$cleanTarget}' deleted successfully from database.",
+            'deleted' => $deletedUser ?: ['identifier' => $targetUserId]
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
     // Route: /api/admin/members/:id (Detailed single member profile)
     // --------------------------------------------------------------------------
     if (str_starts_with($route, 'admin/members/') && $method === 'GET' && !str_ends_with($route, '/manual-purchase') && !str_ends_with($route, '/reset-password')) {

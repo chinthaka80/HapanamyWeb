@@ -119,8 +119,8 @@ const affHtml = fs.readFileSync(path.join(__dirname, '../affiliate-dashboard.htm
 const phpIndex = fs.readFileSync(path.join(__dirname, '../api/index.php'), 'utf8');
 
 // dashboard.html audits
-assert.ok(dashHtml.includes('user-star01-103'), 'dashboard.html must seed user-star01-103 in baseSeedDownlines');
-assert.ok(dashHtml.includes('accountMap.set(\'star01\''), 'dashboard.html must include Star01 in accountMap');
+assert.ok(dashHtml.includes('accountMap.set(\'namobuddhaya\''), 'dashboard.html must include NAMOBUDDHAYA in accountMap');
+assert.ok(dashHtml.includes('accountMap.set(\'subadmin\''), 'dashboard.html must include subadmin in accountMap');
 assert.ok(dashHtml.includes('all_users') && dashHtml.includes('users'), 'dashboard.html must scan all_users and users stores');
 assert.ok(dashHtml.includes('directList.push'), 'dashboard.html applyDashboardData must merge local direct referrals');
 

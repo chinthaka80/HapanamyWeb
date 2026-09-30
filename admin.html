@@ -4307,13 +4307,20 @@
             ];
 
             // Merge and deduplicate all member sources
-            const mergedMap = new Map();
+            const staleBlacklist = ['ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk', 'hiru', 'sun', 'sundd', 'star01', 'star02', 'star03'];
 
             function addOrMergeUser(u) {
                 if (!u) return;
                 const emailKey = (u.email || '').toLowerCase().trim();
                 const unameKey = (u.username || (u.email ? u.email.split('@')[0] : (u.id || ''))).toLowerCase().replace(/^@+/, '').trim();
                 const idKey = (u.id || u.user_id || '').toLowerCase().trim();
+
+                const uRole = (u.role || '').toLowerCase();
+                if (uRole !== 'admin' && uRole !== 'subadmin') {
+                    if (staleBlacklist.includes(emailKey) || staleBlacklist.includes(unameKey) || emailKey === 'ayubocey@gmail.com' || (u.full_name && u.full_name.includes('Chinthaka Gunasekara') && emailKey.includes('ayubocey'))) {
+                        return;
+                    }
+                }
 
                 let key = unameKey || emailKey || idKey;
                 if (!key) return;
@@ -4501,10 +4508,13 @@
                     </td>
                     <td style="text-align: center;">
                         <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
-                            <button class="btn btn-primary" onclick="viewMemberDashboard('${m.id}', '${m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.role || 'member'}', '${typeof m.sponsor === 'object' ? (m.sponsor?.username || 'Hiru') : (m.sponsor || 'Hiru')}', '${m.position || 'LEFT'}', '${m.email || ''}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-orange); color:#FFF; font-weight:700;">👁️ Dashboard</button>
+                            <button class="btn btn-primary" onclick="viewMemberDashboard('${m.id}', '${m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.role || 'member'}', '${typeof m.sponsor === 'object' ? (m.sponsor?.username || 'NAMOBUDDHAYA') : (m.sponsor || 'NAMOBUDDHAYA')}', '${m.position || 'LEFT'}', '${m.email || ''}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-orange); color:#FFF; font-weight:700;">👁️ Dashboard</button>
                             <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
                             <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name || m.name || m.username}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
                             <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name || m.name || m.username}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
+                            ${r !== 'admin' && r !== 'subadmin' ? `
+                                <button class="btn btn-secondary" onclick="deleteRegisteredUser('${m.id || m.email || m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.username || ''}')" style="padding: 4px 8px; font-size: 11px; border-color: #E53935; color: #E53935; cursor:pointer;" title="Delete Member">🗑️ Delete</button>
+                            ` : ''}
                         </div>
                     </td>
                 `;
@@ -4741,10 +4751,28 @@
         }
 
         async function deleteRegisteredUserAccount(email, name) {
-            if (confirm(`🗑️ Are you sure you want to remove user "${name}"?`)) {
-                await dbDeleteUser(email);
-                showToast(`🗑️ User account <strong>${name}</strong> removed.`);
-                renderRegisteredUsers();
+            await deleteRegisteredUser(email, name);
+        }
+
+        async function deleteRegisteredUser(identifier, name, username) {
+            if (!identifier) return;
+            const cleanIdent = String(identifier).replace(/^@+/, '').trim().toLowerCase();
+            const protectedList = ['namobuddhaya', 'admin@hapanamy.lk', 'subadmin', 'manager@hapanamy.lk', 'subadmin2', 'finance@hapanamy.lk', 'subadmin3', 'support@hapanamy.lk', 'user-namobuddhaya-root', 'user-subadmin-manager', 'user-subadmin-finance', 'user-subadmin-support'];
+            if (protectedList.includes(cleanIdent)) {
+                alert('ප්‍රධාන පරිපාලන ගිණුම් (Main Admin / Sub Admin) ඉවත් කළ නොහැක.');
+                return;
+            }
+
+            const confirmMsg = `ඔබට මෙම සාමාජික ගිණුම (${name || username || identifier}) ස්ථිරවම ඉවත් කිරීමට (Permanent Delete) අවශ්‍ය බව තහවුරු කරන්නද?\n\nAre you sure you want to permanently delete user "${name || username || identifier}"?`;
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                await dbDeleteUser(identifier);
+                showToast(`🗑️ User account <strong>${name || username}</strong> permanently removed.`);
+                await loadRegisteredUsers();
+            } catch (e) {
+                console.error('Delete error:', e);
+                alert('Error deleting user: ' + e.message);
             }
         }
 

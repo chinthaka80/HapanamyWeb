@@ -75,6 +75,7 @@ async function dbUpdateUser(email, updates) {
 }
 
 async function dbDeleteUser(email) {
+    const cleanIdent = String(email || '').toLowerCase().trim();
     if (supabaseClient) {
         try {
             await supabaseClient.from('registered_users').delete().eq('email', email);
@@ -82,9 +83,59 @@ async function dbDeleteUser(email) {
             console.error('Supabase delete user crash:', e);
         }
     }
-    let users = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-    users = users.filter(u => u.email !== email && u.name !== email);
-    localStorage.setItem('hapanamy_registered_users', JSON.stringify(users));
+
+    // Backend server sync
+    try {
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || localStorage.getItem('admin_token') || '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+        await fetch('/api/admin/members/delete', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ memberId: email })
+        });
+    } catch (e) {
+        console.warn('Backend delete sync exception:', e.message);
+    }
+
+    // Comprehensive client storage cleanup
+    const allStores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users', 'bank_slips_queue', 'hapanamy_orders'];
+    allStores.forEach(sk => {
+        try {
+            const raw = localStorage.getItem(sk);
+            if (raw) {
+                const list = JSON.parse(raw);
+                if (Array.isArray(list)) {
+                    const filtered = list.filter(u => {
+                        const uEmail = (u.email || u.user_email || '').toLowerCase().trim();
+                        const uUname = (u.username || u.user_name || '').toLowerCase().replace(/^@+/, '').trim();
+                        const uId = (u.id || u.user_id || '').toLowerCase().trim();
+                        return !(uEmail === cleanIdent || uUname === cleanIdent || uId === cleanIdent || uEmail.includes(cleanIdent));
+                    });
+                    localStorage.setItem(sk, JSON.stringify(filtered));
+                }
+            }
+        } catch (e) {}
+    });
+
+    for (let i = 0; i < localStorage.length; i++) {
+        const k = localStorage.key(i);
+        if (k && k.startsWith('referred_users_')) {
+            try {
+                const list = JSON.parse(localStorage.getItem(k)) || [];
+                if (Array.isArray(list)) {
+                    const filtered = list.filter(u => {
+                        const uEmail = (u.email || '').toLowerCase().trim();
+                        const uUname = (u.username || '').toLowerCase().replace(/^@+/, '').trim();
+                        const uId = (u.id || u.user_id || '').toLowerCase().trim();
+                        return !(uEmail === cleanIdent || uUname === cleanIdent || uId === cleanIdent);
+                    });
+                    localStorage.setItem(k, JSON.stringify(filtered));
+                }
+            } catch (e) {}
+        }
+    }
+
     return true;
 }
 

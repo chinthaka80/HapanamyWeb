@@ -85,6 +85,7 @@ require('./step67-browser-storage-recovery-and-sync.test');
 require('./step68-client-recovery-preview-and-export.test');
 require('./step69-authoritative-server-persistence-hardening.test');
 require('./step70-admin-subadmin-configuration-and-purge.test');
+require('./step71-delete-member-and-localStorage-cleanup.test');
 
 // Run
 runTests();

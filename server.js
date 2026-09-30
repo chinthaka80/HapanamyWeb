@@ -5097,6 +5097,113 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /api/admin/members/delete, DELETE /api/admin/members/:id, POST /api/admin/delete-user
+    if ((req.method === 'POST' && (pathname === '/api/admin/members/delete' || pathname === '/api/admin/delete-user' || pathname === '/api/admin/users/delete')) ||
+        (req.method === 'DELETE' && (pathname.startsWith('/api/admin/members/') || pathname.startsWith('/api/admin/users/')))) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN' && authUser.role !== 'subadmin' && authUser.role !== 'SUPER_ADMIN')) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        let targetUserId = null;
+        let body = {};
+        if (req.method === 'POST') {
+            body = await parseRequestBody(req);
+            targetUserId = body.memberId || body.member_id || body.userId || body.user_id || body.username || body.email || body.id;
+        }
+        if (!targetUserId && (pathname.startsWith('/api/admin/members/') || pathname.startsWith('/api/admin/users/'))) {
+            const segs = pathname.split('/');
+            targetUserId = decodeURIComponent(segs[4] || segs[segs.length - 1] || '');
+        }
+
+        if (!targetUserId) {
+            sendJSON(res, 400, { success: false, error: 'Member identifier is required.' });
+            return;
+        }
+
+        const cleanTarget = String(targetUserId).toLowerCase().replace(/^@+/, '').trim();
+        const protectedAccounts = ['namobuddhaya', 'admin@hapanamy.lk', 'subadmin', 'manager@hapanamy.lk', 'subadmin2', 'finance@hapanamy.lk', 'subadmin3', 'support@hapanamy.lk', 'user-namobuddhaya-root', 'user-subadmin-manager', 'user-subadmin-finance', 'user-subadmin-support'];
+        
+        if (protectedAccounts.includes(cleanTarget)) {
+            sendJSON(res, 400, { success: false, error: 'Cannot delete core administrative accounts.' });
+            return;
+        }
+
+        const memberIdx = mockUsers.findIndex(u => 
+            (u.id && u.id.toLowerCase() === cleanTarget) ||
+            (u.username && (u.username.toLowerCase() === cleanTarget || u.username.toLowerCase() === '@' + cleanTarget)) ||
+            (u.email && u.email.toLowerCase() === cleanTarget)
+        );
+
+        let deletedUser = null;
+        if (memberIdx !== -1) {
+            deletedUser = mockUsers[memberIdx];
+            mockUsers.splice(memberIdx, 1);
+        }
+
+        // Clean up from relations and ledgers
+        const matchId = deletedUser ? deletedUser.id : (cleanTarget.startsWith('user-') ? cleanTarget : null);
+        const matchUname = deletedUser ? deletedUser.username.toLowerCase() : cleanTarget;
+        const matchEmail = deletedUser ? (deletedUser.email || '').toLowerCase() : cleanTarget;
+
+        // Binary Nodes
+        for (let i = mockBinaryNodes.length - 1; i >= 0; i--) {
+            const node = mockBinaryNodes[i];
+            if ((matchId && (node.id === matchId || node.user_id === matchId)) ||
+                (node.user_id && node.user_id.toLowerCase() === matchUname)) {
+                mockBinaryNodes.splice(i, 1);
+            }
+        }
+
+        // Sponsors
+        for (let i = mockSponsors.length - 1; i >= 0; i--) {
+            const sp = mockSponsors[i];
+            if ((matchId && sp.user_id === matchId) || (sp.sponsor_id && sp.sponsor_id === matchId)) {
+                mockSponsors.splice(i, 1);
+            }
+        }
+
+        // Purchases & Deposits
+        for (let i = mockProductPurchases.length - 1; i >= 0; i--) {
+            if (matchId && mockProductPurchases[i].user_id === matchId) {
+                mockProductPurchases.splice(i, 1);
+            }
+        }
+        for (let i = mockPaymentDeposits.length - 1; i >= 0; i--) {
+            const dep = mockPaymentDeposits[i];
+            if ((matchId && dep.user_id === matchId) || (dep.user_email && dep.user_email.toLowerCase() === matchEmail)) {
+                mockPaymentDeposits.splice(i, 1);
+            }
+        }
+
+        // Ledgers
+        for (let i = mockWalletLedger.length - 1; i >= 0; i--) {
+            if (matchId && mockWalletLedger[i].user_id === matchId) mockWalletLedger.splice(i, 1);
+        }
+        for (let i = mockVolumeLedger.length - 1; i >= 0; i--) {
+            if (matchId && (mockVolumeLedger[i].user_id === matchId || mockVolumeLedger[i].source_user_id === matchId)) {
+                mockVolumeLedger.splice(i, 1);
+            }
+        }
+
+        // Sessions
+        for (const [t, s] of activeSessions.entries()) {
+            if ((matchId && s.id === matchId) || (s.email && s.email.toLowerCase() === matchEmail) || (s.username && s.username.toLowerCase() === matchUname)) {
+                activeSessions.delete(t);
+            }
+        }
+
+        saveDbStore();
+
+        sendJSON(res, 200, {
+            success: true,
+            message: `User '${deletedUser ? (deletedUser.full_name || deletedUser.username) : targetUserId}' deleted successfully from database.`,
+            deleted: deletedUser || { identifier: targetUserId }
+        });
+        return;
+    }
+
     // POST /api/admin/members/manual-purchase or /api/admin/orders/manual-enrollment
     if (req.method === 'POST' && (pathname === '/api/admin/members/manual-purchase' || pathname === '/api/admin/orders/manual-enrollment' || pathname === '/api/admin/orders/manual-purchase' || (pathname.startsWith('/api/admin/members/') && pathname.endsWith('/manual-purchase')))) {
         const authUser = getAuthenticatedUser(req);
