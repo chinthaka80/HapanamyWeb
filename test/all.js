@@ -77,6 +77,7 @@ require('./step59-realtime-downline-and-admin-persistence-verification.test');
 require('./step60-user-registration-identity-and-account-switching-verification.test');
 require('./step61-production-system-architecture-and-authoritative-data-flow-audit.test');
 require('./step62-production-trust-audit-authoritative-persistence-and-security.test');
+require('./step63-admin-approval-student-dashboard-course-visibility.test');
 
 // Run
 runTests();

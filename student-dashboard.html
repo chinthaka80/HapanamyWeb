@@ -1053,10 +1053,59 @@
                 'Module 06: Full-Stack Web App Project Deployment'
             ]
         };
+        // Playlist aliases
+        playlists['trading'] = playlists.crypto;
+        playlists['titan-elite'] = playlists.crypto;
+        playlists['forex-course'] = playlists.crypto;
+        playlists['crypto-course'] = playlists.crypto;
+        playlists['ai-mastery'] = playlists.ai;
+        playlists['ai-mastery-course'] = playlists.ai;
+        playlists['ai-course'] = playlists.ai;
+        playlists['social-media-masterclass'] = playlists.social;
+        playlists['facebook-course'] = playlists.social;
+        playlists['tiktok-course'] = playlists.social;
+        playlists['youtube-course'] = playlists.social;
+        playlists['coding-course'] = playlists.coding;
 
         const COURSE_CATALOG = {
             'crypto': {
                 id: 'crypto',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'trading': {
+                id: 'trading',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'titan-elite': {
+                id: 'titan-elite',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'forex-course': {
+                id: 'forex-course',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'crypto-course': {
+                id: 'crypto-course',
                 title: 'Titan Elite Trading Academy',
                 instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
                 banner: 'assets/trading_banner.jpg',
@@ -1073,6 +1122,33 @@
                 defaultProgress: 12.5,
                 defaultChapterLabel: '1/8 Semesters'
             },
+            'ai-mastery': {
+                id: 'ai-mastery',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'ai-mastery-course': {
+                id: 'ai-mastery-course',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'ai-course': {
+                id: 'ai-course',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
             'social': {
                 id: 'social',
                 title: 'Social Media Income Masterclass',
@@ -1082,8 +1158,53 @@
                 defaultProgress: 0,
                 defaultChapterLabel: '0/6 Modules'
             },
+            'social-media-masterclass': {
+                id: 'social-media-masterclass',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'facebook-course': {
+                id: 'facebook-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'tiktok-course': {
+                id: 'tiktok-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'youtube-course': {
+                id: 'youtube-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
             'coding': {
                 id: 'coding',
+                title: 'Coding & Web Development Masterclass',
+                instructor: 'Dev Team • HTML5, CSS3, JS & Web Apps',
+                banner: 'assets/coding_course_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/8 Modules'
+            },
+            'coding-course': {
+                id: 'coding-course',
                 title: 'Coding & Web Development Masterclass',
                 instructor: 'Dev Team • HTML5, CSS3, JS & Web Apps',
                 banner: 'assets/coding_course_banner.jpg',
@@ -1323,29 +1444,34 @@
             let courses = getStudentPurchasedCourses(user);
             renderStudentCourses(courses);
 
-            // Fetch live purchases from server if token is available
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            if (token) {
-                try {
-                    const res = await fetch('/api/products/my-purchases', {
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        if (data && Array.isArray(data.myProducts)) {
-                            const activeProducts = data.myProducts.filter(p => p.status === 'ACTIVE');
-                            if (activeProducts.length > 0) {
-                                courses = activeProducts;
-                                if (user && user.id) {
-                                    localStorage.setItem('hapanamy_purchased_courses_' + user.id.toLowerCase(), JSON.stringify(courses));
-                                }
-                            }
-                            renderStudentCourses(courses);
+            // Fetch live purchases from server if token is available or by user query fallback
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || localStorage.getItem('hapanamy_auth_token');
+            const uidParam = (user && (user.id || user.username || user.email)) ? encodeURIComponent(user.id || user.username || user.email) : '';
+            const fetchUrl = '/api/products/my-purchases' + (uidParam ? '?user_id=' + uidParam : '');
+
+            try {
+                const headers = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                const res = await fetch(fetchUrl, { headers });
+                if (res.ok) {
+                    const data = await res.json();
+                    const list = data.myProducts || data.courses || data.purchases || [];
+                    if (Array.isArray(list)) {
+                        const activeProducts = list.filter(p => {
+                            const st = (p.status || '').toUpperCase();
+                            return !st || ['ACTIVE', 'APPROVED', 'PAID', 'COMPLETED'].includes(st);
+                        });
+                        courses = activeProducts;
+                        if (user) {
+                            if (user.id) localStorage.setItem('hapanamy_purchased_courses_' + user.id.toLowerCase(), JSON.stringify(courses));
+                            if (user.username) localStorage.setItem('hapanamy_purchased_courses_' + user.username.toLowerCase(), JSON.stringify(courses));
+                            if (user.email) localStorage.setItem('hapanamy_purchased_courses_' + user.email.toLowerCase(), JSON.stringify(courses));
                         }
+                        renderStudentCourses(courses);
                     }
-                } catch (e) {
-                    console.log('Using local purchase cache for student dashboard.');
                 }
+            } catch (e) {
+                console.log('Using local purchase cache for student dashboard.');
             }
         }
 

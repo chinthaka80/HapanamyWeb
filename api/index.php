@@ -1215,6 +1215,84 @@ try {
     }
 
     // --------------------------------------------------------------------------
+    // Route: /api/products/my-purchases or /api/student/courses or /api/member/my-products
+    // --------------------------------------------------------------------------
+    if ($route === 'products/my-purchases' || $route === 'student/courses' || $route === 'member/my-products' || $route === 'courses/enrolled') {
+        $user = getAuthUserFromRequest($db);
+        if (!$user) {
+            http_response_code(401);
+            echo json_encode([
+                'success' => false,
+                'error' => 'Unauthorized. Please sign in.',
+                'myProducts' => [],
+                'courses' => []
+            ]);
+            exit;
+        }
+
+        $userId = $user['id'];
+        $uName = strtolower($user['username'] ?? '');
+        $uEmail = strtolower($user['email'] ?? '');
+
+        $catalog = getProductCatalog();
+        $myProducts = [];
+
+        foreach (($db['productPurchases'] ?? []) as $p) {
+            $pUid = $p['user_id'] ?? $p['buyer_id'] ?? '';
+            $pUname = strtolower($p['username'] ?? '');
+            $pEmail = strtolower($p['email'] ?? '');
+
+            $isUserMatch = ($pUid === $userId || strtolower($pUid) === $uName || $pUname === $uName || (!empty($uEmail) && $pEmail === $uEmail));
+            $st = strtoupper($p['status'] ?? '');
+            $isActiveStatus = in_array($st, ['ACTIVE', 'APPROVED', 'PAID', 'COMPLETED']);
+
+            if ($isUserMatch && $isActiveStatus) {
+                $prod = null;
+                foreach ($catalog as $cat) {
+                    if ($cat['id'] === ($p['product_id'] ?? '') || strtolower($cat['slug'] ?? '') === strtolower($p['product_id'] ?? '') || strtolower($cat['title']) === strtolower($p['product_name'] ?? '')) {
+                        $prod = $cat;
+                        break;
+                    }
+                }
+                if (!$prod && count($catalog) > 0) {
+                    $prod = $catalog[0];
+                }
+
+                $myProducts[] = [
+                    'id' => $p['product_id'] ?? ($prod ? $prod['id'] : $p['id']),
+                    'purchase_id' => $p['id'],
+                    'order_number' => $p['order_number'] ?? ('ORD-' . strtoupper(substr($p['id'], 0, 6))),
+                    'product_id' => $p['product_id'] ?? ($prod ? $prod['id'] : ''),
+                    'product_name' => $p['product_name'] ?? ($prod ? $prod['title'] : 'Masterclass'),
+                    'title' => $p['product_name'] ?? ($prod ? $prod['title'] : 'Masterclass'),
+                    'name' => $p['product_name'] ?? ($prod ? $prod['title'] : 'Masterclass'),
+                    'category' => $prod ? ($prod['category'] ?? 'Education') : 'Education',
+                    'selling_price' => floatval($p['price_paid'] ?? $p['amount'] ?? ($prod ? $prod['selling_price'] : 0)),
+                    'price_paid' => floatval($p['price_paid'] ?? $p['amount'] ?? ($prod ? $prod['selling_price'] : 0)),
+                    'image_url' => $prod ? ($prod['thumbnail'] ?? 'assets/facebook_course_banner.jpg') : 'assets/facebook_course_banner.jpg',
+                    'banner' => $prod ? ($prod['thumbnail'] ?? 'assets/facebook_course_banner.jpg') : 'assets/facebook_course_banner.jpg',
+                    'status' => 'ACTIVE',
+                    'activated_at' => $p['activated_at'] ?? $p['approved_at'] ?? $p['created_at'] ?? date('c'),
+                    'created_at' => $p['created_at'] ?? date('c'),
+                    'classroom_url' => 'student-dashboard.html'
+                ];
+            }
+        }
+
+        $myProducts = array_reverse($myProducts);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'count' => count($myProducts),
+            'myProducts' => $myProducts,
+            'courses' => $myProducts,
+            'purchases' => $myProducts
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
     // Route: /api/company-bank-details or /api/company-bank-accounts
     // --------------------------------------------------------------------------
     if ($route === 'company-bank-details' || $route === 'company-bank-accounts' || $route === 'member/company-bank-details') {

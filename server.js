@@ -2450,24 +2450,52 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        const userPurchases = mockProductPurchases.filter(p => p.user_id === authUser.id);
+        const aId = (authUser.id || '').toLowerCase();
+        const aName = (authUser.username || '').toLowerCase();
+        const aEmail = (authUser.email || '').toLowerCase();
+
+        const userPurchases = mockProductPurchases.filter(p => {
+            const pUid = (p.user_id || p.buyer_id || '').toLowerCase();
+            const pUname = (p.username || '').toLowerCase();
+            const pEmail = (p.email || '').toLowerCase();
+
+            const isMatch = (
+                (aId && (pUid === aId || pUname === aId)) ||
+                (aName && (pUid === aName || pUname === aName)) ||
+                (aEmail && pEmail === aEmail)
+            );
+            const isActive = ['ACTIVE', 'APPROVED', 'PAID', 'COMPLETED'].includes((p.status || '').toUpperCase());
+            return isMatch && isActive;
+        });
+
         const myProducts = userPurchases.map(p => {
-            const prod = mockProducts.find(mp => mp.id === p.product_id || mp.code === p.product_id) || {};
+            const prod = mockProducts.find(mp => 
+                (mp.id && mp.id.toLowerCase() === (p.product_id || '').toLowerCase()) || 
+                (mp.code && mp.code.toLowerCase() === (p.product_id || '').toLowerCase()) ||
+                (mp.name && mp.name.toLowerCase() === (p.product_name || '').toLowerCase()) ||
+                (mp.title && mp.title.toLowerCase() === (p.product_name || '').toLowerCase())
+            ) || {};
             return {
+                id: p.product_id || prod.id || p.id,
                 purchase_id: p.id,
-                order_number: p.order_number || ('ORD-' + p.id.substring(6).toUpperCase()),
-                product_id: p.product_id,
+                order_number: p.order_number || ('ORD-' + (p.id || '').substring(0, 6).toUpperCase()),
+                product_id: p.product_id || prod.id || '',
                 product_name: p.product_name || prod.name || prod.title || 'Masterclass',
+                title: p.product_name || prod.name || prod.title || 'Masterclass',
+                name: p.product_name || prod.name || prod.title || 'Masterclass',
                 category: prod.category || 'Education',
                 selling_price: p.price_paid || prod.selling_price || 0,
+                price_paid: p.price_paid || prod.selling_price || 0,
                 image_url: prod.image_url || 'assets/facebook_course_banner.jpg',
-                status: p.status,
-                activated_at: p.activated_at || p.created_at,
+                banner: prod.image_url || 'assets/facebook_course_banner.jpg',
+                status: 'ACTIVE',
+                activated_at: p.activated_at || p.created_at || new Date().toISOString(),
+                created_at: p.created_at || new Date().toISOString(),
                 classroom_url: prod.course_url || 'student-dashboard.html'
             };
         }).reverse();
 
-        sendJSON(res, 200, { success: true, myProducts, courses: myProducts });
+        sendJSON(res, 200, { success: true, count: myProducts.length, myProducts, courses: myProducts, purchases: myProducts });
         return;
     }
 
