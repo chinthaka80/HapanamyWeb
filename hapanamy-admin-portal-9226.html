@@ -1592,7 +1592,58 @@
                 <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                     <button type="button" class="btn btn-secondary" onclick="closeAdminManualPurchaseModal()" style="padding: 10px 18px; font-size: 13px; cursor: pointer;">අවලංගු කරන්න (Cancel)</button>
                     <button type="submit" id="btnConfirmManualPurchase" class="btn btn-primary" style="padding: 10px 22px; font-size: 13.5px; background: #2E7D32; color: white; font-weight: 800; cursor: pointer; border: none; border-radius: 8px;">
-                        <span>🛒 මිලදී ගැනීම තහවුරු කරන්න (Confirm & Activate)</span>
+    <!-- ADMIN SAFE PASSWORD RESET MODAL -->
+    <div class="modal-overlay" id="adminPasswordResetModal" style="display: none;">
+        <div class="modal-box" style="max-width: 520px; padding: 25px; width: 92%; border: 1px solid var(--brand-orange); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 22px;">🔑</span>
+                    <h3 style="font-size: 17px; margin: 0; color:var(--brand-orange);">සාමාජික මුරපදය Reset කිරීම (User Password Reset)</h3>
+                </div>
+                <button type="button" onclick="closeAdminPasswordResetModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <div style="background: rgba(239, 83, 80, 0.08); border: 1px solid rgba(239, 83, 80, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 13px; color: var(--text-primary); line-height: 1.5;">
+                ⚠️ <strong>අවධානයයි:</strong> ඔබ මෙම සාමාජිකයාගේ Password එක Reset කිරීමට සූදානම් වේ. මෙය අත්වැරදීමකින් සිදුවීම වැළැක්වීමට පහත විස්තර පරික්ෂා කර තහවුරු කරන්න.
+            </div>
+
+            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 18px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">සාමාජිකයා (Member):</span>
+                    <strong id="resetModalMemberName" style="color: var(--text-primary);">Member Name</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Username:</span>
+                    <code id="resetModalMemberUsername" style="color: var(--brand-gold); font-size: 13px;">@username</code>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Email:</span>
+                    <span id="resetModalMemberEmail" style="color: var(--text-secondary);">user@email.com</span>
+                </div>
+            </div>
+
+            <form id="adminPasswordResetForm" onsubmit="submitAdminPasswordReset(event)">
+                <input type="hidden" id="resetModalTargetUsername">
+                <input type="hidden" id="resetModalTargetEmail">
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="resetModalNewPass" style="display:block; margin-bottom:6px; font-size:12.5px; font-weight:700; color:var(--text-secondary);">
+                        නව මුරපදය (New Master Password):
+                    </label>
+                    <div style="position: relative;">
+                        <input type="text" id="resetModalNewPass" value="Araliya321#" required style="width:100%; padding:10px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--brand-gold); border-radius:8px; font-size:14px; font-weight:700; font-family: monospace; box-sizing:border-box;">
+                    </div>
+                    <small style="display:block; margin-top:4px; font-size:11.5px; color:var(--text-muted);">
+                        💡 Default Master Password එක <code>Araliya321#</code> වේ. අවශ්‍ය නම් වෙනස් කරන්න.
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminPasswordResetModal()" style="padding: 9px 16px; font-size: 13px; cursor: pointer;">
+                        ❌ අවලංගු කරන්න (Cancel)
+                    </button>
+                    <button type="submit" id="btnConfirmPasswordReset" class="btn btn-primary" style="padding: 9px 20px; font-size: 13px; background: #D32F2F; color: white; font-weight: 700; cursor: pointer; border: none; border-radius: 8px;">
+                        <span>🔒 ඔව්, Reset කරන්න (Confirm Reset)</span>
                     </button>
                 </div>
             </form>
@@ -2046,9 +2097,40 @@
             }, 1200);
         }
 
-        // Load dynamic bank slips from queue
-        function loadBankReceiptsTable() {
-            const list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+        // Load dynamic bank slips from queue and server API
+        async function loadBankReceiptsTable() {
+            let list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch('/api/admin/deposits/pending', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.deposits && Array.isArray(data.deposits)) {
+                        data.deposits.forEach(dep => {
+                            const exists = list.some(x => x.orderId === dep.order_id || x.orderId === dep.id || x.txnCode === dep.bank_reference);
+                            if (!exists) {
+                                list.push({
+                                    orderId: dep.order_id || dep.id || 'ORD-API',
+                                    txnCode: dep.bank_reference || 'REF-ONLINE',
+                                    userName: dep.user_name || dep.user_id || 'Student',
+                                    email: dep.user_email || '',
+                                    phone: dep.phone || '',
+                                    course: dep.product_name || 'Online Course',
+                                    amount: Number(dep.amount || 7425),
+                                    status: dep.status || 'Pending Approval',
+                                    slipUrl: dep.slip_url || 'assets/trading_banner.jpg'
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('Bank receipts API fetch fallback:', e);
+            }
+
             const tbody = document.getElementById('bankReceiptsTableBody');
             if (!tbody) return;
 
@@ -2078,8 +2160,8 @@
                         <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode}</td>
                         <td><strong>${item.userName}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${item.email} | ${item.phone}</span></td>
                         <td>${item.course}</td>
-                        <td>LKR ${item.amount.toLocaleString()}</td>
-                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Slip Image</span></td>
+                        <td>LKR ${Number(item.amount || 0).toLocaleString()}</td>
+                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('${item.slipUrl || 'assets/trading_banner.jpg'}')">👁️ View Slip Image</span></td>
                         <td>${actionButtons}</td>
                     </tr>`;
             });
@@ -3895,15 +3977,38 @@
             }
         }
 
-        async function resetUserPasswordPrompt(userName, email) {
-            const defaultPass = 'Araliya321#';
-            const enteredPass = prompt(`🔑 Reset Password for member "${userName}" (${email || 'Username'}):\n\nEnter new password (or press OK to use default master password):`, defaultPass);
+        function resetUserPasswordPrompt(userName, email) {
+            document.getElementById('resetModalMemberName').textContent = userName || 'Member';
+            document.getElementById('resetModalMemberUsername').textContent = '@' + (userName || 'member');
+            document.getElementById('resetModalMemberEmail').textContent = email || 'N/A';
+            document.getElementById('resetModalTargetUsername').value = userName || '';
+            document.getElementById('resetModalTargetEmail').value = email || '';
+            document.getElementById('resetModalNewPass').value = 'Araliya321#';
             
-            if (enteredPass === null) return; // User cancelled
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeAdminPasswordResetModal() {
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function submitAdminPasswordReset(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnConfirmPasswordReset');
+            const originalText = btn ? btn.innerHTML : 'Confirm';
             
-            const newPassword = enteredPass.trim() || defaultPass;
-            
+            const userName = document.getElementById('resetModalTargetUsername').value;
+            const email = document.getElementById('resetModalTargetEmail').value;
+            const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Araliya321#';
+
             try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span>⏳ Reset කරමින් පවතී...</span>';
+                }
+
                 const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
                 const response = await fetch('/api/admin/members/reset-password', {
                     method: 'POST',
@@ -3923,20 +4028,28 @@
                     if (typeof dbUpdateUser === 'function' && email) {
                         await dbUpdateUser(email, { password: newPassword });
                     }
-                    showToast(`🔑 <strong>Password Reset Successful!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
-                    alert(`✅ Password for ${userName} has been successfully reset to:\n\n${newPassword}\n\nThe member can now log in using this password.`);
+                    closeAdminPasswordResetModal();
+                    showToast(`🔑 <strong>Password Reset සාර්ථකයි!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                    alert(`✅ සාමාජික "${userName}" ගේ මුරපදය සාර්ථකව Reset කරන ලදී:\n\nනව Password: ${newPassword}\n\nදැන් මෙම මුරපදය මඟින් Login විය හැක.`);
                     return;
+                } else {
+                    const errData = await response.json();
+                    showToast(`❌ <strong>Reset අසාර්ථක විය:</strong> ${errData.error || 'Server error'}`);
                 }
             } catch (err) {
                 console.warn('API reset failed, applying local fallback:', err);
+                if (typeof dbUpdateUser === 'function' && email) {
+                    await dbUpdateUser(email, { password: newPassword });
+                }
+                closeAdminPasswordResetModal();
+                showToast(`🔑 <strong>Password Reset!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                alert(`✅ සාමාජික "${userName}" ගේ මුරපදය Reset කරන ලදී:\n\nනව Password: ${newPassword}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
             }
-
-            // Fallback for local storage
-            if (typeof dbUpdateUser === 'function' && email) {
-                await dbUpdateUser(email, { password: newPassword });
-            }
-            showToast(`🔑 <strong>Password Reset!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
-            alert(`✅ Password for ${userName} reset to:\n\n${newPassword}\n\nMember can now log in.`);
         }
 
         // ========================================================

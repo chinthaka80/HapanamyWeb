@@ -1729,6 +1729,45 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // POST /api/user/change-password or /api/auth/change-password
+    if (req.method === 'POST' && (pathname === '/api/user/change-password' || pathname === '/api/auth/change-password')) {
+        const body = await parseRequestBody(req);
+        let authUser = getAuthenticatedUser(req);
+        const userId = body.user_id || body.userId || (authUser ? authUser.id : null);
+        const newPassword = (body.new_password || body.password || '').trim();
+
+        if (!newPassword || newPassword.length < 4) {
+            sendJSON(res, 400, { success: false, error: 'New password must be at least 4 characters long.' });
+            return;
+        }
+
+        let target = null;
+        if (userId) {
+            const cleanId = String(userId).replace(/^@/, '').toLowerCase();
+            target = state.users.find(u => u.id === userId || String(u.username || '').toLowerCase() === cleanId || String(u.email || '').toLowerCase() === cleanId);
+        }
+        if (!target && authUser) {
+            target = state.users.find(u => u.id === authUser.id);
+        }
+
+        if (!target) {
+            sendJSON(res, 401, { success: false, error: 'User session expired or user not found.' });
+            return;
+        }
+
+        target.password = newPassword;
+        if (target.password_hash) {
+            target.password_hash = sha256Hex(newPassword);
+        }
+        saveJsonState();
+
+        sendJSON(res, 200, {
+            success: true,
+            message: 'මුරපදය සාර්ථකව වෙනස් කරන ලදී (Password changed successfully!).'
+        });
+        return;
+    }
+
     // ========================================================
     // KYC & BANK ACCOUNT SYSTEM REST ENDPOINTS (PHASE 4)
     // ========================================================

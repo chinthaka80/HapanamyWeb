@@ -1228,6 +1228,62 @@ try {
     }
 
     // --------------------------------------------------------------------------
+    // Route: /api/user/change-password or /api/auth/change-password
+    // --------------------------------------------------------------------------
+    if (($route === 'user/change-password' || $route === 'auth/change-password') && $method === 'POST') {
+        $input = getJsonInput();
+        $user = getAuthUserFromRequest($db);
+        $userId = trim($input['user_id'] ?? $input['userId'] ?? ($user ? $user['id'] : ''));
+        $newPassword = trim($input['new_password'] ?? $input['password'] ?? '');
+
+        if (empty($newPassword) || strlen($newPassword) < 4) {
+            http_response_code(400);
+            echo json_encode(['success' => false, 'error' => 'New password must be at least 4 characters long.']);
+            exit;
+        }
+
+        $userIndex = -1;
+        if (!empty($userId)) {
+            $cleanId = strtolower(ltrim($userId, '@'));
+            foreach ($db['users'] as $idx => $u) {
+                if ($u['id'] === $userId || strtolower($u['username'] ?? '') === $cleanId || strtolower($u['email'] ?? '') === $cleanId || strtolower($u['id'] ?? '') === $cleanId) {
+                    $userIndex = $idx;
+                    break;
+                }
+            }
+        }
+
+        if ($userIndex === -1 && $user) {
+            foreach ($db['users'] as $idx => $u) {
+                if ($u['id'] === $user['id']) {
+                    $userIndex = $idx;
+                    break;
+                }
+            }
+        }
+
+        if ($userIndex === -1) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'User not identified or session expired. Please log in again.']);
+            exit;
+        }
+
+        $db['users'][$userIndex]['password'] = $newPassword;
+        if (isset($db['users'][$userIndex]['password_hash'])) {
+            $db['users'][$userIndex]['password_hash'] = hash('sha256', $newPassword);
+        }
+
+        saveDatabase($DB_FILE, $db);
+
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'මුරපදය සාර්ථකව වෙනස් කරන ලදී (Password changed successfully!).'
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
     // Route: /api/member/orders/manual-transfer or /api/orders/manual-transfer
     // --------------------------------------------------------------------------
     if (($route === 'member/orders/manual-transfer' || $route === 'orders/manual-transfer') && $method === 'POST') {
@@ -1855,11 +1911,30 @@ try {
         $events = $db['liveEvents'] ?? [];
         $lastTen = array_slice($events, -10);
 
+        $totalSales = 0;
+        foreach (($db['productPurchases'] ?? []) as $po) {
+            $st = strtoupper($po['status'] ?? '');
+            if ($st === 'ACTIVE' || $st === 'APPROVED' || $st === 'COMPLETED' || $st === 'PAID') {
+                $totalSales += floatval($po['amount'] ?? $po['price_paid'] ?? 0);
+            }
+        }
+        $totalComm = 0;
+        foreach (($db['walletLedger'] ?? []) as $w) {
+            $amt = floatval($w['amount'] ?? 0);
+            if ($amt > 0) $totalComm += $amt;
+        }
+
         http_response_code(200);
         echo json_encode([
             'success' => true,
             'timestamp' => date('c'),
-            'events' => $lastTen
+            'events' => $lastTen,
+            'stats' => [
+                'total_members' => count($db['users'] ?? []),
+                'total_orders' => count($db['productPurchases'] ?? []),
+                'total_sales_lkr' => $totalSales,
+                'total_commissions_paid_lkr' => $totalComm
+            ]
         ]);
         exit;
     }

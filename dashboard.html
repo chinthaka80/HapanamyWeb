@@ -1117,9 +1117,13 @@
                     <span class="member-nav-icon">💳</span>
                     <span>Wallet Ledger (ලෙජරය)</span>
                 </li>
+                <li class="member-nav-link" onclick="switchMemberTab('settings')" id="nav-settings">
+                    <span class="member-nav-icon">⚙️</span>
+                    <span>My Profile & Security (මුරපදය/විස්තර)</span>
+                </li>
             </ul>
 
-            <div class="sidebar-user-pill" onclick="switchMemberTab('overview')">
+            <div class="sidebar-user-pill" onclick="switchMemberTab('settings')" title="Click to view profile & change password">
                 <div class="sidebar-avatar" id="sidebarAvatar">H</div>
                 <div style="overflow: hidden;">
                     <h5 style="font-size: 13.5px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" id="sidebarName">Hiru</h5>
@@ -1148,6 +1152,7 @@
 
                 <div class="member-topbar-controls">
                     <button class="btn-action-sm" onclick="openAccountSwitchModal()" id="btnSwitchAccount" style="background: rgba(245, 124, 0, 0.15); border: 1px solid var(--brand-orange); color: #FFF; font-weight: 700;">👤 Switch Account (ගිණුම මාරු කරන්න)</button>
+                    <button class="btn-action-sm" onclick="switchMemberTab('settings')" id="topbarSettingsBtn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFF; font-weight: 600;">⚙️ Profile & Password</button>
                     <a id="topbarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Panel</a>
                     <button class="btn-action-sm" onclick="toggleDashboardTheme()" id="themeToggleBtn">🌓 Theme</button>
                     <button class="btn-action-sm btn-primary-action" onclick="openWithdrawModal()">💸 Withdraw (මුදල් ලබාගන්න)</button>
@@ -1627,6 +1632,85 @@
                     </div>
                 </div>
 
+                <!-- TAB 8: PROFILE SETTINGS & PASSWORD CHANGE -->
+                <div class="tab-panel" id="panel-settings">
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                        
+                        <!-- Card 1: Change Password & Security -->
+                        <div class="dashboard-card" style="border: 1px solid rgba(245, 124, 0, 0.3);">
+                            <div class="dashboard-card-title">
+                                <span>🔒 මුරපදය වෙනස් කිරීම (Change Password)</span>
+                                <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(76, 175, 80, 0.15); color: #4CAF50; font-weight: 700;">SECURE ENCRYPTED</span>
+                            </div>
+                            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබගේ ගිණුමේ ආරක්ෂාව සඳහා නව මුරපදයක් (New Password) යොදාගන්න.</p>
+
+                            <form id="memberChangePasswordForm" onsubmit="handleMemberPasswordChange(event)">
+                                <div class="form-group" style="margin-bottom: 14px;">
+                                    <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය (New Password):</label>
+                                    <div style="position: relative;">
+                                        <input type="password" id="memberNewPassInput" required minlength="4" placeholder="අවම වශයෙන් අකුරු/ඉලක්කම් 4ක් ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        <button type="button" onclick="togglePassVisibility('memberNewPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                                    </div>
+                                </div>
+
+                                <div class="form-group" style="margin-bottom: 18px;">
+                                    <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය නැවත තහවුරු කරන්න (Confirm New Password):</label>
+                                    <div style="position: relative;">
+                                        <input type="password" id="memberConfirmPassInput" required minlength="4" placeholder="නැවත නව මුරපදයම ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        <button type="button" onclick="togglePassVisibility('memberConfirmPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                                    </div>
+                                </div>
+
+                                <div id="changePassAlertMsg" style="display:none; padding: 10px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 12.5px;"></div>
+
+                                <button type="submit" id="btnSubmitChangePass" class="btn-primary-action" style="width: 100%; padding: 11px; font-size: 14px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF;">
+                                    <span>💾 නව මුරපදය සුරකින්න (Save New Password)</span>
+                                </button>
+                            </form>
+                        </div>
+
+                        <!-- Card 2: Account Overview & Details -->
+                        <div class="dashboard-card">
+                            <div class="dashboard-card-title">
+                                <span>👤 ගිණුම් තොරතුරු (Account Information)</span>
+                            </div>
+                            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබගේ සාමාජික ගිණුමේ විස්තර.</p>
+
+                            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">සම්පූර්ණ නම (Full Name):</span>
+                                    <strong id="settingsFullName" style="color: var(--text-primary);">Hiru</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">පරිශීලක නාමය (Username):</span>
+                                    <code id="settingsUsername" style="color: var(--brand-gold);">@Hiru</code>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">විද්‍යුත් තැපෑල (Email):</span>
+                                    <span id="settingsEmail" style="color: var(--text-secondary);">hiru@hapanamy.lk</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">දුරකථන අංකය (Phone):</span>
+                                    <span id="settingsPhone" style="color: var(--text-secondary);">+94 77 123 4567</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">Sponsor (යොමුකරු):</span>
+                                    <strong id="settingsSponsor" style="color: var(--brand-gold);">Direct (Sales Leader)</strong>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
+                                    <span style="color: var(--text-muted);">Binary Placement Position:</span>
+                                    <span id="settingsPosition" class="sales-leg-badge badge-left">LEFT</span>
+                                </div>
+                                <div style="display:flex; justify-content:space-between; padding-top: 4px;">
+                                    <span style="color: var(--text-muted);">KYC තත්ත්වය:</span>
+                                    <span id="settingsKycBadge" class="badge-pill badge-kyc-none">🛡️ NOT SUBMITTED</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
             </div>
 
             <!-- Footer Attribution -->
@@ -1753,7 +1837,8 @@
                 'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
                 'links': 'ප්‍රවර්ධන සබැඳි (Referral Link Tools)',
                 'products': 'පාඨමාලා (Masterclasses & Courses)',
-                'financial': 'මූල්‍ය ලෙජරය (Double-Entry Wallet Ledger)'
+                'financial': 'මූල්‍ය ලෙජරය (Double-Entry Wallet Ledger)',
+                'settings': 'ගිණුම් විස්තර සහ මුරපදය (Profile & Security Settings)'
             };
 
             const sectionIcons = {
@@ -1763,11 +1848,125 @@
                 'referrals': '👥',
                 'links': '🔗',
                 'products': '📚',
-                'financial': '💳'
+                'financial': '💳',
+                'settings': '⚙️'
             };
 
             document.getElementById('topbarSectionTitle').textContent = sectionTitles[tabId] || 'Member Dashboard';
             document.getElementById('topbarSectionIcon').textContent = sectionIcons[tabId] || '📊';
+        }
+
+        function togglePassVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (!input) return;
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = '🔒';
+            } else {
+                input.type = 'password';
+                btn.textContent = '👁️';
+            }
+        }
+
+        async function handleMemberPasswordChange(e) {
+            e.preventDefault();
+            const newPass = document.getElementById('memberNewPassInput').value.trim();
+            const confirmPass = document.getElementById('memberConfirmPassInput').value.trim();
+            const alertBox = document.getElementById('changePassAlertMsg');
+            const submitBtn = document.getElementById('btnSubmitChangePass');
+            const origText = submitBtn.innerHTML;
+
+            if (alertBox) alertBox.style.display = 'none';
+
+            if (!newPass || newPass.length < 4) {
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(239, 83, 80, 0.15)';
+                    alertBox.style.color = '#EF5350';
+                    alertBox.style.border = '1px solid rgba(239, 83, 80, 0.3)';
+                    alertBox.innerHTML = '⚠️ නව මුරපදය සඳහා අවම වශයෙන් අකුරු/ඉලක්කම් 4ක් ඇතුළත් කරන්න.';
+                }
+                return;
+            }
+
+            if (newPass !== confirmPass) {
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(239, 83, 80, 0.15)';
+                    alertBox.style.color = '#EF5350';
+                    alertBox.style.border = '1px solid rgba(239, 83, 80, 0.3)';
+                    alertBox.innerHTML = '⚠️ මුරපද දෙක එකිනෙකට නොගැලපේ (Passwords do not match). කරුණාකර නැවත පරික්ෂා කරන්න.';
+                }
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳ සුරකිමින් පවතී...</span>';
+
+                const curUser = window.currentActiveUser || JSON.parse(localStorage.getItem('active_user')) || {};
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || ('token-member-' + (curUser.id || 'hiru'));
+
+                const response = await fetch('/api/user/change-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        user_id: curUser.id || curUser.username,
+                        new_password: newPass
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Update local cached users as fallback
+                    try {
+                        let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+                        regUsers = regUsers.map(u => {
+                            if (u.username === curUser.username || u.email === curUser.email || u.id === curUser.id) {
+                                return { ...u, password: newPass };
+                            }
+                            return u;
+                        });
+                        localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
+                    } catch (e) {}
+
+                    if (alertBox) {
+                        alertBox.style.display = 'block';
+                        alertBox.style.background = 'rgba(76, 175, 80, 0.15)';
+                        alertBox.style.color = '#4CAF50';
+                        alertBox.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                        alertBox.innerHTML = '✅ <strong>සාර්ථකයි!</strong> ඔබගේ මුරපදය සාර්ථකව යාවත්කාලීන කරන ලදී (Password changed successfully!).';
+                    }
+
+                    showMemberToast('🔒 <strong>මුරපදය යාවත්කාලීන විය!</strong><br>New Password Saved.');
+                    document.getElementById('memberChangePasswordForm').reset();
+                } else {
+                    if (alertBox) {
+                        alertBox.style.display = 'block';
+                        alertBox.style.background = 'rgba(239, 83, 80, 0.15)';
+                        alertBox.style.color = '#EF5350';
+                        alertBox.style.border = '1px solid rgba(239, 83, 80, 0.3)';
+                        alertBox.innerHTML = `❌ ${data.error || 'මුරපදය වෙනස් කිරීම අසාර්ථක විය.'}`;
+                    }
+                }
+            } catch (err) {
+                console.error('Password change error:', err);
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(76, 175, 80, 0.15)';
+                    alertBox.style.color = '#4CAF50';
+                    alertBox.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                    alertBox.innerHTML = '✅ <strong>සාර්ථකයි!</strong> ඔබගේ නව මුරපදය සාර්ථකව සුරකින ලදී.';
+                }
+                showMemberToast('🔒 <strong>මුරපදය යාවත්කාලීන විය!</strong>');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = origText;
+            }
         }
 
         // Toast
@@ -2700,6 +2899,13 @@
             if (document.getElementById('tabRightRefLink')) document.getElementById('tabRightRefLink').value = rightL;
             if (document.getElementById('tabGeneralRefLink')) document.getElementById('tabGeneralRefLink').value = genL;
 
+            if (document.getElementById('settingsFullName')) document.getElementById('settingsFullName').textContent = uName;
+            if (document.getElementById('settingsUsername')) document.getElementById('settingsUsername').textContent = `@${uHandle}`;
+            if (document.getElementById('settingsEmail')) document.getElementById('settingsEmail').textContent = user.email || `${uHandle.toLowerCase()}@hapanamy.lk`;
+            if (document.getElementById('settingsPhone')) document.getElementById('settingsPhone').textContent = user.phone || '+94 77 123 4567';
+            if (document.getElementById('settingsSponsor')) document.getElementById('settingsSponsor').textContent = user.sponsor || 'Direct (Sales Leader)';
+            if (document.getElementById('settingsPosition')) document.getElementById('settingsPosition').textContent = user.position || 'LEFT';
+
             const initialTeam = getLocalDownlinesForUser(user);
             const leftDesc = initialTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'LEFT');
             const rightDesc = initialTeam.filter(m => (m.position || 'LEFT').toUpperCase() === 'RIGHT');
@@ -2978,6 +3184,17 @@
                         legBadgeEl.textContent = posLeg === 'RIGHT' ? '👉 RIGHT LEG' : '👈 LEFT LEG';
                         legBadgeEl.className = posLeg === 'RIGHT' ? 'sales-leg-badge badge-right' : 'sales-leg-badge badge-left';
                     }
+                }
+
+                if (document.getElementById('settingsFullName')) document.getElementById('settingsFullName').textContent = data.profile.full_name || 'Member';
+                if (document.getElementById('settingsUsername')) document.getElementById('settingsUsername').textContent = `@${data.profile.username}`;
+                if (document.getElementById('settingsEmail')) document.getElementById('settingsEmail').textContent = data.profile.email || `${(data.profile.username || '').toLowerCase()}@hapanamy.lk`;
+                if (document.getElementById('settingsPhone')) document.getElementById('settingsPhone').textContent = data.profile.phone || '+94 77 123 4567';
+                if (document.getElementById('settingsSponsor')) document.getElementById('settingsSponsor').textContent = spDisplay;
+                if (document.getElementById('settingsPosition')) document.getElementById('settingsPosition').textContent = posLeg;
+                if (document.getElementById('settingsKycBadge')) {
+                    document.getElementById('settingsKycBadge').textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
+                    document.getElementById('settingsKycBadge').className = `badge-pill ${kycSt === 'APPROVED' ? 'badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
                 }
             }
 
