@@ -3423,6 +3423,23 @@
                     sponsor: 'Sun',
                     personal_bv: 0,
                     created_at: '2026-09-03T00:00:00Z'
+                },
+                {
+                    id: 'user-star01-103',
+                    username: 'Star01',
+                    full_name: 'Star01',
+                    name: 'Star01',
+                    email: 'star01@hapanamy.lk',
+                    phone: '0775551234',
+                    role: 'member',
+                    status: 'ACTIVE',
+                    account_status: 'ACTIVE',
+                    qualification_status: 'NOT_QUALIFIED',
+                    kyc_status: 'PENDING',
+                    position: 'RIGHT',
+                    sponsor: 'Hiru',
+                    personal_bv: 0,
+                    created_at: '2026-09-29T10:00:00Z'
                 }
             ];
 
@@ -3432,16 +3449,19 @@
             function addOrMergeUser(u) {
                 if (!u) return;
                 const emailKey = (u.email || '').toLowerCase().trim();
-                const unameKey = (u.username || (u.email ? u.email.split('@')[0] : (u.id || ''))).toLowerCase().trim();
-                const idKey = (u.id || '').toLowerCase().trim();
+                const unameKey = (u.username || (u.email ? u.email.split('@')[0] : (u.id || ''))).toLowerCase().replace(/^@+/, '').trim();
+                const idKey = (u.id || u.user_id || '').toLowerCase().trim();
 
                 let key = unameKey || emailKey || idKey;
                 if (!key) return;
 
                 for (const [k, existing] of mergedMap.entries()) {
-                    if ((emailKey && existing.email && existing.email.toLowerCase().trim() === emailKey) ||
-                        (unameKey && existing.username && existing.username.toLowerCase().trim() === unameKey) ||
-                        (idKey && existing.id && existing.id.toLowerCase().trim() === idKey)) {
+                    const exEmail = (existing.email || '').toLowerCase().trim();
+                    const exUname = (existing.username || '').toLowerCase().replace(/^@+/, '').trim();
+                    const exId = (existing.id || existing.user_id || '').toLowerCase().trim();
+                    if ((emailKey && exEmail && exEmail === emailKey) ||
+                        (unameKey && exUname && exUname === unameKey) ||
+                        (idKey && exId && exId === idKey)) {
                         key = k;
                         break;
                     }
@@ -3457,7 +3477,7 @@
             localRegUsers.forEach(u => addOrMergeUser(u));
 
             // 3. Scan other storage keys
-            const altStores = ['registered_users', 'all_members', 'hapanamy_users'];
+            const altStores = ['registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users'];
             altStores.forEach(sk => {
                 try {
                     const list = JSON.parse(localStorage.getItem(sk)) || [];

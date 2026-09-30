@@ -192,16 +192,24 @@ const AuthService = {
 
         try {
             // A. Create User Entity
+            const newUserRole = (payload.role || 'member').toLowerCase();
             const newUser = {
                 id: userId,
                 username: cleanUsername,
                 full_name: fullName.trim(),
+                name: fullName.trim(),
                 email: cleanEmail,
                 mobile: cleanMobile,
+                phone: cleanMobile,
                 password_hash: passwordHash,
-                role: 'member',
-                status: 'INACTIVE',
-                account_status: 'INACTIVE',
+                role: newUserRole,
+                sponsor: effectiveSponsorCode,
+                sponsor_id: sponsorId,
+                sponsor_username: sponsor ? sponsor.username : effectiveSponsorCode,
+                position: resolvedPlacement.position || 'LEFT',
+                branch_leg: resolvedPlacement.position || 'LEFT',
+                status: payload.status || 'INACTIVE',
+                account_status: payload.account_status || 'INACTIVE',
                 qualification_status: 'NOT_QUALIFIED',
                 kyc_status: (nicPassport || address) ? 'PENDING' : 'NOT_SUBMITTED',
                 created_at: now

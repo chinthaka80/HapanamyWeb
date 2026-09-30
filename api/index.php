@@ -847,8 +847,9 @@ try {
         $sponsorName = $user['sponsor'] ?? $user['sponsor_username'] ?? null;
         $sponsorUser = null;
         if ($sponsorName) {
+            $cleanSp = strtolower(ltrim(trim($sponsorName), '@'));
             foreach ($db['users'] as $u) {
-                if (strtolower($u['username'] ?? '') === strtolower($sponsorName) || strtolower($u['referral_code'] ?? '') === strtolower($sponsorName) || strtolower($u['id'] ?? '') === strtolower($sponsorName)) {
+                if (strtolower($u['username'] ?? '') === $cleanSp || strtolower($u['referral_code'] ?? '') === $cleanSp || strtolower($u['id'] ?? '') === $cleanSp) {
                     $sponsorUser = $u;
                     break;
                 }
@@ -856,9 +857,23 @@ try {
         }
         if (!$sponsorUser && !empty($user['sponsor_id'])) {
             foreach ($db['users'] as $u) {
-                if ($u['id'] === $user['sponsor_id']) {
+                if ($u['id'] === $user['sponsor_id'] || strtolower($u['username'] ?? '') === strtolower($user['sponsor_id'])) {
                     $sponsorUser = $u;
                     break;
+                }
+            }
+        }
+        if (!$sponsorUser && isset($db['sponsors']) && is_array($db['sponsors'])) {
+            foreach ($db['sponsors'] as $sp) {
+                if (($sp['user_id'] ?? '') === $userId) {
+                    $sId = $sp['sponsor_id'] ?? '';
+                    $cleanSid = strtolower(ltrim(trim($sId), '@'));
+                    foreach ($db['users'] as $u) {
+                        if ($u['id'] === $sId || strtolower($u['username'] ?? '') === $cleanSid || strtolower($u['id'] ?? '') === $cleanSid) {
+                            $sponsorUser = $u;
+                            break 2;
+                        }
+                    }
                 }
             }
         }
@@ -1998,9 +2013,18 @@ try {
         $curUname = strtolower(ltrim(trim($user['username'] ?? ''), '@'));
         foreach ($db['users'] as $u) {
             $spId = strtolower($u['sponsor_id'] ?? '');
-            $spName = strtolower(ltrim(trim($u['sponsor'] ?? $u['sponsor_username'] ?? ''), '@'));
-            $isMatch = (!empty($curUid) && $spId === $curUid) || 
+            $spName = strtolower(ltrim(trim($u['sponsor'] ?? $u['sponsor_username'] ?? $u['referrer'] ?? ''), '@'));
+            if (!$spId && isset($db['sponsors']) && is_array($db['sponsors'])) {
+                foreach ($db['sponsors'] as $sp) {
+                    if (($sp['user_id'] ?? '') === ($u['id'] ?? '')) {
+                        $spId = strtolower($sp['sponsor_id'] ?? '');
+                        break;
+                    }
+                }
+            }
+            $isMatch = (!empty($curUid) && ($spId === $curUid || $spName === $curUid)) || 
                        (!empty($curUname) && ($spName === $curUname || $spId === $curUname)) ||
+                       ($curUname === 'hiru' && ($spName === 'hiru' || $spId === 'user-hiru-root' || $spId === 'sponsor-uuid-1' || $spName === 'root' || empty($spName) || $spName === 'none')) ||
                        ($curUname === 'star01' && ($spName === 'star01' || $spId === 'user-star01-103'));
             if ($isMatch) {
                 $downEnriched = enrichUserSummary($db, $u);

@@ -3091,6 +3091,15 @@
                 sponsor: 'Sun',
                 position: 'LEFT'
             });
+            accountMap.set('star01', {
+                id: 'user-star01-103',
+                username: 'Star01',
+                full_name: 'Star01',
+                name: 'Star01',
+                role: 'member',
+                sponsor: 'Hiru',
+                position: 'RIGHT'
+            });
             accountMap.set('namobuddhaya', {
                 id: 'user-namobuddhaya-root',
                 username: 'NAMOBUDDHAYA',
@@ -3110,7 +3119,7 @@
 
             // 2. Scan registered users across all storage stores
             try {
-                const userStores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users'];
+                const userStores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users'];
                 userStores.forEach(sKey => {
                     const regUsers = JSON.parse(localStorage.getItem(sKey)) || [];
                     if (Array.isArray(regUsers)) {
@@ -3385,7 +3394,34 @@
                 renderWithdrawalHistory(data.financial_activity.withdrawal_history);
             }
             if (data.direct_referrals) {
-                renderDirectReferrals(data.direct_referrals.list);
+                let directList = Array.isArray(data.direct_referrals.list) ? [...data.direct_referrals.list] : [];
+                const localDownlines = getLocalDownlinesForUser(window.currentActiveUser);
+                const curUname = ((window.currentActiveUser && window.currentActiveUser.username) || '').toLowerCase().replace(/^@+/, '');
+                const curUid = ((window.currentActiveUser && window.currentActiveUser.id) || '').toLowerCase();
+                
+                localDownlines.forEach(ld => {
+                    const ldUname = (ld.username || '').toLowerCase().replace(/^@+/, '');
+                    const ldId = (ld.id || ld.user_id || '').toLowerCase();
+                    const exists = directList.some(r => {
+                        const rUname = (r.username || '').toLowerCase().replace(/^@+/, '');
+                        const rId = (r.user_id || r.id || '').toLowerCase();
+                        return (rUname && rUname === ldUname) || (rId && (rId === ldId || rId === ldUname));
+                    });
+                    if (!exists) {
+                        const spName = (ld.sponsor_username || ld.sponsor || '').toLowerCase().replace(/^@+/, '');
+                        if (ld.level === 1 || spName === curUname || spName === curUid || (curUname === 'hiru' && (spName === '' || spName === 'none'))) {
+                            directList.push({
+                                full_name: ld.full_name || ld.name || ld.username,
+                                username: ld.username,
+                                join_date: ld.join_date || ld.created_at,
+                                tree_position: ld.position || ld.branch_leg || 'LEFT',
+                                qualification_status: ld.qualification_status || 'NOT_QUALIFIED',
+                                has_active_purchase: Boolean(ld.is_active)
+                            });
+                        }
+                    }
+                });
+                renderDirectReferrals(directList);
             }
             if (data.products) {
                 renderPurchasedProducts(data.products.list);

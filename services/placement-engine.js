@@ -615,10 +615,49 @@ const PlacementEngine = {
      * Returns direct referrals genealogy sponsored by a user.
      */
     getDirectReferrals(sponsorId, sponsors = [], users = [], purchases = [], binaryNodes = []) {
-        const spLower = (sponsorId || '').toLowerCase();
-        const directSponsorRecords = sponsors.filter(s => {
-            const sid = (s.sponsor_id || '').toLowerCase();
-            return sid === spLower || (spLower === 'hiru' && (sid === 'hiru' || sid === 'user-hiru-root' || sid === 'sponsor-uuid-1'));
+        const spClean = (sponsorId || '').replace(/^@+/, '').toLowerCase().trim();
+        const spUser = users.find(u => 
+            (u.id && u.id.toLowerCase() === spClean) || 
+            (u.username && u.username.toLowerCase() === spClean) ||
+            (u.email && u.email.toLowerCase() === spClean) ||
+            (spClean === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+        );
+        const validSponsorIds = new Set([spClean]);
+        if (spUser) {
+            if (spUser.id) validSponsorIds.add(spUser.id.toLowerCase());
+            if (spUser.username) validSponsorIds.add(spUser.username.toLowerCase());
+            if (spUser.email) validSponsorIds.add(spUser.email.toLowerCase());
+        }
+        if (spClean === 'hiru' || (spUser && (spUser.username === 'Hiru' || spUser.id === 'user-hiru-root'))) {
+            validSponsorIds.add('hiru');
+            validSponsorIds.add('user-hiru-root');
+            validSponsorIds.add('sponsor-uuid-1');
+        }
+
+        const matchedUserIds = new Set();
+        const directSponsorRecords = [];
+
+        sponsors.forEach(s => {
+            const sid = (s.sponsor_id || '').replace(/^@+/, '').toLowerCase().trim();
+            if (validSponsorIds.has(sid)) {
+                directSponsorRecords.push(s);
+                matchedUserIds.add(s.user_id);
+            }
+        });
+
+        // Also check users directly if not in sponsors table
+        users.forEach(u => {
+            if (!matchedUserIds.has(u.id)) {
+                const uSp = (u.sponsor || u.sponsor_id || u.sponsor_username || u.referrer || u.sponsorCode || '').replace(/^@+/, '').toLowerCase().trim();
+                if (uSp && validSponsorIds.has(uSp)) {
+                    directSponsorRecords.push({
+                        user_id: u.id,
+                        sponsor_id: sponsorId,
+                        created_at: u.created_at
+                    });
+                    matchedUserIds.add(u.id);
+                }
+            }
         });
 
         return directSponsorRecords.map(record => {
@@ -632,18 +671,18 @@ const PlacementEngine = {
             const node = binaryNodes.find(n => n.user_id === record.user_id);
             const side = node && node.placement_parent_id 
                 ? this.getLegUnderAncestor(record.user_id, sponsorId, binaryNodes) 
-                : (node ? node.position : 'UNKNOWN');
+                : (node ? node.position : (user.position || 'LEFT'));
 
-            const hasActivePurchase = purchases.some(p => p.user_id === record.user_id && p.status === 'ACTIVE');
+            const hasActivePurchase = purchases.some(p => p.user_id === record.user_id && (p.status === 'ACTIVE' || p.status === 'PAID'));
 
             return {
                 user_id: record.user_id,
                 username: user.username,
-                full_name: user.full_name,
+                full_name: user.full_name || user.name || user.username || 'Member',
                 email: user.email || 'N/A',
-                mobile: user.mobile || 'N/A',
+                mobile: user.mobile || user.phone || 'N/A',
                 placement_leg: side || 'LEFT',
-                status: hasActivePurchase ? 'ACTIVE' : 'PENDING',
+                status: hasActivePurchase ? 'ACTIVE' : (user.status || 'ACTIVE'),
                 joined_at: record.created_at || user.created_at || new Date().toISOString()
             };
         });

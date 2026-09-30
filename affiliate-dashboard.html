@@ -1258,22 +1258,47 @@
 
         function loadDynamicDownlines() {
             const user = currentAffUser || JSON.parse(localStorage.getItem('active_user') || 'null') || JSON.parse(localStorage.getItem('hapanamy_affiliate_profile') || 'null') || { name: 'Member' };
-            const myRefCode = (user.full_name || user.name || user.username || 'member').toLowerCase().replace(/[^a-z0-9]/g, '_');
-            
-            const dynamicMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
             const container = document.getElementById('level1DownlinesList');
-            
             if (!container) return;
+
+            const uName = (user.username || '').toLowerCase().replace(/^@+/, '').trim();
+            const uId = (user.id || '').toLowerCase().trim();
+            const uFullName = (user.full_name || user.name || '').toLowerCase().trim();
+            const myRefCodes = [uName, uId, uFullName, (uFullName || '').replace(/[^a-z0-9]/g, '_')].filter(Boolean);
+
+            const seenKeys = new Set();
+            const dynamicMembers = [];
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.toLowerCase().startsWith('referred_users_')) {
+                    const spKey = k.substring('referred_users_'.length).toLowerCase().replace(/^@+/, '').trim();
+                    if (myRefCodes.some(rc => rc && (spKey === rc || (rc === 'hiru' && (spKey === 'hiru' || spKey === 'user-hiru-root'))))) {
+                        try {
+                            const list = JSON.parse(localStorage.getItem(k)) || [];
+                            if (Array.isArray(list)) {
+                                list.forEach(item => {
+                                    const mKey = (item.email || item.username || item.id || '').toLowerCase().trim();
+                                    if (mKey && !seenKeys.has(mKey)) {
+                                        seenKeys.add(mKey);
+                                        dynamicMembers.push(item);
+                                    }
+                                });
+                            }
+                        } catch (e) {}
+                    }
+                }
+            }
 
             dynamicMembers.forEach(member => {
                 const div = document.createElement('div');
                 div.className = 'network-member-item';
                 div.innerHTML = `
                     <div>
-                        <div class="network-member-name">${member.name} (New Joined)</div>
-                        <div class="network-member-sales">${member.sales} Sales generated</div>
+                        <div class="network-member-name">${member.full_name || member.name || member.username} (New Joined)</div>
+                        <div class="network-member-sales">${member.sales || 0} Sales generated</div>
                     </div>
-                    <div class="network-member-earnings" style="color: var(--brand-orange); font-weight: 700;">+ රු. ${member.earnings.toFixed(2)}</div>
+                    <div class="network-member-earnings" style="color: var(--brand-orange); font-weight: 700;">+ රු. ${Number(member.earnings || 0).toFixed(2)}</div>
                 `;
                 container.insertBefore(div, container.firstChild);
             });
