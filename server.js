@@ -875,14 +875,18 @@ function saveDbStore() {
             sponsors: mockSponsors,
             wallets: mockWallets,
             bankAccounts: mockBankAccounts,
+            products: mockProducts,
             productPurchases: mockProductPurchases,
             paymentDeposits: mockPaymentDeposits,
+            productSnapshots: mockProductSnapshots,
+            commissionTransactions: mockCommissionTransactions,
             walletLedger: mockWalletLedger,
             volumeLedger: mockVolumeLedger,
             withdrawalRequests: mockWithdrawalRequests,
             refundRequests: mockRefundRequests,
             kycDocs: mockKycDocs,
             fraudAlerts: mockFraudAlerts,
+            auditLogs: mockAuditLogs,
             referralConversions: mockReferralConversions,
             referralClicks: mockReferralClicks
         };
@@ -903,7 +907,13 @@ function loadDbStore() {
             const data = JSON.parse(raw);
             if (Array.isArray(data.users)) {
                 data.users.forEach(u => {
-                    const ex = mockUsers.find(e => e.id === u.id || (e.email && u.email && e.email.toLowerCase() === u.email.toLowerCase()));
+                    const cleanUname = (u.username || '').toLowerCase().trim();
+                    const cleanEmail = (u.email || '').toLowerCase().trim();
+                    const ex = mockUsers.find(e => 
+                        (u.id && e.id && e.id.toLowerCase() === u.id.toLowerCase()) ||
+                        (cleanUname && e.username && e.username.toLowerCase() === cleanUname) ||
+                        (cleanEmail && e.email && e.email.toLowerCase() === cleanEmail)
+                    );
                     if (ex) {
                         Object.assign(ex, u);
                     } else {
@@ -948,9 +958,20 @@ function loadDbStore() {
                     }
                 });
             }
+            if (Array.isArray(data.products)) {
+                data.products.forEach(prod => {
+                    const ex = mockProducts.find(p => p.id === prod.id || (prod.code && p.code && p.code.toLowerCase() === prod.code.toLowerCase()));
+                    if (ex) {
+                        Object.assign(ex, prod);
+                    } else {
+                        mockProducts.push(prod);
+                    }
+                });
+            }
             if (Array.isArray(data.productPurchases)) {
                 data.productPurchases.forEach(p => {
-                    const ex = mockProductPurchases.find(e => e.id === p.id);
+                    const cleanOrd = (p.order_number || '').toLowerCase().trim();
+                    const ex = mockProductPurchases.find(e => e.id === p.id || (cleanOrd && e.order_number && e.order_number.toLowerCase() === cleanOrd));
                     if (ex) {
                         Object.assign(ex, p);
                     } else {
@@ -960,11 +981,31 @@ function loadDbStore() {
             }
             if (Array.isArray(data.paymentDeposits)) {
                 data.paymentDeposits.forEach(d => {
-                    const ex = mockPaymentDeposits.find(e => e.id === d.id);
+                    const cleanOrd = (d.order_number || '').toLowerCase().trim();
+                    const cleanRef = (d.bank_reference || '').toLowerCase().trim();
+                    const ex = mockPaymentDeposits.find(e => 
+                        e.id === d.id || 
+                        (cleanOrd && e.order_number && e.order_number.toLowerCase() === cleanOrd) ||
+                        (cleanRef && e.bank_reference && e.bank_reference.toLowerCase() === cleanRef)
+                    );
                     if (ex) {
                         Object.assign(ex, d);
                     } else {
                         mockPaymentDeposits.push(d);
+                    }
+                });
+            }
+            if (Array.isArray(data.productSnapshots)) {
+                data.productSnapshots.forEach(s => {
+                    if (!mockProductSnapshots.some(ex => ex.id === s.id)) {
+                        mockProductSnapshots.push(s);
+                    }
+                });
+            }
+            if (Array.isArray(data.commissionTransactions)) {
+                data.commissionTransactions.forEach(c => {
+                    if (!mockCommissionTransactions.some(ex => ex.id === c.id)) {
+                        mockCommissionTransactions.push(c);
                     }
                 });
             }
@@ -1009,6 +1050,13 @@ function loadDbStore() {
                         Object.assign(ex, k);
                     } else {
                         mockKycDocs.push(k);
+                    }
+                });
+            }
+            if (Array.isArray(data.auditLogs)) {
+                data.auditLogs.forEach(a => {
+                    if (!mockAuditLogs.some(ex => ex.id === a.id)) {
+                        mockAuditLogs.push(a);
                     }
                 });
             }
@@ -1761,6 +1809,7 @@ const server = http.createServer(async (req, res) => {
                 mockUsers[userIdx].two_factor_secret = setup.secret;
                 mockUsers[userIdx].backup_codes = setup.backupCodes;
             }
+            saveDbStore();
             sendJSON(res, 200, { success: true, message: 'Two-factor authentication successfully enabled!' });
         } else {
             sendJSON(res, 400, { error: 'Invalid verification code.' });
@@ -1825,6 +1874,8 @@ const server = http.createServer(async (req, res) => {
             entityType: 'users',
             entityId: tokenCheck.email
         });
+
+        saveDbStore();
 
         sendJSON(res, 200, { success: true, message: 'Password has been successfully updated.' });
         return;
@@ -1910,6 +1961,8 @@ const server = http.createServer(async (req, res) => {
             if (body.full_name || body.name) authUser.full_name = (body.full_name || body.name).trim();
         }
 
+        saveDbStore();
+
         sendJSON(res, 200, {
             success: true,
             message: 'Profile updated successfully.',
@@ -1942,10 +1995,10 @@ const server = http.createServer(async (req, res) => {
         let target = null;
         if (userId) {
             const cleanId = String(userId).replace(/^@/, '').toLowerCase();
-            target = state.users.find(u => u.id === userId || String(u.username || '').toLowerCase() === cleanId || String(u.email || '').toLowerCase() === cleanId);
+            target = mockUsers.find(u => u.id === userId || String(u.username || '').toLowerCase() === cleanId || String(u.email || '').toLowerCase() === cleanId);
         }
         if (!target && authUser) {
-            target = state.users.find(u => u.id === authUser.id);
+            target = mockUsers.find(u => u.id === authUser.id);
         }
 
         if (!target) {
@@ -1957,7 +2010,7 @@ const server = http.createServer(async (req, res) => {
         if (target.password_hash) {
             target.password_hash = sha256Hex(newPassword);
         }
-        saveJsonState();
+        saveDbStore();
 
         sendJSON(res, 200, {
             success: true,
@@ -2022,6 +2075,8 @@ const server = http.createServer(async (req, res) => {
         KycService.logAction(mockAuditLogs, authUser.id, 'KYC_SUBMITTED', 'kyc_documents', docId, null, { status: 'PENDING' });
         KycService.logAction(mockAuditLogs, authUser.id, 'BANK_ADDED', 'bank_accounts', bankId, null, { accountNumber: body.accountNumber });
 
+        saveDbStore();
+
         sendJSON(res, 201, { success: true, message: 'KYC submitted successfully and bank details updated.' });
         return;
     }
@@ -2082,6 +2137,8 @@ const server = http.createServer(async (req, res) => {
         }
 
         KycService.transitionKycStatus(mockKycDocs[docIdx], normalizedAction, authUser.id, notes, mockAuditLogs);
+
+        saveDbStore();
 
         sendJSON(res, 200, { success: true, message: `KYC request status has been updated to ${normalizedAction}.`, kyc: mockKycDocs[docIdx] });
         return;
@@ -2197,6 +2254,8 @@ const server = http.createServer(async (req, res) => {
 
         const actionType = oldBank ? 'BANK_CHANGED' : 'BANK_ADDED';
         KycService.logAction(mockAuditLogs, authUser.id, actionType, 'bank_accounts', newBankId, oldBank, newBank);
+
+        saveDbStore();
 
         sendJSON(res, 200, { success: true, message: 'Bank account updated successfully.' });
         return;
@@ -2344,6 +2403,8 @@ const server = http.createServer(async (req, res) => {
                     auditLogs: mockAuditLogs
                 }
             );
+
+            saveDbStore();
 
             sendJSON(res, 201, { success: true, message: 'Member placed successfully.', node: newNode });
         } catch (e) {
@@ -2662,6 +2723,12 @@ const server = http.createServer(async (req, res) => {
             productName: product.name || product.title
         }, `Payment Verified: Order #${ordNum} (${product.name || product.title}) - LKR ${canonicalPrice.toFixed(2)}`);
 
+        if (!mockProductPurchases.some(p => p.id === activePurchase.id || p.order_number === activePurchase.order_number)) {
+            mockProductPurchases.push(activePurchase);
+        }
+
+        saveDbStore();
+
         sendJSON(res, 200, {
             success: true,
             status: 'ACTIVE',
@@ -2918,6 +2985,8 @@ const server = http.createServer(async (req, res) => {
         mockFinancialAuditLogs.push(auditLogEntry);
         KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_CREATED', 'products', prodId, null, product);
 
+        saveDbStore();
+
         sendJSON(res, 201, { success: true, product, calculated: econCalc.calculated, validation });
         return;
     }
@@ -3161,6 +3230,8 @@ const server = http.createServer(async (req, res) => {
         };
         mockFinancialAuditLogs.push(auditLogEntry);
         KycService.logAction(mockAuditLogs, authUser.id, 'PRODUCT_EDITED', 'products', id, currentProduct, mockProducts[prodIdx]);
+
+        saveDbStore();
 
         sendJSON(res, 200, { success: true, product: mockProducts[prodIdx], calculated: econCalc.calculated, validation });
         return;
@@ -3624,6 +3695,8 @@ const server = http.createServer(async (req, res) => {
         mockPaymentDeposits.push(deposit);
 
         KycService.logAction(mockAuditLogs, authUser.id, 'DEPOSIT_SUBMITTED', 'payment_deposits', depositId, null, deposit);
+
+        saveDbStore();
 
         sendJSON(res, 201, { success: true, purchaseId });
         return;
@@ -5136,6 +5209,8 @@ const server = http.createServer(async (req, res) => {
             productName: product.name || product.title
         }, `Instant Purchase Paid: Order #${ordNum} (${product.name || product.title}) - LKR ${orderAmt.toFixed(2)}`);
 
+        saveDbStore();
+
         sendJSON(res, 200, {
             success: true,
             orderNumber: ordNum,
@@ -5187,7 +5262,6 @@ const server = http.createServer(async (req, res) => {
             sendJSON(res, 404, { error: 'Member not found.' });
             return;
         }
-
         sendJSON(res, 200, { success: true, member: detail });
         return;
     }
@@ -5210,7 +5284,7 @@ const server = http.createServer(async (req, res) => {
         const newPassword = body.new_password || body.newPassword || body.password || 'Hapana123';
         const cleanTarget = String(targetUserId || '').replace(/^@/, '').toLowerCase();
 
-        const member = state.users.find(u => 
+        const member = mockUsers.find(u => 
             u.id === targetUserId || 
             String(u.username || '').toLowerCase() === cleanTarget || 
             String(u.email || '').toLowerCase() === cleanTarget ||
@@ -5226,7 +5300,7 @@ const server = http.createServer(async (req, res) => {
         if (member.password_hash) {
             member.password_hash = sha256Hex(newPassword);
         }
-        saveJsonState();
+        saveDbStore();
 
         sendJSON(res, 200, {
             success: true,

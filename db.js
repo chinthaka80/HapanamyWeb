@@ -103,6 +103,29 @@ async function dbGetOrders() {
 }
 
 async function dbAddOrder(order) {
+    // 1. Authoritative Backend Server Sync
+    try {
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || '';
+        const headers = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        await fetch('/api/member/payments', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                productId: order.productId || order.product_id || order.course || 'titan-elite',
+                orderNumber: order.orderId || order.order_id,
+                bankReference: order.txnCode || order.bank_reference || ('REF-' + Date.now()),
+                transferDate: order.date || new Date().toISOString().split('T')[0],
+                amount: order.amount || 19900,
+                slipUrl: order.slipUrl || order.slip_url || 'storage/private/slips/sample-slip.jpg',
+                notes: order.notes || `Submitted by ${order.userName || order.email || 'Customer'}`
+            })
+        }).catch(() => {});
+    } catch (apiErr) {
+        console.warn('Server payment submission notice:', apiErr);
+    }
+
     if (supabaseClient) {
         try {
             const { error } = await supabaseClient.from('bank_orders').insert([order]);
