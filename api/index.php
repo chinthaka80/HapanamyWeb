@@ -69,7 +69,7 @@ try {
                 'kyc_status' => 'APPROVED',
                 'position' => 'ROOT',
                 'referral_code' => 'NAMOBUDDHAYA',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-01T00:00:00Z'
             ],
             [
@@ -85,7 +85,7 @@ try {
                 'kyc_status' => 'APPROVED',
                 'position' => 'ROOT',
                 'referral_code' => 'SUBADMIN',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-01T00:00:00Z'
             ],
             [
@@ -101,7 +101,7 @@ try {
                 'kyc_status' => 'APPROVED',
                 'position' => 'ROOT',
                 'referral_code' => 'Hiru',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-01T00:00:00Z'
             ],
             [
@@ -122,7 +122,7 @@ try {
                 'sponsor_id' => 'user-hiru-root',
                 'sponsor_username' => 'Hiru',
                 'referral_code' => 'Sun',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-02T00:00:00Z'
             ],
             [
@@ -143,7 +143,7 @@ try {
                 'sponsor_id' => 'user-sun-101',
                 'sponsor_username' => 'Sun',
                 'referral_code' => 'SUNDD',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-03T00:00:00Z'
             ],
             [
@@ -164,7 +164,7 @@ try {
                 'sponsor_id' => 'user-hiru-root',
                 'sponsor_username' => 'Hiru',
                 'referral_code' => 'Star01',
-                'password' => 'Araliya321#',
+                'password' => 'Hapana123',
                 'created_at' => '2026-09-29T10:00:00Z'
             ]
         ];
@@ -1382,7 +1382,7 @@ try {
             }
         }
 
-        $passwordsValid = ['Araliya321#', 'admin123', 'hapanamy2026', 'Password123!', 'Admin@123', 'admin'];
+        $passwordsValid = ['Hapana123', 'Araliya321#', 'admin123', 'hapanamy2026', 'Password123!', 'Admin@123', 'admin'];
         $isPassValid = false;
 
         if ($matched) {
@@ -1759,9 +1759,9 @@ try {
             $targetUserId = $parts[2] ?? '';
         }
 
-        $newPassword = trim($input['new_password'] ?? $input['password'] ?? 'Araliya321#');
+        $newPassword = trim($input['new_password'] ?? $input['password'] ?? 'Hapana123');
         if (empty($newPassword)) {
-            $newPassword = 'Araliya321#';
+            $newPassword = 'Hapana123';
         }
 
         $cleanTarget = strtolower(ltrim($targetUserId, '@'));

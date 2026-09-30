@@ -1638,10 +1638,10 @@
                         නව මුරපදය (New Master Password):
                     </label>
                     <div style="position: relative;">
-                        <input type="text" id="resetModalNewPass" value="Araliya321#" required style="width:100%; padding:10px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--brand-gold); border-radius:8px; font-size:14px; font-weight:700; font-family: monospace; box-sizing:border-box;">
+                        <input type="text" id="resetModalNewPass" value="Hapana123" required style="width:100%; padding:10px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--brand-gold); border-radius:8px; font-size:14px; font-weight:700; font-family: monospace; box-sizing:border-box;">
                     </div>
                     <small style="display:block; margin-top:4px; font-size:11.5px; color:var(--text-muted);">
-                        💡 Default Master Password එක <code>Araliya321#</code> වේ. අවශ්‍ය නම් වෙනස් කරන්න.
+                        💡 Default Master Password එක <code>Hapana123</code> වේ. අවශ්‍ය නම් වෙනස් කරන්න.
                     </small>
                 </div>
 
@@ -3991,7 +3991,7 @@
             document.getElementById('resetModalMemberEmail').textContent = email || 'N/A';
             document.getElementById('resetModalTargetUsername').value = userName || '';
             document.getElementById('resetModalTargetEmail').value = email || '';
-            document.getElementById('resetModalNewPass').value = 'Araliya321#';
+            document.getElementById('resetModalNewPass').value = 'Hapana123';
             
             const modal = document.getElementById('adminPasswordResetModal');
             if (modal) modal.style.display = 'flex';
@@ -4009,7 +4009,7 @@
             
             const userName = document.getElementById('resetModalTargetUsername').value;
             const email = document.getElementById('resetModalTargetEmail').value;
-            const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Araliya321#';
+            const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Hapana123';
 
             try {
                 if (btn) {

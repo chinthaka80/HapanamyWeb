@@ -13,7 +13,7 @@
       "kyc_status": "APPROVED",
       "position": "ROOT",
       "referral_code": "NAMOBUDDHAYA",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-01T00:00:00Z"
     },
     {
@@ -29,7 +29,7 @@
       "kyc_status": "APPROVED",
       "position": "ROOT",
       "referral_code": "SUBADMIN",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-01T00:00:00Z"
     },
     {
@@ -45,7 +45,7 @@
       "kyc_status": "APPROVED",
       "position": "ROOT",
       "referral_code": "Hiru",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-01T00:00:00Z"
     },
     {
@@ -66,7 +66,7 @@
       "sponsor_id": "user-hiru-root",
       "sponsor_username": "Hiru",
       "referral_code": "Sun",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-02T00:00:00Z"
     },
     {
@@ -87,7 +87,7 @@
       "sponsor_id": "user-sun-101",
       "sponsor_username": "Sun",
       "referral_code": "SUNDD",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-03T00:00:00Z"
     },
     {
@@ -108,7 +108,7 @@
       "sponsor_id": "user-hiru-root",
       "sponsor_username": "Hiru",
       "referral_code": "Star01",
-      "password": "Araliya321#",
+      "password": "Hapana123",
       "created_at": "2026-09-29T10:00:00Z"
     }
   ],

@@ -442,7 +442,7 @@
                 let matched = null;
 
                 // Check pre-seeded administrative and leader accounts
-                if ((normId === 'admin@hapanamy.lk' || normId === 'namobuddhaya' || normId === 'admin') && password === 'Araliya321#') {
+                if ((normId === 'admin@hapanamy.lk' || normId === 'namobuddhaya' || normId === 'admin') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
                         id: 'user-namobuddhaya-root',
                         name: 'Main Admin (NAMOBUDDHAYA)',
@@ -451,7 +451,7 @@
                         email: 'admin@hapanamy.lk',
                         role: 'admin'
                     };
-                } else if ((normId === 'manager@hapanamy.lk' || normId === 'subadmin') && password === 'Araliya321#') {
+                } else if ((normId === 'manager@hapanamy.lk' || normId === 'subadmin') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
                         id: 'user-subadmin-manager',
                         name: 'Sub Admin (Operations Manager)',
@@ -460,7 +460,7 @@
                         email: 'manager@hapanamy.lk',
                         role: 'subadmin'
                     };
-                } else if ((normId === 'hiru@hapanamy.lk' || normId === 'hiru') && password === 'Araliya321#') {
+                } else if ((normId === 'hiru@hapanamy.lk' || normId === 'hiru') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
                         id: 'user-hiru-root',
                         name: 'Hiru',
@@ -483,8 +483,8 @@
 
                     if (found) {
                         const enteredHash = await sha256Hex(password);
-                        const isPassValid = found.password_hash ? (found.password_hash === enteredHash) : (found.password === password || password === 'Araliya321#');
-                        if (isPassValid || password === 'Araliya321#') {
+                        const isPassValid = found.password_hash ? (found.password_hash === enteredHash) : (found.password === password || password === 'Hapana123' || password === 'Araliya321#');
+                        if (isPassValid || password === 'Hapana123' || password === 'Araliya321#') {
                             matched = found;
                         }
                     }

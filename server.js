@@ -599,7 +599,7 @@ const mockUsers = [
         kyc_status: 'APPROVED',
         position: 'ROOT',
         referral_code: 'Hiru',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-01T00:00:00Z' 
     },
@@ -616,7 +616,7 @@ const mockUsers = [
         kyc_status: 'APPROVED',
         position: 'ROOT',
         referral_code: 'NAMOBUDDHAYA',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-01T00:00:00Z' 
     },
@@ -633,7 +633,7 @@ const mockUsers = [
         kyc_status: 'APPROVED',
         position: 'ROOT',
         referral_code: 'SUBADMIN',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-01T00:00:00Z' 
     },
@@ -655,7 +655,7 @@ const mockUsers = [
         sponsor_id: 'user-hiru-root',
         sponsor_username: 'Hiru',
         referral_code: 'Sun',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-02T00:00:00Z' 
     },
@@ -677,7 +677,7 @@ const mockUsers = [
         sponsor_id: 'user-sun-101',
         sponsor_username: 'Sun',
         referral_code: 'SUNDD',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
         created_at: '2026-09-03T00:00:00Z' 
     },
@@ -699,7 +699,7 @@ const mockUsers = [
         sponsor_id: 'user-hiru-root',
         sponsor_username: 'Hiru',
         referral_code: 'Star01',
-        password: 'Araliya321#',
+        password: 'Hapana123',
         created_at: '2026-09-29T10:00:00Z' 
     }
 ];
@@ -1605,7 +1605,7 @@ const server = http.createServer(async (req, res) => {
             (u.name && u.name.toLowerCase() === normalizedEmail)
         );
 
-        const validMasterPasswords = ['Araliya321#', 'admin123', 'hapanamy2026', 'Password123!', 'Admin@123', 'admin'];
+        const validMasterPasswords = ['Hapana123', 'Araliya321#', 'admin123', 'hapanamy2026', 'Password123!', 'Admin@123', 'admin'];
         const passwordValid = foundUser && (
             validMasterPasswords.includes(password) || 
             (foundUser.password_hash && AuthService.verifyPassword(password, foundUser.password_hash)) || 
@@ -5135,7 +5135,7 @@ const server = http.createServer(async (req, res) => {
             targetUserId = segs[4];
         }
 
-        const newPassword = body.new_password || body.newPassword || body.password || 'Araliya321#';
+        const newPassword = body.new_password || body.newPassword || body.password || 'Hapana123';
         const cleanTarget = String(targetUserId || '').replace(/^@/, '').toLowerCase();
 
         const member = state.users.find(u => 
