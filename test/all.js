@@ -78,6 +78,7 @@ require('./step60-user-registration-identity-and-account-switching-verification.
 require('./step61-production-system-architecture-and-authoritative-data-flow-audit.test');
 require('./step62-production-trust-audit-authoritative-persistence-and-security.test');
 require('./step63-admin-approval-student-dashboard-course-visibility.test');
+require('./step64-star01-left-leg-downlines-and-placement.test');
 
 // Run
 runTests();

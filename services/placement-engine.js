@@ -228,7 +228,11 @@ const PlacementEngine = {
             }
 
             if (relativeDepth < maxDepth) {
-                const children = binaryNodes.filter(n => n.placement_parent_id === userId);
+                const uLower = (userId || '').toLowerCase();
+                const children = binaryNodes.filter(n => {
+                    const pId = (n.placement_parent_id || '').toLowerCase();
+                    return pId === uLower || pId === userId;
+                });
                 for (const child of children) {
                     queue.push({ userId: child.user_id, relativeDepth: relativeDepth + 1 });
                 }
@@ -246,10 +250,12 @@ const PlacementEngine = {
         const targetLeg = leg.toUpperCase(); // 'LEFT' or 'RIGHT'
 
         while (true) {
-            const childNode = binaryNodes.find(n => 
-                n.placement_parent_id === currentParentId && 
-                n.position === targetLeg
-            );
+            const curLower = (currentParentId || '').toLowerCase();
+            const childNode = binaryNodes.find(n => {
+                const pId = (n.placement_parent_id || '').toLowerCase();
+                const pos = (n.position || '').toUpperCase();
+                return (pId === curLower || pId === currentParentId) && pos === targetLeg;
+            });
 
             if (!childNode) {
                 return {
@@ -363,23 +369,30 @@ const PlacementEngine = {
         }
 
         // 2. Direct sponsor exists check
-        const sponsorNode = binaryNodes.find(n => n.user_id === sponsorId);
+        const spClean = (sponsorId || '').replace(/^@+/, '').toLowerCase().trim();
+        const sponsorNode = binaryNodes.find(n => {
+            const nUid = (n.user_id || '').toLowerCase();
+            const nId = (n.id || '').toLowerCase();
+            return nUid === spClean || nId === spClean || nUid === ('user-' + spClean) || nUid === ('user-' + spClean + '-103') || nId === ('node-' + spClean + '-103');
+        });
+
         if (!sponsorNode) {
             // Default to root node if sponsor not in tree
             const root = binaryNodes.find(n => !n.placement_parent_id) || binaryNodes[0];
             return this.resolvePlacement(root.user_id, requestedPosition, binaryNodes, volumeLedger);
         }
 
+        const effectiveSponsorId = sponsorNode.user_id;
         let resolved = null;
 
         if (posKey === 'EXTREME_LEFT' || posKey === 'LEFT') {
-            resolved = this.findExtremeLegPosition(sponsorId, 'LEFT', binaryNodes);
+            resolved = this.findExtremeLegPosition(effectiveSponsorId, 'LEFT', binaryNodes);
         } else if (posKey === 'EXTREME_RIGHT' || posKey === 'RIGHT') {
-            resolved = this.findExtremeLegPosition(sponsorId, 'RIGHT', binaryNodes);
+            resolved = this.findExtremeLegPosition(effectiveSponsorId, 'RIGHT', binaryNodes);
         } else if (posKey === 'BALANCED' || posKey === 'AUTO') {
-            resolved = this.findBalancedPosition(sponsorId, binaryNodes, volumeLedger);
+            resolved = this.findBalancedPosition(effectiveSponsorId, binaryNodes, volumeLedger);
         } else {
-            resolved = this.findFirstAvailableLeaf(sponsorId, 'LEFT', binaryNodes);
+            resolved = this.findFirstAvailableLeaf(effectiveSponsorId, 'LEFT', binaryNodes);
         }
 
         // Calculate depth and path

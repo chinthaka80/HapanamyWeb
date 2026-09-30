@@ -814,7 +814,7 @@ const mockBinaryNodes = [
         depth: 1, 
         path: '', 
         left_child_id: 'node-sun-101', 
-        right_child_id: null, 
+        right_child_id: 'node-star01-103', 
         created_at: '2026-09-01T00:00:00Z' 
     },
     { 
@@ -838,13 +838,25 @@ const mockBinaryNodes = [
         left_child_id: null, 
         right_child_id: null, 
         created_at: '2026-09-03T00:00:00Z' 
+    },
+    { 
+        id: 'node-star01-103', 
+        user_id: 'user-star01-103', 
+        placement_parent_id: 'user-hiru-root', 
+        position: 'RIGHT', 
+        depth: 2, 
+        path: 'user-hiru-root', 
+        left_child_id: null, 
+        right_child_id: null, 
+        created_at: '2026-09-29T10:00:00Z' 
     }
 ];
 const mockFraudAlerts = [];
 const mockCommissionTransactions = [];
 const mockSponsors = [
     { id: 'spon-sun-101', user_id: 'user-sun-101', sponsor_id: 'user-hiru-root', created_at: '2026-09-02T00:00:00Z' },
-    { id: 'spon-sundd-102', user_id: 'user-sundd-102', sponsor_id: 'user-sun-101', created_at: '2026-09-03T00:00:00Z' }
+    { id: 'spon-sundd-102', user_id: 'user-sundd-102', sponsor_id: 'user-sun-101', created_at: '2026-09-03T00:00:00Z' },
+    { id: 'spon-star01-103', user_id: 'user-star01-103', sponsor_id: 'user-hiru-root', created_at: '2026-09-29T10:00:00Z' }
 ];
 const mockReferralClicks = [];
 const mockReferralConversions = [];
