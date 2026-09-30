@@ -873,6 +873,8 @@ function saveDbStore() {
             users: mockUsers,
             binaryNodes: mockBinaryNodes,
             sponsors: mockSponsors,
+            wallets: mockWallets,
+            bankAccounts: mockBankAccounts,
             productPurchases: mockProductPurchases,
             paymentDeposits: mockPaymentDeposits,
             walletLedger: mockWalletLedger,
@@ -884,9 +886,13 @@ function saveDbStore() {
             referralConversions: mockReferralConversions,
             referralClicks: mockReferralClicks
         };
-        fs.writeFileSync(DB_STORE_FILE, JSON.stringify(data, null, 2), 'utf-8');
+        const tempFile = DB_STORE_FILE + '.tmp.' + Date.now() + '.' + Math.random().toString(36).substr(2, 6);
+        fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
+        fs.renameSync(tempFile, DB_STORE_FILE);
+        return true;
     } catch (e) {
         console.error('Failed to save persistent DB store:', e.message);
+        return false;
     }
 }
 
@@ -919,6 +925,26 @@ function loadDbStore() {
                 data.sponsors.forEach(s => {
                     if (!mockSponsors.some(ex => ex.user_id === s.user_id && ex.sponsor_id === s.sponsor_id)) {
                         mockSponsors.push(s);
+                    }
+                });
+            }
+            if (Array.isArray(data.wallets)) {
+                data.wallets.forEach(w => {
+                    const ex = mockWallets.find(e => e.id === w.id || e.user_id === w.user_id);
+                    if (ex) {
+                        Object.assign(ex, w);
+                    } else {
+                        mockWallets.push(w);
+                    }
+                });
+            }
+            if (Array.isArray(data.bankAccounts)) {
+                data.bankAccounts.forEach(b => {
+                    const ex = mockBankAccounts.find(e => e.id === b.id || e.user_id === b.user_id);
+                    if (ex) {
+                        Object.assign(ex, b);
+                    } else {
+                        mockBankAccounts.push(b);
                     }
                 });
             }
@@ -1582,7 +1608,12 @@ const server = http.createServer(async (req, res) => {
             position: result.placement ? result.placement.position : 'N/A'
         }, `New Member Registered: ${result.user.full_name} (@${result.user.username}) | Sponsor: ${result.sponsor ? result.sponsor.sponsor_username : 'None'} | Position: ${result.placement ? result.placement.position : 'N/A'}`);
 
-        saveDbStore();
+        const saveOk = saveDbStore();
+        if (!saveOk) {
+            sendJSON(res, 500, { error: 'Database persistence write failed. Registration aborted.' });
+            return;
+        }
+
         sendJSON(res, 201, result);
         return;
     }

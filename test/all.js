@@ -80,6 +80,7 @@ require('./step62-production-trust-audit-authoritative-persistence-and-security.
 require('./step63-admin-approval-student-dashboard-course-visibility.test');
 require('./step64-star01-left-leg-downlines-and-placement.test');
 require('./step65-earlier-signups-visibility-and-preservation.test');
+require('./step66-atomic-registration-persistence.test');
 
 // Run
 runTests();

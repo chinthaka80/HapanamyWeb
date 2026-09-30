@@ -853,110 +853,19 @@
                                 window.location.href = targetDashboard;
                             }, 1000);
                             return;
-                        } else if (data.error) {
-                            console.warn('Backend API registration returned error, proceeding to local store:', data.error);
+                        } else {
+                            const errMsg = (data && data.error) ? data.error : 'ලියාපදිංචි වීම අසාර්ථක විය (Registration failed).';
+                            showToast(`❌ <strong>දෝෂයකි:</strong> ${errMsg}`);
+                            return;
                         }
+                    } else {
+                        showToast('❌ සේවාදායක දෝෂයකි (Server error occurred). කරුණාකර නැවත උත්සාහ කරන්න.');
+                        return;
                     }
                 } catch (apiErr) {
-                    console.log('Falling back to local register mode...');
-                }
-                
-                // Check if user already exists
-                let registeredUsers = await dbGetUsers();
-                const userExists = registeredUsers.some(u => u.email && u.email.toLowerCase() === email.toLowerCase());
-                if (userExists) {
-                    showToast('⚠️ <strong>විද්‍යුත් තැපෑල දැනටමත් පවතී!</strong> මෙම ඊමේල් ලිපිනයෙන් දැනටමත් ගිණුමක් ලියාපදිංචි කර ඇත.');
+                    showToast(`❌ <strong>සම්බන්ධතා දෝෂයකි:</strong> සේවාදායකය සමඟ සම්බන්ධ විය නොහැක (${apiErr.message || 'Network error'}).`);
                     return;
                 }
-                
-                const passwordHash = await sha256Hex(password);
-                const newUser = {
-                    id: 'user-' + Date.now(),
-                    name,
-                    full_name: name,
-                    username: cleanUsername,
-                    email,
-                    phone,
-                    address,
-                    password_hash: passwordHash,
-                    role: selectedRole,
-                    bank: bankInfo,
-                    sponsor: refCode,
-                    position: urlPos,
-                    status: 'ACTIVE',
-                    account_status: 'ACTIVE',
-                    qualification_status: 'NOT_QUALIFIED',
-                    created_at: new Date().toISOString()
-                };
-                await dbAddUser(newUser);
-
-                // Save active user and profile
-                const tokenStr = 'token-member-' + Date.now();
-                localStorage.setItem('auth_token', tokenStr);
-                localStorage.setItem('active_token', tokenStr);
-                localStorage.setItem('active_user', JSON.stringify({ id: newUser.id, name, full_name: name, username: cleanUsername, email, role: selectedRole, sponsor: refCode, position: urlPos }));
-                localStorage.setItem('hapanamy_user_profile', JSON.stringify({
-                    name: name,
-                    full_name: name,
-                    username: cleanUsername,
-                    email: email,
-                    phone: phone,
-                    address: address,
-                    role: selectedRole,
-                    sponsor: refCode,
-                    position: urlPos,
-                    bankName: bankInfo.split(' ')[0] || 'Bank',
-                    branch: 'Branch',
-                    accNumber: bankInfo.split(' ').slice(1).join(' ') || 'Account'
-                }));
-                
-                let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-                if (!regUsers.some(u => u.email === email || u.id === newUser.id)) {
-                    regUsers.push(newUser);
-                    localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
-                }
-
-                // Record under referrer's downlines in local storage (both raw and lowercase)
-                if (refCode) {
-                    const fallbackEntry = {
-                        id: newUser.id,
-                        user_id: newUser.id,
-                        name: name,
-                        full_name: name,
-                        username: cleanUsername,
-                        email: email,
-                        mobile: phone,
-                        position: urlPos,
-                        role: selectedRole,
-                        status: 'Active',
-                        account_status: 'ACTIVE',
-                        qualification_status: 'NOT_QUALIFIED',
-                        date: new Date().toLocaleDateString(),
-                        created_at: newUser.created_at,
-                        sales: 0,
-                        earnings: 0
-                    };
-
-                    const cleanRef = refCode.replace(/^@+/, '').trim();
-                    const refKeys = [refCode, refCode.toLowerCase(), cleanRef, cleanRef.toLowerCase(), '@' + cleanRef, '@' + cleanRef.toLowerCase()];
-                    const uniqueRefKeys = Array.from(new Set(refKeys.filter(Boolean)));
-
-                    uniqueRefKeys.forEach(k => {
-                        let referredList = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
-                        if (!referredList.some(r => r.email === email || r.username === cleanUsername || r.id === newUser.id)) {
-                            referredList.push(fallbackEntry);
-                            localStorage.setItem('referred_users_' + k, JSON.stringify(referredList));
-                        }
-                    });
-                }
-
-                showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> ස්තූතියි ${name}, ඔබ ${roleText} ලෙස සාර්ථකව සම්බන්ධ විය.`);
-                
-                // Redirect to appropriate dashboard after latency
-                const targetDashboard = selectedRole === 'student' ? 'student-dashboard.html' : 'dashboard.html';
-                setTimeout(() => {
-                    window.location.href = targetDashboard;
-                }, 1500);
             }
         }
 

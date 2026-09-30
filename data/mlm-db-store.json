@@ -142,7 +142,7 @@
       "position": "LEFT",
       "depth": 3,
       "path": "user-hiru-root/user-sun-101",
-      "left_child_id": null,
+      "left_child_id": "user-de89e4bdb12ad02f",
       "right_child_id": null,
       "created_at": "2026-09-03T00:00:00Z"
     },
@@ -185,9 +185,9 @@
       "user_id": "user-hiru-root",
       "product_id": "social-media-masterclass",
       "product_name": "Social Media Income Masterclass 2026",
-      "amount": 15992.00,
-      "price_paid": 15992.00,
-      "binary_volume": 15992.00,
+      "amount": 15992,
+      "price_paid": 15992,
+      "binary_volume": 15992,
       "payment_method": "ADMIN_MANUAL",
       "status": "ACTIVE",
       "activated_at": "2026-09-01T00:00:00Z",
@@ -199,9 +199,9 @@
       "user_id": "user-sun-101",
       "product_id": "facebook-course",
       "product_name": "Facebook Monetization Practical Course",
-      "amount": 7425.00,
-      "price_paid": 7425.00,
-      "binary_volume": 7425.00,
+      "amount": 7425,
+      "price_paid": 7425,
+      "binary_volume": 7425,
       "payment_method": "BANK_TRANSFER",
       "status": "ACTIVE",
       "activated_at": "2026-09-02T00:00:00Z",
@@ -213,9 +213,9 @@
       "user_id": "user-sundd-102",
       "product_id": "tiktok-course",
       "product_name": "TikTok Monetization Practical Course",
-      "amount": 4500.00,
-      "price_paid": 4500.00,
-      "binary_volume": 4500.00,
+      "amount": 4500,
+      "price_paid": 4500,
+      "binary_volume": 4500,
       "payment_method": "BANK_TRANSFER",
       "status": "ACTIVE",
       "activated_at": "2026-09-03T00:00:00Z",
@@ -231,7 +231,7 @@
       "user_email": "sun@hapanamy.lk",
       "product_id": "facebook-course",
       "product_name": "Facebook Monetization Practical Course",
-      "amount": 7425.00,
+      "amount": 7425,
       "bank_reference": "TXN-BOC-849201",
       "status": "APPROVED",
       "created_at": "2026-09-02T00:00:00Z"
@@ -244,7 +244,7 @@
       "user_email": "sundd@hapanamy.lk",
       "product_id": "tiktok-course",
       "product_name": "TikTok Monetization Practical Course",
-      "amount": 4500.00,
+      "amount": 4500,
       "bank_reference": "TXN-COM-910283",
       "status": "APPROVED",
       "created_at": "2026-09-03T00:00:00Z"
@@ -256,10 +256,10 @@
       "user_id": "user-hiru-root",
       "type": "DIRECT_COMMISSION",
       "reference_id": "ord-sun-002",
-      "amount": 594.00,
-      "credit_amount": 594.00,
-      "debit_amount": 0.00,
-      "balance_after": 594.00,
+      "amount": 594,
+      "credit_amount": 594,
+      "debit_amount": 0,
+      "balance_after": 594,
       "description": "8% Direct Commission from Sun's Facebook Course",
       "created_at": "2026-09-02T00:00:00Z"
     },
@@ -268,10 +268,10 @@
       "user_id": "user-sun-101",
       "type": "DIRECT_COMMISSION",
       "reference_id": "ord-sundd-003",
-      "amount": 360.00,
-      "credit_amount": 360.00,
-      "debit_amount": 0.00,
-      "balance_after": 360.00,
+      "amount": 360,
+      "credit_amount": 360,
+      "debit_amount": 0,
+      "balance_after": 360,
       "description": "8% Direct Commission from SUNDD's TikTok Course",
       "created_at": "2026-09-03T00:00:00Z"
     }
@@ -281,7 +281,7 @@
       "id": "vol-hiru-001",
       "user_id": "user-hiru-root",
       "leg": "LEFT",
-      "volume": 7425.00,
+      "volume": 7425,
       "source_order_id": "ord-sun-002",
       "source_user_id": "user-sun-101",
       "created_at": "2026-09-02T00:00:00Z"
@@ -290,7 +290,7 @@
       "id": "vol-hiru-002",
       "user_id": "user-hiru-root",
       "leg": "LEFT",
-      "volume": 4500.00,
+      "volume": 4500,
       "source_order_id": "ord-sundd-003",
       "source_user_id": "user-sundd-102",
       "created_at": "2026-09-03T00:00:00Z"
@@ -299,7 +299,7 @@
       "id": "vol-sun-001",
       "user_id": "user-sun-101",
       "leg": "LEFT",
-      "volume": 4500.00,
+      "volume": 4500,
       "source_order_id": "ord-sundd-003",
       "source_user_id": "user-sundd-102",
       "created_at": "2026-09-03T00:00:00Z"
@@ -319,7 +319,15 @@
     }
   ],
   "fraudAlerts": [],
-  "referralConversions": [],
+  "referralConversions": [
+    {
+      "id": "conv-9nnz8ynlx",
+      "referral_code": "Hiru",
+      "user_id": "user-de89e4bdb12ad02f",
+      "position": "left",
+      "timestamp": "2026-09-30T07:12:12.392Z"
+    }
+  ],
   "referralClicks": [],
   "liveEvents": [
     {

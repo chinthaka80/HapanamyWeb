@@ -606,122 +606,24 @@
                             window.location.replace(targetDashboard);
                         }, 1000);
                         return;
-                    } else if (data.error) {
-                        console.warn('Backend API returned error, falling back to local database store:', data.error);
+                    } else {
+                        const errMsg = (data && data.error) ? data.error : 'ලියාපදිංචි වීම අසාර්ථක විය (Registration failed).';
+                        btnSubmit.disabled = false;
+                        btnSubmit.innerHTML = '<span>🚀 ලියාපදිංචි වන්න (Create Account)</span>';
+                        showToast(`❌ <strong>දෝෂයකි:</strong> ${errMsg}`);
+                        return;
                     }
-                }
-            } catch (err) {
-                console.log('Backend API offline, proceeding with local database layer.');
-            }
-
-            // 2. Local Storage & Database Adapter Layer (Password NEVER stored in plaintext)
-            try {
-                let regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
-                const exists = regUsers.some(u => u.email && u.email.toLowerCase() === email.toLowerCase());
-                if (exists) {
+                } else {
                     btnSubmit.disabled = false;
                     btnSubmit.innerHTML = '<span>🚀 ලියාපදිංචි වන්න (Create Account)</span>';
-                    showToast('⚠️ මෙම විද්‍යුත් තැපෑල (Email) දැනටමත් ලියාපදිංචි කර ඇත. කරුණාකර පිවිසෙන්න (Login).');
+                    showToast('❌ සේවාදායක දෝෂයකි (Server error occurred). කරුණාකර නැවත උත්සාහ කරන්න.');
                     return;
                 }
-
-                const passwordHash = await sha256Hex(password);
-                const newUser = {
-                    id: 'user-' + Date.now(),
-                    name: fullName,
-                    full_name: fullName,
-                    username: username,
-                    email: email,
-                    phone: phone,
-                    password_hash: passwordHash,
-                    role: currentRole,
-                    sponsor: effectiveSponsor,
-                    position: effectivePosition,
-                    status: 'ACTIVE',
-                    account_status: 'ACTIVE',
-                    qualification_status: 'NOT_QUALIFIED',
-                    created_at: new Date().toISOString()
-                };
-
-                regUsers.push(newUser);
-                localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
-
-                if (typeof dbAddUser === 'function') {
-                    await dbAddUser(newUser);
-                }
-
-                // Record under sponsor downline list
-                if (effectiveSponsor) {
-                    const fallbackEntry = {
-                        id: newUser.id,
-                        user_id: newUser.id,
-                        name: fullName,
-                        full_name: fullName,
-                        username: username,
-                        email: email,
-                        mobile: phone,
-                        position: effectivePosition,
-                        role: currentRole,
-                        status: 'Active',
-                        account_status: 'ACTIVE',
-                        qualification_status: 'NOT_QUALIFIED',
-                        date: new Date().toLocaleDateString(),
-                        created_at: newUser.created_at
-                    };
-
-                    const cleanSp = effectiveSponsor.replace(/^@+/, '').trim();
-                    const keys = [effectiveSponsor, effectiveSponsor.toLowerCase(), cleanSp, cleanSp.toLowerCase(), '@' + cleanSp, '@' + cleanSp.toLowerCase()];
-                    const uniqueKeys = Array.from(new Set(keys.filter(Boolean)));
-
-                    uniqueKeys.forEach(k => {
-                        let referredList = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
-                        if (!referredList.some(r => r.email === email || r.username === username || r.id === newUser.id)) {
-                            referredList.push(fallbackEntry);
-                            localStorage.setItem('referred_users_' + k, JSON.stringify(referredList));
-                        }
-                    });
-                }
-
-                const userSessionToken = 'token-member-' + newUser.id;
-                const safeUserProfile = {
-                    id: newUser.id,
-                    name: fullName,
-                    full_name: fullName,
-                    username: username,
-                    email: email,
-                    phone: phone,
-                    role: currentRole,
-                    sponsor: effectiveSponsor,
-                    position: effectivePosition,
-                    status: 'ACTIVE',
-                    created_at: newUser.created_at
-                };
-
-                localStorage.setItem('auth_token', userSessionToken);
-                localStorage.setItem('active_token', userSessionToken);
-                localStorage.setItem('active_user', JSON.stringify(safeUserProfile));
-                localStorage.setItem('hapanamy_user_profile', JSON.stringify(safeUserProfile));
-
-                if (currentRole === 'member' || currentRole === 'affiliate') {
-                    localStorage.setItem('hapanamy_affiliate_profile', JSON.stringify({
-                        name: fullName,
-                        email: email,
-                        phone: phone,
-                        bankName: 'Commercial Bank',
-                        accNumber: '8010294851',
-                        status: 'ACTIVE'
-                    }));
-                }
-
-                showToast(`🎉 <strong>ලියාපදිංචිය සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${fullName}!`, false);
-                const targetDashboard = currentRole === 'student' ? 'student-dashboard.html' : 'dashboard.html';
-                setTimeout(() => {
-                    window.location.replace(targetDashboard);
-                }, 1000);
-            } catch (e2) {
+            } catch (err) {
                 btnSubmit.disabled = false;
                 btnSubmit.innerHTML = '<span>🚀 ලියාපදිංචි වන්න (Create Account)</span>';
-                showToast('❌ තාක්ෂණික දෝෂයක්. කරුණාකර නැවත උත්සාහ කරන්න.');
+                showToast(`❌ <strong>සම්බන්ධතා දෝෂයකි:</strong> සේවාදායකය සමඟ සම්බන්ධ විය නොහැක (${err.message || 'Network connection failed'}).`);
+                return;
             }
         });
     </script>
