@@ -1015,20 +1015,49 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
+            pointer-events: none;
+            max-width: 460px;
         }
 
         .toast-msg {
             background: #102A43;
             color: white;
-            padding: 14px 20px;
+            padding: 14px 18px;
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
             border-left: 4px solid var(--brand-orange);
-            font-size: 13.5px;
+            font-size: 13px;
+            line-height: 1.45;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            animation: fadeIn 0.3s ease;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            pointer-events: auto;
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        .toast-msg.toast-hiding {
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+        }
+
+        .toast-close-btn {
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 15px;
+            line-height: 1;
+            cursor: pointer;
+            padding: 0 0 0 8px;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+
+        .toast-close-btn:hover {
+            color: #FFFFFF;
         }
 
         /* Responsive Breakpoints */
@@ -1972,14 +2001,20 @@
         // Toast
         function showMemberToast(msg) {
             const container = document.getElementById('toastContainer');
+            if (!container) return;
             const toast = document.createElement('div');
             toast.className = 'toast-msg';
-            toast.innerHTML = msg;
+            toast.innerHTML = `
+                <div style="flex-grow: 1;">${msg}</div>
+                <button type="button" class="toast-close-btn" onclick="this.parentElement.classList.add('toast-hiding'); setTimeout(() => { if (this.parentElement) this.parentElement.remove(); }, 350);" title="Dismiss">✕</button>
+            `;
             container.appendChild(toast);
             setTimeout(() => {
-                toast.style.opacity = '0';
-                setTimeout(() => toast.remove(), 300);
-            }, 3500);
+                toast.classList.add('toast-hiding');
+                setTimeout(() => {
+                    if (toast.parentElement) toast.remove();
+                }, 350);
+            }, 4000);
         }
 
         // Copy Referral Link
@@ -3343,7 +3378,8 @@
         }
 
         let memberPollingInterval = null;
-        let memberLastEventId = null;
+        const seenMemberEventIds = new Set();
+        let isInitialLivePoll = true;
 
         function startMemberLivePolling() {
             if (memberPollingInterval) clearInterval(memberPollingInterval);
@@ -3364,11 +3400,20 @@
 
                     if (res.ok) {
                         const data = await res.json();
-                        if (data && data.events && data.events.length > 0) {
+                        if (data && data.events && Array.isArray(data.events) && data.events.length > 0) {
+                            if (isInitialLivePoll) {
+                                // Seed existing history events on initial page load without popping up alerts
+                                data.events.forEach(evt => {
+                                    if (evt && evt.id) seenMemberEventIds.add(evt.id);
+                                });
+                                isInitialLivePoll = false;
+                                return;
+                            }
+
                             let hasNewRelevantEvent = false;
                             data.events.forEach(evt => {
-                                if (memberLastEventId !== evt.id) {
-                                    memberLastEventId = evt.id;
+                                if (evt && evt.id && !seenMemberEventIds.has(evt.id)) {
+                                    seenMemberEventIds.add(evt.id);
                                     hasNewRelevantEvent = true;
                                     if (evt.type === 'NEW_MEMBER_REGISTERED') {
                                         const d = evt.data || {};
@@ -3378,7 +3423,7 @@
                                     }
                                 }
                             });
-                            // Reload dashboard ONLY on new events
+                            // Reload dashboard ONLY on genuinely new events
                             if (hasNewRelevantEvent) {
                                 loadLiveDashboard();
                             }
@@ -3389,7 +3434,7 @@
                 }
             }
 
-            memberPollingInterval = setInterval(poll, 8000);
+            memberPollingInterval = setInterval(poll, 10000);
 
             document.addEventListener('visibilitychange', () => {
                 if (!document.hidden) {
