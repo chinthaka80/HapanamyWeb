@@ -1151,7 +1151,7 @@
                 </div>
 
                 <div class="member-topbar-controls">
-                    <button class="btn-action-sm" onclick="openAccountSwitchModal()" id="btnSwitchAccount" style="background: rgba(245, 124, 0, 0.15); border: 1px solid var(--brand-orange); color: #FFF; font-weight: 700;">👤 Switch Account (ගිණුම මාරු කරන්න)</button>
+                    <button class="btn-action-sm" onclick="openAccountSwitchModal()" id="btnSwitchAccount" style="display: none; background: rgba(245, 124, 0, 0.15); border: 1px solid var(--brand-orange); color: #FFF; font-weight: 700;">👤 Switch Account (ගිණුම මාරු කරන්න)</button>
                     <button class="btn-action-sm" onclick="switchMemberTab('settings')" id="topbarSettingsBtn" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #FFF; font-weight: 600;">⚙️ Profile & Password</button>
                     <a id="topbarAdminBtn" href="hapanamy-admin-portal-9226.html" class="btn-action-sm" style="display:none; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; font-weight: 700; border: none; text-decoration: none;">👑 Admin Panel</a>
                     <button class="btn-action-sm" onclick="toggleDashboardTheme()" id="themeToggleBtn">🌓 Theme</button>
@@ -2959,16 +2959,42 @@
                 bSelect.innerHTML = `<option value="user-bank">${prof.bankName} — Acc: ${prof.accNumber} (${uName})</option>`;
             }
 
-            // Show Admin Portal Button if admin
-            if (user.role === 'admin' || user.role === 'ADMIN') {
-                const sBtn = document.getElementById('sidebarAdminBtn');
-                const tBtn = document.getElementById('topbarAdminBtn');
+            // Update Admin controls & Switch Account button visibility
+            updateAdminVisibility(user);
+        }
+
+        function updateAdminVisibility(user) {
+            const curUser = user || window.currentActiveUser || (localStorage.getItem('active_user') ? JSON.parse(localStorage.getItem('active_user')) : {});
+            const role = (curUser.role || '').toLowerCase();
+            const uname = (curUser.username || '').toLowerCase();
+            const isAdmin = (role === 'admin' || role === 'subadmin' || role === 'super_admin' || uname === 'namobuddhaya' || uname === 'subadmin' || localStorage.getItem('is_admin_session') === 'true');
+
+            const sBtn = document.getElementById('sidebarAdminBtn');
+            const tBtn = document.getElementById('topbarAdminBtn');
+            const switchBtn = document.getElementById('btnSwitchAccount');
+
+            if (isAdmin) {
                 if (sBtn) sBtn.style.display = 'flex';
                 if (tBtn) tBtn.style.display = 'inline-flex';
+                if (switchBtn) switchBtn.style.display = 'inline-flex';
+            } else {
+                if (sBtn) sBtn.style.display = 'none';
+                if (tBtn) tBtn.style.display = 'none';
+                if (switchBtn) switchBtn.style.display = 'none';
             }
         }
 
         function openAccountSwitchModal() {
+            const curUser = window.currentActiveUser || (localStorage.getItem('active_user') ? JSON.parse(localStorage.getItem('active_user')) : { username: 'Hiru' });
+            const role = (curUser.role || '').toLowerCase();
+            const uname = (curUser.username || '').toLowerCase();
+            const isAdmin = (role === 'admin' || role === 'subadmin' || role === 'super_admin' || uname === 'namobuddhaya' || uname === 'subadmin' || localStorage.getItem('is_admin_session') === 'true');
+
+            if (!isAdmin) {
+                showMemberToast('⚠️ මෙම පහසුකම පරීක්ෂා කිරීම සඳහා Admin ගිණුම්වලට පමණක් සීමා කර ඇත.');
+                return;
+            }
+
             const modal = document.getElementById('accountSwitchModal');
             const list = document.getElementById('accountSwitchList');
             if (!modal || !list) return;
@@ -3196,6 +3222,8 @@
                     document.getElementById('settingsKycBadge').textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
                     document.getElementById('settingsKycBadge').className = `badge-pill ${kycSt === 'APPROVED' ? 'badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
                 }
+
+                updateAdminVisibility(data.profile);
             }
 
             // 2. Earnings

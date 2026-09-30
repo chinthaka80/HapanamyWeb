@@ -404,8 +404,15 @@
                         localStorage.setItem('active_user', JSON.stringify(data.user));
                         localStorage.setItem('hapanamy_user_profile', JSON.stringify(data.user));
 
-                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
                         const role = (data.user.role || '').toLowerCase();
+                        const uname = (data.user.username || '').toLowerCase();
+                        if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin' || uname === 'namobuddhaya' || uname === 'subadmin') {
+                            localStorage.setItem('is_admin_session', 'true');
+                        } else {
+                            localStorage.removeItem('is_admin_session');
+                        }
+
+                        showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
                         let targetUrl = 'dashboard.html';
                         if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin') {
                             targetUrl = 'hapanamy-admin-portal-9226.html';
@@ -489,9 +496,16 @@
                     localStorage.setItem('active_token', sessionToken);
                     localStorage.setItem('active_user', JSON.stringify(matched));
                     localStorage.setItem('hapanamy_user_profile', JSON.stringify(matched));
-                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
                     
                     const role = (matched.role || 'member').toLowerCase();
+                    const uname = (matched.username || '').toLowerCase();
+                    if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin' || uname === 'namobuddhaya' || uname === 'subadmin') {
+                        localStorage.setItem('is_admin_session', 'true');
+                    } else {
+                        localStorage.removeItem('is_admin_session');
+                    }
+
+                    showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
                     let targetUrl = 'dashboard.html';
                     if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin') {
                         targetUrl = 'hapanamy-admin-portal-9226.html';
