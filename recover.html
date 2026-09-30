@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk — Browser Data Recovery & Package Exporter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/main.css">
+    <style>
+        :root {
+            --bg-main: #060d17;
+            --bg-surface: #0e1e32;
+            --bg-card: #132742;
+            --brand-orange: #F47B20;
+            --brand-gold: #F0B323;
+            --brand-green-light: #10B981;
+            --text-primary: #FFF9F0;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 249, 240, 0.12);
+            --ph-red: #EF4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .recovery-container {
+            max-width: 960px;
+            margin: 40px auto;
+            padding: 0 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .recovery-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .recovery-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .recovery-logo img {
+            height: 42px;
+            border-radius: 8px;
+            border: 2px solid var(--brand-gold);
+        }
+
+        .recovery-logo span {
+            font-size: 22px;
+            font-weight: 800;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .recovery-logo span span {
+            color: var(--brand-orange);
+        }
+
+        .banner-box {
+            background: linear-gradient(135deg, rgba(244, 123, 32, 0.12) 0%, rgba(16, 42, 67, 0.4) 100%);
+            border: 1px solid rgba(244, 123, 32, 0.35);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .banner-box h2 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 20px;
+            color: var(--brand-gold);
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .banner-box p {
+            margin: 0;
+            font-size: 13.5px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 18px 20px;
+            border-left: 4px solid var(--brand-orange);
+        }
+
+        .stat-card.green { border-left-color: var(--brand-green-light); }
+        .stat-card.gold { border-left-color: var(--brand-gold); }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .stat-val {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .action-bar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: 0.2s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background-color: var(--brand-orange);
+            color: #FFF;
+        }
+
+        .btn-primary:hover {
+            background-color: #e06912;
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+
+        .btn-green {
+            background-color: var(--brand-green-light);
+            color: #060d17;
+        }
+
+        .btn-green:hover {
+            background-color: #0d9668;
+        }
+
+        .card-box {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--brand-gold);
+            margin-top: 0;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: rgba(255, 255, 255, 0.03);
+            color: var(--text-muted);
+            font-weight: 600;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            color: var(--text-primary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .badge-active { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+        .badge-pending { background: rgba(240, 179, 35, 0.15); color: #F0B323; }
+        .badge-missing { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+
+        .json-preview-box {
+            width: 100%;
+            height: 180px;
+            background: #08121e;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            color: #8be9fd;
+            font-family: monospace;
+            font-size: 12px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+
+        .toast-box {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: #102A43;
+            border: 1px solid var(--brand-gold);
+            color: #FFF9F0;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 13px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="recovery-container">
+        <!-- Header -->
+        <header class="recovery-header">
+            <a href="index.html" class="recovery-logo">
+                <img src="assets/logo.jpg" alt="Hapanamy Logo">
+                <span>HAPANAMY<span>.lk</span></span>
+            </a>
+            <div style="font-size: 13px; color: var(--text-muted);">
+                🛠️ Data Recovery & Package Exporter (v2.0-PREVIEW)
+            </div>
+        </header>
+
+        <!-- Information Banner -->
+        <div class="banner-box">
+            <h2><span>📦</span> Local Browser Storage Recovery Package Exporter</h2>
+            <p>
+                මෙම මෙවලම ඔබගේ මෙම Browser එකෙහි LocalStorage තුළ සුරැකී ඇති Offline Registration හා Bank Slip දත්ත පරිලෝකනය (Scan) කර, Admin වෙත යොමු කළ හැකි ආරක්ෂිත Sanitized JSON Package එකක් සකස් කරයි.
+                <br><strong>🔒 රහස්‍යතා සහතිකය:</strong> මෙම Package එක තුළ ඔබගේ Passwords, Security Credentials හෝ Auth Tokens කිසිවක් අඩංගු <u>නොවේ</u>.
+            </p>
+        </div>
+
+        <!-- Real-time Scan Summary Stats -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">හමුවූ සාමාජිකයන් (Users Found)</div>
+                <div class="stat-val" id="statUsersCount">0</div>
+            </div>
+            <div class="stat-card gold">
+                <div class="stat-label">බැංකු රිසිට්පත්/ඇණවුම් (Orders Found)</div>
+                <div class="stat-val" id="statOrdersCount">0</div>
+            </div>
+            <div class="stat-card green">
+                <div class="stat-label">ආරක්ෂිත තත්ත්වය (Security Status)</div>
+                <div class="stat-val" style="font-size: 16px; color: var(--brand-green-light); padding-top: 6px;">
+                    🛡️ 100% SANITIZED
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Toolbar -->
+        <div class="action-bar">
+            <button type="button" class="btn btn-green" onclick="downloadRecoveryPackage()">
+                <span>📥</span> Download Recovery Package (.json)
+            </button>
+            <button type="button" class="btn btn-primary" onclick="copyRecoveryCodeToClipboard()">
+                <span>📋</span> Copy Recovery Code
+            </button>
+            <button type="button" class="btn btn-secondary" onclick="scanLocalBrowserStorage()">
+                <span>🔄</span> Re-Scan Storage
+            </button>
+            <a href="index.html" class="btn btn-secondary">
+                <span>←</span> Back to Website
+            </a>
+        </div>
+
+        <!-- User Records Preview -->
+        <div class="card-box">
+            <h3 class="card-title">
+                <span>👥 Discovered Member Registrations</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Key: hapanamy_registered_users</span>
+            </h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Full Name</th>
+                            <th>Email</th>
+                            <th>Mobile</th>
+                            <th>Sponsor</th>
+                            <th>Position</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recoveredUsersTableBody">
+                        <tr>
+                            <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                Scanning local storage...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Order Records Preview -->
+        <div class="card-box">
+            <h3 class="card-title">
+                <span>🛒 Discovered Purchases & Bank Slips</span>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: normal;">Key: bank_slips_queue</span>
+            </h3>
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Buyer Details</th>
+                            <th>Course</th>
+                            <th>Amount (LKR)</th>
+                            <th>Txn Reference</th>
+                            <th>Date</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recoveredOrdersTableBody">
+                        <tr>
+                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">
+                                Scanning local storage...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Sanitized JSON Payload -->
+        <div class="card-box">
+            <h3 class="card-title">
+                <span>📄 Sanitized Recovery JSON Payload</span>
+                <button type="button" class="btn btn-secondary" style="padding: 4px 10px; font-size: 11.5px;" onclick="copyRecoveryCodeToClipboard()">Copy JSON</button>
+            </h3>
+            <textarea id="recoveryJsonTextarea" class="json-preview-box" readonly></textarea>
+        </div>
+
+        <!-- Instructions for Customer -->
+        <div class="card-box" style="background: rgba(16, 42, 67, 0.4); border-left: 4px solid var(--brand-gold);">
+            <h4 style="margin: 0 0 8px 0; color: var(--brand-gold); font-size: 14px;">📌 ඊළඟ පියවර (Next Steps):</h4>
+            <ol style="margin: 0; padding-left: 20px; font-size: 13px; color: var(--text-secondary); line-height: 1.6;">
+                <li><strong>"Download Recovery Package (.json)"</strong> බොත්තම ඔබා JSON ගොනුව බාගත කරගන්න (හෝ <strong>"Copy Recovery Code"</strong> ඔබන්න).</li>
+                <li>එම ගොනුව හෝ කේතය WhatsApp හෝ Email මඟින් Hapanamy Admin කණ්ඩායම වෙත යොමු කරන්න.</li>
+                <li>Admin විසින් Admin Recovery Preview පද්ධතිය හරහා එය තහවුරු කර ඔබගේ ගිණුම සක්‍රිය කරනු ඇත.</li>
+            </ol>
+        </div>
+
+        <!-- Footer -->
+        <footer style="text-align: center; margin: 40px auto 20px; font-size: 12px; color: var(--text-muted);">
+            © 2026 Hapanamy.lk — Data Recovery Utility. Strictly Read-Only.
+        </footer>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toastContainer" class="toast-box"></div>
+
+    <script>
+        let currentPackage = null;
+
+        function showToast(msg) {
+            const container = document.getElementById('toastContainer');
+            if (!container) return;
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = msg;
+            container.appendChild(toast);
+            setTimeout(() => { toast.remove(); }, 3500);
+        }
+
+        function extractSanitizedUser(u, sourceKey) {
+            if (!u) return null;
+            const uname = u.username || u.name || '';
+            const email = u.email || '';
+            
+            // Strictly exclude any password or auth fields
+            return {
+                id: u.id || u.user_id || 'MISSING',
+                username: uname ? uname.replace(/^@+/, '').trim() : 'MISSING',
+                full_name: u.full_name || u.name || 'MISSING',
+                email: email ? email.trim().toLowerCase() : 'MISSING',
+                mobile: u.phone || u.mobile || 'MISSING',
+                referral_code: u.referral_code || u.ref_code || uname || 'MISSING',
+                sponsor: u.sponsor || u.sponsor_username || u.referrer || 'MISSING',
+                position: (u.position || 'LEFT').toUpperCase(),
+                account_status: u.account_status || u.status || 'MISSING',
+                registration_timestamp: u.created_at || u.date || 'MISSING',
+                source_key: sourceKey || 'hapanamy_registered_users'
+            };
+        }
+
+        function extractSanitizedOrder(o, sourceKey) {
+            if (!o) return null;
+            return {
+                order_id: o.orderId || o.id || 'MISSING',
+                user_reference: o.userName || o.username || o.user_id || o.email || 'MISSING',
+                email: o.email || 'MISSING',
+                phone: o.phone || 'MISSING',
+                product_id: o.product_id || (o.course ? (o.course.toLowerCase().includes('titan') ? 'titan-elite' : 'course-product') : 'MISSING'),
+                product_name: o.course || o.product_name || 'MISSING',
+                amount: typeof o.amount !== 'undefined' ? (parseFloat(o.amount) || 0) : 'MISSING',
+                payment_status: o.status || 'Pending Verification',
+                bank_reference: o.txnCode || o.bank_reference || 'MISSING',
+                order_timestamp: o.date || o.created_at || 'MISSING',
+                source_key: sourceKey || 'bank_slips_queue'
+            };
+        }
+
+        function scanLocalBrowserStorage() {
+            const rawUsers = [];
+            const rawOrders = [];
+            const seenUserKeys = new Set();
+            const seenOrderKeys = new Set();
+
+            // 1. Scan user stores
+            const userStoreKeys = [
+                'hapanamy_registered_users',
+                'registered_users',
+                'all_members',
+                'hapanamy_users',
+                'active_user',
+                'hapanamy_user_profile'
+            ];
+
+            userStoreKeys.forEach(k => {
+                try {
+                    const val = localStorage.getItem(k);
+                    if (val) {
+                        const parsed = JSON.parse(val);
+                        if (Array.isArray(parsed)) {
+                            parsed.forEach(u => {
+                                const sanitized = extractSanitizedUser(u, k);
+                                if (sanitized && sanitized.username !== 'MISSING') {
+                                    const dedupeKey = (sanitized.username + '|' + sanitized.email).toLowerCase();
+                                    if (!seenUserKeys.has(dedupeKey)) {
+                                        seenUserKeys.add(dedupeKey);
+                                        rawUsers.push(sanitized);
+                                    }
+                                }
+                            });
+                        } else if (typeof parsed === 'object' && parsed !== null) {
+                            const sanitized = extractSanitizedUser(parsed, k);
+                            if (sanitized && sanitized.username !== 'MISSING' && sanitized.username !== 'admin' && sanitized.username !== 'subadmin') {
+                                const dedupeKey = (sanitized.username + '|' + sanitized.email).toLowerCase();
+                                if (!seenUserKeys.has(dedupeKey)) {
+                                    seenUserKeys.add(dedupeKey);
+                                    rawUsers.push(sanitized);
+                                }
+                            }
+                        }
+                    }
+                } catch (e) {}
+            });
+
+            // Scan referred_users_*
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.toLowerCase().startsWith('referred_users_')) {
+                    try {
+                        const arr = JSON.parse(localStorage.getItem(k));
+                        if (Array.isArray(arr)) {
+                            arr.forEach(u => {
+                                const sanitized = extractSanitizedUser(u, k);
+                                if (sanitized && sanitized.username !== 'MISSING') {
+                                    const dedupeKey = (sanitized.username + '|' + sanitized.email).toLowerCase();
+                                    if (!seenUserKeys.has(dedupeKey)) {
+                                        seenUserKeys.add(dedupeKey);
+                                        rawUsers.push(sanitized);
+                                    }
+                                }
+                            });
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            // 2. Scan order stores
+            const orderStoreKeys = ['bank_slips_queue', 'bank_orders_queue'];
+            orderStoreKeys.forEach(k => {
+                try {
+                    const val = localStorage.getItem(k);
+                    if (val) {
+                        const parsed = JSON.parse(val);
+                        if (Array.isArray(parsed)) {
+                            parsed.forEach(o => {
+                                const sanitized = extractSanitizedOrder(o, k);
+                                if (sanitized) {
+                                    const dedupeKey = (sanitized.order_id + '|' + sanitized.bank_reference).toLowerCase();
+                                    if (!seenOrderKeys.has(dedupeKey)) {
+                                        seenOrderKeys.add(dedupeKey);
+                                        rawOrders.push(sanitized);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                } catch (e) {}
+            });
+
+            // 3. Assemble structured recovery package (STRICTLY SANITIZED)
+            currentPackage = {
+                metadata: {
+                    recovery_version: '2.0-PREVIEW',
+                    generated_at: new Date().toISOString(),
+                    source_browser_storage: 'localStorage',
+                    application_version: '1.0.0',
+                    user_agent: navigator.userAgent
+                },
+                users: rawUsers,
+                orders: rawOrders
+            };
+
+            // Update Counters
+            document.getElementById('statUsersCount').textContent = rawUsers.length;
+            document.getElementById('statOrdersCount').textContent = rawOrders.length;
+
+            // Render Users Table
+            const uBody = document.getElementById('recoveredUsersTableBody');
+            if (rawUsers.length === 0) {
+                uBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">No offline user registrations found in this browser.</td></tr>`;
+            } else {
+                uBody.innerHTML = rawUsers.map((u, i) => `
+                    <tr>
+                        <td>${i + 1}</td>
+                        <td><strong style="color:var(--brand-gold);">@${u.username}</strong></td>
+                        <td>${u.full_name}</td>
+                        <td>${u.email === 'MISSING' ? '<span class="badge badge-missing">MISSING</span>' : u.email}</td>
+                        <td>${u.mobile === 'MISSING' ? '<span class="badge badge-missing">MISSING</span>' : u.mobile}</td>
+                        <td>@${u.sponsor}</td>
+                        <td><span class="badge" style="background:rgba(255,255,255,0.08);">${u.position}</span></td>
+                        <td><span class="badge badge-active">${u.account_status}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            // Render Orders Table
+            const oBody = document.getElementById('recoveredOrdersTableBody');
+            if (rawOrders.length === 0) {
+                oBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 25px;">No offline bank slips found in this browser.</td></tr>`;
+            } else {
+                oBody.innerHTML = rawOrders.map(o => `
+                    <tr>
+                        <td><strong>${o.order_id}</strong></td>
+                        <td>${o.user_reference}<br><span style="font-size:11px; color:var(--text-muted);">${o.email}</span></td>
+                        <td>${o.product_name}</td>
+                        <td><strong style="color:var(--brand-gold);">LKR ${typeof o.amount === 'number' ? o.amount.toLocaleString() : o.amount}</strong></td>
+                        <td><code>${o.bank_reference}</code></td>
+                        <td>${o.order_timestamp}</td>
+                        <td><span class="badge badge-pending">${o.payment_status}</span></td>
+                    </tr>
+                `).join('');
+            }
+
+            // Update JSON display
+            const jsonText = JSON.stringify(currentPackage, null, 2);
+            document.getElementById('recoveryJsonTextarea').value = jsonText;
+            showToast(`🔍 Storage scanned: <strong>${rawUsers.length}</strong> users, <strong>${rawOrders.length}</strong> orders discovered.`);
+        }
+
+        function downloadRecoveryPackage() {
+            if (!currentPackage || (currentPackage.users.length === 0 && currentPackage.orders.length === 0)) {
+                showToast('⚠️ No records found to export. Storage is clean.');
+                return;
+            }
+
+            const jsonStr = JSON.stringify(currentPackage, null, 2);
+            const blob = new Blob([jsonStr], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            const dateStr = new Date().toISOString().split('T')[0];
+            a.href = url;
+            a.download = `hapanamy-recovery-package-${dateStr}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('📥 Recovery package (.json) downloaded successfully!');
+        }
+
+        function copyRecoveryCodeToClipboard() {
+            const textarea = document.getElementById('recoveryJsonTextarea');
+            if (!textarea || !textarea.value) {
+                showToast('⚠️ No recovery package generated yet.');
+                return;
+            }
+
+            navigator.clipboard.writeText(textarea.value).then(() => {
+                showToast('📋 Recovery JSON code copied to clipboard! You can paste this to send to Admin.');
+            }).catch(() => {
+                textarea.select();
+                document.execCommand('copy');
+                showToast('📋 Recovery code copied!');
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            scanLocalBrowserStorage();
+        });
+    </script>
+</body>
+</html>

@@ -302,9 +302,8 @@ assert.ok(adminHtml.includes('id="mob-nav-recovery"'), 'admin.html must contain 
 assert.ok(adminHtml.includes('id="recoveryUsersPreviewTableBody"'), 'admin.html must contain recoveryUsersPreviewTableBody');
 assert.ok(adminHtml.includes('id="recoveryOrdersPreviewTableBody"'), 'admin.html must contain recoveryOrdersPreviewTableBody');
 assert.ok(adminHtml.includes('scanAndPreviewLocalRecovery'), 'admin.html must define scanAndPreviewLocalRecovery function');
-assert.ok(adminHtml.includes('commitRecoveryMember'), 'admin.html must define commitRecoveryMember function');
-assert.ok(adminHtml.includes('commitRecoveryOrder'), 'admin.html must define commitRecoveryOrder function');
-assert.ok(adminHtml.includes('commitAllReadyRecoveryCandidates'), 'admin.html must define commitAllReadyRecoveryCandidates function');
+assert.ok(adminHtml.includes('openRecoveryRecordDetailModal'), 'admin.html must define openRecoveryRecordDetailModal function');
+assert.ok(adminHtml.includes('generateRecoveryAuditReport'), 'admin.html must define generateRecoveryAuditReport function');
 assert.ok(adminHtml.includes('parseAndValidateImportedJson'), 'admin.html must define parseAndValidateImportedJson function');
 assert.ok(adminHtml.includes('exportLocalRecoveryJson'), 'admin.html must define exportLocalRecoveryJson function');
 

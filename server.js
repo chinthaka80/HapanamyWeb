@@ -5386,62 +5386,143 @@ const server = http.createServer(async (req, res) => {
         const candidates = Array.isArray(body.candidates) ? body.candidates : (Array.isArray(body.users) ? body.users : []);
         const orderCandidates = Array.isArray(body.orders) ? body.orders : (Array.isArray(body.slips) ? body.slips : []);
 
+        let newUsersCount = 0;
+        let existingUsersCount = 0;
+        let duplicateUsersCount = 0;
+        let conflictUsersCount = 0;
+        let missingFieldsTotal = 0;
+
         const validatedUsers = candidates.map(c => {
-            const cleanUname = (c.username || c.name || '').trim().replace(/^@+/, '');
-            const cleanEmail = (c.email || '').trim().toLowerCase();
-            const sponsorCode = (c.sponsor || c.sponsor_username || c.referrer || 'Hiru').trim().replace(/^@+/, '');
+            const rawUname = (c.username || c.name || '').trim();
+            const cleanUname = rawUname.replace(/^@+/, '');
+            const rawEmail = (c.email || '').trim();
+            const cleanEmail = rawEmail.toLowerCase();
+            const rawMobile = (c.mobile || c.phone || '').trim();
+            const rawId = (c.id || c.user_id || '').trim();
+            const rawSponsor = (c.sponsor || c.sponsor_username || c.referrer || '').trim().replace(/^@+/, '');
+            const rawPos = (c.position || '').trim().toUpperCase();
+            const rawDate = (c.registration_timestamp || c.created_at || c.date || '').trim();
 
-            // Check if user already exists on server
-            const existingUser = mockUsers.find(u => 
-                (u.id && u.id === c.id) ||
-                (u.username && u.username.toLowerCase() === cleanUname.toLowerCase()) ||
-                (u.email && u.email.toLowerCase() === cleanEmail)
-            );
+            const missingFields = [];
+            const conflicts = [];
 
-            // Check if sponsor exists
+            // Field audits
+            const fieldIntegrity = {
+                username: { state: cleanUname && cleanUname !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: cleanUname || 'MISSING' },
+                full_name: { state: c.full_name && c.full_name !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: c.full_name || 'MISSING' },
+                email: { state: cleanEmail && cleanEmail !== 'missing' && cleanEmail.includes('@') ? 'AVAILABLE' : (cleanEmail && cleanEmail !== 'missing' ? 'INVALID' : 'MISSING'), value: cleanEmail || 'MISSING' },
+                mobile: { state: rawMobile && rawMobile !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawMobile || 'MISSING' },
+                member_id: { state: rawId && rawId !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawId || 'MISSING' },
+                referral_code: { state: c.referral_code && c.referral_code !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: c.referral_code || 'MISSING' },
+                sponsor: { state: rawSponsor && rawSponsor !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawSponsor || 'MISSING' },
+                position: { state: rawPos && (rawPos === 'LEFT' || rawPos === 'RIGHT') ? 'AVAILABLE' : 'MISSING', value: rawPos || 'MISSING' },
+                registration_date: { state: rawDate && rawDate !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawDate || 'MISSING' }
+            };
+
+            Object.entries(fieldIntegrity).forEach(([fieldName, item]) => {
+                if (item.state === 'MISSING' || item.state === 'INVALID') {
+                    missingFields.push(fieldName);
+                    missingFieldsTotal++;
+                }
+            });
+
+            // Check against server database
+            const exactIdMatch = rawId ? mockUsers.find(u => u.id && u.id.toLowerCase() === rawId.toLowerCase()) : null;
+            const exactUnameMatch = cleanUname ? mockUsers.find(u => u.username && u.username.toLowerCase() === cleanUname.toLowerCase()) : null;
+            const exactEmailMatch = (cleanEmail && cleanEmail.includes('@')) ? mockUsers.find(u => u.email && u.email.toLowerCase() === cleanEmail) : null;
+            const phoneMatch = rawMobile ? mockUsers.find(u => (u.phone && u.phone === rawMobile) || (u.mobile && u.mobile === rawMobile)) : null;
+
+            let serverMatch = 'NEW';
+            let validationStatus = 'READY_FOR_COMMIT';
+            let diagnosticNote = 'Validated: Ready for preview';
+
+            if (exactIdMatch && exactUnameMatch && exactIdMatch.id === exactUnameMatch.id) {
+                serverMatch = 'ALREADY_EXISTS';
+                validationStatus = 'ALREADY_EXISTS_ON_SERVER';
+                diagnosticNote = `User already exists on server with ID ${exactIdMatch.id} (@${exactIdMatch.username})`;
+                existingUsersCount++;
+            } else if (exactUnameMatch && exactEmailMatch && exactUnameMatch.id !== exactEmailMatch.id) {
+                serverMatch = 'CONFLICT';
+                validationStatus = 'CONFLICT';
+                diagnosticNote = `Username @${cleanUname} matches user ${exactUnameMatch.id}, but email ${cleanEmail} matches user ${exactEmailMatch.id}`;
+                conflicts.push(diagnosticNote);
+                conflictUsersCount++;
+            } else if (exactUnameMatch) {
+                serverMatch = 'ALREADY_EXISTS';
+                validationStatus = 'ALREADY_EXISTS_ON_SERVER';
+                diagnosticNote = `Username @${cleanUname} already registered on server (ID: ${exactUnameMatch.id})`;
+                existingUsersCount++;
+            } else if (exactEmailMatch) {
+                serverMatch = 'CONFLICT';
+                validationStatus = 'CONFLICT';
+                diagnosticNote = `Email ${cleanEmail} is already registered under @${exactEmailMatch.username}`;
+                conflicts.push(diagnosticNote);
+                conflictUsersCount++;
+            } else if (phoneMatch) {
+                serverMatch = 'POSSIBLE_DUPLICATE';
+                validationStatus = 'POSSIBLE_DUPLICATE';
+                diagnosticNote = `Mobile number ${rawMobile} matches existing user @${phoneMatch.username}`;
+                duplicateUsersCount++;
+            } else {
+                serverMatch = 'NEW';
+                validationStatus = 'READY_FOR_COMMIT';
+                diagnosticNote = 'New client registration candidate (not present on server)';
+                newUsersCount++;
+            }
+
+            // Sponsor check
             const sponsorUser = mockUsers.find(u => 
-                (u.username && u.username.toLowerCase() === sponsorCode.toLowerCase()) ||
-                (u.id && u.id.toLowerCase() === sponsorCode.toLowerCase()) ||
-                (u.referral_code && u.referral_code.toLowerCase() === sponsorCode.toLowerCase())
+                (rawSponsor && u.username && u.username.toLowerCase() === rawSponsor.toLowerCase()) ||
+                (rawSponsor && u.id && u.id.toLowerCase() === rawSponsor.toLowerCase()) ||
+                (rawSponsor && u.referral_code && u.referral_code.toLowerCase() === rawSponsor.toLowerCase())
             );
 
-            let status = 'READY_FOR_COMMIT';
-            let message = 'Validated: Ready to commit to server database';
-
-            if (existingUser) {
-                status = 'ALREADY_EXISTS_ON_SERVER';
-                message = `User already exists on server with ID ${existingUser.id} (@${existingUser.username})`;
-            } else if (!sponsorUser && sponsorCode.toLowerCase() !== 'hiru') {
-                status = 'SPONSOR_NOT_FOUND';
-                message = `Sponsor code '${sponsorCode}' not found. Will default to Root Sponsor (Hiru).`;
+            if (!sponsorUser && rawSponsor && rawSponsor.toLowerCase() !== 'hiru' && rawSponsor !== 'MISSING') {
+                conflicts.push(`Sponsor code '${rawSponsor}' not found on server. Defaults to Root (Hiru).`);
             }
 
             return {
-                source_id: c.id || 'loc-usr-' + Math.random().toString(36).substr(2, 6),
-                full_name: c.full_name || c.name || cleanUname || 'Recovered Member',
-                username: cleanUname || ('user_' + Math.random().toString(36).substr(2, 6)),
-                email: cleanEmail || `recovered_${Math.random().toString(36).substr(2, 6)}@hapanamy.lk`,
-                mobile: c.mobile || c.phone || '0700000000',
+                source_id: rawId || ('loc-usr-' + Math.random().toString(36).substr(2, 6)),
+                source_key: c.source_key || 'hapanamy_registered_users',
+                full_name: c.full_name || c.name || (cleanUname !== 'MISSING' ? cleanUname : 'Recovered Member'),
+                username: cleanUname || 'MISSING',
+                email: cleanEmail || 'MISSING',
+                mobile: rawMobile || 'MISSING',
                 role: c.role || 'member',
-                sponsor: sponsorUser ? sponsorUser.username : 'Hiru',
-                position: (c.position || 'LEFT').toUpperCase(),
+                sponsor: sponsorUser ? sponsorUser.username : (rawSponsor || 'Hiru'),
+                position: (rawPos === 'RIGHT' ? 'RIGHT' : 'LEFT'),
                 account_status: c.account_status || c.status || 'INACTIVE',
-                created_at: c.created_at || new Date().toISOString(),
-                validation_status: status,
-                validation_message: message,
-                can_commit: status !== 'ALREADY_EXISTS_ON_SERVER'
+                created_at: rawDate || new Date().toISOString(),
+                server_match: serverMatch,
+                validation_status: validationStatus,
+                validation_message: diagnosticNote,
+                field_integrity: fieldIntegrity,
+                missing_fields: missingFields,
+                conflicts: conflicts,
+                can_commit: serverMatch === 'NEW'
             };
         });
 
+        let newOrdersCount = 0;
+        let existingOrdersCount = 0;
+        let duplicateOrdersCount = 0;
+        let conflictOrdersCount = 0;
+
         const validatedOrders = orderCandidates.map(o => {
-            const cleanUser = (o.userName || o.username || o.user_id || o.email || '').trim().replace(/^@+/, '');
+            const rawOrderId = (o.order_id || o.orderId || o.id || '').trim();
+            const cleanUser = (o.user_reference || o.userName || o.username || o.user_id || o.email || '').trim().replace(/^@+/, '');
+            const rawRef = (o.bank_reference || o.txnCode || '').trim();
+            const rawAmount = typeof o.amount !== 'undefined' ? parseFloat(o.amount) : NaN;
+            const rawStatus = (o.payment_status || o.status || 'Pending Verification').trim();
+            const rawDate = (o.order_timestamp || o.date || o.created_at || '').trim();
+
             const matchingBuyer = mockUsers.find(u => 
                 (u.username && u.username.toLowerCase() === cleanUser.toLowerCase()) ||
                 (u.id && u.id.toLowerCase() === cleanUser.toLowerCase()) ||
                 (u.email && u.email.toLowerCase() === cleanUser.toLowerCase())
             );
 
-            const courseName = o.course || o.product_name || 'Titan Elite Trading Academy';
+            const courseName = o.product_name || o.course || 'Titan Elite Trading Academy';
             const matchedProduct = mockProducts.find(p => 
                 p.id.toLowerCase() === courseName.toLowerCase() ||
                 p.name.toLowerCase().includes(courseName.toLowerCase()) ||
@@ -5449,35 +5530,98 @@ const server = http.createServer(async (req, res) => {
                 courseName.toLowerCase().includes(p.id.toLowerCase())
             ) || mockProducts[0];
 
-            let status = 'READY_FOR_COMMIT';
-            let message = 'Validated: Ready to create server order and distribute commissions';
+            const missingFields = [];
+            const conflicts = [];
 
-            if (!matchingBuyer) {
-                status = 'BUYER_PENDING_REGISTRATION';
-                message = `Buyer '${cleanUser}' must be registered before order commit.`;
+            const fieldIntegrity = {
+                order_id: { state: rawOrderId && rawOrderId !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawOrderId || 'MISSING' },
+                user_reference: { state: cleanUser && cleanUser !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: cleanUser || 'MISSING' },
+                product_id: { state: matchedProduct.id ? 'AVAILABLE' : 'MISSING', value: matchedProduct.id },
+                amount: { state: !isNaN(rawAmount) && rawAmount > 0 ? 'AVAILABLE' : 'MISSING', value: isNaN(rawAmount) ? 'MISSING' : rawAmount },
+                payment_status: { state: rawStatus ? 'AVAILABLE' : 'MISSING', value: rawStatus },
+                bank_reference: { state: rawRef && rawRef !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawRef || 'MISSING' },
+                timestamp: { state: rawDate && rawDate !== 'MISSING' ? 'AVAILABLE' : 'MISSING', value: rawDate || 'MISSING' }
+            };
+
+            Object.entries(fieldIntegrity).forEach(([fieldName, item]) => {
+                if (item.state === 'MISSING' || item.state === 'INVALID') {
+                    missingFields.push(fieldName);
+                    missingFieldsTotal++;
+                }
+            });
+
+            // Check against server orders/deposits
+            const existingDeposit = mockPaymentDeposits.find(d => 
+                (rawOrderId && d.order_number && d.order_number.toLowerCase() === rawOrderId.toLowerCase()) ||
+                (rawRef && d.bank_reference && d.bank_reference.toLowerCase() === rawRef.toLowerCase())
+            );
+            const existingPurchase = mockProductPurchases.find(p =>
+                rawOrderId && p.order_number && p.order_number.toLowerCase() === rawOrderId.toLowerCase()
+            );
+
+            let serverMatch = 'NEW';
+            let validationStatus = 'READY_FOR_COMMIT';
+            let diagnosticNote = 'New order candidate';
+
+            if (existingDeposit || existingPurchase) {
+                serverMatch = 'ALREADY_EXISTS';
+                validationStatus = 'ALREADY_EXISTS_ON_SERVER';
+                diagnosticNote = `Order / Reference already exists on server (${existingDeposit ? existingDeposit.id : existingPurchase.id})`;
+                existingOrdersCount++;
+            } else if (!matchingBuyer) {
+                serverMatch = 'CONFLICT';
+                validationStatus = 'BUYER_PENDING_REGISTRATION';
+                diagnosticNote = `Buyer '${cleanUser}' is not registered on server database`;
+                conflicts.push(diagnosticNote);
+                conflictOrdersCount++;
+            } else {
+                serverMatch = 'NEW';
+                validationStatus = 'READY_FOR_COMMIT';
+                diagnosticNote = 'Validated order ready for preview';
+                newOrdersCount++;
             }
 
             return {
-                source_order_id: o.orderId || o.id || ('ORD-LOC-' + Math.random().toString(36).substr(2, 6)),
+                source_order_id: rawOrderId || ('ORD-LOC-' + Math.random().toString(36).substr(2, 6)),
+                source_key: o.source_key || 'bank_slips_queue',
                 user_name: matchingBuyer ? matchingBuyer.full_name : cleanUser,
                 user_id: matchingBuyer ? matchingBuyer.id : null,
-                email: matchingBuyer ? matchingBuyer.email : o.email,
+                email: matchingBuyer ? matchingBuyer.email : (o.email || 'MISSING'),
                 product_id: matchedProduct.id,
                 product_name: matchedProduct.name || matchedProduct.title,
-                amount: parseFloat(o.amount) || matchedProduct.selling_price || 19900,
-                bank_reference: o.txnCode || o.bank_reference || ('REF-REC-' + Math.random().toString(36).substr(2, 6).toUpperCase()),
-                slip_url: o.slipUrl || 'storage/private/slips/recovered-slip.jpg',
-                status: 'APPROVED',
-                validation_status: status,
-                validation_message: message,
-                can_commit: status === 'READY_FOR_COMMIT'
+                amount: !isNaN(rawAmount) ? rawAmount : (matchedProduct.selling_price || 19900),
+                bank_reference: rawRef || ('REF-REC-' + Math.random().toString(36).substr(2, 6).toUpperCase()),
+                slip_url: o.slip_url || o.slipUrl || 'assets/trading_banner.jpg',
+                payment_status: rawStatus,
+                server_match: serverMatch,
+                validation_status: validationStatus,
+                validation_message: diagnosticNote,
+                field_integrity: fieldIntegrity,
+                missing_fields: missingFields,
+                conflicts: conflicts,
+                can_commit: serverMatch === 'NEW' && matchingBuyer !== null
             };
         });
 
         sendJSON(res, 200, {
             success: true,
-            count_users: validatedUsers.length,
-            count_orders: validatedOrders.length,
+            preview_mode: true,
+            server_writes_performed: 0,
+            passwords_exposed: false,
+            auth_tokens_exposed: false,
+            summary: {
+                total_recovered_users: validatedUsers.length,
+                total_recovered_orders: validatedOrders.length,
+                new_users: newUsersCount,
+                existing_users: existingUsersCount,
+                duplicate_users: duplicateUsersCount,
+                conflict_users: conflictUsersCount,
+                new_orders: newOrdersCount,
+                existing_orders: existingOrdersCount,
+                duplicate_orders: duplicateOrdersCount,
+                conflict_orders: conflictOrdersCount,
+                missing_data_count: missingFieldsTotal
+            },
             users: validatedUsers,
             orders: validatedOrders
         });
