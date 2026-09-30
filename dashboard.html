@@ -3005,7 +3005,6 @@
             const list = document.getElementById('accountSwitchList');
             if (!modal || !list) return;
 
-            const curUser = window.currentActiveUser || JSON.parse(localStorage.getItem('active_user')) || { username: 'Hiru' };
             const curUname = (curUser.username || curUser.name || '').toLowerCase();
             const curUid = (curUser.id || '').toLowerCase();
 

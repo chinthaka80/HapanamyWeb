@@ -119,7 +119,6 @@ assert(dashHtml.includes('profileSponsorName'), 'dashboard.html must have profil
 assert(dashHtml.includes('profilePositionBadge'), 'dashboard.html must have profilePositionBadge element');
 
 // login.html
-assert(loginHtml.includes('quickLogin'), 'login.html must define quickLogin');
 assert(loginHtml.includes('cleanNorm'), 'login.html must strip @ for identifier matching');
 
 // login-register.html

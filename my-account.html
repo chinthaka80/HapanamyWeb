@@ -1295,8 +1295,6 @@
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
                 const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
-
-                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
                 const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Member' };
                 
                 const payoutReq = {

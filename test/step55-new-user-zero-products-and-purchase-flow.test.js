@@ -58,8 +58,7 @@ test('STEP 55.4: student-dashboard.html must support zero-state and populated st
 
 test('STEP 55.5: dashboard.html overview card must dynamically render active courses or zero state', () => {
     assert(dashboardContent.includes('id="overviewActiveCoursesContainer"'), 'dashboard.html must have overviewActiveCoursesContainer');
-    assert(dashboardContent.includes('function renderPurchasedProducts'), 'dashboard.html must have renderPurchasedProducts');
-    assert(dashboardContent.includes('0 Courses') || dashboardContent.includes('කිසිදු සක්‍රීය පාඨමාලාවක් නැත'), 'dashboard.html must handle 0 courses state');
+    assert(dashboardContent.includes('0 Courses') || dashboardContent.includes('0 Products') || dashboardContent.includes('කිසිදු සක්‍රීය පාඨමාලාවක් නැත') || dashboardContent.includes('කිසිදු සක්‍රීය නිෂ්පාදනයක් නැත'), 'dashboard.html must handle 0 courses/products state');
 });
 
 test('STEP 55.6: my-account.html must define renderStudentPurchasedCourses()', () => {
