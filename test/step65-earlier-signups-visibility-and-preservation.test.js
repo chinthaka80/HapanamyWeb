@@ -125,8 +125,10 @@ assert.ok(dashHtml.includes('all_users') && dashHtml.includes('users'), 'dashboa
 assert.ok(dashHtml.includes('directList.push'), 'dashboard.html applyDashboardData must merge local direct referrals');
 
 // admin.html & hapanamy-admin-portal-9226.html audits
-assert.ok(adminHtml.includes('user-star01-103'), 'admin.html must include Star01 in seedUsers');
-assert.ok(hapanamyAdminHtml.includes('user-star01-103'), 'hapanamy-admin-portal-9226.html must include Star01 in seedUsers');
+assert.ok(adminHtml.includes('user-namobuddhaya-root'), 'admin.html must include NAMOBUDDHAYA in seedUsers');
+assert.ok(hapanamyAdminHtml.includes('user-namobuddhaya-root'), 'hapanamy-admin-portal-9226.html must include NAMOBUDDHAYA in seedUsers');
+assert.ok(adminHtml.includes('user-subadmin-finance'), 'admin.html must include subadmin2 in seedUsers');
+assert.ok(hapanamyAdminHtml.includes('user-subadmin-finance'), 'hapanamy-admin-portal-9226.html must include subadmin2 in seedUsers');
 assert.ok(adminHtml.includes('replace(/^@+/, \'\')'), 'admin.html must strip leading @ in username key normalization');
 assert.ok(hapanamyAdminHtml.includes('replace(/^@+/, \'\')'), 'hapanamy-admin-portal-9226.html must strip leading @ in username key normalization');
 
@@ -134,7 +136,8 @@ assert.ok(hapanamyAdminHtml.includes('replace(/^@+/, \'\')'), 'hapanamy-admin-po
 assert.ok(affHtml.includes('myRefCodes'), 'affiliate-dashboard.html must check all alias keys for referred_users_*');
 
 // api/index.php audits
-assert.ok(phpIndex.includes('user-star01-103'), 'api/index.php must include user-star01-103 in seedUsers');
+assert.ok(phpIndex.includes('user-namobuddhaya-root'), 'api/index.php must include user-namobuddhaya-root in seedUsers');
+assert.ok(phpIndex.includes('user-subadmin-finance'), 'api/index.php must include user-subadmin-finance in seedUsers');
 assert.ok(phpIndex.includes('$db[\'sponsors\']'), 'api/index.php must check $db[\'sponsors\'] in enrichUserSummary');
 
 console.log('✅ Passed: All frontend and backend markup audits verified successfully');

@@ -84,6 +84,7 @@ require('./step66-atomic-registration-persistence.test');
 require('./step67-browser-storage-recovery-and-sync.test');
 require('./step68-client-recovery-preview-and-export.test');
 require('./step69-authoritative-server-persistence-hardening.test');
+require('./step70-admin-subadmin-configuration-and-purge.test');
 
 // Run
 runTests();

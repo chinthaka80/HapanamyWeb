@@ -658,7 +658,7 @@
                 const normId = email.toLowerCase();
                 let matchedUser = null;
 
-                if ((normId === 'admin@hapanamy.lk' || normId === 'namobuddhaya' || normId === 'admin') && password === 'Araliya321#') {
+                if ((normId === 'admin@hapanamy.lk' || normId === 'namobuddhaya' || normId === 'admin') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matchedUser = {
                         id: 'user-namobuddhaya-root',
                         name: 'Main Admin (NAMOBUDDHAYA)',
@@ -667,7 +667,7 @@
                         email: 'admin@hapanamy.lk',
                         role: 'admin'
                     };
-                } else if ((normId === 'manager@hapanamy.lk' || normId === 'subadmin') && password === 'Araliya321#') {
+                } else if ((normId === 'manager@hapanamy.lk' || normId === 'subadmin') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matchedUser = {
                         id: 'user-subadmin-manager',
                         name: 'Sub Admin (Operations Manager)',
@@ -676,14 +676,23 @@
                         email: 'manager@hapanamy.lk',
                         role: 'subadmin'
                     };
-                } else if ((normId === 'hiru@hapanamy.lk' || normId === 'hiru') && password === 'Araliya321#') {
+                } else if ((normId === 'finance@hapanamy.lk' || normId === 'subadmin2') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matchedUser = {
-                        id: 'user-hiru-root',
-                        name: 'Hiru',
-                        full_name: 'Hiru',
-                        username: 'Hiru',
-                        email: 'hiru@hapanamy.lk',
-                        role: 'member'
+                        id: 'user-subadmin-finance',
+                        name: 'Sub Admin 2 (Finance & Verification)',
+                        full_name: 'Sub Admin 2 (Finance & Verification)',
+                        username: 'subadmin2',
+                        email: 'finance@hapanamy.lk',
+                        role: 'subadmin'
+                    };
+                } else if ((normId === 'support@hapanamy.lk' || normId === 'subadmin3') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                    matchedUser = {
+                        id: 'user-subadmin-support',
+                        name: 'Sub Admin 3 (Customer Support & Relations)',
+                        full_name: 'Sub Admin 3 (Customer Support & Relations)',
+                        username: 'subadmin3',
+                        email: 'support@hapanamy.lk',
+                        role: 'subadmin'
                     };
                 } else {
                     const cleanNorm = normId.replace(/^@+/, '').trim();

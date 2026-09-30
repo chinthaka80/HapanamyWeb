@@ -511,98 +511,11 @@ const mockProductSnapshots = [
     }
 ];
 
-const mockProductPurchases = [
-    {
-        id: 'ord-hiru-001',
-        order_number: 'ORD-HIRU-001',
-        user_id: 'user-hiru-root',
-        product_id: 'social-media-masterclass',
-        product_name: 'Social Media Income Masterclass 2026',
-        amount: 15992.00,
-        price_paid: 15992.00,
-        binary_volume: 15992.00,
-        payment_method: 'ADMIN_MANUAL',
-        status: 'ACTIVE',
-        activated_at: '2026-09-01T00:00:00Z',
-        created_at: '2026-09-01T00:00:00Z'
-    },
-    {
-        id: 'ord-sun-002',
-        order_number: 'ORD-SUN-002',
-        user_id: 'user-sun-101',
-        product_id: 'facebook-course',
-        product_name: 'Facebook Monetization Practical Course',
-        amount: 7425.00,
-        price_paid: 7425.00,
-        binary_volume: 7425.00,
-        payment_method: 'BANK_TRANSFER',
-        status: 'ACTIVE',
-        activated_at: '2026-09-02T00:00:00Z',
-        created_at: '2026-09-02T00:00:00Z'
-    },
-    {
-        id: 'ord-sundd-003',
-        order_number: 'ORD-SUNDD-003',
-        user_id: 'user-sundd-102',
-        product_id: 'tiktok-course',
-        product_name: 'TikTok Monetization Practical Course',
-        amount: 4500.00,
-        price_paid: 4500.00,
-        binary_volume: 4500.00,
-        payment_method: 'BANK_TRANSFER',
-        status: 'ACTIVE',
-        activated_at: '2026-09-03T00:00:00Z',
-        created_at: '2026-09-03T00:00:00Z'
-    }
-];
+const mockProductPurchases = [];
 
-const mockPaymentDeposits = [
-    {
-        id: 'dep-sun-002',
-        order_id: 'ord-sun-002',
-        user_id: 'user-sun-101',
-        user_name: 'Sun',
-        user_email: 'sun@hapanamy.lk',
-        product_id: 'facebook-course',
-        product_name: 'Facebook Monetization Practical Course',
-        amount: 7425.00,
-        bank_reference: 'TXN-BOC-849201',
-        status: 'APPROVED',
-        created_at: '2026-09-02T00:00:00Z'
-    },
-    {
-        id: 'dep-sundd-003',
-        order_id: 'ord-sundd-003',
-        user_id: 'user-sundd-102',
-        user_name: 'SUNDD',
-        user_email: 'sundd@hapanamy.lk',
-        product_id: 'tiktok-course',
-        product_name: 'TikTok Monetization Practical Course',
-        amount: 4500.00,
-        bank_reference: 'TXN-COM-910283',
-        status: 'APPROVED',
-        created_at: '2026-09-03T00:00:00Z'
-    }
-];
+const mockPaymentDeposits = [];
 
 const mockUsers = [
-    { 
-        id: 'user-hiru-root', 
-        username: 'Hiru', 
-        full_name: 'Hiru (Sales Leader)', 
-        name: 'Hiru (Sales Leader)',
-        email: 'hiru@hapanamy.lk', 
-        role: 'member', 
-        status: 'ACTIVE', 
-        account_status: 'ACTIVE',
-        qualification_status: 'QUALIFIED',
-        kyc_status: 'APPROVED',
-        position: 'ROOT',
-        referral_code: 'Hiru',
-        password: 'Hapana123',
-        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        created_at: '2026-09-01T00:00:00Z' 
-    },
     { 
         id: 'user-namobuddhaya-root', 
         username: 'NAMOBUDDHAYA', 
@@ -617,7 +530,7 @@ const mockUsers = [
         position: 'ROOT',
         referral_code: 'NAMOBUDDHAYA',
         password: 'Hapana123',
-        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
+        password_hash: '3bf5525fad501b58c2697d9cc193dc7c:bab6b3f3d0f8e68e4385e6caab42b13d7d4a17b262871f2ea445ec0654cad51292da95f3169419ee179a313f442810ce28b736be7cd0564da5a711dd98cfa134',
         created_at: '2026-09-01T00:00:00Z' 
     },
     { 
@@ -634,88 +547,57 @@ const mockUsers = [
         position: 'ROOT',
         referral_code: 'SUBADMIN',
         password: 'Hapana123',
-        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
+        password_hash: '3bf5525fad501b58c2697d9cc193dc7c:bab6b3f3d0f8e68e4385e6caab42b13d7d4a17b262871f2ea445ec0654cad51292da95f3169419ee179a313f442810ce28b736be7cd0564da5a711dd98cfa134',
         created_at: '2026-09-01T00:00:00Z' 
     },
     { 
-        id: 'user-sun-101', 
-        username: 'Sun', 
-        full_name: 'Sun', 
-        name: 'Sun',
-        email: 'sun@hapanamy.lk', 
-        phone: '0771234567',
-        role: 'member', 
+        id: 'user-subadmin-finance', 
+        username: 'subadmin2', 
+        full_name: 'Sub Admin 2 (Finance & Verification)', 
+        name: 'Sub Admin 2 (Finance & Verification)',
+        email: 'finance@hapanamy.lk', 
+        role: 'subadmin', 
         status: 'ACTIVE', 
         account_status: 'ACTIVE',
-        qualification_status: 'NOT_QUALIFIED',
-        kyc_status: 'PENDING',
-        position: 'LEFT',
-        branch_leg: 'LEFT',
-        sponsor: 'Hiru',
-        sponsor_id: 'user-hiru-root',
-        sponsor_username: 'Hiru',
-        referral_code: 'Sun',
+        qualification_status: 'QUALIFIED',
+        kyc_status: 'APPROVED',
+        position: 'ROOT',
+        referral_code: 'SUBADMIN2',
         password: 'Hapana123',
-        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        created_at: '2026-09-02T00:00:00Z' 
+        password_hash: '3bf5525fad501b58c2697d9cc193dc7c:bab6b3f3d0f8e68e4385e6caab42b13d7d4a17b262871f2ea445ec0654cad51292da95f3169419ee179a313f442810ce28b736be7cd0564da5a711dd98cfa134',
+        created_at: '2026-09-01T00:00:00Z' 
     },
     { 
-        id: 'user-sundd-102', 
-        username: 'SUNDD', 
-        full_name: 'SUNDD', 
-        name: 'SUNDD',
-        email: 'sundd@hapanamy.lk', 
-        phone: '0779876543',
-        role: 'member', 
+        id: 'user-subadmin-support', 
+        username: 'subadmin3', 
+        full_name: 'Sub Admin 3 (Customer Support & Relations)', 
+        name: 'Sub Admin 3 (Customer Support & Relations)',
+        email: 'support@hapanamy.lk', 
+        role: 'subadmin', 
         status: 'ACTIVE', 
         account_status: 'ACTIVE',
-        qualification_status: 'NOT_QUALIFIED',
-        kyc_status: 'PENDING',
-        position: 'LEFT',
-        branch_leg: 'LEFT',
-        sponsor: 'Sun',
-        sponsor_id: 'user-sun-101',
-        sponsor_username: 'Sun',
-        referral_code: 'SUNDD',
+        qualification_status: 'QUALIFIED',
+        kyc_status: 'APPROVED',
+        position: 'ROOT',
+        referral_code: 'SUBADMIN3',
         password: 'Hapana123',
-        password_hash: '8639bf7eafee04438d92c46948989726:95a6523d509eb56ae5841e7a311a23445ec21524de1819bd64725445c552a5a279233e7ff746818ded8851004b35179e0222dd80e734a6b1eb2ee2f062d2d4ed',
-        created_at: '2026-09-03T00:00:00Z' 
-    },
-    { 
-        id: 'user-star01-103', 
-        username: 'Star01', 
-        full_name: 'Star01', 
-        name: 'Star01',
-        email: 'star01@hapanamy.lk', 
-        phone: '0775551234',
-        role: 'member', 
-        status: 'ACTIVE', 
-        account_status: 'ACTIVE',
-        qualification_status: 'NOT_QUALIFIED',
-        kyc_status: 'PENDING',
-        position: 'RIGHT',
-        branch_leg: 'RIGHT',
-        sponsor: 'Hiru',
-        sponsor_id: 'user-hiru-root',
-        sponsor_username: 'Hiru',
-        referral_code: 'Star01',
-        password: 'Hapana123',
-        created_at: '2026-09-29T10:00:00Z' 
+        password_hash: '3bf5525fad501b58c2697d9cc193dc7c:bab6b3f3d0f8e68e4385e6caab42b13d7d4a17b262871f2ea445ec0654cad51292da95f3169419ee179a313f442810ce28b736be7cd0564da5a711dd98cfa134',
+        created_at: '2026-09-01T00:00:00Z' 
     }
 ];
 
 // Pre-seed known active sessions
-activeSessions.set('token-hiru-member', { 
-    id: 'user-hiru-root', 
-    username: 'Hiru', 
-    full_name: 'Hiru (Sales Leader)', 
-    email: 'hiru@hapanamy.lk', 
-    role: 'member' 
-});
 activeSessions.set('token-namobuddhaya-root', { 
     id: 'user-namobuddhaya-root', 
     username: 'NAMOBUDDHAYA', 
-    full_name: 'NAMOBUDDHAYA', 
+    full_name: 'Main Admin (NAMOBUDDHAYA)', 
+    email: 'admin@hapanamy.lk', 
+    role: 'admin' 
+});
+activeSessions.set('token-admin-user-namobuddhaya-root', { 
+    id: 'user-namobuddhaya-root', 
+    username: 'NAMOBUDDHAYA', 
+    full_name: 'Main Admin (NAMOBUDDHAYA)', 
     email: 'admin@hapanamy.lk', 
     role: 'admin' 
 });
@@ -726,138 +608,41 @@ activeSessions.set('token-subadmin-manager', {
     email: 'manager@hapanamy.lk', 
     role: 'subadmin' 
 });
-activeSessions.set('token-sun-member', { 
-    id: 'user-sun-101', 
-    username: 'Sun', 
-    full_name: 'Sun', 
-    email: 'sun@hapanamy.lk', 
-    role: 'member' 
+activeSessions.set('token-subadmin-finance', { 
+    id: 'user-subadmin-finance', 
+    username: 'subadmin2', 
+    full_name: 'Sub Admin 2 (Finance & Verification)', 
+    email: 'finance@hapanamy.lk', 
+    role: 'subadmin' 
 });
-activeSessions.set('token-sundd-member', { 
-    id: 'user-sundd-102', 
-    username: 'SUNDD', 
-    full_name: 'SUNDD', 
-    email: 'sundd@hapanamy.lk', 
-    role: 'member' 
-});
-activeSessions.set('token-star01-member', { 
-    id: 'user-star01-103', 
-    username: 'Star01', 
-    full_name: 'Star01', 
-    email: 'star01@hapanamy.lk', 
-    role: 'member' 
+activeSessions.set('token-subadmin-support', { 
+    id: 'user-subadmin-support', 
+    username: 'subadmin3', 
+    full_name: 'Sub Admin 3 (Customer Support & Relations)', 
+    email: 'support@hapanamy.lk', 
+    role: 'subadmin' 
 });
 
-const mockWalletLedger = [
-    {
-        id: 'wal-hiru-001',
-        user_id: 'user-hiru-root',
-        type: 'DIRECT_COMMISSION',
-        reference_id: 'ord-sun-002',
-        amount: 594.00,
-        credit_amount: 594.00,
-        debit_amount: 0.00,
-        balance_after: 594.00,
-        description: "8% Direct Commission from Sun's Facebook Course",
-        created_at: '2026-09-02T00:00:00Z'
-    },
-    {
-        id: 'wal-sun-002',
-        user_id: 'user-sun-101',
-        type: 'DIRECT_COMMISSION',
-        reference_id: 'ord-sundd-003',
-        amount: 360.00,
-        credit_amount: 360.00,
-        debit_amount: 0.00,
-        balance_after: 360.00,
-        description: "8% Direct Commission from SUNDD's TikTok Course",
-        created_at: '2026-09-03T00:00:00Z'
-    }
-];
+const mockWalletLedger = [];
 const mockWithdrawalRequests = [];
 const mockRefundRequests = [];
-const mockVolumeLedger = [
-    {
-        id: 'vol-hiru-001',
-        user_id: 'user-hiru-root',
-        leg: 'LEFT',
-        volume: 7425.00,
-        source_order_id: 'ord-sun-002',
-        source_user_id: 'user-sun-101',
-        created_at: '2026-09-02T00:00:00Z'
-    },
-    {
-        id: 'vol-hiru-002',
-        user_id: 'user-hiru-root',
-        leg: 'LEFT',
-        volume: 4500.00,
-        source_order_id: 'ord-sundd-003',
-        source_user_id: 'user-sundd-102',
-        created_at: '2026-09-03T00:00:00Z'
-    },
-    {
-        id: 'vol-sun-001',
-        user_id: 'user-sun-101',
-        leg: 'LEFT',
-        volume: 4500.00,
-        source_order_id: 'ord-sundd-003',
-        source_user_id: 'user-sundd-102',
-        created_at: '2026-09-03T00:00:00Z'
-    }
-];
+const mockVolumeLedger = [];
 const mockBinaryNodes = [
     { 
-        id: 'node-hiru-root', 
-        user_id: 'user-hiru-root', 
+        id: 'node-namobuddhaya-root', 
+        user_id: 'user-namobuddhaya-root', 
         placement_parent_id: null, 
         position: null, 
         depth: 1, 
         path: '', 
-        left_child_id: 'node-sun-101', 
-        right_child_id: 'node-star01-103', 
+        left_child_id: null, 
+        right_child_id: null, 
         created_at: '2026-09-01T00:00:00Z' 
-    },
-    { 
-        id: 'node-sun-101', 
-        user_id: 'user-sun-101', 
-        placement_parent_id: 'user-hiru-root', 
-        position: 'LEFT', 
-        depth: 2, 
-        path: 'user-hiru-root', 
-        left_child_id: 'node-sundd-102', 
-        right_child_id: null, 
-        created_at: '2026-09-02T00:00:00Z' 
-    },
-    { 
-        id: 'node-sundd-102', 
-        user_id: 'user-sundd-102', 
-        placement_parent_id: 'user-sun-101', 
-        position: 'LEFT', 
-        depth: 3, 
-        path: 'user-hiru-root/user-sun-101', 
-        left_child_id: null, 
-        right_child_id: null, 
-        created_at: '2026-09-03T00:00:00Z' 
-    },
-    { 
-        id: 'node-star01-103', 
-        user_id: 'user-star01-103', 
-        placement_parent_id: 'user-hiru-root', 
-        position: 'RIGHT', 
-        depth: 2, 
-        path: 'user-hiru-root', 
-        left_child_id: null, 
-        right_child_id: null, 
-        created_at: '2026-09-29T10:00:00Z' 
     }
 ];
 const mockFraudAlerts = [];
 const mockCommissionTransactions = [];
-const mockSponsors = [
-    { id: 'spon-sun-101', user_id: 'user-sun-101', sponsor_id: 'user-hiru-root', created_at: '2026-09-02T00:00:00Z' },
-    { id: 'spon-sundd-102', user_id: 'user-sundd-102', sponsor_id: 'user-sun-101', created_at: '2026-09-03T00:00:00Z' },
-    { id: 'spon-star01-103', user_id: 'user-star01-103', sponsor_id: 'user-hiru-root', created_at: '2026-09-29T10:00:00Z' }
-];
+const mockSponsors = [];
 const mockReferralClicks = [];
 const mockReferralConversions = [];
 const mockDailyEarningsMap = new Map();
@@ -2271,7 +2056,7 @@ const server = http.createServer(async (req, res) => {
         const queryParams = parseQueryParams(req.url);
         const targetUserId = (authUser && authUser.role === 'admin' && queryParams.userId) 
             ? queryParams.userId 
-            : (authUser ? authUser.id : (queryParams.userId || 'user-hiru-root'));
+            : (authUser ? authUser.id : (queryParams.userId || 'user-namobuddhaya-root'));
 
         const maxDepth = parseInt(queryParams.depth || 4);
         const treeHierarchy = PlacementEngine.buildTreeHierarchy(
@@ -2420,7 +2205,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/referrals/my-links
     if (req.method === 'GET' && pathname === '/api/referrals/my-links') {
         const authUser = getAuthenticatedUser(req);
-        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'Hiru';
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'NAMOBUDDHAYA';
 
         const links = ReferralService.generateReferralLinks(username);
         const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
@@ -2450,7 +2235,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/referrals/analytics
     if (req.method === 'GET' && pathname === '/api/referrals/analytics') {
         const authUser = getAuthenticatedUser(req);
-        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'Hiru';
+        const username = authUser ? (authUser.username || authUser.email.split('@')[0]) : 'NAMOBUDDHAYA';
         const stats = ReferralService.getReferralStats(username, mockReferralClicks, mockReferralConversions);
 
         sendJSON(res, 200, { success: true, stats });
@@ -4809,7 +4594,7 @@ const server = http.createServer(async (req, res) => {
             const host = req.headers.host || 'hapanamy.lk';
             const protocol = req.headers['x-forwarded-proto'] || 'https';
             const baseOrigin = `${protocol}://${host}`;
-            const refCode = user.referral_code || user.username || 'Hiru';
+            const refCode = user.referral_code || user.username || (user.email ? user.email.split('@')[0] : 'NAMOBUDDHAYA');
 
             const dashboardPayload = {
                 success: true,

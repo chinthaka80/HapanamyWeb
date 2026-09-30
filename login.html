@@ -428,7 +428,7 @@
                 const prefixNorm = cleanNorm.split('@')[0];
                 let matched = null;
 
-                // Check pre-seeded administrative and leader accounts
+                // Check pre-seeded administrative accounts
                 if ((normId === 'admin@hapanamy.lk' || normId === 'namobuddhaya' || normId === 'admin') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
                         id: 'user-namobuddhaya-root',
@@ -447,41 +447,23 @@
                         email: 'manager@hapanamy.lk',
                         role: 'subadmin'
                     };
-                } else if ((normId === 'hiru@hapanamy.lk' || normId === 'hiru') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                } else if ((normId === 'finance@hapanamy.lk' || normId === 'subadmin2') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
-                        id: 'user-hiru-root',
-                        name: 'Hiru',
-                        full_name: 'Hiru',
-                        username: 'Hiru',
-                        email: 'hiru@hapanamy.lk',
-                        role: 'member'
+                        id: 'user-subadmin-finance',
+                        name: 'Sub Admin 2 (Finance & Verification)',
+                        full_name: 'Sub Admin 2 (Finance & Verification)',
+                        username: 'subadmin2',
+                        email: 'finance@hapanamy.lk',
+                        role: 'subadmin'
                     };
-                } else if ((normId === 'star01@hapanamy.lk' || normId === 'star01' || prefixNorm === 'star01') && (password === 'Hapana123' || password === 'Araliya321#')) {
+                } else if ((normId === 'support@hapanamy.lk' || normId === 'subadmin3') && (password === 'Hapana123' || password === 'Araliya321#')) {
                     matched = {
-                        id: 'user-star01-103',
-                        name: 'Star01',
-                        full_name: 'Star01',
-                        username: 'Star01',
-                        email: 'star01@hapanamy.lk',
-                        role: 'member'
-                    };
-                } else if ((normId === 'sun@hapanamy.lk' || normId === 'sun' || prefixNorm === 'sun') && (password === 'Hapana123' || password === 'Araliya321#')) {
-                    matched = {
-                        id: 'user-sun-101',
-                        name: 'Sun',
-                        full_name: 'Sun',
-                        username: 'Sun',
-                        email: 'sun@hapanamy.lk',
-                        role: 'member'
-                    };
-                } else if ((normId === 'sundd@hapanamy.lk' || normId === 'sundd' || prefixNorm === 'sundd') && (password === 'Hapana123' || password === 'Araliya321#')) {
-                    matched = {
-                        id: 'user-sundd-102',
-                        name: 'SUNDD',
-                        full_name: 'SUNDD',
-                        username: 'SUNDD',
-                        email: 'sundd@hapanamy.lk',
-                        role: 'member'
+                        id: 'user-subadmin-support',
+                        name: 'Sub Admin 3 (Customer Support & Relations)',
+                        full_name: 'Sub Admin 3 (Customer Support & Relations)',
+                        username: 'subadmin3',
+                        email: 'support@hapanamy.lk',
+                        role: 'subadmin'
                     };
                 } else {
                     const regUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
