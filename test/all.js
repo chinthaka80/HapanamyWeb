@@ -86,6 +86,7 @@ require('./step68-client-recovery-preview-and-export.test');
 require('./step69-authoritative-server-persistence-hardening.test');
 require('./step70-admin-subadmin-configuration-and-purge.test');
 require('./step71-delete-member-and-localStorage-cleanup.test');
+require('./step72-hapana-15-binary-tree-and-tiktok-purchases.test');
 
 // Run
 runTests();

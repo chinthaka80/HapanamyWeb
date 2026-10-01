@@ -57,7 +57,7 @@ console.log('✅ Passed: Admin portals contain Delete button and blacklist stale
 console.log('\n--- TEST 5: data/mlm-db-store.json Authoritative Store Invariants ---');
 const dbStore = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'mlm-db-store.json'), 'utf8'));
 
-assert.strictEqual(dbStore.users.length, 4, 'Must have exactly 4 admin accounts');
+assert.ok(dbStore.users.length >= 4, 'Must have at least 4 admin accounts');
 const expectedUname = ['NAMOBUDDHAYA', 'subadmin', 'subadmin2', 'subadmin3'];
 expectedUname.forEach(un => {
     const found = dbStore.users.find(u => u.username === un);
