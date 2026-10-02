@@ -676,9 +676,25 @@ function saveDbStore() {
             referralClicks: mockReferralClicks
         };
         const tempFile = DB_STORE_FILE + '.tmp.' + Date.now() + '.' + Math.random().toString(36).substr(2, 6);
-        fs.writeFileSync(tempFile, JSON.stringify(data, null, 2), 'utf-8');
-        fs.renameSync(tempFile, DB_STORE_FILE);
-        return true;
+        const jsonStr = JSON.stringify(data, null, 2);
+        fs.writeFileSync(tempFile, jsonStr, 'utf-8');
+        
+        try {
+            fs.renameSync(tempFile, DB_STORE_FILE);
+        } catch (renameErr) {
+            // Windows fallback when rename is locked by another reader/indexer
+            fs.copyFileSync(tempFile, DB_STORE_FILE);
+            try { fs.unlinkSync(tempFile); } catch (uErr) {}
+        }
+
+        // Immediate read-back confirmation
+        if (fs.existsSync(DB_STORE_FILE)) {
+            const stats = fs.statSync(DB_STORE_FILE);
+            if (stats.size > 0) {
+                return true;
+            }
+        }
+        return false;
     } catch (e) {
         console.error('Failed to save persistent DB store:', e.message);
         return false;
@@ -5015,7 +5031,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/members (Enriched Real-time Members List)
     if (req.method === 'GET' && pathname === '/api/admin/members') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5036,7 +5052,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/members/:id (Deep Detail Modal Inspection)
     if (req.method === 'GET' && pathname.startsWith('/api/admin/members/')) {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5784,7 +5800,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/orders (Enriched Orders Table with Commissions & BV)
     if (req.method === 'GET' && pathname === '/api/admin/orders') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5802,7 +5818,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/network and /api/admin/network/validate
     if (req.method === 'GET' && (pathname === '/api/admin/network' || pathname === '/api/admin/network/validate' || pathname === '/api/admin/network/status')) {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5827,7 +5843,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/live-updates (Admin Real-time Live Polling)
     if (req.method === 'GET' && pathname === '/api/admin/live-updates') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5867,7 +5883,7 @@ const server = http.createServer(async (req, res) => {
     // POST /api/admin/commissions/calculate
     if (req.method === 'POST' && pathname === '/api/admin/commissions/calculate') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -5907,7 +5923,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/dashboard
     if (req.method === 'GET' && pathname === '/api/admin/dashboard') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
             return;
         }
@@ -6004,7 +6020,7 @@ const server = http.createServer(async (req, res) => {
     // GET /api/admin/notifications/outbox (Admin only)
     if (req.method === 'GET' && pathname === '/api/admin/notifications/outbox') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
@@ -6019,7 +6035,7 @@ const server = http.createServer(async (req, res) => {
     // POST /api/admin/notifications/process-queue (Admin only)
     if (req.method === 'POST' && pathname === '/api/admin/notifications/process-queue') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
@@ -6032,7 +6048,7 @@ const server = http.createServer(async (req, res) => {
     // POST /api/admin/simulation/run (Admin only)
     if (req.method === 'POST' && pathname === '/api/admin/simulation/run') {
         const authUser = getAuthenticatedUser(req);
-        if (!authUser || (authUser.role !== 'admin' && authUser.role !== 'ADMIN')) {
+        if (!authUser || !isAdminUser(authUser)) {
             sendJSON(res, 403, { error: 'Access Denied.' });
             return;
         }
