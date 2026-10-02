@@ -3912,14 +3912,15 @@
 
             const accountMap = new Map();
 
-            // 1. Core accounts
+                        // 1. Core accounts
             accountMap.set('namobuddhaya', {
                 id: 'user-namobuddhaya-root',
                 username: 'NAMOBUDDHAYA',
                 full_name: 'Main Admin (NAMOBUDDHAYA)',
                 role: 'admin',
                 sponsor: null,
-                position: 'ROOT'
+                position: 'ROOT',
+                qualification_status: 'QUALIFIED'
             });
             accountMap.set('subadmin', {
                 id: 'user-subadmin-manager',
@@ -3927,7 +3928,8 @@
                 full_name: 'Sub Admin (Operations Manager)',
                 role: 'subadmin',
                 sponsor: null,
-                position: 'ROOT'
+                position: 'ROOT',
+                qualification_status: 'QUALIFIED'
             });
             accountMap.set('subadmin2', {
                 id: 'user-subadmin-finance',
@@ -3935,7 +3937,8 @@
                 full_name: 'Sub Admin 2 (Finance & Verification)',
                 role: 'subadmin',
                 sponsor: null,
-                position: 'ROOT'
+                position: 'ROOT',
+                qualification_status: 'QUALIFIED'
             });
             accountMap.set('subadmin3', {
                 id: 'user-subadmin-support',
@@ -3943,7 +3946,8 @@
                 full_name: 'Sub Admin 3 (Customer Support & Relations)',
                 role: 'subadmin',
                 sponsor: null,
-                position: 'ROOT'
+                position: 'ROOT',
+                qualification_status: 'QUALIFIED'
             });
 
             // 1B. 15 HAPANA Members
@@ -3957,8 +3961,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4012,8 +4017,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4067,8 +4073,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4122,8 +4129,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4177,8 +4185,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4232,8 +4241,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4287,8 +4297,9 @@
           "status": "ACTIVE",
           "account_status": "ACTIVE",
           "is_active": true,
-          "qualification_status": "NOT_QUALIFIED",
-          "is_qualified": false,
+          "qualification_status": "QUALIFIED",
+          "is_qualified": true,
+          "qualification_progress": "2 / 2 Sales Completed (QUALIFIED)",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4344,6 +4355,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4399,6 +4411,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4454,6 +4467,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4509,6 +4523,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4564,6 +4579,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4619,6 +4635,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4674,6 +4691,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "LEFT",
@@ -4729,6 +4747,7 @@
           "is_active": true,
           "qualification_status": "NOT_QUALIFIED",
           "is_qualified": false,
+          "qualification_progress": "0 / 2 Sales Completed",
           "kyc_status": "APPROVED",
           "is_kyc_approved": true,
           "position": "RIGHT",
@@ -4772,7 +4791,6 @@
           "total_commission": 0,
           "created_at": "2026-10-01T23:45:10.491Z"
 });
-
 
             // 2. Scan registered users across all storage stores
             try {
@@ -5015,11 +5033,43 @@
                     document.getElementById('bvWeakerLegBadge').textContent = `Weaker Leg: ${weaker}`;
                 }
 
+                if (!bn.center_member) {
+                    bn.center_member = {};
+                }
+                bn.center_member.left_points = curLeft !== undefined ? curLeft : (bn.left_volume_current || 0);
+                bn.center_member.right_points = curRight !== undefined ? curRight : (bn.right_volume_current || 0);
+                bn.center_member.left_team_count = leftCount;
+                bn.center_member.right_team_count = rightCount;
+                bn.center_member.total_team_count = teamList.length;
+                if (data.profile && data.profile.qualification_status) {
+                    bn.center_member.qualification_status = data.profile.qualification_status;
+                }
+
                 if (!bn.left_member && leftDesc.length > 0) {
                     bn.left_member = leftDesc[0];
                 }
                 if (!bn.right_member && rightDesc.length > 0) {
                     bn.right_member = rightDesc[0];
+                }
+                if (bn.left_member) {
+                    const lUname = (bn.left_member.username || '').toLowerCase();
+                    const lUserObj = localDownlines.find(d => (d.username || '').toLowerCase() === lUname);
+                    if (lUserObj && (!bn.left_member.balance_points || bn.left_member.balance_points === 0)) {
+                        bn.left_member.balance_points = lUserObj.balance_points || ((lUserObj.left_volume || 0) + (lUserObj.right_volume || 0)) || 4500;
+                    }
+                    if (lUserObj && (!bn.left_member.team_count || bn.left_member.team_count === 0)) {
+                        bn.left_member.team_count = lUserObj.team_size || lUserObj.team_count || 0;
+                    }
+                }
+                if (bn.right_member) {
+                    const rUname = (bn.right_member.username || '').toLowerCase();
+                    const rUserObj = localDownlines.find(d => (d.username || '').toLowerCase() === rUname);
+                    if (rUserObj && (!bn.right_member.balance_points || bn.right_member.balance_points === 0)) {
+                        bn.right_member.balance_points = rUserObj.balance_points || ((rUserObj.left_volume || 0) + (rUserObj.right_volume || 0)) || 4500;
+                    }
+                    if (rUserObj && (!bn.right_member.team_count || bn.right_member.team_count === 0)) {
+                        bn.right_member.team_count = rUserObj.team_size || rUserObj.team_count || 0;
+                    }
                 }
                 bn.left_team_count = leftCount;
                 bn.right_team_count = rightCount;

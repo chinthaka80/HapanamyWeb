@@ -2720,7 +2720,7 @@ try {
         foreach ($db['volumeLedger'] as $vl) {
             if (($vl['user_id'] ?? '') === $userId) {
                 $leg = strtoupper($vl['leg'] ?? 'LEFT');
-                $v = floatval($vl['volume'] ?? 0);
+                $v = floatval($vl['amount'] ?? $vl['volume'] ?? 0);
                 if ($leg === 'LEFT') $leftVol += $v;
                 if ($leg === 'RIGHT') $rightVol += $v;
             }
@@ -3023,8 +3023,8 @@ try {
             foreach ($db['volumeLedger'] as $vl) {
                 if (($vl['user_id'] ?? '') === $currentParentId) {
                     $vlLeg = strtoupper($vl['leg'] ?? 'LEFT');
-                    if ($vlLeg === 'LEFT') $leftVol += floatval($vl['volume'] ?? 0);
-                    if ($vlLeg === 'RIGHT') $rightVol += floatval($vl['volume'] ?? 0);
+                    if ($vlLeg === 'LEFT') $leftVol += floatval($vl['amount'] ?? $vl['volume'] ?? 0);
+                    if ($vlLeg === 'RIGHT') $rightVol += floatval($vl['amount'] ?? $vl['volume'] ?? 0);
                 }
             }
 
@@ -3981,45 +3981,101 @@ try {
 
         $enriched = enrichUserSummary($db, $user);
 
-        // Gather Team List & Leg Counts
+        // Multi-tier Descendant Tree Extraction (BFS)
         $teamList = [];
-        $leftTeamCount = 0;
-        $rightTeamCount = 0;
+        $leftDesc = [];
+        $rightDesc = [];
         $leftMember = null;
         $rightMember = null;
         $directRefs = [];
 
-        $curUid = strtolower($user['id'] ?? '');
+        $curUid = $user['id'] ?? '';
         $curUname = strtolower(ltrim(trim($user['username'] ?? ''), '@'));
-        foreach ($db['users'] as $u) {
-            $spId = strtolower($u['sponsor_id'] ?? '');
-            $spName = strtolower(ltrim(trim($u['sponsor'] ?? $u['sponsor_username'] ?? $u['referrer'] ?? ''), '@'));
-            if (!$spId && isset($db['sponsors']) && is_array($db['sponsors'])) {
-                foreach ($db['sponsors'] as $sp) {
-                    if (($sp['user_id'] ?? '') === ($u['id'] ?? '')) {
-                        $spId = strtolower($sp['sponsor_id'] ?? '');
-                        break;
+
+        $queue = [['userId' => $curUid, 'level' => 0, 'leg' => null, 'isRoot' => true]];
+        $visited = [$curUid => true];
+
+        while (!empty($queue)) {
+            $curr = array_shift($queue);
+            if ($curr['level'] >= 7) continue;
+
+            $cId = $curr['userId'];
+
+            foreach ($db['users'] as $u) {
+                $uId = $u['id'];
+                if (isset($visited[$uId])) continue;
+
+                $isDirectChild = false;
+                $childLeg = 'LEFT';
+
+                // Check binaryNodes first
+                if (isset($db['binaryNodes']) && is_array($db['binaryNodes'])) {
+                    foreach ($db['binaryNodes'] as $bn) {
+                        if (($bn['user_id'] ?? '') === $uId && ($bn['placement_parent_id'] ?? '') === $cId) {
+                            $isDirectChild = true;
+                            $childLeg = strtoupper($bn['position'] ?? 'LEFT');
+                            break;
+                        }
                     }
                 }
-            }
-            $isMatch = (!empty($curUid) && ($spId === $curUid || $spName === $curUid)) || 
-                       (!empty($curUname) && ($spName === $curUname || $spId === $curUname)) ||
-                       ($curUname === 'hiru' && ($spName === 'hiru' || $spId === 'user-hiru-root' || $spId === 'sponsor-uuid-1' || $spName === 'root' || empty($spName) || $spName === 'none')) ||
-                       ($curUname === 'star01' && ($spName === 'star01' || $spId === 'user-star01-103'));
-            if ($isMatch) {
-                $downEnriched = enrichUserSummary($db, $u);
-                $teamList[] = $downEnriched;
-                $directRefs[] = $downEnriched;
-                $leg = strtoupper($downEnriched['position'] ?? 'LEFT');
-                if ($leg === 'LEFT') {
-                    $leftTeamCount++;
-                    if (!$leftMember) $leftMember = $downEnriched;
-                } else if ($leg === 'RIGHT') {
-                    $rightTeamCount++;
-                    if (!$rightMember) $rightMember = $downEnriched;
+
+                // If not in binaryNodes, check sponsors
+                if (!$isDirectChild) {
+                    $spId = $u['sponsor_id'] ?? '';
+                    $spName = strtolower(ltrim(trim($u['sponsor'] ?? $u['sponsor_username'] ?? ''), '@'));
+                    if (!$spId && isset($db['sponsors']) && is_array($db['sponsors'])) {
+                        foreach ($db['sponsors'] as $sp) {
+                            if (($sp['user_id'] ?? '') === $uId) {
+                                $spId = $sp['sponsor_id'] ?? '';
+                                break;
+                            }
+                        }
+                    }
+                    if ($spId === $cId || $spName === strtolower($cId) || (!empty($curr['isRoot']) && $spName === $curUname)) {
+                        $isDirectChild = true;
+                        $childLeg = strtoupper($u['position'] ?? $u['branch_leg'] ?? 'LEFT');
+                    }
+                }
+
+                if ($isDirectChild) {
+                    $visited[$uId] = true;
+                    $inheritedLeg = !empty($curr['isRoot']) ? $childLeg : ($curr['leg'] ?? $childLeg);
+                    $childLvl = $curr['level'] + 1;
+
+                    $downEnriched = enrichUserSummary($db, $u);
+                    $downEnriched['position'] = $inheritedLeg;
+                    $downEnriched['branch_leg'] = $inheritedLeg;
+                    $downEnriched['level'] = $childLvl;
+                    $downEnriched['depth'] = $childLvl;
+
+                    $teamList[] = $downEnriched;
+
+                    if ($inheritedLeg === 'LEFT') {
+                        $leftDesc[] = $downEnriched;
+                        if (!$leftMember && $childLvl === 1) $leftMember = $downEnriched;
+                    } else {
+                        $rightDesc[] = $downEnriched;
+                        if (!$rightMember && $childLvl === 1) $rightMember = $downEnriched;
+                    }
+
+                    if ($childLvl === 1) {
+                        $directRefs[] = $downEnriched;
+                    }
+
+                    $queue[] = [
+                        'userId' => $uId,
+                        'level' => $childLvl,
+                        'leg' => $inheritedLeg,
+                        'isRoot' => false
+                    ];
                 }
             }
         }
+
+        if (!$leftMember && count($leftDesc) > 0) $leftMember = $leftDesc[0];
+        if (!$rightMember && count($rightDesc) > 0) $rightMember = $rightDesc[0];
+        $leftTeamCount = count($leftDesc);
+        $rightTeamCount = count($rightDesc);
 
         $userPurchases = [];
         foreach ($db['productPurchases'] as $p) {
