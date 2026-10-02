@@ -4044,6 +4044,96 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    // DELETE /api/admin/orders/:orderId or POST /api/admin/orders/:orderId/delete or /cancel or /revert
+    if ((req.method === 'DELETE' && (pathname.startsWith('/api/admin/orders/') || pathname.startsWith('/api/admin/purchases/'))) ||
+        (req.method === 'POST' && (
+            (pathname.startsWith('/api/admin/orders/') && (pathname.endsWith('/delete') || pathname.endsWith('/cancel') || pathname.endsWith('/revert'))) ||
+            (pathname.startsWith('/api/admin/purchases/') && (pathname.endsWith('/delete') || pathname.endsWith('/cancel') || pathname.endsWith('/revert'))) ||
+            pathname === '/api/admin/orders/delete' || pathname === '/api/admin/purchases/delete'
+        ))) {
+        const authUser = getAuthenticatedUser(req);
+        if (!authUser || !isAdminUser(authUser)) {
+            sendJSON(res, 403, { error: 'Access Denied. Admin role required.' });
+            return;
+        }
+
+        const body = req.method === 'POST' ? (await parseRequestBody(req)) : {};
+        let orderId = body.orderId || body.order_id || body.purchaseId || body.purchase_id || body.id;
+        if (!orderId) {
+            const segs = pathname.split('/');
+            orderId = segs[4]; // /api/admin/orders/:orderId...
+        }
+
+        const purchIdx = mockProductPurchases.findIndex(p => 
+            p.id === orderId || 
+            (p.order_number && p.order_number.toLowerCase() === (orderId || '').toLowerCase())
+        );
+
+        if (purchIdx === -1) {
+            sendJSON(res, 404, { error: `Order or purchase '${orderId}' not found.` });
+            return;
+        }
+
+        const targetPurchase = mockProductPurchases[purchIdx];
+
+        // 1. Process Reversal for commissions & BV if active
+        let reversalResult = null;
+        if (targetPurchase.status === 'ACTIVE') {
+            try {
+                reversalResult = ReversalEngine.processPurchaseReversal({
+                    purchaseId: targetPurchase.id,
+                    actorId: authUser.id,
+                    reason: body.reason || 'Admin removed/cancelled erroneous purchase',
+                    walletLedger: mockWalletLedger,
+                    volumeLedger: mockVolumeLedger,
+                    binaryNodes: mockBinaryNodes,
+                    users: mockUsers,
+                    auditLogs: mockAuditLogs
+                });
+            } catch (revErr) {
+                console.warn(`Reversal warning during order deletion: ${revErr.message}`);
+            }
+        }
+
+        // 2. Remove purchase & payment deposit
+        mockProductPurchases.splice(purchIdx, 1);
+        const depIdx = mockPaymentDeposits.findIndex(d => 
+            d.purchase_id === targetPurchase.id || 
+            (d.order_number && targetPurchase.order_number && d.order_number.toLowerCase() === targetPurchase.order_number.toLowerCase())
+        );
+        if (depIdx !== -1) {
+            mockPaymentDeposits.splice(depIdx, 1);
+        }
+
+        // 3. Re-evaluate buyer account status
+        const buyerId = targetPurchase.user_id || targetPurchase.buyer_id;
+        const buyer = mockUsers.find(u => u.id === buyerId);
+        if (buyer) {
+            const remainingActive = mockProductPurchases.filter(p => (p.user_id === buyerId || p.buyer_id === buyerId) && p.status === 'ACTIVE');
+            if (remainingActive.length === 0) {
+                buyer.status = 'INACTIVE';
+                buyer.account_status = 'INACTIVE';
+                buyer.personal_bv = 0;
+            }
+        }
+
+        // 4. Log audit & save
+        KycService.logAction(mockAuditLogs, authUser.id, 'PURCHASE_DELETED', 'product_purchases', targetPurchase.id, null, {
+            deleted_purchase: targetPurchase,
+            reversal: reversalResult
+        });
+
+        saveDbStore();
+
+        sendJSON(res, 200, {
+            success: true,
+            message: `Purchase order #${targetPurchase.order_number || targetPurchase.id} has been deleted and commissions/BV reverted.`,
+            deletedPurchaseId: targetPurchase.id,
+            reversal: reversalResult
+        });
+        return;
+    }
+
     // ========================================================
     // WALLET & WITHDRAWAL SYSTEM API ROUTER (PHASE 8)
     // ========================================================
@@ -5252,9 +5342,22 @@ const server = http.createServer(async (req, res) => {
             return;
         }
 
-        const product = mockProducts.find(p => p.id === productId || p.code === productId || p.name === productId || p.title === productId) || mockProducts[0];
-        const sellingPrice = product.selling_price || product.price || 7425.00;
-        const binaryVolume = product.binary_volume || sellingPrice;
+        const reqProdId = (productId || '').toLowerCase().trim();
+        const product = mockProducts.find(p => 
+            (p.id && p.id.toLowerCase() === reqProdId) ||
+            (p.code && p.code.toLowerCase() === reqProdId) ||
+            (p.name && p.name.toLowerCase() === reqProdId) ||
+            (p.title && p.title.toLowerCase() === reqProdId) ||
+            (p.slug && p.slug.toLowerCase() === reqProdId)
+        );
+
+        if (!product) {
+            sendJSON(res, 400, { error: `Product '${productId}' not found in product catalog.` });
+            return;
+        }
+
+        const sellingPrice = product.selling_price !== undefined ? product.selling_price : (product.price !== undefined ? product.price : (product.discount_price || 2000.00));
+        const binaryVolume = product.binary_volume !== undefined ? product.binary_volume : sellingPrice;
 
         const purchaseId = 'purch-adm-' + Math.random().toString(36).substr(2, 9);
         const orderNumber = 'ORD-' + Math.random().toString(36).substring(2, 8).toUpperCase();
@@ -5344,6 +5447,7 @@ const server = http.createServer(async (req, res) => {
             success: true,
             message: `Course '${product.name || product.title}' successfully purchased and activated for ${buyer.full_name || buyer.username}! 8% Direct Commission and Binary Points propagated to upline.`,
             order: activePurchase,
+            purchase: activePurchase,
             buyer: buyer,
             direct_commission: orchResult && orchResult.direct_commission ? orchResult.direct_commission : { amount: Math.round(sellingPrice * 0.08) },
             binary_volume: { volume: binaryVolume },

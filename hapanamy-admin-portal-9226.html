@@ -2159,7 +2159,10 @@
                             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '${item.orderId}', '${item.userName}', ${item.amount}, '${item.course}', ${index})">Approve</button>
                             <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${index})">Reject</button>
                         </div>`
-                    : `<span class="badge-status ${badgeClass}">${item.status}</span>`;
+                    : `<div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="badge-status ${badgeClass}">${item.status}</span>
+                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; border: 1px solid rgba(229,57,53,0.4); color: #FF5252; background: rgba(229,57,53,0.1); cursor: pointer; border-radius: 4px;" onclick="deleteAdminOrder(this, '${item.orderId}')" title="Delete / Cancel Order & Revert Commissions">🗑️ Delete</button>
+                       </div>`;
 
                 rowsHtml += `
                     <tr>
@@ -2240,6 +2243,44 @@
 
             showToast('❌ <strong>රිසිට්පත ප්‍රතික්ෂේප විය!</strong> අදාළ බැංකු රිසිට්පත ප්‍රතික්ෂේප කරන ලදී.');
             loadBankReceiptsTable();
+        }
+
+        // Delete / Revert Admin Order
+        async function deleteAdminOrder(btn, orderId) {
+            if (!confirm(`Are you sure you want to delete / cancel order #${orderId}? This will automatically revert any commissions and BV points.`)) {
+                return;
+            }
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Deleting...';
+            }
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ orderId: orderId })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`🗑️ <strong>ඇණවුම සාර්ථකව ඉවත් කරන ලදී (Order Deleted):</strong> #${orderId}`);
+                    loadBankReceiptsTable();
+                    if (typeof renderRegisteredUsers === 'function') renderRegisteredUsers();
+                } else {
+                    showToast(`❌ <strong>ඉවත් කිරීම අසාර්ථකයි:</strong> ${data.error || 'Server error'}`);
+                }
+            } catch (err) {
+                showToast(`❌ <strong>දෝෂයකි:</strong> ${err.message}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
         }
 
         // Dynamic Products Database initial setup

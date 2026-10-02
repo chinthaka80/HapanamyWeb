@@ -91,6 +91,7 @@ require('./step73-points-calculation-and-team-list-rendering.test');
 require('./step74-new-sale-entry-and-commission-calculation.test');
 require('./step75-live-signup-persistence-and-sponsor-fallback.test');
 require('./step76-persistence-hardening-and-concurrency.test');
+require('./step77-product-catalog-manual-purchase-correction-and-reversal.test');
 
 // Run
 runTests();

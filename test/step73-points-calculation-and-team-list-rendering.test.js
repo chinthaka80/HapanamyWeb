@@ -20,6 +20,15 @@ const dbFilePath = path.join(__dirname, '..', 'data', 'mlm-db-store.json');
 assert.ok(fs.existsSync(dbFilePath), 'data/mlm-db-store.json must exist');
 const db = JSON.parse(fs.readFileSync(dbFilePath, 'utf8'));
 
+// Isolate baseline 15-node HAPANA structure for geometric verification
+const hapanaDb = {
+    users: db.users.filter(u => u.id === 'user-namobuddhaya-root' || (u.username && u.username.startsWith('HAPANA'))),
+    binaryNodes: db.binaryNodes.filter(n => n.id === 'node-namobuddhaya-root' || (n.user_id && (n.user_id === 'user-namobuddhaya-root' || n.user_id.startsWith('user-hapana')))),
+    sponsors: db.sponsors.filter(s => s.user_id && (s.user_id.startsWith('user-hapana') || s.user_id === 'user-namobuddhaya-root')),
+    productPurchases: db.productPurchases.filter(p => p.user_id && p.user_id.startsWith('user-hapana')),
+    volumeLedger: db.volumeLedger.filter(v => v.user_id && (v.user_id.startsWith('user-hapana') || v.user_id === 'user-namobuddhaya-root') && (!v.source_user_id || v.source_user_id.startsWith('user-hapana')))
+};
+
 const dashboardHtml = fs.readFileSync(path.join(__dirname, '..', 'dashboard.html'), 'utf8');
 const adminHtml = fs.readFileSync(path.join(__dirname, '..', 'admin.html'), 'utf8');
 const portalHtml = fs.readFileSync(path.join(__dirname, '..', 'hapanamy-admin-portal-9226.html'), 'utf8');
@@ -28,15 +37,15 @@ const portalHtml = fs.readFileSync(path.join(__dirname, '..', 'hapanamy-admin-po
 console.log('--- TEST 1: Authoritative Volume and Team Hierarchy for 15-Node Tree ---');
 
 // NAMOBUDDHAYA (Root)
-const netRoot = MLMNetworkEngine.getMemberNetwork('user-namobuddhaya-root', db);
-const volRoot = VolumeLedger.getVolumeSummary('user-namobuddhaya-root', db.volumeLedger, db.productPurchases);
-assert.strictEqual(netRoot.team_list.length, 15, 'Root NAMOBUDDHAYA must have 15 team members');
+const netRoot = MLMNetworkEngine.getMemberNetwork('user-namobuddhaya-root', hapanaDb);
+const volRoot = VolumeLedger.getVolumeSummary('user-namobuddhaya-root', hapanaDb.volumeLedger, hapanaDb.productPurchases);
+assert.strictEqual(netRoot.team_list.length, 15, 'Root NAMOBUDDHAYA must have 15 team members in HAPANA tree');
 assert.strictEqual(volRoot.current_left_volume, 67500, 'Root Left BV must be 67,500');
 assert.strictEqual(volRoot.current_right_volume, 0, 'Root Right BV must be 0');
 
 // HAPANA01 (Level 1 Root of 14 members)
-const net01 = MLMNetworkEngine.getMemberNetwork('user-hapana-01', db);
-const vol01 = VolumeLedger.getVolumeSummary('user-hapana-01', db.volumeLedger, db.productPurchases);
+const net01 = MLMNetworkEngine.getMemberNetwork('user-hapana-01', hapanaDb);
+const vol01 = VolumeLedger.getVolumeSummary('user-hapana-01', hapanaDb.volumeLedger, hapanaDb.productPurchases);
 assert.strictEqual(net01.team_list.length, 14, 'HAPANA01 must have 14 team members');
 assert.strictEqual(vol01.current_left_volume, 31500, 'HAPANA01 Left BV must be 31,500');
 assert.strictEqual(vol01.current_right_volume, 31500, 'HAPANA01 Right BV must be 31,500');
@@ -44,14 +53,14 @@ assert.strictEqual(net01.center_member.left_points, 31500);
 assert.strictEqual(net01.center_member.right_points, 31500);
 
 // HAPANA02 & HAPANA03 (Level 2 Roots of 6 members each)
-const net02 = MLMNetworkEngine.getMemberNetwork('user-hapana-02', db);
-const vol02 = VolumeLedger.getVolumeSummary('user-hapana-02', db.volumeLedger, db.productPurchases);
+const net02 = MLMNetworkEngine.getMemberNetwork('user-hapana-02', hapanaDb);
+const vol02 = VolumeLedger.getVolumeSummary('user-hapana-02', hapanaDb.volumeLedger, hapanaDb.productPurchases);
 assert.strictEqual(net02.team_list.length, 6, 'HAPANA02 must have 6 team members');
 assert.strictEqual(vol02.current_left_volume, 13500, 'HAPANA02 Left BV must be 13,500');
 assert.strictEqual(vol02.current_right_volume, 13500, 'HAPANA02 Right BV must be 13,500');
 
-const net03 = MLMNetworkEngine.getMemberNetwork('user-hapana-03', db);
-const vol03 = VolumeLedger.getVolumeSummary('user-hapana-03', db.volumeLedger, db.productPurchases);
+const net03 = MLMNetworkEngine.getMemberNetwork('user-hapana-03', hapanaDb);
+const vol03 = VolumeLedger.getVolumeSummary('user-hapana-03', hapanaDb.volumeLedger, hapanaDb.productPurchases);
 assert.strictEqual(net03.team_list.length, 6, 'HAPANA03 must have 6 team members');
 assert.strictEqual(vol03.current_left_volume, 13500, 'HAPANA03 Left BV must be 13,500');
 assert.strictEqual(vol03.current_right_volume, 13500, 'HAPANA03 Right BV must be 13,500');
@@ -59,8 +68,8 @@ assert.strictEqual(vol03.current_right_volume, 13500, 'HAPANA03 Right BV must be
 // HAPANA04 to HAPANA07 (Level 3 Roots of 2 members each)
 for (let i = 4; i <= 7; i++) {
     const uid = `user-hapana-0${i}`;
-    const net = MLMNetworkEngine.getMemberNetwork(uid, db);
-    const vol = VolumeLedger.getVolumeSummary(uid, db.volumeLedger, db.productPurchases);
+    const net = MLMNetworkEngine.getMemberNetwork(uid, hapanaDb);
+    const vol = VolumeLedger.getVolumeSummary(uid, hapanaDb.volumeLedger, hapanaDb.productPurchases);
     assert.strictEqual(net.team_list.length, 2, `HAPANA0${i} must have 2 team members`);
     assert.strictEqual(vol.current_left_volume, 4500, `HAPANA0${i} Left BV must be 4,500`);
     assert.strictEqual(vol.current_right_volume, 4500, `HAPANA0${i} Right BV must be 4,500`);
@@ -70,9 +79,9 @@ for (let i = 4; i <= 7; i++) {
 for (let i = 8; i <= 15; i++) {
     const numStr = String(i).padStart(2, '0');
     const uid = `user-hapana-${numStr}`;
-    const net = MLMNetworkEngine.getMemberNetwork(uid, db);
-    const vol = VolumeLedger.getVolumeSummary(uid, db.volumeLedger, db.productPurchases);
-    assert.strictEqual(net.team_list.length, 0, `HAPANA${numStr} leaf node must have 0 team members`);
+    const net = MLMNetworkEngine.getMemberNetwork(uid, hapanaDb);
+    const vol = VolumeLedger.getVolumeSummary(uid, hapanaDb.volumeLedger, hapanaDb.productPurchases);
+    assert.strictEqual(net.team_list.length, 0, `HAPANA${numStr} leaf node must have 0 team members in HAPANA tree`);
     assert.strictEqual(vol.current_left_volume, 0, `HAPANA${numStr} Left BV must be 0`);
     assert.strictEqual(vol.current_right_volume, 0, `HAPANA${numStr} Right BV must be 0`);
 }

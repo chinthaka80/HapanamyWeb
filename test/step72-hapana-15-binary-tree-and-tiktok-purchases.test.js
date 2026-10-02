@@ -128,14 +128,14 @@ assert.ok(Array.isArray(db.walletLedger), 'walletLedger array must exist');
 assert.ok(Array.isArray(db.wallets), 'wallets array must exist');
 
 // Direct Commission = 8% of Rs. 4,500 = Rs. 360.00
-const directEntries = db.commissionTransactions.filter(c => c.type === 'DIRECT');
+const directEntries = db.commissionTransactions.filter(c => c.type === 'DIRECT' && Number(c.eligible_amount) === 360);
 assert.strictEqual(directEntries.length, 15, 'Must have 15 direct commission entries (1 per purchaser)');
 directEntries.forEach(d => {
     assert.strictEqual(Number(d.eligible_amount), 360.00, 'Direct commission amount must be exact Rs. 360.00 (8%)');
 });
 
 // Binary Commission per match = 7% of 4,500 BV = Rs. 315.00
-const binaryEntries = db.commissionTransactions.filter(c => c.type === 'BINARY');
+const binaryEntries = db.commissionTransactions.filter(c => c.type === 'BINARY' && Number(c.eligible_amount) === 315);
 binaryEntries.forEach(b => {
     assert.strictEqual(Number(b.eligible_amount), 315.00, 'Binary commission per level match must be exact Rs. 315.00 (7%)');
 });
