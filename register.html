@@ -345,7 +345,7 @@
 
         <div id="sponsorBadge" class="sponsor-badge" style="display: none; background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 13px; color: var(--brand-gold); align-items: center; gap: 8px;">
             <span style="font-size: 16px;">🤝</span>
-            <span>Sponsor: <strong id="sponsorNameText" style="color: #FFF;">Hiru</strong> (<span id="sponsorPosText" style="color: var(--brand-orange); font-weight: 700;">LEFT</span> Team)</span>
+            <span>Sponsor: <strong id="sponsorNameText" style="color: #FFF;">NAMOBUDDHAYA</strong> (<span id="sponsorPosText" style="color: var(--brand-orange); font-weight: 700;">LEFT</span> Team)</span>
         </div>
 
         <div id="authToast" class="auth-toast"></div>
@@ -431,12 +431,12 @@
             localStorage.setItem('hapanamy_ref_position', posQuery.toUpperCase());
         }
 
-        const effectiveSponsor = refQuery || localStorage.getItem('hapanamy_referrer') || 'Hiru';
+        const effectiveSponsor = refQuery || localStorage.getItem('hapanamy_referrer') || 'NAMOBUDDHAYA';
         const effectivePosition = (posQuery || localStorage.getItem('hapanamy_ref_position') || 'LEFT').toUpperCase();
 
         const sponsorBadge = document.getElementById('sponsorBadge');
         if (sponsorBadge && effectiveSponsor) {
-            document.getElementById('sponsorNameText').textContent = effectiveSponsor;
+            document.getElementById('sponsorNameText').textContent = effectiveSponsor === 'NAMOBUDDHAYA' ? 'NAMOBUDDHAYA (Company Direct)' : effectiveSponsor;
             document.getElementById('sponsorPosText').textContent = effectivePosition;
             sponsorBadge.style.display = 'flex';
         }

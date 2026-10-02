@@ -125,19 +125,22 @@ const AuthService = {
         let effectiveSponsorCode = sponsorCode || payload.sponsor || payload.referrer || payload.sponsor_id || payload.sponsor_username;
         let effectivePosition = position || payload.requestedPosition || payload.tree_position || 'LEFT';
 
+        // Resilient fallback to root company admin if sponsor is empty
+        if (!effectiveSponsorCode || typeof effectiveSponsorCode !== 'string' || !effectiveSponsorCode.trim() || effectiveSponsorCode === 'undefined' || effectiveSponsorCode === 'null') {
+            effectiveSponsorCode = 'NAMOBUDDHAYA';
+        } else {
+            effectiveSponsorCode = effectiveSponsorCode.trim();
+        }
+
         // Check if referral intent token provided from Step 14
         if (intentId) {
             const intent = ReferralService.verifyAndConsumeIntent(intentId, intentStore);
             if (intent) {
-                effectiveSponsorCode = intent.referral_code;
+                effectiveSponsorCode = intent.referral_code || effectiveSponsorCode;
                 if (!effectivePosition || effectivePosition === 'LEFT') {
                     effectivePosition = intent.position || effectivePosition;
                 }
             }
-        }
-
-        if (!effectiveSponsorCode) {
-            return { success: false, error: 'Sponsor referral code is required.' };
         }
 
         if (cleanUsername.toLowerCase() === effectiveSponsorCode.toLowerCase()) {
@@ -150,12 +153,21 @@ const AuthService = {
         }
 
         const effLower = effectiveSponsorCode.toLowerCase();
-        const sponsor = sponsorValidation.sponsor || users.find(u => 
+        let sponsor = sponsorValidation.sponsor || users.find(u => 
             (u.username && u.username.toLowerCase() === effLower) || 
             (u.id && u.id.toLowerCase() === effLower) ||
             (u.referral_code && u.referral_code.toLowerCase() === effLower) ||
-            (effLower === 'hiru' && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+            (u.email && u.email.toLowerCase() === effLower)
         );
+
+        if (!sponsor && (effLower === 'namobuddhaya' || effLower === 'hiru' || effLower === 'user-hiru-root' || effLower === 'sponsor-uuid-1' || effLower === 'direct' || effLower === 'company' || effLower === 'root' || effLower === 'admin' || effLower === 'main' || effLower === 'system')) {
+            sponsor = users.find(u => 
+                (u.username && u.username.toLowerCase() === 'namobuddhaya') || 
+                (u.id && u.id.toLowerCase() === 'user-namobuddhaya-root') ||
+                (u.role && (u.role.toLowerCase() === 'admin' || u.role.toLowerCase() === 'super_admin'))
+            ) || users[0];
+        }
+
         const sponsorId = sponsor ? sponsor.id : effectiveSponsorCode;
 
         const posValidation = ReferralService.validatePosition(effectivePosition || 'LEFT');

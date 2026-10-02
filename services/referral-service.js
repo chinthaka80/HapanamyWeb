@@ -33,15 +33,24 @@ class ReferralService {
 
         if (users && users.length > 0) {
             const trimmedLower = trimmed.toLowerCase();
-            const sponsor = users.find(u => 
+            let sponsor = users.find(u => 
                 (u.username && u.username.toLowerCase() === trimmedLower) || 
                 (u.id && u.id.toLowerCase() === trimmedLower) ||
                 (u.referral_code && u.referral_code.toLowerCase() === trimmedLower) ||
                 (u.email && u.email.toLowerCase() === trimmedLower) ||
                 (u.name && u.name.toLowerCase() === trimmedLower) ||
-                (u.full_name && u.full_name.toLowerCase() === trimmedLower) ||
-                ((trimmedLower === 'hiru' || trimmedLower === 'user-hiru-root' || trimmedLower === 'sponsor-uuid-1') && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+                (u.full_name && u.full_name.toLowerCase() === trimmedLower)
             );
+
+            // Resilient root sponsor resolution for direct/company/legacy alias codes
+            if (!sponsor && (trimmedLower === 'namobuddhaya' || trimmedLower === 'hiru' || trimmedLower === 'user-hiru-root' || trimmedLower === 'sponsor-uuid-1' || trimmedLower === 'direct' || trimmedLower === 'company' || trimmedLower === 'root' || trimmedLower === 'admin' || trimmedLower === 'main' || trimmedLower === 'system')) {
+                sponsor = users.find(u => 
+                    (u.username && u.username.toLowerCase() === 'namobuddhaya') || 
+                    (u.id && u.id.toLowerCase() === 'user-namobuddhaya-root') ||
+                    (u.role && (u.role.toLowerCase() === 'admin' || u.role.toLowerCase() === 'super_admin'))
+                ) || users[0];
+            }
+
             if (!sponsor) {
                 return { valid: false, error: `Sponsor with referral code '${trimmed}' does not exist.` };
             }

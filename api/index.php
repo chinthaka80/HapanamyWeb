@@ -3252,7 +3252,7 @@ try {
         $email = strtolower(trim($input['email'] ?? ''));
         $phone = trim($input['phone'] ?? $input['mobile'] ?? '');
         $password = $input['password'] ?? '';
-        $sponsorCode = trim($input['sponsor'] ?? $input['sponsor_code'] ?? $input['sponsorCode'] ?? 'Hiru');
+        $sponsorCode = trim($input['sponsor'] ?? $input['sponsor_code'] ?? $input['sponsorCode'] ?? 'NAMOBUDDHAYA');
         $position = strtoupper(trim($input['position'] ?? $input['branch_leg'] ?? $input['requestedPosition'] ?? 'LEFT'));
         if (!in_array($position, ['LEFT', 'RIGHT'])) {
             $position = 'LEFT';
@@ -3280,13 +3280,55 @@ try {
             $uName = strtolower($u['username'] ?? '');
             $uRef = strtolower($u['referral_code'] ?? '');
             $uId = strtolower($u['id'] ?? '');
-            if ($uName === $cleanSponsorCode || $uRef === $cleanSponsorCode || $uId === $cleanSponsorCode || ($cleanSponsorCode === 'star01' && ($uName === 'star01' || $uId === 'user-star01-103'))) {
+            if ($uName === $cleanSponsorCode || $uRef === $cleanSponsorCode || $uId === $cleanSponsorCode) {
                 $sponsorUser = $u;
                 break;
             }
         }
+        if (!$sponsorUser && in_array($cleanSponsorCode, ['', 'namobuddhaya', 'hiru', 'user-hiru-root', 'sponsor-uuid-1', 'direct', 'company', 'root', 'admin', 'star01', 'main', 'system'])) {
+            foreach ($db['users'] as $u) {
+                if (strtolower($u['username'] ?? '') === 'namobuddhaya' || strtolower($u['id'] ?? '') === 'user-namobuddhaya-root') {
+                    $sponsorUser = $u;
+                    break;
+                }
+            }
+        }
         if (!$sponsorUser) {
-            $sponsorUser = $db['users'][2] ?? $db['users'][0]; // Default Hiru
+            $sponsorUser = $db['users'][0] ?? null;
+        }
+
+        // Calculate dynamic placement parent and open slot under sponsor's tree
+        $placementParentId = $sponsorUser['id'];
+        $placementPos = $position;
+        $placementDepth = 2;
+        $placementPath = $sponsorUser['id'];
+
+        if (isset($db['binaryNodes']) && is_array($db['binaryNodes']) && count($db['binaryNodes']) > 0) {
+            $currentParentId = $sponsorUser['id'];
+            $visited = [];
+            while ($currentParentId && !in_array($currentParentId, $visited)) {
+                $visited[] = $currentParentId;
+                $childNode = null;
+                foreach ($db['binaryNodes'] as $bn) {
+                    if (($bn['placement_parent_id'] ?? '') === $currentParentId && strtoupper($bn['position'] ?? '') === $placementPos) {
+                        $childNode = $bn;
+                        break;
+                    }
+                }
+                if (!$childNode) {
+                    $placementParentId = $currentParentId;
+                    foreach ($db['binaryNodes'] as $bn) {
+                        if (($bn['user_id'] ?? '') === $currentParentId) {
+                            $placementDepth = ($bn['depth'] ?? 1) + 1;
+                            $pPath = $bn['path'] ?? '';
+                            $placementPath = $pPath ? ($pPath . '/' . $currentParentId) : $currentParentId;
+                            break;
+                        }
+                    }
+                    break;
+                }
+                $currentParentId = $childNode['user_id'];
+            }
         }
 
         $newUserId = 'user-' . strtolower(preg_replace('/[^a-zA-Z0-9]/', '', $username)) . '-' . substr(md5(uniqid()), 0, 6);
@@ -3299,12 +3341,12 @@ try {
             'phone' => $phone,
             'mobile' => $phone,
             'role' => 'member',
-            'status' => 'INACTIVE',
-            'account_status' => 'INACTIVE',
+            'status' => 'ACTIVE',
+            'account_status' => 'ACTIVE',
             'qualification_status' => 'NOT_QUALIFIED',
             'kyc_status' => 'PENDING',
-            'position' => $position,
-            'branch_leg' => $position,
+            'position' => $placementPos,
+            'branch_leg' => $placementPos,
             'sponsor' => $sponsorUser['username'],
             'sponsor_id' => $sponsorUser['id'],
             'sponsor_username' => $sponsorUser['username'],
@@ -3320,17 +3362,32 @@ try {
             'sponsor_id' => $sponsorUser['id'],
             'created_at' => date('c')
         ];
-        $db['binaryNodes'][] = [
+
+        $newNode = [
             'id' => 'node-' . substr(md5(uniqid()), 0, 8),
             'user_id' => $newUserId,
-            'placement_parent_id' => $sponsorUser['id'],
-            'position' => $position,
-            'depth' => 2,
-            'path' => $sponsorUser['id'],
+            'placement_parent_id' => $placementParentId,
+            'position' => $placementPos,
+            'depth' => $placementDepth,
+            'path' => $placementPath,
             'left_child_id' => null,
             'right_child_id' => null,
             'created_at' => date('c')
         ];
+        $db['binaryNodes'][] = $newNode;
+
+        // Link parent node child
+        foreach ($db['binaryNodes'] as &$bn) {
+            if (($bn['user_id'] ?? '') === $placementParentId) {
+                if ($placementPos === 'LEFT') {
+                    $bn['left_child_id'] = $newUserId;
+                } else if ($placementPos === 'RIGHT') {
+                    $bn['right_child_id'] = $newUserId;
+                }
+                break;
+            }
+        }
+        unset($bn);
 
         $db['liveEvents'][] = [
             'id' => 'evt-' . time() . '-' . rand(100, 999),

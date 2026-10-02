@@ -12,15 +12,21 @@ const PlacementEngine = {
     validateSponsor(sponsorId, users) {
         if (!sponsorId || !users) return false;
         const spLower = (sponsorId || '').toLowerCase();
-        const sponsor = users.find(u => 
+        let sponsor = users.find(u => 
             (u.id && u.id.toLowerCase() === spLower) || 
             (u.username && u.username.toLowerCase() === spLower) ||
             (u.referral_code && u.referral_code.toLowerCase() === spLower) ||
             (u.email && u.email.toLowerCase() === spLower) ||
             (u.name && u.name.toLowerCase() === spLower) ||
-            (u.full_name && u.full_name.toLowerCase() === spLower) ||
-            ((spLower === 'hiru' || spLower === 'user-hiru-root' || spLower === 'sponsor-uuid-1') && (u.username === 'Hiru' || u.id === 'user-hiru-root' || u.id === 'sponsor-uuid-1'))
+            (u.full_name && u.full_name.toLowerCase() === spLower)
         );
+        if (!sponsor && (spLower === 'namobuddhaya' || spLower === 'hiru' || spLower === 'user-hiru-root' || spLower === 'sponsor-uuid-1' || spLower === 'direct' || spLower === 'company' || spLower === 'root' || spLower === 'admin' || spLower === 'main' || spLower === 'system')) {
+            sponsor = users.find(u => 
+                (u.username && u.username.toLowerCase() === 'namobuddhaya') || 
+                (u.id && u.id.toLowerCase() === 'user-namobuddhaya-root') ||
+                (u.role && (u.role.toLowerCase() === 'admin' || u.role.toLowerCase() === 'super_admin'))
+            ) || users[0];
+        }
         if (!sponsor) return false;
         if (sponsor.status === 'SUSPENDED' || sponsor.status === 'BANNED' || sponsor.status === 'TERMINATED' || sponsor.status === 'BLOCKED') {
             return false;
