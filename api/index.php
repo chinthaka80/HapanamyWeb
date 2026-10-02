@@ -3012,6 +3012,8 @@ try {
                 'source_user_id' => $buyer['id'],
                 'order_id' => $order['id'],
                 'volume' => $binaryVolume,
+                'amount' => $binaryVolume,
+                'type' => 'SALE_VOLUME',
                 'leg' => $leg,
                 'created_at' => date('c')
             ];

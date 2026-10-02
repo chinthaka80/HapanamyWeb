@@ -1665,7 +1665,10 @@
                         <p id="modalMemberUsername" style="font-size: 12.5px; color: var(--text-muted); margin: 0;">@username (ID: user-123)</p>
                     </div>
                 </div>
-                <button type="button" onclick="closeMemberDetailModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" class="btn btn-primary" onclick="openAdminManualPurchaseModal(currentDetailMemberId)" style="padding: 6px 14px; font-size: 12px; background:#2E7D32; color:#FFF; font-weight:700; cursor:pointer; border:none; border-radius:6px;">🛒 පාඨමාලාව සක්‍රිය කරන්න (Manual Buy)</button>
+                    <button type="button" onclick="closeMemberDetailModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+                </div>
             </div>
 
             <!-- Modal Sub-sections Grid -->
@@ -1774,6 +1777,169 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- ADMIN MANUAL PRODUCT PURCHASE / ENROLLMENT MODAL OVERLAY -->
+    <div class="modal-overlay" id="adminManualPurchaseModal" style="display: none;">
+        <div class="modal-box" style="max-width: 650px; padding: 25px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #2E7D32; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px;">🛒</div>
+                    <div>
+                        <h3 style="font-size: 18px; margin: 0; color:var(--text-primary);">පාඨමාලා සක්‍රිය කිරීම (Manual Purchase)</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Admin can manually purchase & activate any course for a member.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminManualPurchaseModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <form id="adminManualPurchaseForm" onsubmit="submitAdminManualPurchase(event)">
+                <input type="hidden" id="manualPurchaseMemberId">
+
+                <!-- Target Member Info Card -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; margin-bottom: 18px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">🎯 තෝරාගත් සාමාජිකයා (Target Member)</span>
+                        <span id="manualPurchaseMemberStatus" class="badge-status badge-account-inactive">● INACTIVE</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div id="manualPurchaseMemberAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: var(--brand-orange); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;">M</div>
+                        <div>
+                            <strong id="manualPurchaseMemberName" style="font-size: 15px; color: var(--text-primary);">Member Name</strong><br>
+                            <code id="manualPurchaseMemberUsername" style="color: var(--brand-gold);">@username</code> <small id="manualPurchaseMemberEmail" style="color: var(--text-muted);">(user@hapanamy.lk)</small>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 10px; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px;">
+                        <div><span style="color:var(--text-muted);">Sponsor:</span> <strong id="manualPurchaseMemberSponsor" style="color:var(--brand-gold);">NAMOBUDDHAYA</strong></div>
+                        <div><span style="color:var(--text-muted);">Position:</span> <strong id="manualPurchaseMemberPosition" style="color:var(--text-primary);">LEFT</strong></div>
+                    </div>
+                </div>
+
+                <!-- Product Selection -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="manualPurchaseProductSelect" style="display:block; margin-bottom:6px; font-size:13px; font-weight:700; color:var(--text-secondary);">📚 සක්‍රිය කිරීමට අවශ්‍ය පාඨමාලාව (Select Course Product)</label>
+                    <select id="manualPurchaseProductSelect" onchange="updateManualPurchasePreview()" required style="width:100%; padding:10px 14px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13.5px;">
+                        <option value="tiktok-course">TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 4,500 (4,500 BV)</option>
+                        <option value="facebook-course">Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 7,425 (7,425 BV)</option>
+                        <option value="youtube-course">YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 7,425 (7,425 BV)</option>
+                        <option value="social-media-masterclass">🚀 Social Media Income Masterclass 2026 — රු. 15,992 (15,992 BV)</option>
+                        <option value="forex-course">🟢 Beginner – Forex Trading Course (Online Zoom) — රු. 7,920 (7,920 BV)</option>
+                        <option value="crypto-course">🟠 Beginner – Crypto Trading Course (Online Zoom) — රු. 7,920 (7,920 BV)</option>
+                        <option value="options-course">🟡 Intermediate – Options Trading (Zoom Live) — රු. 7,920 (7,920 BV)</option>
+                        <option value="titan-elite">🔴 Professional – Advanced Institutional Trading (SMC) — රු. 19,900 (19,900 BV)</option>
+                        <option value="ai-video-course">🎬 AI Video Generation Masterclass 2026 — රු. 5,200 (5,200 BV)</option>
+                        <option value="ai-mastery-course">🤖 AI Mastery & Automation Masterclass — රු. 9,900 (9,900 BV)</option>
+                        <option value="coding-course">💻 Coding & Web Development Masterclass 2026 — රු. 7,200 (7,200 BV)</option>
+                        <option value="trading-ebook">📘 Trading A to Z – Master E-Book 2026 — රු. 3,992 (3,992 BV)</option>
+                        <option value="motivation-ebook">📖 Motivation & Self-Development Master E-Book 2026 — රු. 5,592 (5,592 BV)</option>
+                        <option value="ai-prompts-ebook">💡 1000+ AI Prompts Master Library — රු. 2,000 (2,000 BV)</option>
+                    </select>
+                </div>
+
+                <!-- Live MLM Calculation Summary Preview Card -->
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 10px; padding: 14px; margin-bottom: 18px;">
+                    <h4 style="font-size: 13px; color: var(--brand-green-light); margin-bottom: 10px; font-weight: 700;">⚡ ස්වයංක්‍රීය MLM Points & කොමිස් ගණනය (Real-time Calculation)</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">ගාස්තුව (Selling Price)</span>
+                            <strong id="manualPurchaseFeePreview" style="color: var(--text-primary); font-size: 14px;">රු. 4,500.00</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Upline Binary Points (BV)</span>
+                            <strong id="manualPurchaseBvPreview" style="color: var(--brand-green-light); font-size: 14px;">4,500 BV</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Direct Commission (8%)</span>
+                            <strong id="manualPurchaseDirectCommPreview" style="color: var(--brand-gold); font-size: 14px;">රු. 360.00</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Binary Match Rate</span>
+                            <strong style="color: var(--brand-orange); font-size: 14px;">7% (7 Qualified Levels)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method & Notes -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="manualPurchasePaymentMethod" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">ගෙවීම් ක්‍රමය (Payment Method)</label>
+                        <select id="manualPurchasePaymentMethod" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
+                            <option value="ADMIN_MANUAL">Admin Manual Activation (Complimentary / Special)</option>
+                            <option value="BANK_TRANSFER">Bank Deposit (Manual Slip Verified)</option>
+                            <option value="CASH">Cash Payment (Head Office)</option>
+                            <option value="PROMO">Promotional Voucher</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="manualPurchaseNote" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">සටහන / Admin Note (Optional)</label>
+                        <input type="text" id="manualPurchaseNote" placeholder="e.g. Verified via WhatsApp / Head office receipt" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminManualPurchaseModal()" style="padding: 10px 18px; font-size: 13px; cursor: pointer;">අවලංගු කරන්න (Cancel)</button>
+                    <button type="submit" id="btnConfirmManualPurchase" class="btn btn-primary" style="padding: 10px 22px; font-size: 13.5px; background: #2E7D32; color: white; font-weight: 800; cursor: pointer; border: none; border-radius: 8px;">
+                        <span>⚡ සක්‍රිය කර ලකුණු ලබාදෙන්න (Confirm & Activate)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN SAFE PASSWORD RESET MODAL -->
+    <div class="modal-overlay" id="adminPasswordResetModal" style="display: none;">
+        <div class="modal-box" style="max-width: 520px; padding: 25px; width: 92%; border: 1px solid var(--brand-orange); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 22px;">🔑</span>
+                    <h3 style="font-size: 17px; margin: 0; color:var(--brand-orange);">සාමාජික මුරපදය Reset කිරීම (User Password Reset)</h3>
+                </div>
+                <button type="button" onclick="closeAdminPasswordResetModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <div style="background: rgba(239, 83, 80, 0.08); border: 1px solid rgba(239, 83, 80, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 13px; color: var(--text-primary); line-height: 1.5;">
+                ⚠️ <strong>අවධානයයි:</strong> ඔබ මෙම සාමාජිකයාගේ Password එක Reset කිරීමට සූදානම් වේ. මෙය අත්වැරදීමකින් සිදුවීම වැළැක්වීමට පහත විස්තර පරික්ෂා කර තහවුරු කරන්න.
+            </div>
+
+            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 18px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">සාමාජිකයා (Member):</span>
+                    <strong id="resetModalMemberName" style="color: var(--text-primary);">Member Name</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Username:</span>
+                    <code id="resetModalMemberUsername" style="color: var(--brand-gold); font-size: 13px;">@username</code>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Email:</span>
+                    <span id="resetModalMemberEmail" style="color: var(--text-secondary);">user@email.com</span>
+                </div>
+            </div>
+
+            <form id="adminPasswordResetForm" onsubmit="submitAdminPasswordReset(event)">
+                <input type="hidden" id="resetModalTargetUsername">
+                <input type="hidden" id="resetModalTargetEmail">
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="resetModalNewPass" style="display:block; margin-bottom:6px; font-size:12.5px; font-weight:700; color:var(--text-secondary);">
+                        නව මුරපදය (New Master Password):
+                    </label>
+                    <div style="position: relative;">
+                        <input type="text" id="resetModalNewPass" value="Hapana123" required style="width:100%; padding:10px 14px; background:var(--bg-main); border:1px solid var(--brand-orange); color:var(--text-primary); border-radius:8px; font-size:14px; font-family:monospace; box-sizing:border-box;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminPasswordResetModal()" style="padding: 9px 16px; font-size: 13px; cursor: pointer;">අවලංගු කරන්න (Cancel)</button>
+                    <button type="submit" id="btnConfirmPasswordReset" class="btn btn-primary" style="padding: 9px 20px; font-size: 13px; background: var(--brand-orange); color: white; font-weight: 700; cursor: pointer; border: none; border-radius: 8px;">
+                        <span>🔑 Reset Password</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- BANK RECEIPT LIGHTBOX MODAL (ROOT BODY LEVEL) -->
     <div class="modal-overlay" id="receiptLightboxModal" style="display: none;">
         <div class="modal-box" style="max-width: 800px; padding: 20px; width: 95%; max-height: 92vh; overflow: hidden; display: flex; flex-direction: column;">
@@ -5399,6 +5565,7 @@
                     </td>
                     <td style="text-align: center;">
                         <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="openAdminManualPurchaseModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:#2E7D32; color:#FFF; font-weight:700;" title="Manual Course Purchase & Activation">🛒 Buy</button>
                             <button class="btn btn-primary" onclick="viewMemberDashboard('${m.id}', '${m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.role || 'member'}', '${typeof m.sponsor === 'object' ? (m.sponsor?.username || 'NAMOBUDDHAYA') : (m.sponsor || 'NAMOBUDDHAYA')}', '${m.position || 'LEFT'}', '${m.email || ''}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-orange); color:#FFF; font-weight:700;">👁️ Dashboard</button>
                             <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
                             <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name || m.name || m.username}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
@@ -5432,7 +5599,138 @@
             window.open('dashboard.html', '_blank');
         }
 
+        let currentDetailMemberId = null;
+
+        const manualPurchaseCatalogMap = {
+            'tiktok-course': { name: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 4500.00, bv: 4500.00, directRate: 8.0 },
+            'facebook-course': { name: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425.00, bv: 7425.00, directRate: 8.0 },
+            'youtube-course': { name: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425.00, bv: 7425.00, directRate: 8.0 },
+            'social-media-masterclass': { name: '🚀 Social Media Income Masterclass 2026', price: 15992.00, bv: 15992.00, directRate: 8.0 },
+            'forex-course': { name: '🟢 Beginner – Forex Trading Course (Online Zoom)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'crypto-course': { name: '🟠 Beginner – Crypto Trading Course (Online Zoom)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'options-course': { name: '🟡 Intermediate – Options Trading (Zoom Live)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'titan-elite': { name: '🔴 Professional – Advanced Institutional Trading (SMC)', price: 19900.00, bv: 19900.00, directRate: 8.0 },
+            'ai-video-course': { name: '🎬 AI Video Generation Masterclass 2026', price: 5200.00, bv: 5200.00, directRate: 8.0 },
+            'ai-mastery-course': { name: '🤖 AI Mastery & Automation Masterclass', price: 9900.00, bv: 9900.00, directRate: 8.0 },
+            'coding-course': { name: '💻 Coding & Web Development Masterclass 2026', price: 7200.00, bv: 7200.00, directRate: 8.0 },
+            'trading-ebook': { name: '📘 Trading A to Z – Master E-Book 2026', price: 3992.00, bv: 3992.00, directRate: 8.0 },
+            'motivation-ebook': { name: '📖 Motivation & Self-Development Master E-Book 2026', price: 5592.00, bv: 5592.00, directRate: 8.0 },
+            'ai-prompts-ebook': { name: '💡 1000+ AI Prompts Master Library', price: 2000.00, bv: 2000.00, directRate: 8.0 }
+        };
+
+        function updateManualPurchasePreview() {
+            const select = document.getElementById('manualPurchaseProductSelect');
+            const prodId = select ? select.value : 'tiktok-course';
+            const prod = manualPurchaseCatalogMap[prodId] || manualPurchaseCatalogMap['tiktok-course'];
+
+            const feeEl = document.getElementById('manualPurchaseFeePreview');
+            const bvEl = document.getElementById('manualPurchaseBvPreview');
+            const directEl = document.getElementById('manualPurchaseDirectCommPreview');
+
+            if (feeEl) feeEl.textContent = `රු. ${prod.price.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            if (bvEl) bvEl.textContent = `${prod.bv.toLocaleString()} BV`;
+            if (directEl) directEl.textContent = `රු. ${(prod.price * 0.08).toFixed(2)}`;
+        }
+
+        function openAdminManualPurchaseModal(memberId) {
+            const modal = document.getElementById('adminManualPurchaseModal');
+            if (!modal) return;
+
+            const member = (adminMembersData || []).find(m => m.id === memberId || m.username === memberId || m.email === memberId) || { id: memberId, username: memberId, full_name: memberId };
+
+            document.getElementById('manualPurchaseMemberId').value = member.id || memberId;
+            const name = member.full_name || member.name || member.username || 'Member';
+            document.getElementById('manualPurchaseMemberAvatar').textContent = name[0].toUpperCase();
+            document.getElementById('manualPurchaseMemberName').textContent = name;
+            document.getElementById('manualPurchaseMemberUsername').textContent = `@${member.username || memberId}`;
+            document.getElementById('manualPurchaseMemberEmail').textContent = `(${member.email || 'user@hapanamy.lk'})`;
+
+            const accSt = (member.account_status || member.status || 'INACTIVE').toUpperCase();
+            const statusEl = document.getElementById('manualPurchaseMemberStatus');
+            if (statusEl) {
+                statusEl.textContent = `● ${accSt}`;
+                statusEl.className = accSt === 'ACTIVE' ? 'badge-status badge-account-active' : 'badge-status badge-account-inactive';
+            }
+
+            let sponsorName = 'NAMOBUDDHAYA';
+            if (member.sponsor) {
+                sponsorName = typeof member.sponsor === 'object' ? (member.sponsor.username || member.sponsor.full_name) : member.sponsor;
+            }
+            document.getElementById('manualPurchaseMemberSponsor').textContent = sponsorName;
+            document.getElementById('manualPurchaseMemberPosition').textContent = (member.position || 'LEFT').toUpperCase();
+
+            updateManualPurchasePreview();
+
+            modal.classList.add('open');
+            modal.style.display = 'flex';
+        }
+
+        function closeAdminManualPurchaseModal() {
+            const modal = document.getElementById('adminManualPurchaseModal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+        }
+
+        async function submitAdminManualPurchase(event) {
+            if (event && event.preventDefault) event.preventDefault();
+
+            const memberId = document.getElementById('manualPurchaseMemberId').value;
+            const productId = document.getElementById('manualPurchaseProductSelect').value;
+            const paymentMethod = document.getElementById('manualPurchasePaymentMethod').value;
+            const notes = document.getElementById('manualPurchaseNote').value.trim();
+
+            const btn = document.getElementById('btnConfirmManualPurchase');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>⏳ සක්‍රිය කරමින් පවතී (Processing MLM Triggers)...</span>';
+            }
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch('/api/admin/members/manual-purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        member_id: memberId,
+                        product_id: productId,
+                        payment_method: paymentMethod,
+                        notes: notes
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    closeAdminManualPurchaseModal();
+                    const prodName = manualPurchaseCatalogMap[productId]?.name || productId;
+                    const directAmt = data.direct_commission?.amount || '360.00';
+                    const bvAmt = data.binary_volume?.volume || '4500';
+
+                    showToast(`🎉 <strong>පාඨමාලාව සාර්ථකව සක්‍රිය කරන ලදී!</strong><br>📘 ${prodName}<br>💰 8% Direct Commission: <strong>රු. ${directAmt}</strong><br>⚡ Binary Points: <strong>${bvAmt} BV</strong> ඉහළ Upline වෙත බැර විය.`);
+
+                    renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                } else {
+                    showToast(`❌ <strong>සක්‍රිය කිරීම අසාර්ථකයි:</strong> ${data.error || 'Server error'}`);
+                }
+            } catch (err) {
+                console.error('Error in submitAdminManualPurchase:', err);
+                showToast(`❌ <strong>සන්නිවේදන දෝෂයක්:</strong> ${err.message}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
         async function openMemberDetailModal(memberId) {
+            currentDetailMemberId = memberId;
             const modal = document.getElementById('memberDetailModal');
             if (!modal) return;
             modal.classList.add('open');
@@ -5668,8 +5966,78 @@
         }
 
         function resetUserPasswordPrompt(userName, email) {
-            const displayEmail = email ? ` (${email})` : '';
-            alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
+            document.getElementById('resetModalMemberName').textContent = userName || 'Member';
+            document.getElementById('resetModalMemberUsername').textContent = '@' + (userName || 'member');
+            document.getElementById('resetModalMemberEmail').textContent = email || 'N/A';
+            document.getElementById('resetModalTargetUsername').value = userName || '';
+            document.getElementById('resetModalTargetEmail').value = email || '';
+            document.getElementById('resetModalNewPass').value = 'Hapana123';
+            
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeAdminPasswordResetModal() {
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function submitAdminPasswordReset(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnConfirmPasswordReset');
+            const originalText = btn ? btn.innerHTML : 'Confirm';
+            
+            const userName = document.getElementById('resetModalTargetUsername').value;
+            const email = document.getElementById('resetModalTargetEmail').value;
+            const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Hapana123';
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span>⏳ Reset කරමින් පවතී...</span>';
+                }
+
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const response = await fetch('/api/admin/members/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        username: userName,
+                        email: email,
+                        new_password: newPassword
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (typeof dbUpdateUser === 'function' && email) {
+                        await dbUpdateUser(email, { password: newPassword });
+                    }
+                    closeAdminPasswordResetModal();
+                    showToast(`🔑 <strong>Password Reset සාර්ථකයි!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                    alert(`✅ සාමාජික "${userName}" ගේ මුරපදය සාර්ථකව Reset කරන ලදී:\n\nනව Password: ${newPassword}\n\nදැන් මෙම මුරපදය මඟින් Login විය හැක.`);
+                    return;
+                } else {
+                    const errData = await response.json();
+                    showToast(`❌ <strong>Reset අසාර්ථක විය:</strong> ${errData.error || 'Server error'}`);
+                }
+            } catch (err) {
+                console.warn('API reset failed, applying local fallback:', err);
+                if (typeof dbUpdateUser === 'function' && email) {
+                    await dbUpdateUser(email, { password: newPassword });
+                }
+                closeAdminPasswordResetModal();
+                showToast(`🔑 <strong>Password Reset!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                alert(`✅ සාමාජික "${userName}" ගේ මුරපදය Reset කරන ලදී:\n\nනව Password: ${newPassword}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
         }
 
         // ========================================================
