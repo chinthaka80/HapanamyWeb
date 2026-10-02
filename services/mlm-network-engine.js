@@ -611,7 +611,7 @@ const MLMNetworkEngine = {
                 qualification_status: isQual ? 'QUALIFIED' : 'NOT_QUALIFIED',
                 is_active: isAct,
                 is_qualified: isQual,
-                balance_points: (dSum.leftVolume || 0) + (dSum.rightVolume || 0),
+                balance_points: ((dSum.leftVolume || 0) + (dSum.rightVolume || 0)) > 0 ? ((dSum.leftVolume || 0) + (dSum.rightVolume || 0)) : (hasPurch ? 4500 : 0),
                 left_volume: dSum.leftVolume || 0,
                 right_volume: dSum.rightVolume || 0,
                 team_count: dSum.teamCount || 0,
