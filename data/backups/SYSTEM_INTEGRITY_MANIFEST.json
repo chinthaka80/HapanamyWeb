@@ -1,0 +1,153 @@
+{
+  "timestamp": "2026-10-02T00:24:59.440Z",
+  "environment": "PRODUCTION",
+  "branch": "master",
+  "totalUsers": 19,
+  "totalAdmins": 4,
+  "totalMembers": 15,
+  "totalBinaryNodes": 16,
+  "totalPurchases": 15,
+  "totalPaymentDeposits": 15,
+  "totalVolumeEntries": 49,
+  "totalWalletEntries": 57,
+  "adminAccounts": [
+    {
+      "username": "NAMOBUDDHAYA",
+      "role": "admin",
+      "id": "user-namobuddhaya-root",
+      "email": "admin@hapanamy.lk"
+    },
+    {
+      "username": "subadmin",
+      "role": "subadmin",
+      "id": "user-subadmin-manager",
+      "email": "manager@hapanamy.lk"
+    },
+    {
+      "username": "subadmin2",
+      "role": "subadmin",
+      "id": "user-subadmin-finance",
+      "email": "finance@hapanamy.lk"
+    },
+    {
+      "username": "subadmin3",
+      "role": "subadmin",
+      "id": "user-subadmin-support",
+      "email": "support@hapanamy.lk"
+    }
+  ],
+  "memberAccounts": [
+    {
+      "username": "HAPANA01",
+      "id": "user-hapana-01",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA02",
+      "id": "user-hapana-02",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA03",
+      "id": "user-hapana-03",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA04",
+      "id": "user-hapana-04",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA05",
+      "id": "user-hapana-05",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA06",
+      "id": "user-hapana-06",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA07",
+      "id": "user-hapana-07",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA08",
+      "id": "user-hapana-08",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA09",
+      "id": "user-hapana-09",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA10",
+      "id": "user-hapana-10",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA11",
+      "id": "user-hapana-11",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA12",
+      "id": "user-hapana-12",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA13",
+      "id": "user-hapana-13",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA14",
+      "id": "user-hapana-14",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    },
+    {
+      "username": "HAPANA15",
+      "id": "user-hapana-15",
+      "status": "ACTIVE",
+      "qual": "NOT_QUALIFIED",
+      "kyc": "APPROVED"
+    }
+  ],
+  "mlmRules": {
+    "directCommissionPercent": 8,
+    "binaryMatchingPercent": 7,
+    "dailyCapLKR": 30000,
+    "personalVolumeRequired": 4500
+  },
+  "integrityStatus": "VERIFIED_100_PERCENT"
+}
