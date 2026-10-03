@@ -96,6 +96,7 @@ require('./step78-user-profile-kyc-and-withdrawal-bank-sync.test');
 require('./step79-referral-link-placement-and-sponsor-integrity.test');
 require('./step80-account-deletion-and-tree-cleansing.test');
 require('./step81-live-registration-referral-link-and-leg-placement.test');
+require('./step82-user-account-menu-navigation-and-drawer.test');
 
 // Run
 runTests();

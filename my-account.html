@@ -495,20 +495,100 @@
             padding: 30px;
         }
 
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 1099;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
         /* Mobile adaptation */
         @media (max-width: 900px) {
             .dashboard-layout {
                 grid-template-columns: 1fr;
             }
             .dashboard-sidebar {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+                display: flex !important;
+                overflow-y: auto;
+            }
+            .dashboard-sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-close-btn {
+                display: flex !important;
+            }
+            .mobile-menu-btn {
+                display: inline-flex !important;
             }
             .mobile-bottom-nav {
                 display: flex !important;
             }
             .dashboard-content-area {
-                padding-bottom: 70px;
+                padding-bottom: 75px !important;
             }
+            .dashboard-topbar {
+                padding: 14px 18px !important;
+            }
+            .main-content {
+                padding: 20px 15px !important;
+            }
+        }
+
+        /* Mobile Bottom Nav styles */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #102A43;
+            border-top: 1px solid rgba(255, 249, 240, 0.15);
+            z-index: 1050;
+            justify-content: space-around;
+            padding: 8px 4px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #FFF5E4;
+            opacity: 0.75;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.2s;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+        .mobile-nav-item.active {
+            opacity: 1;
+            color: var(--brand-orange);
+            background: rgba(244, 123, 32, 0.12);
+        }
+        .mobile-nav-icon {
+            font-size: 18px;
         }
 
         @keyframes slideIn {
@@ -522,12 +602,18 @@
 </head>
 <body>
 
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="accountSidebarBackdrop" onclick="closeMobileAccountSidebar()"></div>
+
     <div class="dashboard-layout">
         <!-- SIDEBAR NAVIGATION -->
         <aside class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            <div class="sidebar-logo" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 30px; padding-left: 5px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeMobileAccountSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
             
             <ul class="sidebar-nav">
@@ -573,7 +659,12 @@
         <main class="dashboard-content-area">
             <!-- Top Bar -->
             <div class="dashboard-topbar">
-                <div class="topbar-title" id="pageHeaderTitle">MY ACCOUNT (මගේ ගිණුම)</div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="mobile-menu-btn" id="mobileAccountMenuBtn" onclick="toggleMobileAccountSidebar()" aria-label="Open Navigation Menu" style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">
+                        ☰
+                    </button>
+                    <div class="topbar-title" id="pageHeaderTitle" style="margin: 0;">MY ACCOUNT (මගේ ගිණුම)</div>
+                </div>
                 
                 <div class="topbar-controls">
                     <!-- Language selector -->
@@ -938,6 +1029,38 @@
         </main>
     </div>
 
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-item active" onclick="switchTab('dashboard')" id="mob-nav-dashboard">
+            <span class="mobile-nav-icon">📊</span>
+            <span>Overview</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('courses')" id="mob-nav-courses">
+            <span class="mobile-nav-icon">🎥</span>
+            <span>Courses</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('links')" id="mob-nav-links">
+            <span class="mobile-nav-icon">🔗</span>
+            <span>Links</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('network')" id="mob-nav-network">
+            <span class="mobile-nav-icon">👥</span>
+            <span>Team</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('payouts')" id="mob-nav-payouts">
+            <span class="mobile-nav-icon">💸</span>
+            <span>Payouts</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('settings')" id="mob-nav-settings">
+            <span class="mobile-nav-icon">⚙️</span>
+            <span>Profile</span>
+        </div>
+        <div class="mobile-nav-item" onclick="toggleMobileAccountSidebar()" id="mob-nav-menu">
+            <span class="mobile-nav-icon">☰</span>
+            <span>Menu</span>
+        </div>
+    </nav>
+
     <!-- Footer Attribution -->
     <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
         © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
@@ -990,6 +1113,28 @@
             });
         }
 
+        // Mobile Sidebar Drawer Controls
+        function toggleMobileAccountSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const backdrop = document.getElementById('accountSidebarBackdrop');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.toggle('open');
+            if (backdrop) {
+                if (isOpen) backdrop.classList.add('active');
+                else backdrop.classList.remove('active');
+            }
+        }
+
+        function closeMobileAccountSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const backdrop = document.getElementById('accountSidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        window.toggleMobileAccountSidebar = toggleMobileAccountSidebar;
+        window.closeMobileAccountSidebar = closeMobileAccountSidebar;
+
         // Switch Tabs function
         function switchTab(tabId) {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -999,7 +1144,22 @@
             const activePanel = document.getElementById('panel-' + tabId);
             if (activeLink) activeLink.classList.add('active');
             if (activePanel) activePanel.classList.add('active');
+
+            // Sync mobile bottom nav items
+            document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+            const mobItem = document.getElementById('mob-nav-' + tabId);
+            if (mobItem) mobItem.classList.add('active');
+
+            // Close mobile sidebar drawer if open
+            closeMobileAccountSidebar();
+
+            // Smooth scroll to top of content area
+            const contentArea = document.querySelector('.dashboard-content-area');
+            if (contentArea) {
+                contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+        window.switchTab = switchTab;
 
         // Show Toast Utility
         function showToast(message) {

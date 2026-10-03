@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapanamy.lk | ශිෂ්‍ය උපකරණ පුවරුව (Student Dashboard)</title>
+    <title>Hapanamy.lk | ශිෂ්‍ය උපකරණ පුවරුව (Student Dashboard) | NOWATRIX Global</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -468,12 +468,49 @@
             background-color: #e06612;
         }
 
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 1099;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
         @media (max-width: 1000px) {
             .student-layout {
                 grid-template-columns: 1fr;
             }
             .student-sidebar {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+                display: flex !important;
+                overflow-y: auto;
+            }
+            .student-sidebar.open {
+                transform: translateX(0);
+            }
+            .student-sidebar-close-btn {
+                display: flex !important;
+            }
+            .student-mobile-menu-btn {
+                display: inline-flex !important;
             }
             .player-layout {
                 grid-template-columns: 1fr;
@@ -488,10 +525,10 @@
                 grid-template-columns: 1fr 1fr !important;
             }
             .student-topbar {
-                padding: 16px 20px !important;
+                padding: 14px 18px !important;
             }
             .student-main-content {
-                padding: 20px !important;
+                padding: 20px 15px !important;
             }
         }
         
@@ -503,11 +540,11 @@
             left: 0;
             width: 100%;
             background-color: #102A43;
-            border-top: 1px solid rgba(255, 249, 240, 0.1);
-            z-index: 1999;
+            border-top: 1px solid rgba(255, 249, 240, 0.15);
+            z-index: 1050;
             justify-content: space-around;
-            padding: 8px 0;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+            padding: 8px 4px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
         }
         .mobile-nav-item {
             display: flex;
@@ -515,15 +552,18 @@
             align-items: center;
             gap: 4px;
             color: #FFF9F0;
-            opacity: 0.7;
+            opacity: 0.75;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 700;
             transition: 0.2s;
+            padding: 4px 6px;
+            border-radius: 6px;
         }
         .mobile-nav-item.active {
             opacity: 1;
             color: var(--brand-orange);
+            background: rgba(244, 123, 32, 0.12);
         }
         .mobile-nav-icon {
             font-size: 18px;
@@ -535,12 +575,18 @@
 </head>
 <body>
 
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="studentSidebarBackdrop" onclick="closeMobileStudentSidebar()"></div>
+
     <div class="student-layout">
         <!-- Sidebar Navigation -->
         <aside class="student-sidebar">
-            <div class="student-logo">
-                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            <div class="student-logo" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 30px; padding-left: 5px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                </div>
+                <button class="student-sidebar-close-btn" onclick="closeMobileStudentSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
             
             <ul class="student-nav">
@@ -559,6 +605,10 @@
                 <li class="student-nav-link" onclick="switchStudentTab('ebooks')" id="nav-ebooks">
                     <span class="student-nav-icon">📘</span>
                     <span data-translate="menu_ebooks">Download E-Books</span>
+                </li>
+                <li class="student-nav-link" onclick="window.location.href='courses.html'" style="color: var(--brand-orange); font-weight: 700; cursor: pointer;" id="nav-buy-courses">
+                    <span class="student-nav-icon">🛒</span>
+                    <span data-translate="menu_buy_courses">පාඨමාලා මිලදී ගන්න (Buy Courses)</span>
                 </li>
                 <li class="student-nav-link" onclick="switchStudentTab('settings')" id="nav-settings">
                     <span class="student-nav-icon">⚙️</span>
@@ -582,10 +632,21 @@
         <main class="student-content-area">
             <!-- Topbar -->
             <header class="student-topbar">
-                <h1 id="studentHeaderTitle" data-translate="title_dashboard">My Learning Dashboard</h1>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="student-mobile-menu-btn" id="mobileStudentMenuBtn" onclick="toggleMobileStudentSidebar()" aria-label="Open Navigation Menu" style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">
+                        ☰
+                    </button>
+                    <h1 id="studentHeaderTitle" data-translate="title_dashboard" style="font-size: 20px; margin: 0;">My Learning Dashboard</h1>
+                </div>
                 
                 <div class="student-topbar-actions">
                     <!-- Lang Switcher in student topbar -->
+                    <!-- Quick Buy Course CTA Button -->
+                    <a href="courses.html" class="btn-buy-courses-topbar" style="background: linear-gradient(135deg, var(--brand-orange), #ff9800); color: #ffffff; text-decoration: none; font-weight: 800; font-size: 13px; padding: 8px 16px; border-radius: 20px; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(245, 124, 0, 0.3); transition: transform 0.2s;">
+                        <span>🛒</span>
+                        <span data-translate="btn_buy_courses">පාඨමාලා මිලදී ගන්න</span>
+                    </a>
+
                     <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
                         EN
                     </button>
@@ -594,11 +655,11 @@
                         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     </button>
                     
-                    <div class="student-avatar-box">
-                        <div class="student-avatar" id="headerAvatar">KT</div>
+                    <div class="student-avatar-box" onclick="switchStudentTab('settings')" style="cursor: pointer;" title="Profile Settings">
+                        <div class="student-avatar" id="headerAvatar">--</div>
                         <div class="student-avatar-info">
-                            <h4 id="headerStudentName">Kasun Tharaka</h4>
-                            <p data-translate="role_student">Student Member</p>
+                            <h4 id="headerStudentName">Loading profile...</h4>
+                            <p id="headerStudentRole" data-translate="role_student">Student Member</p>
                         </div>
                     </div>
                 </div>
@@ -612,26 +673,27 @@
                     <div class="student-stats-grid">
                         <div class="student-stat-card">
                             <div class="student-stat-label" data-translate="stat_enrolled">Enrolled Courses</div>
-                            <div class="student-stat-val">2</div>
+                            <div class="student-stat-val" id="statEnrolledCount">0</div>
                         </div>
                         <div class="student-stat-card orange">
                             <div class="student-stat-label" data-translate="stat_completed">Completed Lessons</div>
-                            <div class="student-stat-val">18 / 80</div>
+                            <div class="student-stat-val" id="statCompletedCount">0 / 0</div>
                         </div>
                         <div class="student-stat-card green">
                             <div class="student-stat-label" data-translate="stat_live_sessions">Live Q&A This Week</div>
-                            <div class="student-stat-val">1 Session</div>
+                            <div class="student-stat-val" id="statLiveCount">0 Sessions</div>
                         </div>
                         <div class="student-stat-card navy">
                             <div class="student-stat-label" data-translate="stat_ebooks_down">E-Books Access</div>
-                            <div class="student-stat-val">1 PDF</div>
+                            <div class="student-stat-val" id="statEbooksCount">0 PDFs</div>
                         </div>
                     </div>
 
-                    <!-- Welcome Box -->
+                    <!-- Welcome Box & Course Discovery Banner -->
                     <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); padding: 30px; border-radius: 12px; box-shadow: var(--card-shadow); margin-bottom: 30px; border-left: 5px solid var(--brand-orange);">
-                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeStudentTitle">Welcome back, Kasun! 👋</h2>
+                        <h2 style="font-size: 20px; color: var(--text-primary); margin-bottom: 10px;" id="welcomeStudentTitle">Welcome back! 👋</h2>
                         <p style="font-size: 14.5px; color: var(--text-muted); line-height: 1.6;" data-translate="welcome_desc">Hapanamy.lk අධ්‍යාපන පුවරුව වෙත සාදරයෙන් පිළිගනිමු. ඔබගේ පාඨමාලා හැදෑරීම නැවත ආරම්භ කිරීමට සහ ඉදිරි සජීවී සාකච්ඡාවලට සම්බන්ධ වීමට පහතින් තෝරා ගන්න.</p>
+                        <div id="overviewCourseCtaContainer" style="margin-top: 20px;"></div>
                     </div>
                 </div>
 
@@ -639,51 +701,7 @@
                 <div class="student-panel" id="panel-courses">
                     <!-- Standard courses list grid -->
                     <div id="coursesListGrid" class="learning-grid">
-                        
-                        <!-- Course Card 1: Titan Elite Trading Academy -->
-                        <div class="learning-card">
-                            <div class="learning-card-banner">
-                                <img src="assets/trading_banner.jpg" alt="Titan Elite Trading">
-                            </div>
-                            <div class="learning-card-body">
-                                <h3 style="font-size: 16px; margin-bottom: 8px;">Titan Elite Trading Academy</h3>
-                                <p style="font-size: 12px; color: var(--text-muted);">දේශක: C N Gunasekara • Forex, Crypto & Options SMC</p>
-                                
-                                <div class="learning-progress-container">
-                                    <div class="learning-progress-text">
-                                        <span>Progress</span>
-                                        <span>25% (2/8 Chapters)</span>
-                                    </div>
-                                    <div class="learning-progress-bar">
-                                        <div class="learning-progress-fill" style="width: 25%;"></div>
-                                    </div>
-                                </div>
-                                <button class="btn-learn-action" onclick="startCourse('crypto')">Continue Course ➔</button>
-                            </div>
-                        </div>
-
-                        <!-- Course Card 2: AI Mastery Program -->
-                        <div class="learning-card">
-                            <div class="learning-card-banner">
-                                <img src="assets/ai_tech_banner.jpg" alt="AI Mastery">
-                            </div>
-                            <div class="learning-card-body">
-                                <h3 style="font-size: 16px; margin-bottom: 8px;">AI Mastery Program</h3>
-                                <p style="font-size: 12px; color: var(--text-muted);">ChatGPT & Prompt Engineering Beginner to Pro</p>
-                                
-                                <div class="learning-progress-container">
-                                    <div class="learning-progress-text">
-                                        <span>Progress</span>
-                                        <span>10% (1/8 Semesters) • මාස 2 (2 Months)</span>
-                                    </div>
-                                    <div class="learning-progress-bar">
-                                        <div class="learning-progress-fill" style="width: 12.5%;"></div>
-                                    </div>
-                                </div>
-                                <button class="btn-learn-action" onclick="startCourse('ai')">Continue Course ➔</button>
-                            </div>
-                        </div>
-
+                        <!-- Dynamically populated via renderStudentCourses() -->
                     </div>
 
                     <!-- Hidden Video Player Interface -->
@@ -748,11 +766,12 @@
 
                 <!-- TAB 3: LIVE SESSIONS -->
                 <div class="student-panel" id="panel-live">
+                    <div id="liveSessionsContainer">
                     <div class="live-card">
                         <div class="live-card-info">
                             <h3 data-translate="live_title_1">Crypto Trading Live Q&A and Practical Session</h3>
                             <p><strong>Scheduled:</strong> Friday at 8:00 PM - 9:30 PM (Sri Lanka Time)</p>
-                            <p><strong>Instructor:</strong> Mr. Kasun Tharaka (Lead Mentor)</p>
+                            <p><strong>Instructor:</strong> C.N. Gunasekara (Lead Trading Mentor)</p>
                             <p style="margin-top: 10px; color: var(--brand-orange); font-weight: 700;">Status: Scheduled (Zoom link will activate 15 mins before)</p>
                         </div>
                         <button class="btn-live-zoom" onclick="showToast('Redirecting to scheduled Zoom Live Session... 🚀')">Join Zoom Class</button>
@@ -766,10 +785,12 @@
                         </div>
                         <button class="btn btn-secondary" style="font-size: 13px; padding: 10px 15px; border-width: 1px;" onclick="showToast('Loading Recorded Live Q&A Archive... 🎥')">Watch Recording</button>
                     </div>
+                    </div>
                 </div>
 
                 <!-- TAB 4: EBOOKS DOWNLOADS -->
                 <div class="student-panel" id="panel-ebooks">
+                    <div id="ebooksListContainer">
                     <div class="ebook-download-card">
                         <div class="ebook-info-side">
                             <span class="ebook-icon">📘</span>
@@ -783,6 +804,7 @@
                             <button class="btn-download-pdf" onclick="simulatePDFDownload('Trading E-Book A to Z')">Download PDF</button>
                         </div>
                     </div>
+                    </div>
                 </div>
 
                     <!-- TAB 5: PROFILE SETTINGS -->
@@ -793,7 +815,7 @@
                         <form id="studentSettingsForm" onsubmit="saveStudentProfile(event)">
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setStudentName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setStudentName" value="Kasun Tharaka" required placeholder="Kasun Tharaka">
+                                <input type="text" id="setStudentName" value="" required placeholder="Your Full Name">
                             </div>
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setStudentEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
@@ -813,7 +835,7 @@
                             </div>
                             <div class="form-group" style="margin-bottom: 25px;">
                                 <label for="setStudentPassword">නව මුරපදය (New Password) *</label>
-                                <input type="password" id="setStudentPassword" value="••••••••" required placeholder="New Password">
+                                <input type="password" id="setStudentPassword" value="" placeholder="Leave blank to keep unchanged">
                             </div>
 
                             <button type="submit" class="btn-learn-action" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
@@ -821,6 +843,11 @@
                     </div>
                 </div>
 
+            </div>
+
+            <!-- Footer Attribution -->
+            <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
+                © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
             </div>
 
             <!-- E-BOOK ONLINE FLIPBOOK READER MODAL -->
@@ -899,7 +926,7 @@
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: #102A43;">CERTIFICATE OF COMPLETION</h1>
                 <p style="font-style: italic; font-size: 15px; margin-bottom: 30px; color: #486581;">This is proudly presented to</p>
                 
-                <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Kasun Tharaka</h2>
+                <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Loading...</h2>
                 
                 <p style="font-size: 14.5px; line-height: 1.6; max-width: 500px; margin: 0 auto 35px; color: #486581;">for successfully completing the advanced competency examinations for the <strong>AI Mastery & Advanced Financial Trading Program</strong> on Hapanamy.lk.</p>
                 
@@ -941,7 +968,11 @@
         </div>
         <div class="mobile-nav-item" onclick="switchStudentTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
-            <span>Settings</span>
+            <span>Profile</span>
+        </div>
+        <div class="mobile-nav-item" onclick="toggleMobileStudentSidebar()" id="mob-nav-menu">
+            <span class="mobile-nav-icon">☰</span>
+            <span>Menu</span>
         </div>
     </div>
 
@@ -974,6 +1005,28 @@
             });
         }
 
+        // Mobile Sidebar Drawer Controls
+        function toggleMobileStudentSidebar() {
+            const sidebar = document.querySelector('.student-sidebar');
+            const backdrop = document.getElementById('studentSidebarBackdrop');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.toggle('open');
+            if (backdrop) {
+                if (isOpen) backdrop.classList.add('active');
+                else backdrop.classList.remove('active');
+            }
+        }
+
+        function closeMobileStudentSidebar() {
+            const sidebar = document.querySelector('.student-sidebar');
+            const backdrop = document.getElementById('studentSidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        window.toggleMobileStudentSidebar = toggleMobileStudentSidebar;
+        window.closeMobileStudentSidebar = closeMobileStudentSidebar;
+
         // Switch panel tabs
         function switchStudentTab(tabId) {
             const tabs = document.querySelectorAll('.student-nav-link');
@@ -982,8 +1035,11 @@
             tabs.forEach(t => t.classList.remove('active'));
             panels.forEach(p => p.classList.remove('active'));
             
-            document.getElementById(`nav-${tabId}`).classList.add('active');
-            document.getElementById(`panel-${tabId}`).classList.add('active');
+            const activeTab = document.getElementById(`nav-${tabId}`);
+            if (activeTab) activeTab.classList.add('active');
+            
+            const activePanel = document.getElementById(`panel-${tabId}`);
+            if (activePanel) activePanel.classList.add('active');
             
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
@@ -1010,13 +1066,26 @@
                 }
             };
             
-            document.getElementById('studentHeaderTitle').textContent = headerTitles[currentLang][tabId];
+            const titleEl = document.getElementById('studentHeaderTitle');
+            if (titleEl && headerTitles[currentLang] && headerTitles[currentLang][tabId]) {
+                titleEl.textContent = headerTitles[currentLang][tabId];
+            }
             
             // Auto close video player if switching tabs
             if (tabId !== 'courses') {
                 closeCoursePlayer();
             }
+
+            // Close mobile sidebar drawer if open
+            closeMobileStudentSidebar();
+
+            // Scroll smoothly to top
+            const contentArea = document.querySelector('.student-content-area');
+            if (contentArea) {
+                contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+        window.switchStudentTab = switchStudentTab;
 
         // Toast helper
         function showToast(message) {
@@ -1059,8 +1128,445 @@
                 'Semester 6: Commercial AI Ads & Stock Video Monetization',
                 'Semester 7: AI Business & Freelancing (Fiverr, Upwork)',
                 'Semester 8: Advanced AI & Automation (n8n, Make, APIs)'
+            ],
+            social: [
+                'Module 01: Social Media Growth Blueprint & Audience Targeting',
+                'Module 02: High-Converting Video Scripts & Viral Reels Strategy',
+                'Module 03: Facebook & Instagram Ads Profit Funnel',
+                'Module 04: TikTok Creator Rewards & Organic Reach',
+                'Module 05: YouTube Monetization & Long-Form Evergreen Content',
+                'Module 06: Scaling to High-Ticket Clients & Agency Automation'
+            ],
+            coding: [
+                'Module 01: Modern Web Architecture & Development Setup',
+                'Module 02: HTML5 Semantic Structure & Responsive Layouts',
+                'Module 03: CSS3 Flexbox, CSS Grid & Animation Design',
+                'Module 04: JavaScript Core Concepts & DOM Manipulation',
+                'Module 05: Asynchronous JavaScript & RESTful APIs',
+                'Module 06: Full-Stack Web App Project Deployment'
             ]
         };
+        // Playlist aliases
+        playlists['trading'] = playlists.crypto;
+        playlists['titan-elite'] = playlists.crypto;
+        playlists['forex-course'] = playlists.crypto;
+        playlists['crypto-course'] = playlists.crypto;
+        playlists['ai-mastery'] = playlists.ai;
+        playlists['ai-mastery-course'] = playlists.ai;
+        playlists['ai-course'] = playlists.ai;
+        playlists['social-media-masterclass'] = playlists.social;
+        playlists['facebook-course'] = playlists.social;
+        playlists['tiktok-course'] = playlists.social;
+        playlists['youtube-course'] = playlists.social;
+        playlists['coding-course'] = playlists.coding;
+
+        const COURSE_CATALOG = {
+            'crypto': {
+                id: 'crypto',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'trading': {
+                id: 'trading',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'titan-elite': {
+                id: 'titan-elite',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'forex-course': {
+                id: 'forex-course',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'crypto-course': {
+                id: 'crypto-course',
+                title: 'Titan Elite Trading Academy',
+                instructor: 'C N Gunasekara • Forex, Crypto & Options SMC',
+                banner: 'assets/trading_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 25,
+                defaultChapterLabel: '2/8 Chapters'
+            },
+            'ai': {
+                id: 'ai',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'ai-mastery': {
+                id: 'ai-mastery',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'ai-mastery-course': {
+                id: 'ai-mastery-course',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'ai-course': {
+                id: 'ai-course',
+                title: 'AI Mastery Program',
+                instructor: 'Mr. Nipun Ranasinha • ChatGPT & Prompt Engineering',
+                banner: 'assets/ai_tech_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 12.5,
+                defaultChapterLabel: '1/8 Semesters'
+            },
+            'social': {
+                id: 'social',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'social-media-masterclass': {
+                id: 'social-media-masterclass',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'facebook-course': {
+                id: 'facebook-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'tiktok-course': {
+                id: 'tiktok-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'youtube-course': {
+                id: 'youtube-course',
+                title: 'Social Media Income Masterclass',
+                instructor: 'Digital Growth Team • FB, TikTok & YouTube',
+                banner: 'assets/facebook_course_banner.jpg',
+                totalChapters: 6,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/6 Modules'
+            },
+            'coding': {
+                id: 'coding',
+                title: 'Coding & Web Development Masterclass',
+                instructor: 'Dev Team • HTML5, CSS3, JS & Web Apps',
+                banner: 'assets/coding_course_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/8 Modules'
+            },
+            'coding-course': {
+                id: 'coding-course',
+                title: 'Coding & Web Development Masterclass',
+                instructor: 'Dev Team • HTML5, CSS3, JS & Web Apps',
+                banner: 'assets/coding_course_banner.jpg',
+                totalChapters: 8,
+                defaultProgress: 0,
+                defaultChapterLabel: '0/8 Modules'
+            }
+        };
+
+        function getStudentPurchasedCourses(user) {
+            if (!user) return [];
+            const uid = (user.id || '').toLowerCase().trim();
+            const uname = (user.username || user.name || '').toLowerCase().trim();
+            const uemail = (user.email || '').toLowerCase().trim();
+
+            let courses = [];
+            
+            // 1. Check user-specific localStorage keys
+            const keysToCheck = [
+                'hapanamy_purchased_courses_' + uid,
+                'hapanamy_purchased_courses_' + uname,
+                'hapanamy_purchased_courses_' + uemail
+            ];
+            for (const k of keysToCheck) {
+                if (k && localStorage.getItem(k)) {
+                    try {
+                        const list = JSON.parse(localStorage.getItem(k));
+                        if (Array.isArray(list) && list.length > 0) {
+                            courses = list;
+                            break;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            // 2. Check if active_user object has direct purchased_courses
+            if (courses.length === 0 && user.purchased_courses && Array.isArray(user.purchased_courses) && user.purchased_courses.length > 0) {
+                courses = user.purchased_courses;
+            }
+
+            // 4. Fallback: Check unlocked_courses from admin approvals
+            if (courses.length === 0) {
+                try {
+                    const unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + uemail) || localStorage.getItem('unlocked_courses_' + uid) || '[]');
+                    if (Array.isArray(unlocked) && unlocked.length > 0) {
+                        courses = unlocked.map(name => ({
+                            id: name.toLowerCase().includes('trading') ? 'crypto' : (name.toLowerCase().includes('ai') ? 'ai' : (name.toLowerCase().includes('social') ? 'social' : 'coding')),
+                            title: name,
+                            status: 'ACTIVE'
+                        }));
+                    }
+                } catch (e) {}
+            }
+
+            return courses;
+        }
+
+        function renderStudentCourses(courses) {
+            const currentLang = localStorage.getItem('language') || 'si';
+            const grid = document.getElementById('coursesListGrid');
+            const ctaContainer = document.getElementById('overviewCourseCtaContainer');
+            const statEnrolled = document.getElementById('statEnrolledCount');
+            const statCompleted = document.getElementById('statCompletedCount');
+            const statLive = document.getElementById('statLiveCount');
+            const statEbooks = document.getElementById('statEbooksCount');
+
+            const count = Array.isArray(courses) ? courses.length : 0;
+            if (statEnrolled) statEnrolled.textContent = count;
+
+            if (count === 0) {
+                // Stats for Fresh User
+                if (statCompleted) statCompleted.textContent = '0 / 0';
+                if (statLive) statLive.textContent = currentLang === 'si' ? '0 පන්ති' : '0 Sessions';
+                if (statEbooks) statEbooks.textContent = currentLang === 'si' ? '0 පොත්' : '0 PDFs';
+
+                // Overview discovery banner
+                if (ctaContainer) {
+                    ctaContainer.innerHTML = `
+                        <div style="background: rgba(245, 124, 0, 0.08); border: 1px dashed var(--brand-orange); border-radius: 10px; padding: 18px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 15px; color: var(--brand-orange); margin-bottom: 4px;">🎓 ඔබේ පළමු පාඨමාලාව තෝරා ගන්න! (Start Learning Today)</div>
+                                <div style="font-size: 13px; color: var(--text-muted);">ඔබ තවමත් කිසිදු පාඨමාලාවකට ලියාපදිංචි වී නොමැත. Hapanamy හි උසස් ප්‍රායෝගික පාඨමාලා දැන්ම මිලදී ගන්න.</div>
+                            </div>
+                            <a href="courses.html" class="btn-learn-action" style="text-decoration: none; padding: 10px 20px; font-size: 13.5px; font-weight: 800; white-space: nowrap;">
+                                🛒 පාඨමාලා මිලදී ගන්න (Buy Courses) ➔
+                            </a>
+                        </div>
+                    `;
+                }
+
+                // Grid Zero State
+                if (grid) {
+                    grid.innerHTML = `
+                        <div style="grid-column: 1 / -1; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 16px; padding: 40px 25px; text-align: center; box-shadow: var(--card-shadow);">
+                            <div style="font-size: 48px; margin-bottom: 15px;">📚✨</div>
+                            <h3 style="font-size: 20px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">
+                                ${currentLang === 'si' ? 'ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත' : 'No Enrolled Courses Yet'}
+                            </h3>
+                            <p style="font-size: 14.5px; color: var(--text-muted); max-width: 580px; margin: 0 auto 25px; line-height: 1.6;">
+                                ${currentLang === 'si' ? 'Hapanamy.lk ප්‍රමුඛ පෙළේ ප්‍රායෝගික පාඨමාලා මිලදී ගෙන ඔබගේ දැනුම සහ ආදායම් මාර්ගය අදම සාර්ථකව ආරම්භ කරන්න.' : 'Explore our top masterclasses and kickstart your online learning and earning journey today.'}
+                            </p>
+                            <a href="courses.html" class="btn-learn-action" style="display: inline-flex; align-items: center; gap: 8px; text-decoration: none; padding: 14px 28px; font-size: 15px; font-weight: 800; border-radius: 30px; box-shadow: 0 4px 20px rgba(245, 124, 0, 0.35);">
+                                🛒 ${currentLang === 'si' ? 'පාඨමාලා නාමාවලිය බලන්න (Explore & Buy Courses)' : 'Explore & Buy Courses'} ➔
+                            </a>
+
+                            <!-- Featured Popular Courses -->
+                            <div style="margin-top: 35px; border-top: 1px solid var(--border-color); padding-top: 25px;">
+                                <h4 style="font-size: 15px; color: var(--text-primary); margin-bottom: 20px; font-weight: 700;">🔥 ${currentLang === 'si' ? 'ජනප්‍රිය පාඨමාලා (Featured Popular Courses):' : 'Featured Masterclasses:'}</h4>
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 18px; text-align: left;">
+                                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div>
+                                            <span style="font-size: 11px; font-weight: 800; background: rgba(245,124,0,0.15); color: var(--brand-orange); padding: 3px 8px; border-radius: 4px;">TRADING</span>
+                                            <h5 style="font-size: 15px; margin: 8px 0 4px; font-weight: 800;">Titan Elite Trading Academy</h5>
+                                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Forex, Crypto & Options SMC Institutional Strategy</p>
+                                            <div style="font-size: 16px; font-weight: 800; color: var(--brand-orange); margin-bottom: 12px;">රු. 19,900 <span style="font-size: 12px; text-decoration: line-through; color: var(--text-muted);">24,900</span></div>
+                                        </div>
+                                        <a href="checkout.html?product=titan-elite" class="btn-learn-action" style="text-align: center; text-decoration: none; padding: 9px 15px; font-size: 13px;">මිලදී ගන්න (Buy Now) ➔</a>
+                                    </div>
+                                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div>
+                                            <span style="font-size: 11px; font-weight: 800; background: rgba(59,130,246,0.15); color: #3b82f6; padding: 3px 8px; border-radius: 4px;">AI & TECH</span>
+                                            <h5 style="font-size: 15px; margin: 8px 0 4px; font-weight: 800;">AI Mastery Program 2026</h5>
+                                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">ChatGPT & Prompt Engineering Beginner to Pro</p>
+                                            <div style="font-size: 16px; font-weight: 800; color: var(--brand-orange); margin-bottom: 12px;">රු. 15,000 <span style="font-size: 12px; text-decoration: line-through; color: var(--text-muted);">18,750</span></div>
+                                        </div>
+                                        <a href="checkout.html?product=ai-mastery-course" class="btn-learn-action" style="text-align: center; text-decoration: none; padding: 9px 15px; font-size: 13px;">මිලදී ගන්න (Buy Now) ➔</a>
+                                    </div>
+                                    <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+                                        <div>
+                                            <span style="font-size: 11px; font-weight: 800; background: rgba(34,197,94,0.15); color: #22c55e; padding: 3px 8px; border-radius: 4px;">MARKETING</span>
+                                            <h5 style="font-size: 15px; margin: 8px 0 4px; font-weight: 800;">Social Media Income Masterclass</h5>
+                                            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">Facebook, TikTok & YouTube Monetization Agency</p>
+                                            <div style="font-size: 16px; font-weight: 800; color: var(--brand-orange); margin-bottom: 12px;">රු. 15,992 <span style="font-size: 12px; text-decoration: line-through; color: var(--text-muted);">19,990</span></div>
+                                        </div>
+                                        <a href="checkout.html?product=social-media-masterclass" class="btn-learn-action" style="text-align: center; text-decoration: none; padding: 9px 15px; font-size: 13px;">මිලදී ගන්න (Buy Now) ➔</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Live Sessions locked banner
+                const liveContainer = document.getElementById('liveSessionsContainer');
+                if (liveContainer) {
+                    liveContainer.innerHTML = `
+                        <div style="background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 14px; padding: 35px 20px; text-align: center;">
+                            <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+                            <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 8px;">${currentLang === 'si' ? 'සජීවී Zoom පන්ති ලබාගත හැක්කේ පාඨමාලාවක් මිලදී ගත් පසු පමණි' : 'Live Zoom Q&A Sessions Unlock Upon Course Enrollment'}</h3>
+                            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">Hapanamy ප්‍රවීණ දේශකවරුන් සමඟ සජීවී ප්‍රශ්නෝත්තර සාකච්ඡාවලට සම්බන්ධ වීමට අදම පාඨමාලාවක් මිලදී ගන්න.</p>
+                            <a href="courses.html" class="btn-learn-action" style="text-decoration: none; padding: 10px 22px; font-size: 13.5px;">🛒 පාඨමාලා මිලදී ගන්න ➔</a>
+                        </div>
+                    `;
+                }
+
+                // Ebooks locked banner
+                const ebooksContainer = document.getElementById('ebooksListContainer');
+                if (ebooksContainer) {
+                    ebooksContainer.innerHTML = `
+                        <div style="background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 14px; padding: 35px 20px; text-align: center;">
+                            <div style="font-size: 40px; margin-bottom: 12px;">🔒</div>
+                            <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 8px;">${currentLang === 'si' ? 'E-Books බාගත කිරීම සක්‍රීය වන්නේ පාඨමාලාවක් මිලදී ගත් පසු පමණි' : 'E-Books Download Unlocks Upon Course Enrollment'}</h3>
+                            <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">පාඨමාලා ආශ්‍රිත සියලුම PDF අත්පොත් සහ ප්‍රායෝගික මාර්ගෝපදේශ ලබා ගැනීමට පාඨමාලාවක් තෝරා ගන්න.</p>
+                            <a href="courses.html" class="btn-learn-action" style="text-decoration: none; padding: 10px 22px; font-size: 13.5px;">🛒 පාඨමාලා මිලදී ගන්න ➔</a>
+                        </div>
+                    `;
+                }
+
+            } else {
+                // User HAS Enrolled Courses
+                if (statCompleted) statCompleted.textContent = '2 / ' + (count * 8);
+                if (statLive) statLive.textContent = count + (currentLang === 'si' ? ' පන්ති' : (count === 1 ? ' Session' : ' Sessions'));
+                if (statEbooks) statEbooks.textContent = count + (currentLang === 'si' ? ' පොත්' : (count === 1 ? ' PDF' : ' PDFs'));
+
+                if (ctaContainer) {
+                    ctaContainer.innerHTML = `
+                        <div style="background: rgba(34, 197, 94, 0.08); border: 1px solid var(--brand-green-light); border-radius: 10px; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                            <div>
+                                <span style="font-weight: 800; font-size: 14px; color: var(--brand-green);">● ${count} Active Course${count > 1 ? 's' : ''} Enrolled</span>
+                                <div style="font-size: 12.5px; color: var(--text-muted);">ඔබේ ඉගෙනුම් දර්ශකය සාර්ථකව පවත්වා ගන්න.</div>
+                            </div>
+                            <button class="btn-learn-action" onclick="switchStudentTab('courses')" style="padding: 8px 18px; font-size: 13px;">පාඨමාලා වෙත යන්න ➔</button>
+                        </div>
+                    `;
+                }
+
+                if (grid) {
+                    grid.innerHTML = '';
+                    courses.forEach(c => {
+                        const rawKey = (c.id || c.product_id || c.key || c.title || '').toLowerCase();
+                        let resolvedKey = 'crypto';
+                        if (rawKey.includes('ai') || rawKey.includes('chatgpt') || rawKey.includes('prompt')) resolvedKey = 'ai';
+                        else if (rawKey.includes('social') || rawKey.includes('facebook') || rawKey.includes('marketing')) resolvedKey = 'social';
+                        else if (rawKey.includes('coding') || rawKey.includes('web') || rawKey.includes('dev')) resolvedKey = 'coding';
+                        
+                        const meta = COURSE_CATALOG[resolvedKey] || {
+                            id: resolvedKey,
+                            title: c.product_name || c.title || c.name || 'Masterclass Program',
+                            instructor: 'Hapanamy Academic Mentor Team',
+                            banner: c.image_url || 'assets/trading_banner.jpg',
+                            totalChapters: 8,
+                            defaultProgress: 20,
+                            defaultChapterLabel: '1/8 Modules'
+                        };
+
+                        const cardTitle = c.product_name || c.title || meta.title;
+                        const cardDiv = document.createElement('div');
+                        cardDiv.className = 'learning-card';
+                        cardDiv.innerHTML = `
+                            <div class="learning-card-banner">
+                                <img src="${meta.banner}" alt="${cardTitle}">
+                            </div>
+                            <div class="learning-card-body">
+                                <h3 style="font-size: 16px; margin-bottom: 8px;">${cardTitle}</h3>
+                                <p style="font-size: 12px; color: var(--text-muted);">${meta.instructor}</p>
+                                
+                                <div class="learning-progress-container">
+                                    <div class="learning-progress-text">
+                                        <span>Progress</span>
+                                        <span>${meta.defaultProgress}% (${meta.defaultChapterLabel})</span>
+                                    </div>
+                                    <div class="learning-progress-bar">
+                                        <div class="learning-progress-fill" style="width: ${meta.defaultProgress}%;"></div>
+                                    </div>
+                                </div>
+                                <button class="btn-learn-action" onclick="startCourse('${resolvedKey}')">Continue Course ➔</button>
+                            </div>
+                        `;
+                        grid.appendChild(cardDiv);
+                    });
+                }
+            }
+        }
+
+        async function loadAndRenderStudentCourses(user) {
+            // First render immediately from local session / user data
+            let courses = getStudentPurchasedCourses(user);
+            renderStudentCourses(courses);
+
+            // Fetch live purchases from server if token is available or by user query fallback
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || localStorage.getItem('hapanamy_auth_token');
+            const uidParam = (user && (user.id || user.username || user.email)) ? encodeURIComponent(user.id || user.username || user.email) : '';
+            const fetchUrl = '/api/products/my-purchases' + (uidParam ? '?user_id=' + uidParam : '');
+
+            try {
+                const headers = {};
+                if (token) headers['Authorization'] = `Bearer ${token}`;
+                const res = await fetch(fetchUrl, { headers });
+                if (res.ok) {
+                    const data = await res.json();
+                    const list = data.myProducts || data.courses || data.purchases || [];
+                    if (Array.isArray(list)) {
+                        const activeProducts = list.filter(p => {
+                            const st = (p.status || '').toUpperCase();
+                            return !st || ['ACTIVE', 'APPROVED', 'PAID', 'COMPLETED'].includes(st);
+                        });
+                        courses = activeProducts;
+                        if (user) {
+                            if (user.id) localStorage.setItem('hapanamy_purchased_courses_' + user.id.toLowerCase(), JSON.stringify(courses));
+                            if (user.username) localStorage.setItem('hapanamy_purchased_courses_' + user.username.toLowerCase(), JSON.stringify(courses));
+                            if (user.email) localStorage.setItem('hapanamy_purchased_courses_' + user.email.toLowerCase(), JSON.stringify(courses));
+                        }
+                        renderStudentCourses(courses);
+                    }
+                }
+            } catch (e) {
+                console.log('Using local purchase cache for student dashboard.');
+            }
+        }
 
         // Course Video Player logic
         function startCourse(courseKey) {
@@ -1068,12 +1574,14 @@
             const player = document.getElementById('coursePlayerBox');
             const playlistUl = document.getElementById('playlistItemsList');
 
-            const courseTitle = courseKey === 'crypto' ? 'Crypto Trading Course' : 'AI Mastery Program';
-            document.getElementById('playerCourseName').textContent = courseTitle;
+            const key = playlists[courseKey] ? courseKey : 'crypto';
+            const meta = COURSE_CATALOG[key] || COURSE_CATALOG['crypto'];
+            
+            document.getElementById('playerCourseName').textContent = meta.title;
 
             // Load playlist
             playlistUl.innerHTML = '';
-            playlists[courseKey].forEach((lesson, index) => {
+            playlists[key].forEach((lesson, index) => {
                 const li = document.createElement('li');
                 li.className = 'playlist-item' + (index === 0 ? ' active' : '');
                 li.innerHTML = `<span class="playlist-item-status">${index === 0 ? '▶' : '○'}</span> <span>${lesson}</span>`;
@@ -1095,8 +1603,8 @@
             });
 
             // Set Initial player values
-            document.getElementById('playerLessonTitle').textContent = playlists[courseKey][0];
-            document.getElementById('playerLessonTitleDetail').textContent = playlists[courseKey][0];
+            document.getElementById('playerLessonTitle').textContent = playlists[key][0];
+            document.getElementById('playerLessonTitleDetail').textContent = playlists[key][0];
 
             grid.style.display = 'none';
             player.style.display = 'block';
@@ -1104,8 +1612,10 @@
         }
 
         function closeCoursePlayer() {
-            document.getElementById('coursesListGrid').style.display = 'grid';
-            document.getElementById('coursePlayerBox').style.display = 'none';
+            const grid = document.getElementById('coursesListGrid');
+            if (grid) grid.style.display = 'grid';
+            const player = document.getElementById('coursePlayerBox');
+            if (player) player.style.display = 'none';
         }
 
         // --- Multi-language translation setup for Student Dashboard ---
@@ -1115,6 +1625,8 @@
                 menu_courses: 'මගේ පාඨමාලා',
                 menu_live: 'සජීවී Zoom පන්ති',
                 menu_ebooks: 'E-Books බාගැනීම්',
+                menu_buy_courses: 'පාඨමාලා මිලදී ගන්න (Buy Courses)',
+                btn_buy_courses: 'පාඨමාලා මිලදී ගන්න',
                 menu_exit: '← වෙබ් අඩවියට',
                 role_student: 'ශිෂ්‍ය සාමාජිකයා',
                 stat_enrolled: 'ලියාපදිංචි පාඨමාලා',
@@ -1136,6 +1648,8 @@
                 menu_courses: 'My Courses',
                 menu_live: 'Live Zoom Sessions',
                 menu_ebooks: 'Download E-Books',
+                menu_buy_courses: 'Buy Courses',
+                btn_buy_courses: 'Buy Courses',
                 menu_exit: '← Back to Live Site',
                 role_student: 'Student Member',
                 stat_enrolled: 'Enrolled Courses',
@@ -1154,6 +1668,147 @@
             }
         };
 
+        let currentStudentUser = null;
+
+        function getInitials(name) {
+            if (!name || typeof name !== 'string') return '--';
+            const clean = name.trim();
+            if (!clean) return '--';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length === 1) {
+                return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+        }
+
+        function getFirstName(fullName) {
+            if (!fullName || typeof fullName !== 'string') return '';
+            const parts = fullName.trim().split(/\s+/).filter(Boolean);
+            return parts[0] || fullName;
+        }
+
+        function updateUserIdentityUI(user) {
+            if (!user) return;
+            currentStudentUser = user;
+            
+            const fullName = user.full_name || user.name || user.username || 'Student Member';
+            const firstName = getFirstName(fullName);
+            const initials = getInitials(fullName);
+            const currentLang = localStorage.getItem('language') || 'si';
+
+            // Topbar avatar & name
+            const headerAvatar = document.getElementById('headerAvatar');
+            if (headerAvatar) headerAvatar.textContent = initials;
+            
+            const headerName = document.getElementById('headerStudentName');
+            if (headerName) headerName.textContent = fullName;
+
+            // Role badge in header
+            const headerRole = document.getElementById('headerStudentRole');
+            if (headerRole) {
+                if (user.role === 'admin' || user.role === 'ADMIN') {
+                    headerRole.textContent = currentLang === 'si' ? 'ප්‍රධාන පරිපාලක (Admin)' : 'Administrator';
+                } else if (user.role === 'affiliate' || user.role === 'AFFILIATE') {
+                    headerRole.textContent = currentLang === 'si' ? 'අනුබද්ධිත සහකරු (Affiliate)' : 'Affiliate Partner';
+                } else {
+                    headerRole.textContent = currentLang === 'si' ? 'ශිෂ්‍ය සාමාජිකයා' : 'Student Member';
+                }
+            }
+
+            // Welcome message
+            const welcomeTitle = document.getElementById('welcomeStudentTitle');
+            if (welcomeTitle) {
+                if (currentLang === 'si') {
+                    welcomeTitle.textContent = `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋`;
+                } else {
+                    welcomeTitle.textContent = `Welcome back, ${firstName}! 👋`;
+                }
+            }
+
+            // Settings Form values
+            const nameInput = document.getElementById('setStudentName');
+            if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
+
+            const emailInput = document.getElementById('setStudentEmail');
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = user.email || '';
+
+            const phoneInput = document.getElementById('setStudentPhone');
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = user.phone || user.mobile || '';
+
+            const addressInput = document.getElementById('setStudentAddress');
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = user.address || '';
+
+            const districtInput = document.getElementById('setStudentDistrict');
+            if (districtInput && !districtInput.matches(':focus')) districtInput.value = user.district || user.city || '';
+
+            // Certificate student name
+            const certName = document.getElementById('certificateStudentName');
+            if (certName) certName.textContent = fullName;
+
+            // Render Dynamic Courses and Zero state
+            loadAndRenderStudentCourses(user);
+        }
+
+        async function fetchStudentProfile() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const cachedActiveUser = JSON.parse(localStorage.getItem('active_user') || 'null');
+            const cachedProfile = JSON.parse(localStorage.getItem('hapanamy_student_profile') || 'null');
+
+            // Populate cached data first for instant UI response
+            if (cachedActiveUser) {
+                updateUserIdentityUI(cachedActiveUser);
+            } else if (cachedProfile) {
+                updateUserIdentityUI(cachedProfile);
+            }
+
+            if (!token) {
+                if (!cachedActiveUser && !cachedProfile) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const user = data.user;
+                        localStorage.setItem('active_user', JSON.stringify(user));
+                        localStorage.setItem('hapanamy_student_profile', JSON.stringify({
+                            name: user.full_name || user.name,
+                            email: user.email,
+                            phone: user.phone,
+                            address: user.address,
+                            district: user.district
+                        }));
+                        updateUserIdentityUI(user);
+                        return;
+                    }
+                } else if (res.status === 401) {
+                    localStorage.removeItem('auth_token');
+                    localStorage.removeItem('active_token');
+                    localStorage.removeItem('active_user');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            } catch (err) {
+                console.warn('Could not fetch remote profile, using local session:', err);
+            }
+
+            if (!currentStudentUser && !cachedActiveUser && !cachedProfile) {
+                const headerName = document.getElementById('headerStudentName');
+                if (headerName) {
+                    headerName.innerHTML = `<span>Session error. <a href="login.html" style="color:var(--brand-orange);text-decoration:underline;">Login again</a></span>`;
+                }
+            }
+        }
+
         function applyStudentLanguage(lang) {
             document.querySelectorAll('[data-translate]').forEach(element => {
                 const key = element.getAttribute('data-translate');
@@ -1162,10 +1817,17 @@
                 }
             });
 
-            // Update welcome name
-            const currentLang = localStorage.getItem('language') || 'si';
-            const welcomeText = currentLang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු, කසුන්! 👋' : 'Welcome back, Kasun! 👋';
-            document.getElementById('welcomeStudentTitle').textContent = welcomeText;
+            // Update welcome name dynamically with user's name
+            const user = currentStudentUser || JSON.parse(localStorage.getItem('active_user') || 'null') || JSON.parse(localStorage.getItem('hapanamy_student_profile') || 'null');
+            const firstName = user ? getFirstName(user.full_name || user.name || user.username || '') : '';
+            const welcomeTitle = document.getElementById('welcomeStudentTitle');
+            if (welcomeTitle) {
+                if (firstName) {
+                    welcomeTitle.textContent = lang === 'si' ? `නැවතත් සාදරයෙන් පිළිගනිමු, ${firstName}! 👋` : `Welcome back, ${firstName}! 👋`;
+                } else {
+                    welcomeTitle.textContent = lang === 'si' ? 'නැවතත් සාදරයෙන් පිළිගනිමු! 👋' : 'Welcome back! 👋';
+                }
+            }
 
             const langToggle = document.getElementById('langToggleBtn');
             if (langToggle) {
@@ -1186,17 +1848,16 @@
                     applyStudentLanguage(currentLang);
                     
                     // Update header title based on active tab
-                    const activeTabId = document.querySelector('.student-nav-link.active').id.replace('nav-', '');
-                    switchStudentTab(activeTabId);
+                    const activeLink = document.querySelector('.student-nav-link.active');
+                    if (activeLink) {
+                        const activeTabId = activeLink.id.replace('nav-', '');
+                        switchStudentTab(activeTabId);
+                    }
 
                     showToast(currentLang === 'si' ? 'භාෂාව සිංහලට වෙනස් කරන ලදී 🇱🇰' : 'Language set to English 🇬🇧');
                 });
             }
         }
-
-        
-        // Save profile logic
-        
 
         // Online Flipbook Reader logic
         let currentEbookPage = 1;
@@ -1239,22 +1900,17 @@
             }
         }
 
-        
-        
         // --- INTERACTIVE VIDEO PLAYBACK LOGIC ---
         let activeLessonLi = null;
-        let progressPercent = 0;
         let playInterval = null;
 
-        // Hook playlist selection
         function hookPlaylistSelection() {
             setTimeout(() => {
                 const items = document.querySelectorAll('.playlist-item');
                 if (items.length > 0) {
-                    activeLessonLi = items[0]; // default first item
+                    activeLessonLi = items[0];
                 }
                 
-                // Add click triggers to reset player overlays on lesson switch
                 items.forEach(li => {
                     li.addEventListener('click', () => {
                         activeLessonLi = li;
@@ -1265,7 +1921,7 @@
         }
 
         function resetVideoPlayerView() {
-            clearInterval(playInterval);
+            if (playInterval) clearInterval(playInterval);
             document.getElementById('videoPlayOverlay').style.display = 'block';
             document.getElementById('videoLoadingOverlay').style.display = 'none';
             document.getElementById('videoPlayingOverlay').style.display = 'none';
@@ -1276,12 +1932,10 @@
             document.getElementById('videoPlayOverlay').style.display = 'none';
             document.getElementById('videoLoadingOverlay').style.display = 'block';
 
-            // 1.5s loading buffer
             setTimeout(() => {
                 document.getElementById('videoLoadingOverlay').style.display = 'none';
                 document.getElementById('videoPlayingOverlay').style.display = 'block';
                 
-                // Animate progress bar
                 let width = 0;
                 const bar = document.getElementById('videoProgressBar');
                 bar.style.width = '0%';
@@ -1295,34 +1949,27 @@
                         document.getElementById('videoPlayingOverlay').style.display = 'none';
                         document.getElementById('videoCompleteOverlay').style.display = 'block';
                     }
-                }, 300); // Takes ~6 seconds to complete playback simulation
-            }, 1500);
+                }, 200);
+            }, 800);
         }
 
         function markLessonAsCompleted() {
             if (activeLessonLi) {
-                // Set checked status in playlist row
-                activeLessonLi.querySelector('.playlist-item-status').textContent = '✅';
+                const statusSpan = activeLessonLi.querySelector('.playlist-item-status');
+                if (statusSpan) statusSpan.textContent = '✅';
                 activeLessonLi.style.opacity = '0.7';
             }
             
             resetVideoPlayerView();
             showToast('🎉 <strong>පාඩම සාර්ථකව අවසන්!</strong> ඔබගේ ඉගෙනුම් දර්ශකය යාවත්කාලීන විය.');
             
-            // Increment progress status bar
             const fill = document.querySelector('.learning-progress-fill');
             const txt = document.querySelector('.learning-progress-text span:last-child');
             if (fill && txt) {
-                // Dynamically upgrade progress values
                 fill.style.width = '37.5%';
                 txt.textContent = '37.5% (3/8 Semesters) • මාස 2 (2 Months)';
             }
         }
-
-        // Run Hook on load
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(hookPlaylistSelection, 1000);
-        });
 
         // --- QUIZ & CERTIFICATE SYSTEM LOGIC ---
         function openCourseQuiz() {
@@ -1334,11 +1981,11 @@
         }
 
         function openCertificateModal() {
-            // Set dynamic student name from profile input/welcome title
-            const rawName = document.getElementById('setStudentName').value || 'Kasun Tharaka';
-            document.getElementById('certificateStudentName').textContent = rawName;
+            const fullName = (currentStudentUser && (currentStudentUser.full_name || currentStudentUser.name)) 
+                || document.getElementById('setStudentName').value 
+                || 'Student Member';
+            document.getElementById('certificateStudentName').textContent = fullName;
             
-            // Set dynamic date
             const today = new Date();
             const dateStr = today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
             document.getElementById('certificateDate').textContent = dateStr;
@@ -1351,78 +1998,130 @@
         }
 
         function submitCourseQuiz(event) {
-            event.preventDefault();
-            const q1 = document.querySelector('input[name="q1"]:checked').value;
-            const q2 = document.querySelector('input[name="q2"]:checked').value;
-            const q3 = document.querySelector('input[name="q3"]:checked').value;
+            if (event) event.preventDefault();
+            const q1 = document.querySelector('input[name="q1"]:checked');
+            const q2 = document.querySelector('input[name="q2"]:checked');
+            const q3 = document.querySelector('input[name="q3"]:checked');
+
+            if (!q1 || !q2 || !q3) {
+                showToast('⚠️ කරුණාකර සියලුම ප්‍රශ්න සඳහා පිළිතුරු සපයන්න.');
+                return;
+            }
 
             closeCourseQuiz();
 
-            // Correct answers: q1 = a, q2 = b, q3 = b
             let score = 0;
-            if (q1 === 'a') score++;
-            if (q2 === 'b') score++;
-            if (q3 === 'b') score++;
+            if (q1.value === 'a') score++;
+            if (q2.value === 'b') score++;
+            if (q3.value === 'b') score++;
 
             if (score >= 2) {
                 showToast('🎉 <strong>සුභ පැතුම්!</strong> ඔබ පරීක්ෂණය සමත් විය. ලකුණු: ' + score + '/3');
-                document.getElementById('btnViewCertificate').style.display = 'block';
+                const certBtn = document.getElementById('btnViewCertificate');
+                if (certBtn) certBtn.style.display = 'block';
                 
-                // Show certificate modal automatically on pass
-                setTimeout(openCertificateModal, 1500);
+                setTimeout(openCertificateModal, 1200);
             } else {
                 showToast('❌ <strong>නැවත උත්සාහ කරන්න!</strong> ඔබ පරීක්ෂණය අසමත් විය. ලකුණු: ' + score + '/3 (සමත් වීමට 2ක් නිවැරදි විය යුතුය)');
             }
+        }
+
         // Logout handler
-        function logoutUser() {
+        async function logoutUser() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            try {
+                if (token) {
+                    await fetch('/api/auth/logout', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                }
+            } catch (e) {}
+
             localStorage.removeItem('active_user');
             localStorage.removeItem('auth_token');
             localStorage.removeItem('active_token');
-            showToast('🚪 <strong>පද්ධතියෙන් පිටවීම සාර්ථකයි!</strong> ඇතුල්වීමේ පිටුවට යොමු වෙමින්...');
+            localStorage.removeItem('is_admin_session');
+            localStorage.removeItem('hapanamy_student_profile');
+            localStorage.removeItem('hapanamy_user_profile');
+            localStorage.removeItem('hapanamy_affiliate_profile');
+            sessionStorage.clear();
+            showToast('🚪 <strong>පද්ධතියෙන් සාර්ථකව පිටවිය (Logged Out)!</strong> ප්‍රධාන වෙබ් අඩවියට යොමු වෙමින්...');
             setTimeout(() => {
-                window.location.href = 'login.html';
-            }, 1200);
+                window.location.href = 'index.html';
+            }, 600);
         }
 
         // Save expanded profile
-        function saveStudentProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('setStudentName').value;
-            const email = document.getElementById('setStudentEmail').value;
-            const phone = document.getElementById('setStudentPhone').value;
-            const address = document.getElementById('setStudentAddress').value;
-            const district = document.getElementById('setStudentDistrict').value;
-            
-            const profile = { name, email, phone, address, district };
-            localStorage.setItem('hapanamy_student_profile', JSON.stringify(profile));
+        async function saveStudentProfile(event) {
+            if (event) event.preventDefault();
+            const name = document.getElementById('setStudentName').value.trim();
+            const email = document.getElementById('setStudentEmail').value.trim();
+            const phone = document.getElementById('setStudentPhone').value.trim();
+            const address = document.getElementById('setStudentAddress').value.trim();
+            const district = document.getElementById('setStudentDistrict').value.trim();
+            const password = document.getElementById('setStudentPassword').value;
 
-            // Sync dashboard headers
-            document.getElementById('headerStudentName').textContent = name;
-            document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + name.split(' ')[0] + '! 👋';
+            const profileData = {
+                full_name: name,
+                name: name,
+                email: email,
+                phone: phone,
+                address: address,
+                district: district
+            };
+            if (password) {
+                profileData.password = password;
+            }
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
             
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව Local Database එකට සුරැකිණි.');
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const updatedUser = { ...activeUser, ...profileData };
+            localStorage.setItem('active_user', JSON.stringify(updatedUser));
+            localStorage.setItem('hapanamy_student_profile', JSON.stringify(profileData));
+
+            updateUserIdentityUI(updatedUser);
+
+            if (token) {
+                try {
+                    const res = await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profileData)
+                    });
+                    if (res.ok) {
+                        const result = await res.json();
+                        if (result && result.user) {
+                            localStorage.setItem('active_user', JSON.stringify(result.user));
+                            updateUserIdentityUI(result.user);
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Failed to sync profile with server:', err);
+                }
+            }
+
+            const currentLang = localStorage.getItem('language') || 'si';
+            showToast(currentLang === 'si' ? 
+                '💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව සුරැකිණි.' : 
+                '💾 <strong>Settings Saved!</strong> Your profile details have been successfully saved.');
         }
 
         // Load profile from database
         function loadStudentProfile() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_student_profile'));
-            if (profile) {
-                document.getElementById('setStudentName').value = profile.name;
-                document.getElementById('setStudentEmail').value = profile.email;
-                document.getElementById('setStudentPhone').value = profile.phone;
-                document.getElementById('setStudentAddress').value = profile.address || '';
-                document.getElementById('setStudentDistrict').value = profile.district || '';
-                
-                document.getElementById('headerStudentName').textContent = profile.name;
-                document.getElementById('welcomeStudentTitle').textContent = 'නැවතත් සාදරයෙන් පිළිගනිමු, ' + profile.name.split(' ')[0] + '! 👋';
-            }
+            fetchStudentProfile();
         }
         
         document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(loadStudentProfile, 400);
+            initStudentLanguage();
+            fetchStudentProfile();
+            hookPlaylistSelection();
         });
 
-        initStudentLanguage();
     </script>
 </body>
 </html>

@@ -468,12 +468,49 @@
             background-color: #e06612;
         }
 
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 1099;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
         @media (max-width: 1000px) {
             .student-layout {
                 grid-template-columns: 1fr;
             }
             .student-sidebar {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+                display: flex !important;
+                overflow-y: auto;
+            }
+            .student-sidebar.open {
+                transform: translateX(0);
+            }
+            .student-sidebar-close-btn {
+                display: flex !important;
+            }
+            .student-mobile-menu-btn {
+                display: inline-flex !important;
             }
             .player-layout {
                 grid-template-columns: 1fr;
@@ -488,10 +525,10 @@
                 grid-template-columns: 1fr 1fr !important;
             }
             .student-topbar {
-                padding: 16px 20px !important;
+                padding: 14px 18px !important;
             }
             .student-main-content {
-                padding: 20px !important;
+                padding: 20px 15px !important;
             }
         }
         
@@ -503,11 +540,11 @@
             left: 0;
             width: 100%;
             background-color: #102A43;
-            border-top: 1px solid rgba(255, 249, 240, 0.1);
-            z-index: 1999;
+            border-top: 1px solid rgba(255, 249, 240, 0.15);
+            z-index: 1050;
             justify-content: space-around;
-            padding: 8px 0;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.25);
+            padding: 8px 4px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
         }
         .mobile-nav-item {
             display: flex;
@@ -515,15 +552,18 @@
             align-items: center;
             gap: 4px;
             color: #FFF9F0;
-            opacity: 0.7;
+            opacity: 0.75;
             cursor: pointer;
-            font-size: 10px;
+            font-size: 10.5px;
             font-weight: 700;
             transition: 0.2s;
+            padding: 4px 6px;
+            border-radius: 6px;
         }
         .mobile-nav-item.active {
             opacity: 1;
             color: var(--brand-orange);
+            background: rgba(244, 123, 32, 0.12);
         }
         .mobile-nav-icon {
             font-size: 18px;
@@ -535,12 +575,18 @@
 </head>
 <body>
 
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="studentSidebarBackdrop" onclick="closeMobileStudentSidebar()"></div>
+
     <div class="student-layout">
         <!-- Sidebar Navigation -->
         <aside class="student-sidebar">
-            <div class="student-logo">
-                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            <div class="student-logo" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 30px; padding-left: 5px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                </div>
+                <button class="student-sidebar-close-btn" onclick="closeMobileStudentSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
             
             <ul class="student-nav">
@@ -586,7 +632,12 @@
         <main class="student-content-area">
             <!-- Topbar -->
             <header class="student-topbar">
-                <h1 id="studentHeaderTitle" data-translate="title_dashboard">My Learning Dashboard</h1>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="student-mobile-menu-btn" id="mobileStudentMenuBtn" onclick="toggleMobileStudentSidebar()" aria-label="Open Navigation Menu" style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">
+                        ☰
+                    </button>
+                    <h1 id="studentHeaderTitle" data-translate="title_dashboard" style="font-size: 20px; margin: 0;">My Learning Dashboard</h1>
+                </div>
                 
                 <div class="student-topbar-actions">
                     <!-- Lang Switcher in student topbar -->
@@ -917,7 +968,11 @@
         </div>
         <div class="mobile-nav-item" onclick="switchStudentTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
-            <span>Settings</span>
+            <span>Profile</span>
+        </div>
+        <div class="mobile-nav-item" onclick="toggleMobileStudentSidebar()" id="mob-nav-menu">
+            <span class="mobile-nav-icon">☰</span>
+            <span>Menu</span>
         </div>
     </div>
 
@@ -950,6 +1005,28 @@
             });
         }
 
+        // Mobile Sidebar Drawer Controls
+        function toggleMobileStudentSidebar() {
+            const sidebar = document.querySelector('.student-sidebar');
+            const backdrop = document.getElementById('studentSidebarBackdrop');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.toggle('open');
+            if (backdrop) {
+                if (isOpen) backdrop.classList.add('active');
+                else backdrop.classList.remove('active');
+            }
+        }
+
+        function closeMobileStudentSidebar() {
+            const sidebar = document.querySelector('.student-sidebar');
+            const backdrop = document.getElementById('studentSidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        window.toggleMobileStudentSidebar = toggleMobileStudentSidebar;
+        window.closeMobileStudentSidebar = closeMobileStudentSidebar;
+
         // Switch panel tabs
         function switchStudentTab(tabId) {
             const tabs = document.querySelectorAll('.student-nav-link');
@@ -958,8 +1035,11 @@
             tabs.forEach(t => t.classList.remove('active'));
             panels.forEach(p => p.classList.remove('active'));
             
-            document.getElementById(`nav-${tabId}`).classList.add('active');
-            document.getElementById(`panel-${tabId}`).classList.add('active');
+            const activeTab = document.getElementById(`nav-${tabId}`);
+            if (activeTab) activeTab.classList.add('active');
+            
+            const activePanel = document.getElementById(`panel-${tabId}`);
+            if (activePanel) activePanel.classList.add('active');
             
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
@@ -986,13 +1066,26 @@
                 }
             };
             
-            document.getElementById('studentHeaderTitle').textContent = headerTitles[currentLang][tabId];
+            const titleEl = document.getElementById('studentHeaderTitle');
+            if (titleEl && headerTitles[currentLang] && headerTitles[currentLang][tabId]) {
+                titleEl.textContent = headerTitles[currentLang][tabId];
+            }
             
             // Auto close video player if switching tabs
             if (tabId !== 'courses') {
                 closeCoursePlayer();
             }
+
+            // Close mobile sidebar drawer if open
+            closeMobileStudentSidebar();
+
+            // Scroll smoothly to top
+            const contentArea = document.querySelector('.student-content-area');
+            if (contentArea) {
+                contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+        window.switchStudentTab = switchStudentTab;
 
         // Toast helper
         function showToast(message) {

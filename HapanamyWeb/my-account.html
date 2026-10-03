@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Account | HAPANAMY.lk</title>
+    <title>My Account | Hapanamy.lk — A NOWATRIX Global Company</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -495,20 +495,100 @@
             padding: 30px;
         }
 
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(4px);
+            z-index: 1099;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sidebar-backdrop.active {
+            display: block;
+            opacity: 1;
+        }
+
         /* Mobile adaptation */
         @media (max-width: 900px) {
             .dashboard-layout {
                 grid-template-columns: 1fr;
             }
             .dashboard-sidebar {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 280px;
+                height: 100vh;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                box-shadow: 4px 0 25px rgba(0,0,0,0.5);
+                display: flex !important;
+                overflow-y: auto;
+            }
+            .dashboard-sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-close-btn {
+                display: flex !important;
+            }
+            .mobile-menu-btn {
+                display: inline-flex !important;
             }
             .mobile-bottom-nav {
                 display: flex !important;
             }
             .dashboard-content-area {
-                padding-bottom: 70px;
+                padding-bottom: 75px !important;
             }
+            .dashboard-topbar {
+                padding: 14px 18px !important;
+            }
+            .main-content {
+                padding: 20px 15px !important;
+            }
+        }
+
+        /* Mobile Bottom Nav styles */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #102A43;
+            border-top: 1px solid rgba(255, 249, 240, 0.15);
+            z-index: 1050;
+            justify-content: space-around;
+            padding: 8px 4px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
+        }
+        .mobile-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #FFF5E4;
+            opacity: 0.75;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 700;
+            transition: 0.2s;
+            padding: 4px 6px;
+            border-radius: 6px;
+        }
+        .mobile-nav-item.active {
+            opacity: 1;
+            color: var(--brand-orange);
+            background: rgba(244, 123, 32, 0.12);
+        }
+        .mobile-nav-icon {
+            font-size: 18px;
         }
 
         @keyframes slideIn {
@@ -522,12 +602,18 @@
 </head>
 <body>
 
+    <!-- Backdrop for Mobile Sidebar Drawer -->
+    <div class="sidebar-backdrop" id="accountSidebarBackdrop" onclick="closeMobileAccountSidebar()"></div>
+
     <div class="dashboard-layout">
         <!-- SIDEBAR NAVIGATION -->
         <aside class="dashboard-sidebar">
-            <div class="sidebar-logo">
-                <img src="assets/logo.jpg" alt="HAPANAMY Logo">
-                <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+            <div class="sidebar-logo" style="display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 30px; padding-left: 5px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo">
+                    <span style="font-weight: 900; font-family: 'Outfit', sans-serif;">HAPANAමයි<span style="color: var(--brand-orange);">.lk</span></span>
+                </div>
+                <button class="sidebar-close-btn" onclick="closeMobileAccountSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
             
             <ul class="sidebar-nav">
@@ -573,7 +659,12 @@
         <main class="dashboard-content-area">
             <!-- Top Bar -->
             <div class="dashboard-topbar">
-                <div class="topbar-title" id="pageHeaderTitle">MY ACCOUNT (මගේ ගිණුම)</div>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <button class="mobile-menu-btn" id="mobileAccountMenuBtn" onclick="toggleMobileAccountSidebar()" aria-label="Open Navigation Menu" style="display: none; background: rgba(255,255,255,0.08); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; width: 40px; height: 40px; align-items: center; justify-content: center; font-size: 20px; cursor: pointer;">
+                        ☰
+                    </button>
+                    <div class="topbar-title" id="pageHeaderTitle" style="margin: 0;">MY ACCOUNT (මගේ ගිණුම)</div>
+                </div>
                 
                 <div class="topbar-controls">
                     <!-- Language selector -->
@@ -582,8 +673,8 @@
                     <button class="btn-toggle" id="themeToggleBtn">🌓</button>
                     
                     <div class="user-profile-badge">
-                        <div class="user-avatar" id="avatarLetter">K</div>
-                        <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Kasun Tharaka</span>
+                        <div class="user-avatar" id="avatarLetter">--</div>
+                        <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Loading profile...</span>
                     </div>
                 </div>
             </div>
@@ -786,7 +877,7 @@
                                 </div>
 
                                 <div class="form-group" style="margin-top: 15px;">
-                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Kasun Tharaka, Commercial Bank, Acc: 8010294851, Maharagama Branch</textarea>
+                                    <textarea id="payoutBankDetails" required placeholder=" " rows="3" style="width: 100%;">Commercial Bank, Maharagama Branch</textarea>
                                     <label for="payoutBankDetails">බැංකු විස්තර (Bank Account Details)</label>
                                 </div>
 
@@ -815,44 +906,109 @@
 
                 <!-- 6. PROFILE SETTINGS PANEL -->
                 <div class="account-panel" id="panel-settings">
-                    <div class="stat-card" style="max-width: 600px;">
-                        <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">පැතිකඩ සැකසුම් (Profile Settings Database)</h3>
+                    <div class="stat-card" style="max-width: 680px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+                            <h3 style="font-size: 16px; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                <span>👤</span> ගිණුම් විස්තර සහ පැතිකඩ (Profile & Security Settings)
+                            </h3>
+                            <span id="accountKycStatusBadge" class="badge badge-warning" style="font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(33, 150, 243, 0.15); color: #2196F3; font-weight: 700;">🛡️ NOT SUBMITTED</span>
+                        </div>
                         
                         <form id="unifiedSettingsForm" onsubmit="saveUserProfile(event)">
-                            <div class="form-group">
-                                <label for="setUserName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setUserName" value="Kasun Tharaka" required placeholder="Kasun Tharaka">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
-                                <input type="email" id="setUserEmail" value="student@hapanamy.lk" required placeholder="student@hapanamy.lk">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserPhone">දුරකථන අංකය (Phone Number) *</label>
-                                <input type="tel" id="setUserPhone" value="0719226600" required placeholder="0719226600">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserAddress">ලිපිනය (Home Address) *</label>
-                                <input type="text" id="setUserAddress" value="No. 45, Temple Road, Maharagama" required placeholder="No. 45, Temple Road, Maharagama">
-                            </div>
-                            
-                            <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; background-color: rgba(255,255,255,0.02);">
-                                <h4 style="font-size: 13px; margin-bottom: 12px; color: var(--brand-orange);">🏦 ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <div class="form-group">
-                                    <label for="setUserBankName">බැංකුවේ නම (Bank Name) *</label>
-                                    <input type="text" id="setUserBankName" value="Commercial Bank" required placeholder="Commercial Bank">
+                                    <label for="setUserName">සම්පූර්ණ නම (Full Name) *</label>
+                                    <input type="text" id="setUserName" required placeholder="ඔබගේ සම්පූර්ණ නම">
                                 </div>
-                                <div class="form-group" style="margin-top: 15px;">
-                                    <label for="setUserBankBranch">ශාඛාව (Branch) *</label>
-                                    <input type="text" id="setUserBankBranch" value="Maharagama" required placeholder="Maharagama">
-                                </div>
-                                <div class="form-group" style="margin-top: 15px;">
-                                    <label for="setUserBankAcc">ගිණුම් අංකය (Account Number) *</label>
-                                    <input type="text" id="setUserBankAcc" value="8010294851" required placeholder="8010294851">
+                                <div class="form-group">
+                                    <label for="setUserUsername">පරිශීලක නාමය (Username)</label>
+                                    <input type="text" id="setUserUsername" readonly disabled style="background: rgba(255,255,255,0.04); color: var(--brand-orange); font-weight: 700; font-family: monospace;">
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
+                                    <input type="email" id="setUserEmail" required placeholder="email@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserNic">ජාතික හැඳුනුම්පත (NIC / NID) *</label>
+                                    <input type="text" id="setUserNic" placeholder="199XXXXXXXXX / XXXXXXXXXV">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserPhone">දුරකථන අංකය (Phone Number) *</label>
+                                    <input type="tel" id="setUserPhone" required placeholder="07XXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserWhatsapp">WhatsApp අංකය (WhatsApp) *</label>
+                                    <input type="tel" id="setUserWhatsapp" placeholder="07XXXXXXXX">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserGender">ස්ත්‍රී / පුරුෂ භාවය (Sex / Gender)</label>
+                                    <select id="setUserGender" style="width: 100%; padding: 10px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
+                                        <option value="MALE">පුරුෂ (Male)</option>
+                                        <option value="FEMALE">ස්ත්‍රී (Female)</option>
+                                        <option value="OTHER">වෙනත් (Other)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserDob">උපන් දිනය (Birthday / DOB)</label>
+                                    <input type="date" id="setUserDob" style="width: 100%; padding: 10px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="setUserAddress">ලිපිනය (Home Address)</label>
+                                <input type="text" id="setUserAddress" placeholder="No. 45, Temple Road...">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="setUserCity">ළඟම නගරය (Nearest City / District)</label>
+                                <input type="text" id="setUserCity" placeholder="e.g. Maharagama, Kandy...">
+                            </div>
+                            
+                            <!-- Bank Details Card -->
+                            <div style="border: 1px solid rgba(245, 124, 0, 0.4); padding: 16px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px; background-color: rgba(245, 124, 0, 0.03);">
+                                <h4 style="font-size: 13.5px; margin-bottom: 14px; color: var(--brand-orange); display: flex; align-items: center; gap: 6px;">
+                                    <span>🏦</span> ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):
+                                </h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label for="setUserBankName">බැංකුවේ නම (Bank Name) *</label>
+                                        <input type="text" id="setUserBankName" required placeholder="Commercial Bank, BOC, Sampath...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setUserBankBranch">ශාඛාව (Branch) *</label>
+                                        <input type="text" id="setUserBankBranch" required placeholder="Maharagama">
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                    <div class="form-group">
+                                        <label for="setUserBankAcc">ගිණුම් අංකය (Account Number) *</label>
+                                        <input type="text" id="setUserBankAcc" required placeholder="8010294851">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setUserBankHolder">ගිණුමේ හිමිකරුගේ නම (Holder Name) *</label>
+                                        <input type="text" id="setUserBankHolder" required placeholder="Hiru Pathirana">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KYC Activation Box -->
+                            <div style="background: rgba(33, 150, 243, 0.06); border: 1px dashed rgba(33, 150, 243, 0.35); border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; font-size: 12.5px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-primary); font-weight: 600;">
+                                    <input type="checkbox" id="setUserKycCheck" style="width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;">
+                                    <span>ජාතික හැඳුනුම්පත සහ බැංකු ගිණුම් විස්තර KYC සත්‍යාපනය සඳහා යොමු කරන්න (Request KYC Verification).</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700; font-size: 14px;">💾 සියලු විස්තර සුරකින්න (Save Settings)</button>
                         </form>
                     </div>
 
@@ -871,6 +1027,43 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="mobile-bottom-nav">
+        <div class="mobile-nav-item active" onclick="switchTab('dashboard')" id="mob-nav-dashboard">
+            <span class="mobile-nav-icon">📊</span>
+            <span>Overview</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('courses')" id="mob-nav-courses">
+            <span class="mobile-nav-icon">🎥</span>
+            <span>Courses</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('links')" id="mob-nav-links">
+            <span class="mobile-nav-icon">🔗</span>
+            <span>Links</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('network')" id="mob-nav-network">
+            <span class="mobile-nav-icon">👥</span>
+            <span>Team</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('payouts')" id="mob-nav-payouts">
+            <span class="mobile-nav-icon">💸</span>
+            <span>Payouts</span>
+        </div>
+        <div class="mobile-nav-item" onclick="switchTab('settings')" id="mob-nav-settings">
+            <span class="mobile-nav-icon">⚙️</span>
+            <span>Profile</span>
+        </div>
+        <div class="mobile-nav-item" onclick="toggleMobileAccountSidebar()" id="mob-nav-menu">
+            <span class="mobile-nav-icon">☰</span>
+            <span>Menu</span>
+        </div>
+    </nav>
+
+    <!-- Footer Attribution -->
+    <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
+        © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
     </div>
 
     <!-- PASSKEY VERIFICATION MODAL OVERLAY -->
@@ -920,6 +1113,28 @@
             });
         }
 
+        // Mobile Sidebar Drawer Controls
+        function toggleMobileAccountSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const backdrop = document.getElementById('accountSidebarBackdrop');
+            if (!sidebar) return;
+            const isOpen = sidebar.classList.toggle('open');
+            if (backdrop) {
+                if (isOpen) backdrop.classList.add('active');
+                else backdrop.classList.remove('active');
+            }
+        }
+
+        function closeMobileAccountSidebar() {
+            const sidebar = document.querySelector('.dashboard-sidebar');
+            const backdrop = document.getElementById('accountSidebarBackdrop');
+            if (sidebar) sidebar.classList.remove('open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+
+        window.toggleMobileAccountSidebar = toggleMobileAccountSidebar;
+        window.closeMobileAccountSidebar = closeMobileAccountSidebar;
+
         // Switch Tabs function
         function switchTab(tabId) {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -929,7 +1144,22 @@
             const activePanel = document.getElementById('panel-' + tabId);
             if (activeLink) activeLink.classList.add('active');
             if (activePanel) activePanel.classList.add('active');
+
+            // Sync mobile bottom nav items
+            document.querySelectorAll('.mobile-nav-item').forEach(i => i.classList.remove('active'));
+            const mobItem = document.getElementById('mob-nav-' + tabId);
+            if (mobItem) mobItem.classList.add('active');
+
+            // Close mobile sidebar drawer if open
+            closeMobileAccountSidebar();
+
+            // Smooth scroll to top of content area
+            const contentArea = document.querySelector('.dashboard-content-area');
+            if (contentArea) {
+                contentArea.scrollTo({ top: 0, behavior: 'smooth' });
+            }
         }
+        window.switchTab = switchTab;
 
         // Show Toast Utility
         function showToast(message) {
@@ -1039,49 +1269,230 @@
                 </div>`;
         }
 
-        // Save profile
-        function saveUserProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('setUserName').value;
-            const email = document.getElementById('setUserEmail').value;
-            const phone = document.getElementById('setUserPhone').value;
-            const address = document.getElementById('setUserAddress').value;
-            const bankName = document.getElementById('setUserBankName').value;
-            const branch = document.getElementById('setUserBankBranch').value;
-            const accNumber = document.getElementById('setUserBankAcc').value;
+        let currentAccountUser = null;
 
-            const profile = { name, email, phone, address, bankName, branch, accNumber };
-            localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
-
-            // Sync topbar
-            document.getElementById('headerUserName').textContent = name;
-            document.getElementById('avatarLetter').textContent = name.charAt(0);
-
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
+        function getInitials(name) {
+            if (!name || typeof name !== 'string') return '--';
+            const clean = name.trim();
+            if (!clean) return '--';
+            const parts = clean.split(/\s+/).filter(Boolean);
+            if (parts.length === 1) {
+                return parts[0].substring(0, Math.min(2, parts[0].length)).toUpperCase();
+            }
+            return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
         }
 
-        // Load profile datasets
+        function updateAccountIdentityUI(user) {
+            if (!user) return;
+            currentAccountUser = user;
+            
+            const fullName = user.full_name || user.name || user.username || 'Member';
+            const username = user.username || '';
+            const email = user.email || '';
+            const phone = user.phone || user.mobile || '';
+            const whatsapp = user.whatsapp || user.whatsapp_number || phone;
+            const nic = user.nic || user.nid || user.nic_number || '';
+            const gender = (user.gender || user.sex || 'MALE').toUpperCase();
+            const dob = user.dob || user.birthday || '';
+            const address = user.address || '';
+            const city = user.nearest_city || user.city || user.district || '';
+
+            const bank = user.bank_account || {};
+            const bankName = bank.bank_name || user.bank_name || user.bankName || '';
+            const bankBranch = bank.branch_name || user.bank_branch || user.branch || user.branchName || '';
+            const bankAcc = bank.account_number || user.bank_account_number || user.bank_account_no || user.accNumber || '';
+            const bankHolder = bank.account_holder_name || user.bank_account_name || user.bank_holder_name || fullName;
+
+            const kycStatus = (user.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+            const initials = getInitials(fullName);
+
+            const headerName = document.getElementById('headerUserName');
+            if (headerName) headerName.textContent = fullName;
+
+            const avatarLetter = document.getElementById('avatarLetter');
+            if (avatarLetter) avatarLetter.textContent = initials;
+
+            const nameInput = document.getElementById('setUserName');
+            if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
+
+            const userInput = document.getElementById('setUserUsername');
+            if (userInput) userInput.value = `@${username}`;
+
+            const emailInput = document.getElementById('setUserEmail');
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = email;
+
+            const phoneInput = document.getElementById('setUserPhone');
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = phone;
+
+            const waInput = document.getElementById('setUserWhatsapp');
+            if (waInput && !waInput.matches(':focus')) waInput.value = whatsapp;
+
+            const nicInput = document.getElementById('setUserNic');
+            if (nicInput && !nicInput.matches(':focus')) nicInput.value = nic;
+
+            const genInput = document.getElementById('setUserGender');
+            if (genInput) genInput.value = ['MALE', 'FEMALE', 'OTHER'].includes(gender) ? gender : 'MALE';
+
+            const dobInput = document.getElementById('setUserDob');
+            if (dobInput && !dobInput.matches(':focus')) dobInput.value = dob;
+
+            const addressInput = document.getElementById('setUserAddress');
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = address;
+
+            const cityInput = document.getElementById('setUserCity');
+            if (cityInput && !cityInput.matches(':focus')) cityInput.value = city;
+
+            const bNameInput = document.getElementById('setUserBankName');
+            if (bNameInput && !bNameInput.matches(':focus')) bNameInput.value = bankName;
+
+            const bBranchInput = document.getElementById('setUserBankBranch');
+            if (bBranchInput && !bBranchInput.matches(':focus')) bBranchInput.value = bankBranch;
+
+            const bAccInput = document.getElementById('setUserBankAcc');
+            if (bAccInput && !bAccInput.matches(':focus')) bAccInput.value = bankAcc;
+
+            const bHolderInput = document.getElementById('setUserBankHolder');
+            if (bHolderInput && !bHolderInput.matches(':focus')) bHolderInput.value = bankHolder;
+
+            const kycBadge = document.getElementById('accountKycStatusBadge');
+            if (kycBadge) {
+                kycBadge.textContent = `🛡️ KYC ${kycStatus.replace(/_/g, ' ')}`;
+                kycBadge.className = `badge ${kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' ? 'badge-success' : (kycStatus === 'PENDING' ? 'badge-warning' : 'badge-secondary')}`;
+            }
+
+            const kycCheck = document.getElementById('setUserKycCheck');
+            if (kycCheck) {
+                kycCheck.checked = (kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' || kycStatus === 'PENDING');
+            }
+
+            // Sync with Payout Request Form bank field
+            const payoutBankArea = document.getElementById('payoutBankDetails');
+            if (payoutBankArea) {
+                if (bankName && bankAcc) {
+                    payoutBankArea.value = `${bankName} (${bankBranch || 'Main Branch'})\nAccount: ${bankAcc}\nHolder: ${bankHolder}`;
+                }
+            }
+        }
+
+        async function fetchAccountProfile() {
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const cachedActiveUser = JSON.parse(localStorage.getItem('active_user') || 'null');
+            const cachedProfile = JSON.parse(localStorage.getItem('hapanamy_user_profile') || 'null');
+
+            if (cachedActiveUser) updateAccountIdentityUI(cachedActiveUser);
+            else if (cachedProfile) updateAccountIdentityUI(cachedProfile);
+
+            if (!token) {
+                if (!cachedActiveUser && !cachedProfile) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/auth/me', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        const user = data.user;
+                        localStorage.setItem('active_user', JSON.stringify(user));
+                        updateAccountIdentityUI(user);
+                        return;
+                    }
+                }
+            } catch (err) {
+                console.warn('Could not fetch server profile, using local session:', err);
+            }
+        }
+
         function loadUserProfile() {
-            const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {
-                name: 'Kasun Tharaka',
-                email: 'student@hapanamy.lk',
-                phone: '0719226600',
-                address: 'No. 45, Temple Road, Maharagama',
-                bankName: 'Commercial Bank',
-                branch: 'Maharagama',
-                accNumber: '8010294851'
+            fetchAccountProfile();
+        }
+
+        async function saveUserProfile(event) {
+            if (event) event.preventDefault();
+            const name = document.getElementById('setUserName').value.trim();
+            const email = document.getElementById('setUserEmail').value.trim();
+            const phone = document.getElementById('setUserPhone').value.trim();
+            const whatsapp = document.getElementById('setUserWhatsapp') ? document.getElementById('setUserWhatsapp').value.trim() : phone;
+            const nic = document.getElementById('setUserNic') ? document.getElementById('setUserNic').value.trim() : '';
+            const gender = document.getElementById('setUserGender') ? document.getElementById('setUserGender').value : 'MALE';
+            const dob = document.getElementById('setUserDob') ? document.getElementById('setUserDob').value : '';
+            const address = document.getElementById('setUserAddress').value.trim();
+            const city = document.getElementById('setUserCity') ? document.getElementById('setUserCity').value.trim() : '';
+
+            const bankName = document.getElementById('setUserBankName') ? document.getElementById('setUserBankName').value.trim() : '';
+            const branch = document.getElementById('setUserBankBranch') ? document.getElementById('setUserBankBranch').value.trim() : '';
+            const accNumber = document.getElementById('setUserBankAcc') ? document.getElementById('setUserBankAcc').value.trim() : '';
+            const bankHolder = document.getElementById('setUserBankHolder') ? document.getElementById('setUserBankHolder').value.trim() : name;
+
+            const activateKyc = document.getElementById('setUserKycCheck') ? document.getElementById('setUserKycCheck').checked : false;
+
+            const profile = {
+                name,
+                full_name: name,
+                email,
+                phone,
+                mobile: phone,
+                whatsapp,
+                whatsapp_number: whatsapp,
+                nic,
+                nid: nic,
+                gender,
+                sex: gender,
+                dob,
+                birthday: dob,
+                address,
+                nearest_city: city,
+                city,
+                district: city,
+                bank_name: bankName,
+                bankName,
+                bank_branch: branch,
+                branchName: branch,
+                branch,
+                bank_account_number: accNumber,
+                accountNumber: accNumber,
+                accNumber,
+                bank_account_name: bankHolder,
+                accountHolderName: bankHolder,
+                activate_kyc: activateKyc,
+                request_kyc: activateKyc
             };
 
-            document.getElementById('setUserName').value = profile.name;
-            document.getElementById('setUserEmail').value = profile.email;
-            document.getElementById('setUserPhone').value = profile.phone;
-            document.getElementById('setUserAddress').value = profile.address;
-            document.getElementById('setUserBankName').value = profile.bankName;
-            document.getElementById('setUserBankBranch').value = profile.branch;
-            document.getElementById('setUserBankAcc').value = profile.accNumber;
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
 
-            document.getElementById('headerUserName').textContent = profile.name;
-            document.getElementById('avatarLetter').textContent = profile.name.charAt(0);
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const updatedUser = { ...activeUser, ...profile };
+            localStorage.setItem('active_user', JSON.stringify(updatedUser));
+
+            updateAccountIdentityUI(updatedUser);
+
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || ('token-member-' + (activeUser.id || 'hiru'));
+            if (token) {
+                try {
+                    const res = await fetch('/api/user/profile', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(profile)
+                    });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.user) {
+                            localStorage.setItem('active_user', JSON.stringify({ ...updatedUser, ...data.user }));
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Could not sync user profile to server:', err);
+                }
+            }
+
+            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
         }
 
         // Load Payouts queue
@@ -1091,7 +1502,7 @@
             
             let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
-                if (userSlug === 'affiliate' || userSlug === 'kasun_t') {
+                if (userSlug === 'affiliate') {
                     balance = '23790';
                 } else {
                     balance = '0';
@@ -1200,9 +1611,7 @@
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
                 const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
-
-                const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
-                const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || { name: 'Kasun Tharaka' };
+                const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Member' };
                 
                 const payoutReq = {
                     id: 'payout-' + Math.floor(1000 + Math.random() * 9000),
@@ -1261,6 +1670,65 @@
 
         function markLessonCompleted() {
             showToast('✅ Lesson marked as completed! Course progress updated.');
+        }
+
+        function renderStudentPurchasedCourses() {
+            const container = document.getElementById('studentCoursesGrid');
+            if (!container) return;
+
+            const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
+            const uid = (activeUser.id || '').toLowerCase().trim();
+            const uname = (activeUser.username || activeUser.name || '').toLowerCase().trim();
+            const uemail = (activeUser.email || '').toLowerCase().trim();
+
+            let courses = [];
+            const keysToCheck = [
+                'hapanamy_purchased_courses_' + uid,
+                'hapanamy_purchased_courses_' + uname,
+                'hapanamy_purchased_courses_' + uemail
+            ];
+            for (const k of keysToCheck) {
+                if (k && localStorage.getItem(k)) {
+                    try {
+                        const list = JSON.parse(localStorage.getItem(k));
+                        if (Array.isArray(list) && list.length > 0) {
+                            courses = list;
+                            break;
+                        }
+                    } catch (e) {}
+                }
+            }
+
+            if (courses.length === 0 && activeUser.purchased_courses && Array.isArray(activeUser.purchased_courses)) {
+                courses = activeUser.purchased_courses;
+            }
+
+            if (courses.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: 12px; padding: 35px 20px; text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 12px;">📚</div>
+                        <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 8px;">ඔබ තවමත් කිසිදු පාඨමාලාවක් මිලදී ගෙන නොමැත</h3>
+                        <p style="font-size: 13.5px; color: var(--text-muted); margin-bottom: 20px;">Hapanamy.lk ප්‍රමුඛ පෙළේ පාඨමාලා මිලදී ගෙන ඔබගේ ඉගෙනුම ආරම්භ කරන්න.</p>
+                        <a href="courses.html" class="btn btn-primary" style="text-decoration: none; padding: 10px 22px; font-size: 13.5px; display: inline-block;">🛒 පාඨමාලා මිලදී ගන්න (Buy Courses) ➔</a>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = '';
+            courses.forEach(c => {
+                const title = c.product_name || c.title || c.name || 'Masterclass Program';
+                const banner = c.image_url || 'assets/trading_banner.jpg';
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <div class="course-thumb" style="background-image: url('${banner}'); background-size: cover; background-position: center; height: 160px; border-radius: 8px; margin-bottom: 15px;"></div>
+                    <h3 style="font-size: 16px; margin-bottom: 8px;">${title}</h3>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">● Lifetime Access Unlocked</p>
+                    <button class="btn btn-primary" style="width: 100%; font-size: 13px;" onclick="openCoursePlayer('${c.id || 'crypto'}')">Continue Learning ➔</button>
+                `;
+                container.appendChild(card);
+            });
         }
 
         // Language toggle dummy
