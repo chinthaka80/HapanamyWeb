@@ -343,17 +343,29 @@
             </a>
         </div>
 
-        <div id="sponsorBadge" class="sponsor-badge" style="display: none; background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 12px; padding: 10px 14px; margin-bottom: 18px; font-size: 13px; color: var(--brand-gold); align-items: center; gap: 8px;">
-            <span style="font-size: 16px;">🤝</span>
-            <span>Sponsor: <strong id="sponsorNameText" style="color: #FFF;">NAMOBUDDHAYA</strong> (<span id="sponsorPosText" style="color: var(--brand-orange); font-weight: 700;">LEFT</span> Team)</span>
+        <div id="sponsorBadge" class="sponsor-badge" style="background: rgba(212, 175, 55, 0.12); border: 1px solid rgba(212, 175, 55, 0.35); border-radius: 14px; padding: 12px 16px; margin-bottom: 20px; font-size: 13.5px; color: var(--brand-gold); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span style="font-size: 18px;">🤝</span>
+                <span>Sponsor: <strong id="sponsorNameText" style="color: #FFF;">NAMOBUDDHAYA</strong></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 6px; background: rgba(244, 123, 32, 0.15); border: 1px solid rgba(244, 123, 32, 0.35); padding: 4px 10px; border-radius: 8px;">
+                <span style="font-size: 11.5px; color: var(--text-muted);">Team Leg:</span>
+                <strong id="sponsorPosText" style="color: var(--brand-orange); font-size: 12.5px;">LEFT</strong>
+            </div>
         </div>
 
         <div id="authToast" class="auth-toast"></div>
 
         <form id="registerForm">
-            <div class="form-group">
-                <label for="fullName">සම්පූර්ණ නම (Full Name)</label>
-                <input type="text" id="fullName" class="form-control" required placeholder="Kasun Perera" autocomplete="name">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="fullName">සම්පූර්ණ නම (Full Name)</label>
+                    <input type="text" id="fullName" class="form-control" required placeholder="Kasun Perera" autocomplete="name">
+                </div>
+                <div class="form-group">
+                    <label for="regUsername">පරිශීලක නාමය (Username)</label>
+                    <input type="text" id="regUsername" class="form-control" placeholder="kasun_perera (ස්වයංක්‍රීයව සැකසේ)" autocomplete="username">
+                </div>
             </div>
 
             <div class="form-row">
@@ -376,6 +388,33 @@
                     <label for="confirmPassword">මුරපදය තහවුරු කරන්න</label>
                     <input type="password" id="confirmPassword" class="form-control" required placeholder="••••••••" autocomplete="new-password">
                 </div>
+            </div>
+
+            <!-- Sponsor & Placement Configuration -->
+            <div class="form-group" style="background: rgba(8, 28, 44, 0.5); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 14px; margin-bottom: 18px;">
+                <label style="color: var(--brand-gold); font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                    <span>🤝</span> අනුග්‍රාහක සහ කණ්ඩායම් පිහිටුම (Sponsor & Leg Placement)
+                </label>
+                <div class="form-row" style="margin-bottom: 10px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="sponsorCodeInput" style="font-size: 12px;">අනුග්‍රාහක කේතය (Sponsor Username)</label>
+                        <input type="text" id="sponsorCodeInput" class="form-control" style="background: rgba(16, 42, 67, 0.95); border-color: rgba(212, 175, 55, 0.4);" value="NAMOBUDDHAYA" placeholder="e.g. HAPANA09 or NAMOBUDDHAYA">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label style="font-size: 12px;">කණ්ඩායම් පිහිටුම (Binary Placement Leg)</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                            <button type="button" id="legBtnLeft" class="role-btn active" onclick="selectLeg('LEFT')" style="padding: 10px 6px; font-size: 12px; margin: 0;">
+                                👈 LEFT Team
+                            </button>
+                            <button type="button" id="legBtnRight" class="role-btn" onclick="selectLeg('RIGHT')" style="padding: 10px 6px; font-size: 12px; margin: 0;">
+                                👉 RIGHT Team
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <small style="color: var(--text-muted); font-size: 11px; display: block;">
+                    💡 Referral Link එකක් හරහා පිවිසි විට අනුග්‍රාහකයා සහ කණ්ඩායම ස්වයංක්‍රීයවම තෝරා ගැනේ.
+                </small>
             </div>
 
             <div class="form-group">
@@ -415,30 +454,79 @@
 
     <script>
         let currentRole = 'student';
+        let currentLeg = 'LEFT';
         const toast = document.getElementById('authToast');
         const registerForm = document.getElementById('registerForm');
         const btnSubmit = document.getElementById('btnSubmit');
+        const sponsorCodeInput = document.getElementById('sponsorCodeInput');
 
-        // Capture referral parameters (?ref=USERNAME&position=left|right)
-        const urlParams = new URLSearchParams(window.location.search);
-        const refQuery = urlParams.get('ref') || urlParams.get('sponsor');
-        const posQuery = urlParams.get('position');
+        // Robust Capture of Referral & Placement Parameters
+        function parseReferralParams() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let ref = urlParams.get('ref') || urlParams.get('sponsor') || urlParams.get('referral') || urlParams.get('sponsorCode') || urlParams.get('refCode') || urlParams.get('sponsor_code') || urlParams.get('u');
+            let pos = urlParams.get('position') || urlParams.get('pos') || urlParams.get('side') || urlParams.get('leg') || urlParams.get('branch');
 
-        if (refQuery) {
-            localStorage.setItem('hapanamy_referrer', refQuery);
+            if (ref) {
+                ref = ref.replace(/^@+/, '').trim();
+                localStorage.setItem('hapanamy_referrer', ref);
+                sessionStorage.setItem('hapanamy_referrer', ref);
+            }
+            if (pos) {
+                pos = pos.trim().toUpperCase();
+                if (pos === 'R' || pos === 'RIGHT' || pos === 'EXTREME_RIGHT') pos = 'RIGHT';
+                else pos = 'LEFT';
+                localStorage.setItem('hapanamy_ref_position', pos);
+                sessionStorage.setItem('hapanamy_ref_position', pos);
+            }
+
+            const effectiveRef = ref || localStorage.getItem('hapanamy_referrer') || sessionStorage.getItem('hapanamy_referrer') || 'NAMOBUDDHAYA';
+            const effectivePos = pos || localStorage.getItem('hapanamy_ref_position') || sessionStorage.getItem('hapanamy_ref_position') || 'LEFT';
+
+            return { ref: effectiveRef, pos: effectivePos.toUpperCase() };
         }
-        if (posQuery) {
-            localStorage.setItem('hapanamy_ref_position', posQuery.toUpperCase());
+
+        const initialParams = parseReferralParams();
+        currentLeg = initialParams.pos === 'RIGHT' ? 'RIGHT' : 'LEFT';
+        if (sponsorCodeInput) {
+            sponsorCodeInput.value = initialParams.ref;
+        }
+        updateSponsorDisplay(initialParams.ref, currentLeg);
+        updateLegButtons(currentLeg);
+
+        // Sponsor code live input listener
+        if (sponsorCodeInput) {
+            sponsorCodeInput.addEventListener('input', () => {
+                const val = (sponsorCodeInput.value || '').replace(/^@+/, '').trim() || 'NAMOBUDDHAYA';
+                updateSponsorDisplay(val, currentLeg);
+            });
         }
 
-        const effectiveSponsor = refQuery || localStorage.getItem('hapanamy_referrer') || 'NAMOBUDDHAYA';
-        const effectivePosition = (posQuery || localStorage.getItem('hapanamy_ref_position') || 'LEFT').toUpperCase();
+        function selectLeg(leg) {
+            currentLeg = (leg || 'LEFT').toUpperCase();
+            localStorage.setItem('hapanamy_ref_position', currentLeg);
+            sessionStorage.setItem('hapanamy_ref_position', currentLeg);
+            updateLegButtons(currentLeg);
+            const refVal = (sponsorCodeInput && sponsorCodeInput.value ? sponsorCodeInput.value.replace(/^@+/, '').trim() : '') || 'NAMOBUDDHAYA';
+            updateSponsorDisplay(refVal, currentLeg);
+        }
 
-        const sponsorBadge = document.getElementById('sponsorBadge');
-        if (sponsorBadge && effectiveSponsor) {
-            document.getElementById('sponsorNameText').textContent = effectiveSponsor === 'NAMOBUDDHAYA' ? 'NAMOBUDDHAYA (Company Direct)' : effectiveSponsor;
-            document.getElementById('sponsorPosText').textContent = effectivePosition;
-            sponsorBadge.style.display = 'flex';
+        function updateLegButtons(leg) {
+            const btnLeft = document.getElementById('legBtnLeft');
+            const btnRight = document.getElementById('legBtnRight');
+            if (btnLeft && btnRight) {
+                btnLeft.classList.toggle('active', leg === 'LEFT');
+                btnRight.classList.toggle('active', leg === 'RIGHT');
+            }
+        }
+
+        function updateSponsorDisplay(sponsorName, leg) {
+            const badge = document.getElementById('sponsorBadge');
+            const nameEl = document.getElementById('sponsorNameText');
+            const posEl = document.getElementById('sponsorPosText');
+            if (badge && nameEl && posEl) {
+                nameEl.textContent = sponsorName.toUpperCase() === 'NAMOBUDDHAYA' ? 'NAMOBUDDHAYA (Company Direct)' : sponsorName;
+                posEl.textContent = leg.toUpperCase();
+            }
         }
 
         function selectRole(role) {
@@ -469,11 +557,13 @@
             toast.style.display = 'none';
 
             const fullName = document.getElementById('fullName').value.trim();
+            const rawUsername = (document.getElementById('regUsername') ? document.getElementById('regUsername').value.trim() : '');
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
             const termsAgreed = document.getElementById('agreeTerms').checked;
+            const sponsorVal = (sponsorCodeInput && sponsorCodeInput.value ? sponsorCodeInput.value.replace(/^@+/, '').trim() : '') || 'NAMOBUDDHAYA';
 
             if (!fullName) {
                 showToast('⚠️ කරුණාකර ඔබගේ සම්පූර්ණ නම ඇතුළත් කරන්න.');
@@ -508,27 +598,30 @@
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = '<span>⏳ ලියාපදිංචි කරමින්...</span>';
 
-            const username = email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
+            const username = rawUsername || email.split('@')[0].replace(/[^a-zA-Z0-9_-]/g, '_');
 
-            // 1. Try Backend API
+            // 1. Submit to Live Backend API
             try {
                 const response = await fetch('/api/auth/register', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         fullName,
+                        name: fullName,
                         username,
                         email,
                         mobile: phone,
                         phone,
                         password,
                         confirmPassword,
-                        sponsorCode: effectiveSponsor,
-                        sponsor: effectiveSponsor,
-                        sponsor_id: effectiveSponsor,
-                        referrer: effectiveSponsor,
-                        position: effectivePosition,
-                        requestedPosition: effectivePosition,
+                        sponsorCode: sponsorVal,
+                        sponsor: sponsorVal,
+                        sponsor_id: sponsorVal,
+                        sponsor_username: sponsorVal,
+                        referrer: sponsorVal,
+                        position: currentLeg,
+                        requestedPosition: currentLeg,
+                        branch_leg: currentLeg,
                         role: currentRole,
                         termsAccepted: true,
                         privacyAccepted: true
@@ -540,8 +633,8 @@
                     const data = await response.json();
                     if (response.ok && data.success) {
                         const token = data.token || data.verification_token || ('token-' + data.user.id);
-                        const assignedSponsor = (data.sponsor && (data.sponsor.sponsor_username || data.sponsor.username)) || data.user.sponsor || effectiveSponsor;
-                        const assignedPosition = (data.placement && data.placement.position) || data.user.position || effectivePosition;
+                        const assignedSponsor = (data.sponsor && (data.sponsor.sponsor_username || data.sponsor.username)) || data.user.sponsor || sponsorVal;
+                        const assignedPosition = (data.placement && data.placement.position) || data.user.position || currentLeg;
                         const userObj = {
                             id: data.user.id,
                             name: fullName,
@@ -569,15 +662,14 @@
                         if (!regUsers.some(u => u.email === email || u.id === data.user.id)) {
                             regUsers.push(userObj);
                             localStorage.setItem('hapanamy_registered_users', JSON.stringify(regUsers));
-                            // Fresh user starts with 0 product history
                             localStorage.removeItem('checkout_purchased_courses');
                             localStorage.setItem('hapanamy_purchased_courses_' + (data.user.id || '').toLowerCase(), JSON.stringify([]));
                             localStorage.setItem('hapanamy_purchased_courses_' + (username || '').toLowerCase(), JSON.stringify([]));
                             localStorage.setItem('hapanamy_purchased_courses_' + (email || '').toLowerCase(), JSON.stringify([]));
                         }
 
-                        // Always record under sponsor downline list (both raw and lowercase keys)
-                        if (effectiveSponsor) {
+                        // Always record under sponsor downline list
+                        if (sponsorVal) {
                             const entry = {
                                 id: data.user.id,
                                 user_id: data.user.id,
@@ -596,8 +688,8 @@
                             };
 
                             const spKeys = [
-                                effectiveSponsor, 
-                                effectiveSponsor.toLowerCase(), 
+                                sponsorVal, 
+                                sponsorVal.toLowerCase(), 
                                 assignedSponsor, 
                                 (assignedSponsor || '').toLowerCase(),
                                 (data.sponsor && data.sponsor.sponsor_id) || '',

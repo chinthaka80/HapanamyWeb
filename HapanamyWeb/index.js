@@ -1917,25 +1917,33 @@ function initCalculator() {
 
 
 // Course details modal controller
-const modalOverlay = document.getElementById('courseModal');
-const modalCloseBtn = document.getElementById('modalCloseBtn');
+function getModalElements() {
+    const modalOverlay = document.getElementById('courseModal') || document.getElementById('courseDetailModal');
+    const modalCloseBtn = document.getElementById('modalCloseBtn') || (modalOverlay ? modalOverlay.querySelector('.modal-close-btn, .btn-close-modal') : null);
+    return { modalOverlay, modalCloseBtn };
+}
 
 function openCourseModal(courseId) {
+    if (typeof courseData === 'undefined') return;
     const course = courseData[courseId];
     if (!course) return;
 
     window.currentActiveModalCourseId = courseId; // Save active modal course ID
 
-    // Load data into elements
-    document.getElementById('modalBanner').src = course.banner;
-    document.getElementById('modalCategory').textContent = course.category;
-    document.getElementById('modalTitle').textContent = course.title;
-    document.getElementById('modalDesc').innerHTML = course.desc;
+    // Load data into elements if they exist
+    const bannerEl = document.getElementById('modalBanner');
+    if (bannerEl) bannerEl.src = course.banner;
+    const catEl = document.getElementById('modalCategory');
+    if (catEl) catEl.textContent = course.category;
+    const titleEl = document.getElementById('modalTitle');
+    if (titleEl) titleEl.textContent = course.title;
+    const descEl = document.getElementById('modalDesc');
+    if (descEl) descEl.innerHTML = course.desc;
 
     // Grab elements to toggle for custom service
+    const origFeeRow = document.getElementById('modalOriginalFeeRow');
     const origPriceEl = document.getElementById('modalOriginalPrice');
     const discountEl = document.getElementById('modalDiscount');
-    const commBox = document.querySelector('.sidebar-affiliate-box');
     const buyBtn = document.getElementById('modalBuyBtn');
 
     // Dynamic headers based on course type and language
@@ -1951,11 +1959,12 @@ function openCourseModal(courseId) {
             syllabusTitleEl.textContent = lang === 'si' ? '🛠️ පහත සේවාවන් මෙහිදී ඔබට ලබා ගත හැකිය' : '🛠️ Services You Can Get Here';
         }
 
+        if (origFeeRow) origFeeRow.style.display = 'none';
         if (origPriceEl) origPriceEl.style.display = 'none';
         if (discountEl) discountEl.style.display = 'none';
-        if (commBox) commBox.style.display = 'none';
         
-        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
+        const currPriceEl = document.getElementById('modalCurrentPrice');
+        if (currPriceEl) currPriceEl.textContent = course.currentPrice;
         if (buyBtn) {
             buyBtn.textContent = '📞 සේවාව ගැන විමසන්න →';
             buyBtn.style.background = 'var(--brand-orange)';
@@ -1971,14 +1980,19 @@ function openCourseModal(courseId) {
             syllabusTitleEl.textContent = lang === 'si' ? '📚 ඉගෙන ගන්නා ප්‍රධාන දේවල් (Syllabus/Curriculum)' : '📚 Syllabus / Curriculum';
         }
 
-        if (origPriceEl) origPriceEl.style.display = 'block';
-        if (discountEl) discountEl.style.display = 'block';
-        if (commBox) commBox.style.display = 'block';
+        if (origFeeRow) origFeeRow.style.display = 'flex';
+        if (origPriceEl) {
+            origPriceEl.style.display = 'inline';
+            origPriceEl.textContent = course.originalPrice;
+        }
+        if (discountEl) {
+            discountEl.style.display = 'inline-flex';
+            const discText = course.discount ? (course.discount.includes('OFF') ? `🔥 ${course.discount} • Limited Offer` : course.discount) : '🔥 Limited Offer';
+            discountEl.textContent = discText;
+        }
         
-        if (origPriceEl) origPriceEl.textContent = course.originalPrice;
-        document.getElementById('modalCurrentPrice').textContent = course.currentPrice;
-        if (discountEl) discountEl.textContent = course.discount;
-        document.getElementById('modalCommission').textContent = course.commission;
+        const currPriceEl = document.getElementById('modalCurrentPrice');
+        if (currPriceEl) currPriceEl.textContent = course.currentPrice;
         
         if (buyBtn) {
             buyBtn.textContent = 'Enroll / Buy Course';
@@ -1986,7 +2000,11 @@ function openCourseModal(courseId) {
             buyBtn.onclick = () => {
                 closeModal();
                 const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
-                addToCart(courseId, course.title, numericPrice);
+                if (typeof addToCart === 'function') {
+                    addToCart(courseId, course.title, numericPrice);
+                } else {
+                    window.location.href = `checkout.html?product=${courseId}`;
+                }
             };
         }
     }
@@ -1996,7 +2014,7 @@ function openCourseModal(courseId) {
     if (socialContainer) {
         socialContainer.innerHTML = '';
         
-        // WhatsApp button (Always present for conversion optimization & support)
+        // WhatsApp button
         const waLink = document.createElement('a');
         waLink.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
         waLink.target = '_blank';
@@ -2018,45 +2036,58 @@ function openCourseModal(courseId) {
 
     // Clear and build syllabus list
     const syllabusList = document.getElementById('modalSyllabus');
-    syllabusList.innerHTML = '';
-    course.syllabus.forEach(item => {
-        const li = document.createElement('li');
-        li.textContent = item;
-        syllabusList.appendChild(li);
-    });
-
-    // Hook buy button action
-    if (buyBtn) {
-        buyBtn.onclick = () => {
-            closeModal();
-            const numericPrice = parseFloat(course.currentPrice.replace('රු. ', '').replace(',', ''));
-            addToCart(courseId, course.title, numericPrice);
-        };
+    if (syllabusList && Array.isArray(course.syllabus)) {
+        syllabusList.innerHTML = '';
+        course.syllabus.forEach(item => {
+            const li = document.createElement('li');
+            li.textContent = item;
+            syllabusList.appendChild(li);
+        });
     }
 
-    // Show modal
-    if (modalOverlay) modalOverlay.classList.add('open');
+    // Show modal dynamically
+    const { modalOverlay, modalCloseBtn } = getModalElements();
+    if (modalOverlay) {
+        modalOverlay.classList.add('open', 'active');
+        modalOverlay.style.display = 'flex';
+        modalOverlay.style.opacity = '1';
+        modalOverlay.style.visibility = 'visible';
+        
+        if (modalCloseBtn) {
+            modalCloseBtn.onclick = closeModal;
+        }
+        modalOverlay.onclick = (e) => {
+            if (e.target === modalOverlay) closeModal();
+        };
+    }
     document.body.style.overflow = 'hidden'; // Stop page scrolling background
 }
 
 function closeModal() {
     window.currentActiveModalCourseId = null;
-    if (modalOverlay) modalOverlay.classList.remove('open');
+    const { modalOverlay } = getModalElements();
+    if (modalOverlay) {
+        modalOverlay.classList.remove('open', 'active');
+        modalOverlay.style.display = 'none';
+        modalOverlay.style.opacity = '0';
+        modalOverlay.style.visibility = 'hidden';
+    }
     document.body.style.overflow = ''; // Restore page scrolling
 }
 
-if (modalCloseBtn) {
-    modalCloseBtn.addEventListener('click', closeModal);
-}
-
-// Close modal if clicked on overlay area outside the modal-box
-if (modalOverlay) {
-    modalOverlay.addEventListener('click', (e) => {
-        if (e.target === modalOverlay) {
-            closeModal();
-        }
-    });
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const { modalOverlay, modalCloseBtn } = getModalElements();
+    if (modalCloseBtn) {
+        modalCloseBtn.addEventListener('click', closeModal);
+    }
+    if (modalOverlay) {
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeModal();
+            }
+        });
+    }
+});
 
 // Form Submission handlers & Toasts
 function showToast(message) {
@@ -2859,12 +2890,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render dynamic articles
     renderBlogArticles();
     
-    // Capture referral query parameter and save to localStorage
+    // Capture referral and position query parameters and propagate to register links
     const urlParams = new URLSearchParams(window.location.search);
-    const refCode = urlParams.get('ref');
+    const refCode = urlParams.get('ref') || urlParams.get('sponsor') || urlParams.get('referral') || urlParams.get('sponsorCode') || urlParams.get('refCode') || urlParams.get('sponsor_code') || urlParams.get('u');
+    const posCode = urlParams.get('position') || urlParams.get('pos') || urlParams.get('side') || urlParams.get('leg') || urlParams.get('branch');
     if (refCode) {
-        localStorage.setItem('hapanamy_referrer', refCode);
-        console.log('Captured referrer code:', refCode);
+        const cleanRef = refCode.replace(/^@+/, '').trim();
+        localStorage.setItem('hapanamy_referrer', cleanRef);
+        sessionStorage.setItem('hapanamy_referrer', cleanRef);
+        if (posCode) {
+            const cleanPos = (posCode.toUpperCase() === 'RIGHT' || posCode.toUpperCase() === 'R') ? 'RIGHT' : 'LEFT';
+            localStorage.setItem('hapanamy_ref_position', cleanPos);
+            sessionStorage.setItem('hapanamy_ref_position', cleanPos);
+        }
+        // Update all register links on the page to forward the referral parameters
+        const queryStr = `?ref=${encodeURIComponent(cleanRef)}${posCode ? `&position=${encodeURIComponent(posCode.toLowerCase())}` : ''}`;
+        document.querySelectorAll('a[href^="register.html"], a[href^="register"], a[href^="login-register.html"]').forEach(a => {
+            if (!a.href.includes('ref=')) {
+                a.href = 'register.html' + queryStr;
+            }
+        });
     }
 });
 
@@ -3210,7 +3255,7 @@ const heroSlides = [
 let currentSlideIdx = 0;
 const slideIntervalMs = 7000; // 7 seconds slider
 
-function renderHeroSlide(slideIdx) {
+function renderHeroSlide(slideIdx, isInitial = false) {
     const container = document.getElementById('heroSliderContent');
     const visualContainer = document.getElementById('heroSliderVisual');
     const statsContainer = document.getElementById('heroStatsContainer');
@@ -3221,14 +3266,7 @@ function renderHeroSlide(slideIdx) {
     const slide = heroSlides[slideIdx];
     const lang = localStorage.getItem('language') || 'si';
 
-    // Fade out first
-    container.style.opacity = '0';
-    container.style.transform = 'translateY(12px)';
-    visualContainer.style.opacity = '0';
-    visualContainer.style.transform = 'scale(0.95)';
-    statsContainer.style.opacity = '0';
-
-    setTimeout(() => {
+    const updateDOM = () => {
         // Change background image dynamically
         bgPaddy.style.backgroundImage = `url('${slide.bgImage}')`;
 
@@ -3298,8 +3336,10 @@ function renderHeroSlide(slideIdx) {
         `).join('');
 
         // Update Bottom Gradient Bar
-        document.getElementById('heroBottomBarText').textContent = bottomBarText;
-        document.getElementById('heroBottomBarSubtext').textContent = bottomBarSub;
+        const bText = document.getElementById('heroBottomBarText');
+        const bSub = document.getElementById('heroBottomBarSubtext');
+        if (bText) bText.textContent = bottomBarText;
+        if (bSub) bSub.textContent = bottomBarSub;
 
         // Fade back in
         container.style.opacity = '1';
@@ -3307,16 +3347,28 @@ function renderHeroSlide(slideIdx) {
         visualContainer.style.opacity = '1';
         visualContainer.style.transform = 'scale(1)';
         statsContainer.style.opacity = '1';
+    };
 
-    }, 300);
+    if (isInitial) {
+        updateDOM();
+    } else {
+        // Fade out first for transition
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(12px)';
+        visualContainer.style.opacity = '0';
+        visualContainer.style.transform = 'scale(0.95)';
+        statsContainer.style.opacity = '0';
+
+        setTimeout(updateDOM, 300);
+    }
 }
 
 function initHeroSlider() {
-    renderHeroSlide(0);
+    renderHeroSlide(0, true);
 
     setInterval(() => {
         currentSlideIdx = (currentSlideIdx + 1) % heroSlides.length;
-        renderHeroSlide(currentSlideIdx);
+        renderHeroSlide(currentSlideIdx, false);
     }, slideIntervalMs);
 }
 

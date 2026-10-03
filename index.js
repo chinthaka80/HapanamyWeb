@@ -2890,12 +2890,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Render dynamic articles
     renderBlogArticles();
     
-    // Capture referral query parameter and save to localStorage
+    // Capture referral and position query parameters and propagate to register links
     const urlParams = new URLSearchParams(window.location.search);
-    const refCode = urlParams.get('ref');
+    const refCode = urlParams.get('ref') || urlParams.get('sponsor') || urlParams.get('referral') || urlParams.get('sponsorCode') || urlParams.get('refCode') || urlParams.get('sponsor_code') || urlParams.get('u');
+    const posCode = urlParams.get('position') || urlParams.get('pos') || urlParams.get('side') || urlParams.get('leg') || urlParams.get('branch');
     if (refCode) {
-        localStorage.setItem('hapanamy_referrer', refCode);
-        console.log('Captured referrer code:', refCode);
+        const cleanRef = refCode.replace(/^@+/, '').trim();
+        localStorage.setItem('hapanamy_referrer', cleanRef);
+        sessionStorage.setItem('hapanamy_referrer', cleanRef);
+        if (posCode) {
+            const cleanPos = (posCode.toUpperCase() === 'RIGHT' || posCode.toUpperCase() === 'R') ? 'RIGHT' : 'LEFT';
+            localStorage.setItem('hapanamy_ref_position', cleanPos);
+            sessionStorage.setItem('hapanamy_ref_position', cleanPos);
+        }
+        // Update all register links on the page to forward the referral parameters
+        const queryStr = `?ref=${encodeURIComponent(cleanRef)}${posCode ? `&position=${encodeURIComponent(posCode.toLowerCase())}` : ''}`;
+        document.querySelectorAll('a[href^="register.html"], a[href^="register"], a[href^="login-register.html"]').forEach(a => {
+            if (!a.href.includes('ref=')) {
+                a.href = 'register.html' + queryStr;
+            }
+        });
     }
 });
 

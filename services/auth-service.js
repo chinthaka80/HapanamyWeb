@@ -123,13 +123,29 @@ const AuthService = {
 
         // 3. Validate Sponsor and Position
         let effectiveSponsorCode = sponsorCode || payload.sponsor || payload.referrer || payload.sponsor_id || payload.sponsor_username;
-        let effectivePosition = position || payload.requestedPosition || payload.tree_position || 'LEFT';
+        let effectivePosition = position || payload.requestedPosition || payload.tree_position || payload.pos || payload.side || payload.leg || 'LEFT';
+
+        // Resilient URL extraction if full referral link passed
+        if (typeof effectiveSponsorCode === 'string' && (effectiveSponsorCode.includes('http') || effectiveSponsorCode.includes('?') || effectiveSponsorCode.includes('ref=') || effectiveSponsorCode.includes('sponsor='))) {
+            try {
+                const url = new URL(effectiveSponsorCode.startsWith('http') ? effectiveSponsorCode : ('https://hapanamy.lk/' + effectiveSponsorCode.replace(/^\/+/, '')));
+                const extractedRef = url.searchParams.get('ref') || url.searchParams.get('sponsor') || url.searchParams.get('referral') || url.searchParams.get('sponsorCode');
+                const extractedPos = url.searchParams.get('position') || url.searchParams.get('pos') || url.searchParams.get('side') || url.searchParams.get('leg');
+                if (extractedRef) effectiveSponsorCode = extractedRef;
+                if (extractedPos && (!payload.position || payload.position === 'LEFT')) effectivePosition = extractedPos.toUpperCase();
+            } catch (e) {
+                const match = effectiveSponsorCode.match(/[?&](?:ref|sponsor|referral|sponsorCode)=([^&]+)/i);
+                if (match) effectiveSponsorCode = decodeURIComponent(match[1]);
+                const matchPos = effectiveSponsorCode.match(/[?&](?:position|pos|side|leg)=([^&]+)/i);
+                if (matchPos && (!payload.position || payload.position === 'LEFT')) effectivePosition = decodeURIComponent(matchPos[1]).toUpperCase();
+            }
+        }
 
         // Resilient fallback to root company admin if sponsor is empty
         if (!effectiveSponsorCode || typeof effectiveSponsorCode !== 'string' || !effectiveSponsorCode.trim() || effectiveSponsorCode === 'undefined' || effectiveSponsorCode === 'null') {
             effectiveSponsorCode = 'NAMOBUDDHAYA';
         } else {
-            effectiveSponsorCode = effectiveSponsorCode.trim();
+            effectiveSponsorCode = effectiveSponsorCode.replace(/^@+/, '').trim();
         }
 
         // Check if referral intent token provided from Step 14

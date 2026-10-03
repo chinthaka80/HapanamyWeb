@@ -921,19 +921,27 @@
             
             // Auto switch to Register tab and prefill if referrer ref is present in URL
             const urlParams = new URLSearchParams(window.location.search);
-            const refParam = urlParams.get('ref');
-            const posParam = urlParams.get('position');
+            const refParam = urlParams.get('ref') || urlParams.get('sponsor') || urlParams.get('referral') || urlParams.get('sponsorCode') || urlParams.get('refCode') || urlParams.get('sponsor_code') || urlParams.get('u');
+            const posParam = urlParams.get('position') || urlParams.get('pos') || urlParams.get('side') || urlParams.get('leg') || urlParams.get('branch');
             if (refParam) {
+                const cleanRef = refParam.replace(/^@+/, '').trim();
+                localStorage.setItem('hapanamy_referrer', cleanRef);
+                sessionStorage.setItem('hapanamy_referrer', cleanRef);
+                if (posParam) {
+                    const cleanPos = (posParam.toUpperCase() === 'RIGHT' || posParam.toUpperCase() === 'R') ? 'RIGHT' : 'LEFT';
+                    localStorage.setItem('hapanamy_ref_position', cleanPos);
+                    sessionStorage.setItem('hapanamy_ref_position', cleanPos);
+                }
                 switchTab('register');
                 const refInput = document.getElementById('regReferral');
                 if (refInput) {
-                    refInput.value = refParam;
+                    refInput.value = cleanRef;
                 }
                 // Track click event asynchronously
                 fetch('/api/referrals/click', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ ref: refParam, position: posParam || 'auto' })
+                    body: JSON.stringify({ ref: cleanRef, position: posParam || 'auto' })
                 }).catch(() => {});
             }
         });

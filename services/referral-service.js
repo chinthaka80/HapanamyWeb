@@ -21,9 +21,21 @@ class ReferralService {
             return { valid: false, error: 'Referral code is required.' };
         }
 
-        const trimmed = code.replace(/^@+/, '').trim();
-        if (trimmed.length < 3 || trimmed.length > 50) {
-            return { valid: false, error: 'Referral code length must be between 3 and 50 characters.' };
+        let clean = code.trim();
+        // If full URL or query string passed, extract ref parameter
+        if (clean.includes('http://') || clean.includes('https://') || clean.includes('?') || clean.includes('ref=') || clean.includes('sponsor=')) {
+            try {
+                const url = new URL(clean.startsWith('http') ? clean : ('https://hapanamy.lk/' + clean.replace(/^\/+/, '')));
+                clean = url.searchParams.get('ref') || url.searchParams.get('sponsor') || url.searchParams.get('referral') || url.searchParams.get('sponsorCode') || clean;
+            } catch (e) {
+                const match = clean.match(/[?&](?:ref|sponsor|referral|sponsorCode)=([^&]+)/i);
+                if (match) clean = decodeURIComponent(match[1]);
+            }
+        }
+
+        const trimmed = (clean || '').replace(/^@+/, '').trim();
+        if (trimmed.length < 2 || trimmed.length > 50) {
+            return { valid: false, error: 'Referral code length must be between 2 and 50 characters.' };
         }
 
         // Must be alphanumeric + underscores/hyphens only (safe for URLs, no spaces, no special script characters)
