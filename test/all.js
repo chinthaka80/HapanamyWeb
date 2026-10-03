@@ -94,6 +94,7 @@ require('./step76-persistence-hardening-and-concurrency.test');
 require('./step77-product-catalog-manual-purchase-correction-and-reversal.test');
 require('./step78-user-profile-kyc-and-withdrawal-bank-sync.test');
 require('./step79-referral-link-placement-and-sponsor-integrity.test');
+require('./step80-account-deletion-and-tree-cleansing.test');
 
 // Run
 runTests();

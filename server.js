@@ -888,8 +888,21 @@ function addLiveEvent(type, data = {}, message = '') {
 function getEnrichedAdminMembersList(filters = {}) {
     const { search = '', status = 'all', qualification = 'all', kyc = 'all' } = filters;
     const searchLower = (search || '').toLowerCase().trim();
+    const deletedBlacklist = [
+        'slt202077@gmail.com', 'slt202077', 'star04@gmail.com', 'star04', 
+        'star05@gmail.com', 'star05', 'star06@gmail.com', 'star06', 
+        'star07@gmail.com', 'star07', 'maxsave2505',
+        'kavishkadineth4418@gmail.com', 'kavishkadineth4418', 
+        'kavishkadineth4420@gmail.com', 'kavishkadineth4420',
+        'user-kavishkadineth4418', 'user-kavishkadineth4420'
+    ];
 
-    return mockUsers.map(user => {
+    return mockUsers.filter(user => {
+        const uEmail = (user.email || '').toLowerCase().trim();
+        const uName = (user.username || '').toLowerCase().trim();
+        const uId = (user.id || '').toLowerCase().trim();
+        return !deletedBlacklist.includes(uEmail) && !deletedBlacklist.includes(uName) && !deletedBlacklist.includes(uId);
+    }).map(user => {
         const sponsorRel = mockSponsors.find(s => s.user_id === user.id);
         const sponsorUser = sponsorRel ? mockUsers.find(u => u.id === sponsorRel.sponsor_id || u.username === sponsorRel.sponsor_id) : null;
         const binaryNode = mockBinaryNodes.find(n => n.user_id === user.id);

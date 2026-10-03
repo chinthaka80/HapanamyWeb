@@ -5405,7 +5405,36 @@
 ];
 
             // Merge and deduplicate all member sources
-            const staleBlacklist = ['ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk', 'hiru', 'sun', 'sundd', 'star01', 'star02', 'star03'];
+            const staleBlacklist = [
+                'ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk', 
+                'hiru', 'sun', 'sundd', 'star01', 'star02', 'star03',
+                'slt202077@gmail.com', 'slt202077', 'star04@gmail.com', 'star04', 
+                'star05@gmail.com', 'star05', 'star06@gmail.com', 'star06', 
+                'star07@gmail.com', 'star07', 'maxsave2505',
+                'kavishkadineth4418@gmail.com', 'kavishkadineth4418', 
+                'kavishkadineth4420@gmail.com', 'kavishkadineth4420'
+            ];
+
+            // Cleanup deleted users from browser localStorage on load
+            try {
+                const stores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users'];
+                stores.forEach(s => {
+                    const raw = localStorage.getItem(s);
+                    if (raw) {
+                        try {
+                            let list = JSON.parse(raw);
+                            if (Array.isArray(list)) {
+                                const filtered = list.filter(item => {
+                                    const em = (item.email || '').toLowerCase().trim();
+                                    const un = (item.username || '').toLowerCase().trim();
+                                    return !staleBlacklist.includes(em) && !staleBlacklist.includes(un);
+                                });
+                                localStorage.setItem(s, JSON.stringify(filtered));
+                            }
+                        } catch (e) {}
+                    }
+                });
+            } catch (e) {}
 
             function addOrMergeUser(u) {
                 if (!u) return;
@@ -5415,7 +5444,7 @@
 
                 const uRole = (u.role || '').toLowerCase();
                 if (uRole !== 'admin' && uRole !== 'subadmin') {
-                    if (staleBlacklist.includes(emailKey) || staleBlacklist.includes(unameKey) || emailKey === 'ayubocey@gmail.com' || (u.full_name && u.full_name.includes('Chinthaka Gunasekara') && emailKey.includes('ayubocey'))) {
+                    if (staleBlacklist.includes(emailKey) || staleBlacklist.includes(unameKey) || staleBlacklist.includes(idKey) || emailKey === 'ayubocey@gmail.com' || (u.full_name && u.full_name.includes('Chinthaka Gunasekara') && emailKey.includes('ayubocey'))) {
                         return;
                     }
                 }

@@ -337,47 +337,6 @@
       "password": "OLU321#",
       "password_hash": "2422b4810091983dee8831fdc23cafaa:1238aba0dc9a273d1369137ad34c6474454e613f3e5376d41f66b266b7bec2db58c490b9a78cdae1a981c8008eb124d1bd1ed8ee691a74bc49a68c5883e9af06",
       "created_at": "2026-10-01T23:45:10.491Z"
-    },
-    {
-      "id": "user-kavishkadineth4418",
-      "username": "kavishkadineth4418",
-      "full_name": "Kavishka Dineth",
-      "name": "Kavishka Dineth",
-      "email": "kavishkadineth4418@gmail.com",
-      "phone": "0771234418",
-      "mobile": "0771234418",
-      "password_hash": "3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2",
-      "role": "member",
-      "status": "ACTIVE",
-      "account_status": "ACTIVE",
-      "qualification_status": "QUALIFIED",
-      "position": "LEFT",
-      "branch_leg": "LEFT",
-      "referral_code": "kavishkadineth4418",
-      "sponsor": "HAPANA09",
-      "sponsor_id": "user-hapana-09",
-      "sponsor_username": "HAPANA09",
-      "personal_bv": 4500,
-      "created_at": "2026-10-01T10:00:00.000Z"
-    },
-    {
-      "id": "user-kavishkadineth4420",
-      "username": "kavishkadineth4420",
-      "full_name": "Kavishka Dineth 4420",
-      "name": "Kavishka Dineth 4420",
-      "email": "kavishkadineth4420@gmail.com",
-      "phone": "0771234420",
-      "mobile": "0771234420",
-      "password_hash": "3c9909afec25354d551dae21590bb26e38d53f2173b8d3dc3eee4c047e7ab1c1eb8b85103e3be7ba613b31bb5c9c36214dc9f14a42fd7a2fdb84856bca5c44c2",
-      "role": "member",
-      "status": "ACTIVE",
-      "account_status": "ACTIVE",
-      "qualification_status": "NOT_QUALIFIED",
-      "position": "LEFT",
-      "referral_code": "kavishkadineth4420",
-      "sponsor_id": "user-kavishkadineth4418",
-      "personal_bv": 2000,
-      "created_at": "2026-10-02T10:00:00.000Z"
     }
   ],
   "binaryNodes": [
@@ -487,7 +446,7 @@
       "position": "RIGHT",
       "depth": 5,
       "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-04",
-      "left_child_id": "user-kavishkadineth4418",
+      "left_child_id": null,
       "right_child_id": null,
       "created_at": "2026-10-01T23:39:10.491Z"
     },
@@ -556,26 +515,6 @@
       "left_child_id": null,
       "right_child_id": null,
       "created_at": "2026-10-01T23:45:10.491Z"
-    },
-    {
-      "id": "node-4418",
-      "user_id": "user-kavishkadineth4418",
-      "placement_parent_id": "user-hapana-09",
-      "position": "LEFT",
-      "depth": 6,
-      "left_child_id": "user-kavishkadineth4420",
-      "right_child_id": null,
-      "created_at": "2026-10-01T10:00:00.000Z"
-    },
-    {
-      "id": "node-4420",
-      "user_id": "user-kavishkadineth4420",
-      "placement_parent_id": "user-kavishkadineth4418",
-      "position": "LEFT",
-      "depth": 7,
-      "left_child_id": null,
-      "right_child_id": null,
-      "created_at": "2026-10-02T10:00:00.000Z"
     }
   ],
   "sponsors": [
@@ -668,18 +607,6 @@
       "user_id": "user-hapana-15",
       "sponsor_id": "user-hapana-07",
       "created_at": "2026-10-01T23:45:10.491Z"
-    },
-    {
-      "id": "spon-4418",
-      "user_id": "user-kavishkadineth4418",
-      "sponsor_id": "user-hapana-09",
-      "created_at": "2026-10-01T10:00:00.000Z"
-    },
-    {
-      "id": "spon-4420",
-      "user_id": "user-kavishkadineth4420",
-      "sponsor_id": "user-kavishkadineth4418",
-      "created_at": "2026-10-02T10:00:00.000Z"
     }
   ],
   "wallets": [
@@ -872,20 +799,6 @@
       "total_withdrawn": 0,
       "updated_at": "2026-10-01T23:46:10.513Z",
       "commission_balance": 0
-    },
-    {
-      "id": "wal-4418",
-      "user_id": "user-kavishkadineth4418",
-      "balance": 160,
-      "currency": "LKR",
-      "updated_at": "2026-10-02T22:38:11.038Z"
-    },
-    {
-      "id": "wal-4420",
-      "user_id": "user-kavishkadineth4420",
-      "balance": 0,
-      "currency": "LKR",
-      "updated_at": "2026-10-02T22:38:11.058Z"
     },
     {
       "id": "wlt-4d89600892958c8e",
@@ -2230,22 +2143,6 @@
       }
     },
     {
-      "id": "purch-kavishka-4420-ai-prompts",
-      "order_number": "ORD-AIP4420",
-      "user_id": "user-kavishkadineth4420",
-      "buyer_id": "user-kavishkadineth4420",
-      "product_id": "ai-prompts-ebook",
-      "product_name": "💡 1000+ AI Prompts Master Library",
-      "price_paid": 2000,
-      "amount": 2000,
-      "binary_volume": 2000,
-      "payment_method": "BANK_TRANSFER",
-      "status": "ACTIVE",
-      "notes": "Corrected 1000+ AI Prompts Master Library activation",
-      "created_at": "2026-10-02T22:38:11.058Z",
-      "activated_at": "2026-10-02T22:38:11.058Z"
-    },
-    {
       "id": "purch-adm-yv8nrmlu6",
       "order_number": "ORD-I3NY81",
       "user_id": "user-d3cd9f0616814d13",
@@ -3503,17 +3400,6 @@
       "capped_amount": 0,
       "status": "APPROVED",
       "created_at": "2026-10-01T23:46:10.512Z"
-    },
-    {
-      "id": "comm-dir-4420-4418",
-      "user_id": "user-kavishkadineth4418",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "DIRECT_COMMISSION",
-      "amount": 160,
-      "status": "COMPLETED",
-      "description": "Direct commission (8%) from kavishkadineth4420 purchase of 1000+ AI Prompts Master Library",
-      "created_at": "2026-10-02T22:38:11.059Z"
     }
   ],
   "walletLedger": [
@@ -3972,17 +3858,6 @@
       "type": "BINARY_COMMISSION",
       "amount": 315,
       "created_at": "2026-10-01T23:46:10.512Z"
-    },
-    {
-      "id": "comm-dir-4420-4418",
-      "user_id": "user-kavishkadineth4418",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "DIRECT_COMMISSION",
-      "amount": 160,
-      "status": "COMPLETED",
-      "description": "Direct commission (8%) from kavishkadineth4420 purchase of 1000+ AI Prompts Master Library",
-      "created_at": "2026-10-02T22:38:11.059Z"
     }
   ],
   "volumeLedger": [
@@ -4671,78 +4546,6 @@
       "before_balance": 63000,
       "after_balance": 67500,
       "created_at": "2026-10-01T23:46:10.512Z"
-    },
-    {
-      "id": "bv-4420-ai-user-kavishkadineth4418",
-      "user_id": "user-kavishkadineth4418",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "LEFT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.045Z"
-    },
-    {
-      "id": "bv-4420-ai-user-hapana-09",
-      "user_id": "user-hapana-09",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "LEFT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.046Z"
-    },
-    {
-      "id": "bv-4420-ai-user-hapana-04",
-      "user_id": "user-hapana-04",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "RIGHT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.046Z"
-    },
-    {
-      "id": "bv-4420-ai-user-hapana-02",
-      "user_id": "user-hapana-02",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "LEFT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.046Z"
-    },
-    {
-      "id": "bv-4420-ai-user-hapana-01",
-      "user_id": "user-hapana-01",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "LEFT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.046Z"
-    },
-    {
-      "id": "bv-4420-ai-user-namobuddhaya-root",
-      "user_id": "user-namobuddhaya-root",
-      "source_user_id": "user-kavishkadineth4420",
-      "source_purchase_id": "purch-kavishka-4420-ai-prompts",
-      "type": "SALE_VOLUME",
-      "leg": "LEFT",
-      "amount": 2000,
-      "volume": 2000,
-      "status": "COMMITTED",
-      "created_at": "2026-10-02T22:45:03.046Z"
     }
   ],
   "withdrawalRequests": [],
