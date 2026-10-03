@@ -9,7 +9,7 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
-    <title>Hapanamy.lk | Admin Dashboard</title>
+    <title>Hapanamy.lk | Admin Dashboard | NOWATRIX Global</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -312,6 +312,46 @@
         .badge-status.active, .badge-status.paid {
             background-color: rgba(185, 231, 105, 0.15);
             color: #2E7D32;
+        }
+
+        .badge-account-inactive {
+            background-color: rgba(148, 163, 184, 0.15) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-account-active {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            color: #10B981 !important;
+        }
+        .badge-qual-unqualified {
+            background-color: rgba(148, 163, 184, 0.15) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-qual-qualified {
+            background-color: rgba(240, 179, 35, 0.18) !important;
+            color: #F0B323 !important;
+        }
+        .badge-kyc-none {
+            background-color: rgba(148, 163, 184, 0.12) !important;
+            color: #94A3B8 !important;
+        }
+        .badge-kyc-pending {
+            background-color: rgba(245, 124, 0, 0.15) !important;
+            color: #F57C00 !important;
+        }
+        .badge-kyc-approved {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            color: #10B981 !important;
+        }
+        .badge-kyc-rejected {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            color: #EF4444 !important;
+        }
+        .badge-progress {
+            background-color: rgba(244, 123, 32, 0.12) !important;
+            color: var(--brand-orange) !important;
+            font-size: 10.5px !important;
+            padding: 2px 8px !important;
+            border-radius: 6px !important;
         }
 
         [data-theme="dark"] .badge-status.active, [data-theme="dark"] .badge-status.paid {
@@ -901,27 +941,48 @@
 
                     <!-- Registered Users Directory Box -->
                     <div class="admin-table-box" style="margin-top: 30px;">
-                        <div class="admin-table-title">
-                            <span>ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Users & Students)</span>
+                        <div class="admin-table-title" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span>👥 ලියාපදිංචි වී ඇති සාමාජිකයන් (Registered Members Directory)</span>
+                                <span class="badge-status paid" style="font-size: 11px;">🟢 LIVE SYNCHRONIZED</span>
+                            </div>
+                            <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                <input type="text" id="memberSearchInput" oninput="renderRegisteredUsers()" placeholder="Search by name, @username, sponsor..." style="padding: 6px 12px; font-size: 12.5px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary); min-width: 220px;">
+                                <select id="memberStatusFilter" onchange="renderRegisteredUsers()" style="padding: 6px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                                    <option value="all">All Statuses</option>
+                                    <option value="active">Active</option>
+                                    <option value="suspended">Suspended</option>
+                                </select>
+                                <select id="memberQualFilter" onchange="renderRegisteredUsers()" style="padding: 6px 10px; font-size: 12px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-main); color: var(--text-primary);">
+                                    <option value="all">All Qualifications</option>
+                                    <option value="qualified">Qualified</option>
+                                    <option value="purchased">Purchased</option>
+                                    <option value="registered">Registered</option>
+                                </select>
+                                <button class="btn btn-secondary" onclick="renderRegisteredUsers()" style="padding: 6px 12px; font-size: 12px; cursor: pointer;">🔄 Refresh</button>
+                            </div>
                         </div>
-                        <table class="admin-table">
-                            <thead>
-                                <tr>
-                                    <th>සාමාජිකයා (Partner Name)</th>
-                                    <th>ඊමේල් / Username</th>
-                                    <th>කාර්යභාරය (Role)</th>
-                                    <th>තත්ත්වය (Status)</th>
-                                    <th>දුරකථනය (Phone)</th>
-                                    <th>දිනය (Date Registered)</th>
-                                    <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
-                                </tr>
-                            </thead>
-                            <tbody id="registeredUsersTableBody">
-                                <tr>
-                                    <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">පූරණය වෙමින් පවතී (Loading registered users...)...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div style="overflow-x: auto;">
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>සාමාජිකයා (Member)</th>
+                                        <th>අනුග්‍රාහකයා (Sponsor)</th>
+                                        <th>Binary Position</th>
+                                        <th>පුද්ගලික BV (Personal)</th>
+                                        <th>කණ්ඩායම් ලකුණු (L / R)</th>
+                                        <th>Wallet & Comm</th>
+                                        <th>තත්ත්වය (Status)</th>
+                                        <th style="text-align: center;">ක්‍රියාවන් (Actions)</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="registeredUsersTableBody">
+                                    <tr>
+                                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">පූරණය වෙමින් පවතී (Loading real-time registered members...)...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -1123,7 +1184,7 @@
                         <div class="admin-stats-grid" style="margin-bottom: 25px;">
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
                                 <div class="admin-stat-label">සක්‍රීය සාමාජිකයින් (Active Members)</div>
-                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Hiru)</div>
+                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Root)</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--ph-red);">
                                 <div class="admin-stat-label">අක්‍රීය සාමාජිකයින් (Inactive Members)</div>
@@ -1143,7 +1204,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><strong>Hiru</strong></td>
+                                        <td><strong>NAMOBUDDHAYA (Root)</strong></td>
                                         <td>Active Member / Affiliate</td>
                                         <td>0 Members</td>
                                         <td>0 Sales</td>
@@ -1264,6 +1325,11 @@
         </main>
     </div>
 
+            <!-- Footer Attribution -->
+            <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
+                © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
+            </div>
+
     <!-- Mobile Bottom Navigation Bar -->
     <div class="mobile-bottom-nav">
         <div class="mobile-nav-item active" onclick="switchAdminTab('dashboard')" id="mob-nav-dashboard">
@@ -1297,6 +1363,297 @@
         <div class="mobile-nav-item" onclick="switchAdminTab('settings')" id="mob-nav-settings">
             <span class="mobile-nav-icon">⚙️</span>
             <span>Settings</span>
+        </div>
+    </div>
+
+    <!-- MEMBER DETAIL & NETWORK INSPECTOR MODAL OVERLAY -->
+    <div class="modal-overlay" id="memberDetailModal" style="display: none;">
+        <div class="modal-box" style="max-width: 960px; padding: 25px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div id="modalMemberAvatar" style="width: 44px; height: 44px; border-radius: 50%; background: var(--gold-gradient); color: #102A43; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px;">M</div>
+                    <div>
+                        <h3 id="modalMemberName" style="font-size: 18px; margin: 0; color:var(--text-primary);">Member Full Name</h3>
+                        <p id="modalMemberUsername" style="font-size: 12.5px; color: var(--text-muted); margin: 0;">@username (ID: user-123)</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" class="btn btn-primary" onclick="openAdminManualPurchaseModal(currentDetailMemberId)" style="padding: 6px 14px; font-size: 12px; background:#2E7D32; color:#FFF; font-weight:700; cursor:pointer; border:none; border-radius:6px;">🛒 පාඨමාලාව සක්‍රිය කරන්න (Manual Buy)</button>
+                    <button type="button" onclick="closeMemberDetailModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+                </div>
+            </div>
+
+            <!-- Modal Sub-sections Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-bottom: 20px;">
+                <!-- Card 1: Profile & KYC -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>👤</span> 1. Profile & Verification
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Email:</strong> <span id="modalMemberEmail" style="color:var(--text-primary);">user@example.com</span></div>
+                        <div><strong style="color:var(--text-muted);">Mobile:</strong> <span id="modalMemberMobile" style="color:var(--text-primary);">+94 77 123 4567</span></div>
+                        <div><strong style="color:var(--text-muted);">Account Status:</strong> <span id="modalMemberAccountStatus" class="badge-status paid">ACTIVE</span></div>
+                        <div><strong style="color:var(--text-muted);">Qualification:</strong> <span id="modalMemberQualStatus" class="badge-status" style="background:rgba(240,179,35,0.15); color:var(--brand-gold);">QUALIFIED</span></div>
+                        <div><strong style="color:var(--text-muted);">KYC Verification:</strong> <span id="modalMemberKycStatus" class="badge-status">PENDING</span></div>
+                        <div><strong style="color:var(--text-muted);">Registered Date:</strong> <span id="modalMemberJoinDate" style="color:var(--text-muted);">2026-09-01</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Genealogy & Upline Alignment -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-orange); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>🌳</span> 2. MLM Network Genealogy
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Direct Sponsor:</strong> <span id="modalMemberSponsor" style="color:var(--brand-gold); font-weight:700;">Direct Admin</span></div>
+                        <div><strong style="color:var(--text-muted);">Placement Parent:</strong> <span id="modalMemberParent" style="color:var(--text-primary);">Root (@NAMOBUDDHAYA)</span></div>
+                        <div><strong style="color:var(--text-muted);">Placement Position:</strong> <span id="modalMemberPosition" class="sales-leg-badge badge-left">LEFT</span></div>
+                        <div><strong style="color:var(--text-muted);">Direct Referrals:</strong> <span id="modalMemberDirectCount" style="font-weight:700;">0 Members</span></div>
+                        <div><strong style="color:var(--text-muted);">Left Team Count:</strong> <span id="modalMemberLeftCount" style="color:#42A5F5; font-weight:700;">0</span> | <strong style="color:var(--text-muted);">Right Team:</strong> <span id="modalMemberRightCount" style="color:#BA68C8; font-weight:700;">0</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Business Volume (BV) & Points -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-green-light); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>📈</span> 3. Business Volume (BV)
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Personal BV:</strong> <span id="modalMemberPersonalBv" style="color:var(--brand-green-light); font-weight:800;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Left Team Volume:</strong> <span id="modalMemberLeftVol" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Right Team Volume:</strong> <span id="modalMemberRightVol" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Matched Binary Volume:</strong> <span id="modalMemberMatchedVol" style="color:var(--brand-gold); font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Carry Forward (L / R):</strong> <span id="modalMemberCarryVol">L: 0.00 | R: 0.00</span></div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Financial Wallet & Commissions -->
+                <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 10px; padding: 16px;">
+                    <h4 style="font-size: 13.5px; color: var(--brand-gold); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                        <span>💰</span> 4. Wallet & Commissions
+                    </h4>
+                    <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
+                        <div><strong style="color:var(--text-muted);">Available Wallet Balance:</strong> <span id="modalMemberAvailBalance" style="color:var(--brand-gold); font-size:15px; font-weight:800;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Lifetime Total Earned:</strong> <span id="modalMemberTotalEarned" style="font-weight:700;">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Direct Commissions (8%):</strong> <span id="modalMemberDirectEarned">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Binary Matching (7%):</strong> <span id="modalMemberBinaryEarned">රු. 0.00</span></div>
+                        <div><strong style="color:var(--text-muted);">Total Paid / Withdrawn:</strong> <span id="modalMemberPaidBalance">රු. 0.00</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Details Tables -->
+            <div style="margin-top: 15px;">
+                <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--text-primary);">📚 Active Products & Course Purchases</h4>
+                <div class="admin-table-box" style="margin-bottom: 20px;">
+                    <table class="admin-table" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Course / Product</th>
+                                <th>Price Paid</th>
+                                <th>Binary Volume (BV)</th>
+                                <th>Status</th>
+                                <th>Activated Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalMemberPurchasesBody">
+                            <tr>
+                                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 15px;">No active purchases.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <h4 style="font-size: 14px; margin-bottom: 10px; color: var(--text-primary);">💸 Commission Ledger Log</h4>
+                <div class="admin-table-box" style="margin-bottom: 0;">
+                    <table class="admin-table" style="font-size: 12px;">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Type</th>
+                                <th>Rate</th>
+                                <th>Calculated (LKR)</th>
+                                <th>Eligible (LKR)</th>
+                                <th>Capped (LKR)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="modalMemberCommissionsBody">
+                            <tr>
+                                <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 15px;">No commissions recorded.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ADMIN MANUAL PRODUCT PURCHASE / ENROLLMENT MODAL OVERLAY -->
+    <div class="modal-overlay" id="adminManualPurchaseModal" style="display: none;">
+        <div class="modal-box" style="max-width: 650px; padding: 25px; width: 92%; max-height: 90vh; overflow-y: auto;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #2E7D32; color: white; display: flex; align-items: center; justify-content: center; font-size: 20px;">🛒</div>
+                    <div>
+                        <h3 style="font-size: 18px; margin: 0; color:var(--text-primary);">පාඨමාලා සක්‍රිය කිරීම (Manual Purchase)</h3>
+                        <p style="font-size: 12px; color: var(--text-muted); margin: 0;">Admin can manually purchase & activate any course for a member.</p>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminManualPurchaseModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <form id="adminManualPurchaseForm" onsubmit="submitAdminManualPurchase(event)">
+                <input type="hidden" id="manualPurchaseMemberId">
+
+                <!-- Target Member Info Card -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 10px; padding: 14px; margin-bottom: 18px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700;">🎯 තෝරාගත් සාමාජිකයා (Target Member)</span>
+                        <span id="manualPurchaseMemberStatus" class="badge-status badge-account-inactive">● INACTIVE</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div id="manualPurchaseMemberAvatar" style="width: 38px; height: 38px; border-radius: 50%; background: var(--brand-orange); color: white; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 16px;">M</div>
+                        <div>
+                            <strong id="manualPurchaseMemberName" style="font-size: 15px; color: var(--text-primary);">Member Name</strong><br>
+                            <code id="manualPurchaseMemberUsername" style="color: var(--brand-gold);">@username</code> <small id="manualPurchaseMemberEmail" style="color: var(--text-muted);">(user@hapanamy.lk)</small>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 15px; margin-top: 10px; font-size: 12px; border-top: 1px dashed rgba(255,255,255,0.08); padding-top: 8px;">
+                        <div><span style="color:var(--text-muted);">Sponsor:</span> <strong id="manualPurchaseMemberSponsor" style="color:var(--brand-gold);">NAMOBUDDHAYA</strong></div>
+                        <div><span style="color:var(--text-muted);">Position:</span> <strong id="manualPurchaseMemberPosition" style="color:var(--text-primary);">LEFT</strong></div>
+                    </div>
+                </div>
+
+                <!-- Product Selection -->
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="manualPurchaseProductSelect" style="display:block; margin-bottom:6px; font-size:13px; font-weight:700; color:var(--text-secondary);">📚 සක්‍රිය කිරීමට අවශ්‍ය පාඨමාලාව (Select Course Product)</label>
+                    <select id="manualPurchaseProductSelect" onchange="updateManualPurchasePreview()" required style="width:100%; padding:10px 14px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13.5px;">
+                        <option value="facebook-course">Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 7,425 (7,425 BV)</option>
+                        <option value="tiktok-course">TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 4,500 (4,500 BV)</option>
+                        <option value="youtube-course">YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom) — රු. 7,425 (7,425 BV)</option>
+                        <option value="social-media-masterclass">🚀 Social Media Income Masterclass 2026 — රු. 15,992 (15,992 BV)</option>
+                        <option value="forex-course">🟢 Beginner – Forex Trading Course (Online Zoom) — රු. 7,920 (7,920 BV)</option>
+                        <option value="crypto-course">🟠 Beginner – Crypto Trading Course (Online Zoom) — රු. 7,920 (7,920 BV)</option>
+                        <option value="options-course">🟡 Intermediate – Options Trading (Zoom Live) — රු. 7,920 (7,920 BV)</option>
+                        <option value="titan-elite">🔴 Professional – Advanced Institutional Trading (SMC) — රු. 19,900 (19,900 BV)</option>
+                        <option value="ai-video-course">🎬 AI Video Generation Masterclass 2026 — රු. 5,200 (5,200 BV)</option>
+                        <option value="ai-mastery-course">🤖 AI Mastery & Automation Masterclass — රු. 9,900 (9,900 BV)</option>
+                        <option value="coding-course">💻 Coding & Web Development Masterclass 2026 — රු. 7,200 (7,200 BV)</option>
+                        <option value="trading-ebook">📘 Trading A to Z – Master E-Book 2026 — රු. 3,992 (3,992 BV)</option>
+                        <option value="motivation-ebook">📖 Motivation & Self-Development Master E-Book 2026 — රු. 5,592 (5,592 BV)</option>
+                        <option value="ai-prompts-ebook">💡 1000+ AI Prompts Master Library — රු. 2,000 (2,000 BV)</option>
+                    </select>
+                </div>
+
+                <!-- Live MLM Calculation Summary Preview Card -->
+                <div style="background: rgba(46, 125, 50, 0.08); border: 1px solid rgba(46, 125, 50, 0.3); border-radius: 10px; padding: 14px; margin-bottom: 18px;">
+                    <h4 style="font-size: 13px; color: var(--brand-green-light); margin-bottom: 10px; font-weight: 700;">⚡ ස්වයංක්‍රීය MLM Points & කොමිස් ගණනය (Real-time Calculation)</h4>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 13px;">
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">ගාස්තුව (Selling Price)</span>
+                            <strong id="manualPurchaseFeePreview" style="color: var(--text-primary); font-size: 14px;">රු. 7,425.00</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Upline Binary Points (BV)</span>
+                            <strong id="manualPurchaseBvPreview" style="color: var(--brand-green-light); font-size: 14px;">7,425 BV</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Direct Commission (8%)</span>
+                            <strong id="manualPurchaseDirectCommPreview" style="color: var(--brand-gold); font-size: 14px;">රු. 594.00</strong>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.03); padding: 8px 10px; border-radius: 6px;">
+                            <span style="font-size: 11px; color: var(--text-muted); display: block;">Binary Match Rate</span>
+                            <strong style="color: var(--brand-orange); font-size: 14px;">7% (7 Qualified Levels)</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method & Notes -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="manualPurchasePaymentMethod" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">ගෙවීම් ක්‍රමය (Payment Method)</label>
+                        <select id="manualPurchasePaymentMethod" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
+                            <option value="ADMIN_MANUAL">Admin Manual Activation (Complimentary / Special)</option>
+                            <option value="BANK_TRANSFER">Bank Deposit (Manual Slip Verified)</option>
+                            <option value="CASH">Cash Payment (Head Office)</option>
+                            <option value="PROMO">Promotional Voucher</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label for="manualPurchaseNote" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">සටහන / Admin Note (Optional)</label>
+                        <input type="text" id="manualPurchaseNote" placeholder="e.g. Verified via WhatsApp / Head office receipt" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminManualPurchaseModal()" style="padding: 10px 18px; font-size: 13px; cursor: pointer;">අවලංගු කරන්න (Cancel)</button>
+                    <button type="submit" id="btnConfirmManualPurchase" class="btn btn-primary" style="padding: 10px 22px; font-size: 13.5px; background: #2E7D32; color: white; font-weight: 800; cursor: pointer; border: none; border-radius: 8px;">
+                        <span>⚡ සක්‍රිය කර ලකුණු ලබාදෙන්න (Confirm & Activate)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ADMIN SAFE PASSWORD RESET MODAL -->
+    <div class="modal-overlay" id="adminPasswordResetModal" style="display: none;">
+        <div class="modal-box" style="max-width: 520px; padding: 25px; width: 92%; border: 1px solid var(--brand-orange); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 22px;">🔑</span>
+                    <h3 style="font-size: 17px; margin: 0; color:var(--brand-orange);">සාමාජික මුරපදය Reset කිරීම (User Password Reset)</h3>
+                </div>
+                <button type="button" onclick="closeAdminPasswordResetModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
+            </div>
+
+            <div style="background: rgba(239, 83, 80, 0.08); border: 1px solid rgba(239, 83, 80, 0.25); border-radius: 8px; padding: 12px; margin-bottom: 18px; font-size: 13px; color: var(--text-primary); line-height: 1.5;">
+                ⚠️ <strong>අවධානයයි:</strong> ඔබ මෙම සාමාජිකයාගේ Password එක Reset කිරීමට සූදානම් වේ. මෙය අත්වැරදීමකින් සිදුවීම වැළැක්වීමට පහත විස්තර පරික්ෂා කර තහවුරු කරන්න.
+            </div>
+
+            <div style="background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 8px; padding: 14px; margin-bottom: 18px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">සාමාජිකයා (Member):</span>
+                    <strong id="resetModalMemberName" style="color: var(--text-primary);">Member Name</strong>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 6px; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Username:</span>
+                    <code id="resetModalMemberUsername" style="color: var(--brand-gold); font-size: 13px;">@username</code>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-size: 13px;">
+                    <span style="color: var(--text-muted);">Email:</span>
+                    <span id="resetModalMemberEmail" style="color: var(--text-secondary);">user@email.com</span>
+                </div>
+            </div>
+
+            <form id="adminPasswordResetForm" onsubmit="submitAdminPasswordReset(event)">
+                <input type="hidden" id="resetModalTargetUsername">
+                <input type="hidden" id="resetModalTargetEmail">
+
+                <div class="form-group" style="margin-bottom: 16px;">
+                    <label for="resetModalNewPass" style="display:block; margin-bottom:6px; font-size:12.5px; font-weight:700; color:var(--text-secondary);">
+                        නව මුරපදය (New Master Password):
+                    </label>
+                    <div style="position: relative;">
+                        <input type="text" id="resetModalNewPass" value="Hapana123" required style="width:100%; padding:10px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--brand-gold); border-radius:8px; font-size:14px; font-weight:700; font-family: monospace; box-sizing:border-box;">
+                    </div>
+                    <small style="display:block; margin-top:4px; font-size:11.5px; color:var(--text-muted);">
+                        💡 Default Master Password එක <code>Hapana123</code> වේ. අවශ්‍ය නම් වෙනස් කරන්න.
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                    <button type="button" class="btn btn-secondary" onclick="closeAdminPasswordResetModal()" style="padding: 9px 16px; font-size: 13px; cursor: pointer;">
+                        ❌ අවලංගු කරන්න (Cancel)
+                    </button>
+                    <button type="submit" id="btnConfirmPasswordReset" class="btn btn-primary" style="padding: 9px 20px; font-size: 13px; background: #D32F2F; color: white; font-weight: 700; cursor: pointer; border: none; border-radius: 8px;">
+                        <span>🔒 ඔව්, Reset කරන්න (Confirm Reset)</span>
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -1747,9 +2104,40 @@
             }, 1200);
         }
 
-        // Load dynamic bank slips from queue
-        function loadBankReceiptsTable() {
-            const list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+        // Load dynamic bank slips from queue and server API
+        async function loadBankReceiptsTable() {
+            let list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
+            
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch('/api/admin/deposits/pending', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.deposits && Array.isArray(data.deposits)) {
+                        data.deposits.forEach(dep => {
+                            const exists = list.some(x => x.orderId === dep.order_id || x.orderId === dep.id || x.txnCode === dep.bank_reference);
+                            if (!exists) {
+                                list.push({
+                                    orderId: dep.order_id || dep.id || 'ORD-API',
+                                    txnCode: dep.bank_reference || 'REF-ONLINE',
+                                    userName: dep.user_name || dep.user_id || 'Student',
+                                    email: dep.user_email || '',
+                                    phone: dep.phone || '',
+                                    course: dep.product_name || 'Online Course',
+                                    amount: Number(dep.amount || 7425),
+                                    status: dep.status || 'Pending Approval',
+                                    slipUrl: dep.slip_url || 'assets/trading_banner.jpg'
+                                });
+                            }
+                        });
+                    }
+                }
+            } catch (e) {
+                console.warn('Bank receipts API fetch fallback:', e);
+            }
+
             const tbody = document.getElementById('bankReceiptsTableBody');
             if (!tbody) return;
 
@@ -1771,7 +2159,10 @@
                             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '${item.orderId}', '${item.userName}', ${item.amount}, '${item.course}', ${index})">Approve</button>
                             <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${index})">Reject</button>
                         </div>`
-                    : `<span class="badge-status ${badgeClass}">${item.status}</span>`;
+                    : `<div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="badge-status ${badgeClass}">${item.status}</span>
+                            <button class="btn btn-secondary" style="padding: 4px 8px; font-size: 11px; border: 1px solid rgba(229,57,53,0.4); color: #FF5252; background: rgba(229,57,53,0.1); cursor: pointer; border-radius: 4px;" onclick="deleteAdminOrder(this, '${item.orderId}')" title="Delete / Cancel Order & Revert Commissions">🗑️ Delete</button>
+                       </div>`;
 
                 rowsHtml += `
                     <tr>
@@ -1779,8 +2170,8 @@
                         <td style="font-family: monospace; font-size:11.5px; color: var(--brand-gold);">${item.txnCode}</td>
                         <td><strong>${item.userName}</strong><br><span style="font-size: 11px; color: var(--text-muted);">${item.email} | ${item.phone}</span></td>
                         <td>${item.course}</td>
-                        <td>LKR ${item.amount.toLocaleString()}</td>
-                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('assets/trading_banner.jpg')">👁️ View Slip Image</span></td>
+                        <td>LKR ${Number(item.amount || 0).toLocaleString()}</td>
+                        <td><span style="color: var(--brand-orange); cursor: pointer; text-decoration: underline;" onclick="viewReceiptImage('${item.slipUrl || 'assets/trading_banner.jpg'}')">👁️ View Slip Image</span></td>
                         <td>${actionButtons}</td>
                     </tr>`;
             });
@@ -1792,7 +2183,7 @@
             // 1. Calculate Binary MLM Direct Commission (8%)
             const commDirect = amount * 0.08;
             
-            let referrerCode = 'Hiru';
+            let referrerCode = 'NAMOBUDDHAYA';
 
             // 2. Save approved status to queue and unlock course for student
             if (queueIndex !== -1) {
@@ -1800,7 +2191,7 @@
                 const item = slipsQueue[queueIndex];
                 if (item) {
                     item.status = 'Approved & Activated';
-                    referrerCode = item.referrer || 'Hiru';
+                    referrerCode = item.referrer || 'NAMOBUDDHAYA';
                     
                     // Unlock the specific courses/ebooks dynamically for the buyer
                     const userEmail = item.email || 'student@hapanamy.lk';
@@ -1852,6 +2243,44 @@
 
             showToast('❌ <strong>රිසිට්පත ප්‍රතික්ෂේප විය!</strong> අදාළ බැංකු රිසිට්පත ප්‍රතික්ෂේප කරන ලදී.');
             loadBankReceiptsTable();
+        }
+
+        // Delete / Revert Admin Order
+        async function deleteAdminOrder(btn, orderId) {
+            if (!confirm(`Are you sure you want to delete / cancel order #${orderId}? This will automatically revert any commissions and BV points.`)) {
+                return;
+            }
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '⏳ Deleting...';
+            }
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch(`/api/admin/orders/${encodeURIComponent(orderId)}/delete`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ orderId: orderId })
+                });
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    showToast(`🗑️ <strong>ඇණවුම සාර්ථකව ඉවත් කරන ලදී (Order Deleted):</strong> #${orderId}`);
+                    loadBankReceiptsTable();
+                    if (typeof renderRegisteredUsers === 'function') renderRegisteredUsers();
+                } else {
+                    showToast(`❌ <strong>ඉවත් කිරීම අසාර්ථකයි:</strong> ${data.error || 'Server error'}`);
+                }
+            } catch (err) {
+                showToast(`❌ <strong>දෝෂයකි:</strong> ${err.message}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
         }
 
         // Dynamic Products Database initial setup
@@ -2878,74 +3307,1616 @@
             }
         }
 
-        // Render Registered Users Directory
+        // Render Registered Users Directory from server API with graceful fallback
+        let adminMembersData = [];
+
         async function renderRegisteredUsers() {
             const tableBody = document.getElementById('registeredUsersTableBody');
             if (!tableBody) return;
-            
-            try {
-                const users = await dbGetUsers();
-                if (users.length === 0) {
-                    tableBody.innerHTML = `
-                        <tr>
-                            <td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">කිසිදු සාමාජිකයෙකු ලියාපදිංචි වී නොමැත (No registered users found).</td>
-                        </tr>
-                    `;
-                    return;
-                }
-                
-                tableBody.innerHTML = '';
-                // Sort users: newest first
-                const sortedUsers = [...users].reverse();
-                
-                sortedUsers.forEach(user => {
-                    const tr = document.createElement('tr');
-                    
-                    const name = user.name || 'N/A';
-                    const email = user.email || 'N/A';
-                    const role = user.role || 'student';
-                    const status = user.status || 'Active';
-                    const phone = user.phone || 'N/A';
-                    const date = user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A';
-                    
-                    const roleBadge = role === 'admin' 
-                        ? '<span class="badge-status" style="background-color: rgba(240, 179, 35, 0.15); color: var(--brand-gold);">Admin</span>' 
-                        : (role === 'affiliate' 
-                            ? '<span class="badge-status" style="background: rgba(24, 119, 242, 0.15) !important; color: #1877F2 !important; border-color: #1877F2 !important;">Affiliate Partner</span>' 
-                            : '<span class="badge-status" style="background: rgba(40, 167, 69, 0.15) !important; color: #28a745 !important; border-color: #28a745 !important;">Student</span>');
-                    
-                    const statusBadge = status === 'Active'
-                        ? '<span class="badge-status paid">Active</span>'
-                        : (status === 'Pending' || status === 'Pending Approval'
-                            ? '<span class="badge-status pending">Pending Approval</span>'
-                            : '<span class="badge-status" style="background:rgba(239,83,80,0.15); color:#EF5350; border-color:#EF5350;">Suspended</span>');
 
-                    tr.innerHTML = `
-                        <td><strong>${name}</strong></td>
-                        <td><code>${email}</code></td>
-                        <td>${roleBadge}</td>
-                        <td>${statusBadge}</td>
-                        <td>${phone}</td>
-                        <td>${date}</td>
-                        <td style="text-align: center;">
-                            <div style="display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
-                                <button class="btn btn-primary" onclick="approveRegisteredUser('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer;">✅ Approve</button>
-                                <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
-                                <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${name}', '${email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset PW</button>
-                                <button class="btn btn-secondary" onclick="deleteRegisteredUserAccount('${email}', '${name}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--ph-red); color: var(--ph-red); cursor:pointer;">🗑️ Delete</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(tr);
+            const searchInput = document.getElementById('memberSearchInput');
+            const search = (searchInput ? searchInput.value : '').toLowerCase().trim();
+            const statusSelect = document.getElementById('memberStatusFilter');
+            const status = (statusSelect ? statusSelect.value : 'all').toLowerCase();
+            const qualSelect = document.getElementById('memberQualFilter');
+            const qualification = (qualSelect ? qualSelect.value : 'all').toLowerCase();
+
+            let apiMembers = [];
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch(`/api/admin/members?search=${encodeURIComponent(search)}&status=${encodeURIComponent(status)}&qualification=${encodeURIComponent(qualification)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
                 });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.members) {
+                        apiMembers = data.members;
+                    }
+                }
             } catch (err) {
-                console.error('Error rendering registered users:', err);
+                console.warn('API fetch failed, utilizing full offline store:', err);
+            }
+
+            // Gather all local storage & database sources
+            let localRegUsers = [];
+            try {
+                localRegUsers = JSON.parse(localStorage.getItem('hapanamy_registered_users')) || [];
+            } catch (e) {}
+
+            let indexedDbUsers = [];
+            try {
+                if (typeof dbGetUsers === 'function') {
+                    indexedDbUsers = await dbGetUsers();
+                }
+            } catch (e) {}
+
+            // Gather referred_users_* lists across localStorage
+            const referredUsers = [];
+            for (let i = 0; i < localStorage.length; i++) {
+                const k = localStorage.key(i);
+                if (k && k.toLowerCase().startsWith('referred_users_')) {
+                    try {
+                        const refList = JSON.parse(localStorage.getItem(k)) || [];
+                        refList.forEach(r => referredUsers.push(r));
+                    } catch (e) {}
+                }
+            }
+
+            // Core pre-seeded users
+            const seedUsers = [
+          {
+                    "id": "user-namobuddhaya-root",
+                    "username": "NAMOBUDDHAYA",
+                    "full_name": "Main Admin (NAMOBUDDHAYA)",
+                    "name": "Main Admin (NAMOBUDDHAYA)",
+                    "email": "admin@hapanamy.lk",
+                    "role": "admin",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "qualification_status": "QUALIFIED",
+                    "kyc_status": "APPROVED",
+                    "position": "ROOT",
+                    "sponsor": null,
+                    "sponsor_username": null,
+                    "personal_bv": 0,
+                    "volume_summary": {
+                              "current_left_volume": 67500,
+                              "current_right_volume": 0,
+                              "lifetime_left_volume": 67500,
+                              "lifetime_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 67500,
+                              "carry_forward_right": 0,
+                              "weaker_leg": "RIGHT"
+                    },
+                    "team_size": 15,
+                    "team_count": 15,
+                    "left_volume": 67500,
+                    "right_volume": 0,
+                    "balance_points": 67500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-09-01T00:00:00Z"
+          },
+          {
+                    "id": "user-subadmin-manager",
+                    "username": "subadmin",
+                    "full_name": "Sub Admin (Operations Manager)",
+                    "name": "Sub Admin (Operations Manager)",
+                    "email": "manager@hapanamy.lk",
+                    "role": "subadmin",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "qualification_status": "QUALIFIED",
+                    "kyc_status": "APPROVED",
+                    "position": "ROOT",
+                    "sponsor": null,
+                    "sponsor_username": null,
+                    "personal_bv": 0,
+                    "volume_summary": {
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "matched_volume": 0,
+                              "weaker_leg": "BALANCED"
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 0,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-09-01T00:00:00Z"
+          },
+          {
+                    "id": "user-subadmin-finance",
+                    "username": "subadmin2",
+                    "full_name": "Sub Admin 2 (Finance & Verification)",
+                    "name": "Sub Admin 2 (Finance & Verification)",
+                    "email": "finance@hapanamy.lk",
+                    "role": "subadmin",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "qualification_status": "QUALIFIED",
+                    "kyc_status": "APPROVED",
+                    "position": "ROOT",
+                    "sponsor": null,
+                    "sponsor_username": null,
+                    "personal_bv": 0,
+                    "volume_summary": {
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "matched_volume": 0,
+                              "weaker_leg": "BALANCED"
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 0,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-09-01T00:00:00Z"
+          },
+          {
+                    "id": "user-subadmin-support",
+                    "username": "subadmin3",
+                    "full_name": "Sub Admin 3 (Customer Support & Relations)",
+                    "name": "Sub Admin 3 (Customer Support & Relations)",
+                    "email": "support@hapanamy.lk",
+                    "role": "subadmin",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "qualification_status": "QUALIFIED",
+                    "kyc_status": "APPROVED",
+                    "position": "ROOT",
+                    "sponsor": null,
+                    "sponsor_username": null,
+                    "personal_bv": 0,
+                    "volume_summary": {
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "matched_volume": 0,
+                              "weaker_leg": "BALANCED"
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 0,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-09-01T00:00:00Z"
+          },
+          {
+                    "id": "user-hapana-01",
+                    "username": "HAPANA01",
+                    "full_name": "Hapana 01",
+                    "name": "Hapana 01",
+                    "email": "hapana01@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-namobuddhaya-root",
+                              "username": "NAMOBUDDHAYA",
+                              "full_name": "Main Admin (NAMOBUDDHAYA)"
+                    },
+                    "sponsor_username": "NAMOBUDDHAYA",
+                    "binary_node": {
+                              "placement_parent_id": "user-namobuddhaya-root",
+                              "parent_username": "NAMOBUDDHAYA",
+                              "position": "LEFT",
+                              "depth": 2,
+                              "path": "/node-namobuddhaya-root"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-01",
+                              "lifetime_left_volume": 31500,
+                              "lifetime_right_volume": 31500,
+                              "current_left_volume": 31500,
+                              "current_right_volume": 31500,
+                              "matched_volume": 31500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 63000
+                    },
+                    "team_size": 14,
+                    "team_count": 14,
+                    "left_volume": 31500,
+                    "right_volume": 31500,
+                    "balance_points": 63000,
+                    "available_balance": 4815,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:31:10.491Z"
+          },
+          {
+                    "id": "user-hapana-02",
+                    "username": "HAPANA02",
+                    "full_name": "Hapana 02",
+                    "name": "Hapana 02",
+                    "email": "hapana02@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-01",
+                              "username": "HAPANA01",
+                              "full_name": "Hapana 01"
+                    },
+                    "sponsor_username": "HAPANA01",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-01",
+                              "parent_username": "HAPANA01",
+                              "position": "LEFT",
+                              "depth": 3,
+                              "path": "/node-namobuddhaya-root/node-hapana-01"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-02",
+                              "lifetime_left_volume": 13500,
+                              "lifetime_right_volume": 13500,
+                              "current_left_volume": 13500,
+                              "current_right_volume": 13500,
+                              "matched_volume": 13500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 27000
+                    },
+                    "team_size": 6,
+                    "team_count": 6,
+                    "left_volume": 13500,
+                    "right_volume": 13500,
+                    "balance_points": 27000,
+                    "available_balance": 2295,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:32:10.491Z"
+          },
+          {
+                    "id": "user-hapana-03",
+                    "username": "HAPANA03",
+                    "full_name": "Hapana 03",
+                    "name": "Hapana 03",
+                    "email": "hapana03@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-01",
+                              "username": "HAPANA01",
+                              "full_name": "Hapana 01"
+                    },
+                    "sponsor_username": "HAPANA01",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-01",
+                              "parent_username": "HAPANA01",
+                              "position": "RIGHT",
+                              "depth": 3,
+                              "path": "/node-namobuddhaya-root/node-hapana-01"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-03",
+                              "lifetime_left_volume": 13500,
+                              "lifetime_right_volume": 13500,
+                              "current_left_volume": 13500,
+                              "current_right_volume": 13500,
+                              "matched_volume": 13500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 27000
+                    },
+                    "team_size": 6,
+                    "team_count": 6,
+                    "left_volume": 13500,
+                    "right_volume": 13500,
+                    "balance_points": 27000,
+                    "available_balance": 2295,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:33:10.491Z"
+          },
+          {
+                    "id": "user-hapana-04",
+                    "username": "HAPANA04",
+                    "full_name": "Hapana 04",
+                    "name": "Hapana 04",
+                    "email": "hapana04@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-02",
+                              "username": "HAPANA02",
+                              "full_name": "Hapana 02"
+                    },
+                    "sponsor_username": "HAPANA02",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-02",
+                              "parent_username": "HAPANA02",
+                              "position": "LEFT",
+                              "depth": 4,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-04",
+                              "lifetime_left_volume": 4500,
+                              "lifetime_right_volume": 4500,
+                              "current_left_volume": 4500,
+                              "current_right_volume": 4500,
+                              "matched_volume": 4500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 9000
+                    },
+                    "team_size": 2,
+                    "team_count": 2,
+                    "left_volume": 4500,
+                    "right_volume": 4500,
+                    "balance_points": 9000,
+                    "available_balance": 1035,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:34:10.491Z"
+          },
+          {
+                    "id": "user-hapana-05",
+                    "username": "HAPANA05",
+                    "full_name": "Hapana 05",
+                    "name": "Hapana 05",
+                    "email": "hapana05@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-02",
+                              "username": "HAPANA02",
+                              "full_name": "Hapana 02"
+                    },
+                    "sponsor_username": "HAPANA02",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-02",
+                              "parent_username": "HAPANA02",
+                              "position": "RIGHT",
+                              "depth": 4,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-05",
+                              "lifetime_left_volume": 4500,
+                              "lifetime_right_volume": 4500,
+                              "current_left_volume": 4500,
+                              "current_right_volume": 4500,
+                              "matched_volume": 4500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 9000
+                    },
+                    "team_size": 2,
+                    "team_count": 2,
+                    "left_volume": 4500,
+                    "right_volume": 4500,
+                    "balance_points": 9000,
+                    "available_balance": 1035,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:35:10.491Z"
+          },
+          {
+                    "id": "user-hapana-06",
+                    "username": "HAPANA06",
+                    "full_name": "Hapana 06",
+                    "name": "Hapana 06",
+                    "email": "hapana06@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-03",
+                              "username": "HAPANA03",
+                              "full_name": "Hapana 03"
+                    },
+                    "sponsor_username": "HAPANA03",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-03",
+                              "parent_username": "HAPANA03",
+                              "position": "LEFT",
+                              "depth": 4,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-06",
+                              "lifetime_left_volume": 4500,
+                              "lifetime_right_volume": 4500,
+                              "current_left_volume": 4500,
+                              "current_right_volume": 4500,
+                              "matched_volume": 4500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 9000
+                    },
+                    "team_size": 2,
+                    "team_count": 2,
+                    "left_volume": 4500,
+                    "right_volume": 4500,
+                    "balance_points": 9000,
+                    "available_balance": 1035,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:36:10.491Z"
+          },
+          {
+                    "id": "user-hapana-07",
+                    "username": "HAPANA07",
+                    "full_name": "Hapana 07",
+                    "name": "Hapana 07",
+                    "email": "hapana07@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-03",
+                              "username": "HAPANA03",
+                              "full_name": "Hapana 03"
+                    },
+                    "sponsor_username": "HAPANA03",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-03",
+                              "parent_username": "HAPANA03",
+                              "position": "RIGHT",
+                              "depth": 4,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-07",
+                              "lifetime_left_volume": 4500,
+                              "lifetime_right_volume": 4500,
+                              "current_left_volume": 4500,
+                              "current_right_volume": 4500,
+                              "matched_volume": 4500,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 9000
+                    },
+                    "team_size": 2,
+                    "team_count": 2,
+                    "left_volume": 4500,
+                    "right_volume": 4500,
+                    "balance_points": 9000,
+                    "available_balance": 1035,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:37:10.491Z"
+          },
+          {
+                    "id": "user-hapana-08",
+                    "username": "HAPANA08",
+                    "full_name": "Hapana 08",
+                    "name": "Hapana 08",
+                    "email": "hapana08@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-04",
+                              "username": "HAPANA04",
+                              "full_name": "Hapana 04"
+                    },
+                    "sponsor_username": "HAPANA04",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-04",
+                              "parent_username": "HAPANA04",
+                              "position": "LEFT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-04"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-08",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:38:10.491Z"
+          },
+          {
+                    "id": "user-hapana-09",
+                    "username": "HAPANA09",
+                    "full_name": "Hapana 09",
+                    "name": "Hapana 09",
+                    "email": "hapana09@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-04",
+                              "username": "HAPANA04",
+                              "full_name": "Hapana 04"
+                    },
+                    "sponsor_username": "HAPANA04",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-04",
+                              "parent_username": "HAPANA04",
+                              "position": "RIGHT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-04"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-09",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:39:10.491Z"
+          },
+          {
+                    "id": "user-hapana-10",
+                    "username": "HAPANA10",
+                    "full_name": "Hapana 10",
+                    "name": "Hapana 10",
+                    "email": "hapana10@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-05",
+                              "username": "HAPANA05",
+                              "full_name": "Hapana 05"
+                    },
+                    "sponsor_username": "HAPANA05",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-05",
+                              "parent_username": "HAPANA05",
+                              "position": "LEFT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-05"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-10",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:40:10.491Z"
+          },
+          {
+                    "id": "user-hapana-11",
+                    "username": "HAPANA11",
+                    "full_name": "Hapana 11",
+                    "name": "Hapana 11",
+                    "email": "hapana11@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-05",
+                              "username": "HAPANA05",
+                              "full_name": "Hapana 05"
+                    },
+                    "sponsor_username": "HAPANA05",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-05",
+                              "parent_username": "HAPANA05",
+                              "position": "RIGHT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-05"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-11",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:41:10.491Z"
+          },
+          {
+                    "id": "user-hapana-12",
+                    "username": "HAPANA12",
+                    "full_name": "Hapana 12",
+                    "name": "Hapana 12",
+                    "email": "hapana12@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-06",
+                              "username": "HAPANA06",
+                              "full_name": "Hapana 06"
+                    },
+                    "sponsor_username": "HAPANA06",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-06",
+                              "parent_username": "HAPANA06",
+                              "position": "LEFT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03/node-hapana-06"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-12",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:42:10.491Z"
+          },
+          {
+                    "id": "user-hapana-13",
+                    "username": "HAPANA13",
+                    "full_name": "Hapana 13",
+                    "name": "Hapana 13",
+                    "email": "hapana13@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-06",
+                              "username": "HAPANA06",
+                              "full_name": "Hapana 06"
+                    },
+                    "sponsor_username": "HAPANA06",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-06",
+                              "parent_username": "HAPANA06",
+                              "position": "RIGHT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03/node-hapana-06"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-13",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:43:10.491Z"
+          },
+          {
+                    "id": "user-hapana-14",
+                    "username": "HAPANA14",
+                    "full_name": "Hapana 14",
+                    "name": "Hapana 14",
+                    "email": "hapana14@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "LEFT",
+                    "sponsor": {
+                              "id": "user-hapana-07",
+                              "username": "HAPANA07",
+                              "full_name": "Hapana 07"
+                    },
+                    "sponsor_username": "HAPANA07",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-07",
+                              "parent_username": "HAPANA07",
+                              "position": "LEFT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03/node-hapana-07"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-14",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:44:10.491Z"
+          },
+          {
+                    "id": "user-hapana-15",
+                    "username": "HAPANA15",
+                    "full_name": "Hapana 15",
+                    "name": "Hapana 15",
+                    "email": "hapana15@gmail.com",
+                    "role": "member",
+                    "status": "ACTIVE",
+                    "account_status": "ACTIVE",
+                    "is_active": true,
+                    "qualification_status": "NOT_QUALIFIED",
+                    "is_qualified": false,
+                    "kyc_status": "APPROVED",
+                    "is_kyc_approved": true,
+                    "position": "RIGHT",
+                    "sponsor": {
+                              "id": "user-hapana-07",
+                              "username": "HAPANA07",
+                              "full_name": "Hapana 07"
+                    },
+                    "sponsor_username": "HAPANA07",
+                    "binary_node": {
+                              "placement_parent_id": "user-hapana-07",
+                              "parent_username": "HAPANA07",
+                              "position": "RIGHT",
+                              "depth": 5,
+                              "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-03/node-hapana-07"
+                    },
+                    "personal_bv": 4500,
+                    "active_courses_count": 1,
+                    "volume_summary": {
+                              "user_id": "user-hapana-15",
+                              "lifetime_left_volume": 0,
+                              "lifetime_right_volume": 0,
+                              "current_left_volume": 0,
+                              "current_right_volume": 0,
+                              "matched_volume": 0,
+                              "carry_forward_left": 0,
+                              "carry_forward_right": 0,
+                              "matched_left_volume": 0,
+                              "matched_right_volume": 0,
+                              "reversed_left_volume": 0,
+                              "reversed_right_volume": 0,
+                              "weaker_leg": "BALANCED",
+                              "total_lifetime_volume": 0
+                    },
+                    "team_size": 0,
+                    "team_count": 0,
+                    "left_volume": 0,
+                    "right_volume": 0,
+                    "balance_points": 4500,
+                    "available_balance": 0,
+                    "total_commission": 0,
+                    "created_at": "2026-10-01T23:45:10.491Z"
+          }
+];
+
+            // Merge and deduplicate all member sources
+            const staleBlacklist = [
+                'ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk', 
+                'hiru', 'sun', 'sundd', 'star01', 'star02', 'star03',
+                'slt202077@gmail.com', 'slt202077', 'star04@gmail.com', 'star04', 
+                'star05@gmail.com', 'star05', 'star06@gmail.com', 'star06', 
+                'star07@gmail.com', 'star07', 'maxsave2505',
+                'kavishkadineth4418@gmail.com', 'kavishkadineth4418', 
+                'kavishkadineth4420@gmail.com', 'kavishkadineth4420'
+            ];
+
+            // Cleanup deleted users from browser localStorage on load
+            try {
+                const stores = ['hapanamy_registered_users', 'registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users'];
+                stores.forEach(s => {
+                    const raw = localStorage.getItem(s);
+                    if (raw) {
+                        try {
+                            let list = JSON.parse(raw);
+                            if (Array.isArray(list)) {
+                                const filtered = list.filter(item => {
+                                    const em = (item.email || '').toLowerCase().trim();
+                                    const un = (item.username || '').toLowerCase().trim();
+                                    return !staleBlacklist.includes(em) && !staleBlacklist.includes(un);
+                                });
+                                localStorage.setItem(s, JSON.stringify(filtered));
+                            }
+                        } catch (e) {}
+                    }
+                });
+            } catch (e) {}
+
+            const mergedMap = new Map();
+
+            function addOrMergeUser(u) {
+                if (!u) return;
+                const emailKey = (u.email || '').toLowerCase().trim();
+                const unameKey = (u.username || (u.email ? u.email.split('@')[0] : (u.id || ''))).toLowerCase().replace(/^@+/, '').trim();
+                const idKey = (u.id || u.user_id || '').toLowerCase().trim();
+
+                const uRole = (u.role || '').toLowerCase();
+                if (uRole !== 'admin' && uRole !== 'subadmin') {
+                    if (staleBlacklist.includes(emailKey) || staleBlacklist.includes(unameKey) || staleBlacklist.includes(idKey) || emailKey === 'ayubocey@gmail.com' || (u.full_name && u.full_name.includes('Chinthaka Gunasekara') && emailKey.includes('ayubocey'))) {
+                        return;
+                    }
+                }
+
+                let key = unameKey || emailKey || idKey;
+                if (!key) return;
+
+                for (const [k, existing] of mergedMap.entries()) {
+                    const exEmail = (existing.email || '').toLowerCase().trim();
+                    const exUname = (existing.username || '').toLowerCase().replace(/^@+/, '').trim();
+                    const exId = (existing.id || existing.user_id || '').toLowerCase().trim();
+                    if ((emailKey && exEmail && exEmail === emailKey) ||
+                        (unameKey && exUname && exUname === unameKey) ||
+                        (idKey && exId && exId === idKey)) {
+                        key = k;
+                        break;
+                    }
+                }
+                const existing = mergedMap.get(key) || {};
+                mergedMap.set(key, { ...existing, ...u });
+            }
+
+            // 1. Seed base users
+            seedUsers.forEach(u => addOrMergeUser(u));
+
+            // 2. Add local storage users
+            localRegUsers.forEach(u => addOrMergeUser(u));
+
+            // 3. Scan other storage keys
+            const altStores = ['registered_users', 'all_members', 'hapanamy_users', 'all_users', 'users'];
+            altStores.forEach(sk => {
+                try {
+                    const list = JSON.parse(localStorage.getItem(sk)) || [];
+                    if (Array.isArray(list)) list.forEach(u => addOrMergeUser(u));
+                } catch (e) {}
+            });
+
+            // 4. Add IndexedDB users
+            indexedDbUsers.forEach(u => addOrMergeUser(u));
+
+            // 5. Add referred users
+            referredUsers.forEach(u => addOrMergeUser(u));
+
+            // 6. Add server API users (authoritative for volume & financial stats)
+            apiMembers.forEach(u => addOrMergeUser(u));
+
+            let allMembers = Array.from(mergedMap.values());
+            adminMembersData = allMembers;
+
+            // Update topbar & overview stats
+            const totalMembersEl = document.getElementById('dashboardActiveAffiliates');
+            if (totalMembersEl) {
+                totalMembersEl.textContent = allMembers.filter(m => (m.role || 'member').toLowerCase() !== 'admin' && (m.role || 'member').toLowerCase() !== 'subadmin').length;
+            }
+
+            // Apply filter criteria
+            if (search) {
+                allMembers = allMembers.filter(m => {
+                    const fn = (m.full_name || m.name || '').toLowerCase();
+                    const un = (m.username || '').toLowerCase();
+                    const em = (m.email || '').toLowerCase();
+                    const sp = typeof m.sponsor === 'object' && m.sponsor ? (m.sponsor.username || m.sponsor.full_name || '').toLowerCase() : (m.sponsor || '').toLowerCase();
+                    return fn.includes(search) || un.includes(search) || em.includes(search) || sp.includes(search);
+                });
+            }
+
+            if (status !== 'all') {
+                allMembers = allMembers.filter(m => {
+                    const st = (m.account_status || m.status || 'ACTIVE').toLowerCase();
+                    return st === status;
+                });
+            }
+
+            if (qualification !== 'all') {
+                allMembers = allMembers.filter(m => {
+                    const q = (m.qualification_status || '').toLowerCase();
+                    if (qualification === 'qualified') return q === 'qualified';
+                    if (qualification === 'purchased') return (Number(m.personal_bv || 0) > 0);
+                    if (qualification === 'registered') return (Number(m.personal_bv || 0) === 0);
+                    return true;
+                });
+            }
+
+            renderAdminMembersRows(allMembers);
+        }
+
+        function renderAdminMembersRows(members) {
+            const tableBody = document.getElementById('registeredUsersTableBody');
+            if (!tableBody) return;
+
+            if (!members || members.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; color: var(--brand-orange); padding: 20px;">දත්ත පූරණය කිරීම අසාර්ථකයි (Failed to load users: ${err.message})</td>
+                        <td colspan="8" style="text-align: center; color: var(--text-muted); padding: 25px;">
+                            කිසිදු සාමාජිකයෙකු හමු නොවීය (No matching members found).
+                        </td>
                     </tr>
                 `;
+                return;
             }
+
+            tableBody.innerHTML = '';
+            members.forEach(m => {
+                const tr = document.createElement('tr');
+                const dt = m.created_at ? new Date(m.created_at).toLocaleDateString() : '2026-09-01';
+                
+                // Sponsor info
+                let sponsorText = '<span style="color:var(--text-muted);">Direct (Company)</span>';
+                if (m.sponsor) {
+                    if (typeof m.sponsor === 'object') {
+                        sponsorText = `<strong>${m.sponsor.full_name || m.sponsor.username}</strong><br><small style="color:var(--text-muted);">@${m.sponsor.username}</small>`;
+                    } else if (typeof m.sponsor === 'string' && m.sponsor.trim()) {
+                        sponsorText = `<strong>${m.sponsor}</strong><br><small style="color:var(--text-muted);">@${m.sponsor}</small>`;
+                    }
+                }
+
+                // Role badge
+                const r = (m.role || 'member').toLowerCase();
+                let roleBadge = '<span class="badge-status" style="background:#E65100; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">💼 SALES TEAM</span>';
+                if (r === 'admin') {
+                    roleBadge = '<span class="badge-status" style="background:#0D47A1; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">👑 MAIN ADMIN</span>';
+                } else if (r === 'subadmin' || r === 'sub_admin') {
+                    roleBadge = '<span class="badge-status" style="background:#4A148C; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">⚡ SUB ADMIN</span>';
+                } else if (r === 'student') {
+                    roleBadge = '<span class="badge-status" style="background:#004D40; color:white; font-size:10px; padding:2px 6px; border-radius:4px; margin-left:4px;">🎓 STUDENT</span>';
+                }
+
+                // Position badge
+                let pos = (m.position || (m.binary_node && m.binary_node.position) || 'LEFT').toUpperCase();
+                if (r === 'admin' || r === 'subadmin' || (m.username || '').toLowerCase() === 'hiru') pos = 'ROOT';
+                
+                let posBadge = '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>';
+                if (pos === 'LEFT') posBadge = '<span class="sales-leg-badge badge-left">👈 LEFT</span>';
+                else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
+
+                // Account status badge
+                const isAccountActive = (m.account_status || m.status || 'ACTIVE').toUpperCase() === 'ACTIVE';
+                const accountBadge = isAccountActive
+                    ? '<span class="badge-status badge-account-active">● ACTIVE</span>'
+                    : '<span class="badge-status badge-account-inactive">● INACTIVE</span>';
+
+                // Qualification badge
+                const isQualified = (m.qualification_status || '').toUpperCase() === 'QUALIFIED';
+                const qualProgress = m.qualification_progress || `${m.sales_team_purchases_count || 0} / 2 Sales`;
+                const qualBadge = isQualified
+                    ? '<span class="badge-status badge-qual-qualified">★ QUALIFIED</span>'
+                    : `<span class="badge-status badge-qual-unqualified">★ NOT QUALIFIED</span><br><small class="badge-progress" style="display:inline-block; margin-top:3px;">${qualProgress}</small>`;
+
+                // KYC badge
+                const kycSt = (m.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+                let kycBadgeClass = 'badge-kyc-none';
+                let kycLabel = '🛡️ KYC NOT SUBMITTED';
+                if (kycSt === 'APPROVED') {
+                    kycBadgeClass = 'badge-kyc-approved';
+                    kycLabel = '🛡️ KYC APPROVED';
+                } else if (kycSt === 'PENDING') {
+                    kycBadgeClass = 'badge-kyc-pending';
+                    kycLabel = '🛡️ KYC PENDING';
+                } else if (kycSt === 'REJECTED') {
+                    kycBadgeClass = 'badge-kyc-rejected';
+                    kycLabel = '🛡️ KYC REJECTED';
+                }
+                const kycBadge = `<span class="badge-status ${kycBadgeClass}" style="margin-top:3px; display:inline-block;">${kycLabel}</span>`;
+
+                const personalBvNum = Number(m.personal_bv !== undefined ? m.personal_bv : (m.business_volume ? m.business_volume.personal_bv : 0));
+                const personalBvStr = `රු. ${personalBvNum.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+                
+                const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_left_volume || 0).toLocaleString() : Number(m.left_volume || 0).toLocaleString());
+                const rightVol = m.volume_summary ? Number(m.volume_summary.current_right_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_right_volume || 0).toLocaleString() : Number(m.right_volume || 0).toLocaleString());
+                const teamVolStr = `<small style="color:#42A5F5;">L: ${leftVol}</small> | <small style="color:#BA68C8;">R: ${rightVol}</small>`;
+                
+                const availBal = m.available_balance !== undefined ? Number(m.available_balance || 0) : (m.financial ? Number(m.financial.available_balance || 0) : 0);
+                const totComm = m.total_commission !== undefined ? Number(m.total_commission || 0) : (m.financial ? Number(m.financial.total_earned || 0) : 0);
+                const walletStr = `<strong style="color:var(--brand-gold);">රු. ${availBal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong><br><small style="color:var(--text-muted);">Earned: රු. ${totComm.toLocaleString(undefined, {minimumFractionDigits: 2})}</small>`;
+
+                tr.innerHTML = `
+                    <td>
+                        <div style="display:flex; align-items:center; flex-wrap:wrap; gap:4px;">
+                            <strong>${m.full_name || m.name || m.username}</strong>
+                            ${roleBadge}
+                        </div>
+                        <code style="color:var(--brand-gold);">@${m.username || 'member'}</code> <small style="color:rgba(255,255,255,0.4);">(${m.email || m.id || ''})</small>
+                    </td>
+                    <td>${sponsorText}</td>
+                    <td>${posBadge}</td>
+                    <td style="font-weight:700; color:var(--brand-green-light);">${personalBvStr}</td>
+                    <td>${teamVolStr}</td>
+                    <td>${walletStr}</td>
+                    <td>
+                        <div>${accountBadge}</div>
+                        <div style="margin-top:4px;">${qualBadge}</div>
+                        <div>${kycBadge}</div>
+                    </td>
+                    <td style="text-align: center;">
+                        <div style="display: flex; gap: 4px; justify-content: center; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="openAdminManualPurchaseModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:#2E7D32; color:#FFF; font-weight:700;">🛒 පාඨමාලා සක්‍රිය කරන්න</button>
+                            <button class="btn btn-primary" onclick="viewMemberDashboard('${m.id}', '${m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.role || 'member'}', '${typeof m.sponsor === 'object' ? (m.sponsor?.username || 'NAMOBUDDHAYA') : (m.sponsor || 'NAMOBUDDHAYA')}', '${m.position || 'LEFT'}', '${m.email || ''}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-orange); color:#FFF; font-weight:700;">👁️ Dashboard</button>
+                            <button class="btn btn-primary" onclick="openMemberDetailModal('${m.id}')" style="padding: 4px 8px; font-size: 11px; cursor:pointer; background:var(--brand-gold); color:#102A43; font-weight:700;">🔍 View</button>
+                            <button class="btn btn-secondary" onclick="toggleRegisteredUserStatus('${m.email}', '${m.full_name || m.name || m.username}')" style="padding: 4px 8px; font-size: 11px; color: var(--brand-gold); border-color: var(--brand-gold); cursor:pointer;">🔄 Status</button>
+                            <button class="btn btn-secondary" onclick="resetUserPasswordPrompt('${m.full_name || m.name || m.username}', '${m.email}')" style="padding: 4px 8px; font-size: 11px; border-color: var(--brand-orange); color: var(--brand-orange); cursor:pointer;">🔑 Reset</button>
+                            ${r !== 'admin' && r !== 'subadmin' ? `
+                                <button class="btn btn-secondary" onclick="deleteRegisteredUser('${m.id || m.email || m.username}', '${(m.full_name || m.name || m.username).replace(/'/g, "\\'")}', '${m.username || ''}')" style="padding: 4px 8px; font-size: 11px; border-color: #E53935; color: #E53935; cursor:pointer;" title="Delete Member">🗑️ Delete</button>
+                            ` : ''}
+                        </div>
+                    </td>
+                `;
+                tableBody.appendChild(tr);
+            });
+        }
+
+        let currentDetailMemberId = null;
+
+        const manualPurchaseCatalogMap = {
+            'facebook-course': { name: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425.00, bv: 7425.00, directRate: 8.0 },
+            'tiktok-course': { name: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 4500.00, bv: 4500.00, directRate: 8.0 },
+            'youtube-course': { name: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425.00, bv: 7425.00, directRate: 8.0 },
+            'social-media-masterclass': { name: '🚀 Social Media Income Masterclass 2026', price: 15992.00, bv: 15992.00, directRate: 8.0 },
+            'forex-course': { name: '🟢 Beginner – Forex Trading Course (Online Zoom)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'crypto-course': { name: '🟠 Beginner – Crypto Trading Course (Online Zoom)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'options-course': { name: '🟡 Intermediate – Options Trading (Zoom Live)', price: 7920.00, bv: 7920.00, directRate: 8.0 },
+            'titan-elite': { name: '🔴 Professional – Advanced Institutional Trading (SMC)', price: 19900.00, bv: 19900.00, directRate: 8.0 },
+            'ai-video-course': { name: '🎬 AI Video Generation Masterclass 2026', price: 5200.00, bv: 5200.00, directRate: 8.0 },
+            'ai-mastery-course': { name: '🤖 AI Mastery & Automation Masterclass', price: 9900.00, bv: 9900.00, directRate: 8.0 },
+            'coding-course': { name: '💻 Coding & Web Development Masterclass 2026', price: 7200.00, bv: 7200.00, directRate: 8.0 },
+            'trading-ebook': { name: '📘 Trading A to Z – Master E-Book 2026', price: 3992.00, bv: 3992.00, directRate: 8.0 },
+            'motivation-ebook': { name: '📖 Motivation & Self-Development Master E-Book 2026', price: 5592.00, bv: 5592.00, directRate: 8.0 },
+            'ai-prompts-ebook': { name: '💡 1000+ AI Prompts Master Library', price: 2000.00, bv: 2000.00, directRate: 8.0 }
+        };
+
+        function updateManualPurchasePreview() {
+            const select = document.getElementById('manualPurchaseProductSelect');
+            const prodId = select ? select.value : 'facebook-course';
+            const prod = manualPurchaseCatalogMap[prodId] || manualPurchaseCatalogMap['facebook-course'];
+
+            const feeEl = document.getElementById('manualPurchaseFeePreview');
+            const bvEl = document.getElementById('manualPurchaseBvPreview');
+            const directEl = document.getElementById('manualPurchaseDirectCommPreview');
+
+            if (feeEl) feeEl.textContent = `රු. ${prod.price.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            if (bvEl) bvEl.textContent = `${prod.bv.toLocaleString()} BV`;
+            if (directEl) directEl.textContent = `රු. ${(prod.price * 0.08).toFixed(2)}`;
+        }
+
+        function openAdminManualPurchaseModal(memberId) {
+            const modal = document.getElementById('adminManualPurchaseModal');
+            if (!modal) return;
+
+            const member = (adminMembersData || []).find(m => m.id === memberId || m.username === memberId || m.email === memberId) || { id: memberId, username: memberId, full_name: memberId };
+
+            document.getElementById('manualPurchaseMemberId').value = member.id || memberId;
+            const name = member.full_name || member.name || member.username || 'Member';
+            document.getElementById('manualPurchaseMemberAvatar').textContent = name[0].toUpperCase();
+            document.getElementById('manualPurchaseMemberName').textContent = name;
+            document.getElementById('manualPurchaseMemberUsername').textContent = `@${member.username || memberId}`;
+            document.getElementById('manualPurchaseMemberEmail').textContent = `(${member.email || 'user@hapanamy.lk'})`;
+
+            const accSt = (member.account_status || member.status || 'INACTIVE').toUpperCase();
+            const statusEl = document.getElementById('manualPurchaseMemberStatus');
+            if (statusEl) {
+                statusEl.textContent = `● ${accSt}`;
+                statusEl.className = accSt === 'ACTIVE' ? 'badge-status badge-account-active' : 'badge-status badge-account-inactive';
+            }
+
+            let sponsorName = 'NAMOBUDDHAYA';
+            if (member.sponsor) {
+                sponsorName = typeof member.sponsor === 'object' ? (member.sponsor.username || member.sponsor.full_name) : member.sponsor;
+            }
+            document.getElementById('manualPurchaseMemberSponsor').textContent = sponsorName;
+            document.getElementById('manualPurchaseMemberPosition').textContent = (member.position || 'LEFT').toUpperCase();
+
+            updateManualPurchasePreview();
+
+            modal.classList.add('open');
+            modal.style.display = 'flex';
+        }
+
+        function closeAdminManualPurchaseModal() {
+            const modal = document.getElementById('adminManualPurchaseModal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+        }
+
+        async function submitAdminManualPurchase(event) {
+            if (event && event.preventDefault) event.preventDefault();
+
+            const memberId = document.getElementById('manualPurchaseMemberId').value;
+            const productId = document.getElementById('manualPurchaseProductSelect').value;
+            const paymentMethod = document.getElementById('manualPurchasePaymentMethod').value;
+            const notes = document.getElementById('manualPurchaseNote').value.trim();
+
+            const btn = document.getElementById('btnConfirmManualPurchase');
+            const originalText = btn ? btn.innerHTML : '';
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<span>⏳ සක්‍රිය කරමින් පවතී (Processing MLM Triggers)...</span>';
+            }
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch('/api/admin/members/manual-purchase', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        member_id: memberId,
+                        product_id: productId,
+                        payment_method: paymentMethod,
+                        notes: notes
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.success) {
+                    closeAdminManualPurchaseModal();
+                    const prodName = manualPurchaseCatalogMap[productId]?.name || productId;
+                    const directAmt = data.direct_commission?.amount || '594.00';
+                    const bvAmt = data.binary_volume?.volume || '7425';
+
+                    showToast(`🎉 <strong>පාඨමාලාව සාර්ථකව සක්‍රිය කරන ලදී!</strong><br>📘 ${prodName}<br>💰 8% Direct Commission: <strong>රු. ${directAmt}</strong><br>⚡ Binary Points: <strong>${bvAmt} BV</strong> ඉහළ Upline වෙත බැර විය.`);
+
+                    renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                } else {
+                    showToast(`❌ <strong>සක්‍රිය කිරීම අසාර්ථකයි:</strong> ${data.error || 'Server error'}`);
+                }
+            } catch (err) {
+                console.error('Error in submitAdminManualPurchase:', err);
+                showToast(`❌ <strong>සන්නිවේදන දෝෂයක්:</strong> ${err.message}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
+        }
+
+        function viewMemberDashboard(id, username, fullName, role, sponsor, position, email) {
+            const userObj = {
+                id: id,
+                username: username || 'member',
+                full_name: fullName || 'Member',
+                name: fullName || 'Member',
+                role: role || 'member',
+                sponsor: sponsor || 'NAMOBUDDHAYA',
+                position: position || 'LEFT',
+                email: email || ''
+            };
+            const token = 'token-' + (role || 'member') + '-' + id;
+            localStorage.setItem('auth_token', token);
+            localStorage.setItem('active_token', token);
+            localStorage.setItem('active_user', JSON.stringify(userObj));
+            localStorage.setItem('hapanamy_user_profile', JSON.stringify(userObj));
+            localStorage.setItem('is_admin_session', 'true');
+            window.open('dashboard.html?user_id=' + encodeURIComponent(id) + '&username=' + encodeURIComponent(username || id), '_blank');
+        }
+
+        async function openMemberDetailModal(memberId) {
+            currentDetailMemberId = memberId;
+            const modal = document.getElementById('memberDetailModal');
+            if (!modal) return;
+            modal.classList.add('open');
+            modal.style.display = 'flex';
+
+            try {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const res = await fetch(`/api/admin/members/${encodeURIComponent(memberId)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.member) {
+                        applyMemberModalData(data.member);
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.error('Error fetching member details:', e);
+            }
+        }
+
+        function closeMemberDetailModal() {
+            const modal = document.getElementById('memberDetailModal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+        }
+
+        function applyMemberModalData(m) {
+            const p = m.profile || {};
+            const net = m.network || {};
+            const bv = m.business_volume || {};
+            const fin = m.financial || {};
+            const purch = m.purchases || [];
+
+            const name = p.full_name || p.username || 'Member';
+            document.getElementById('modalMemberAvatar').textContent = name[0].toUpperCase();
+            document.getElementById('modalMemberName').textContent = name;
+            document.getElementById('modalMemberUsername').textContent = `@${p.username} (ID: ${p.id})`;
+            document.getElementById('modalMemberEmail').textContent = p.email || 'N/A';
+            document.getElementById('modalMemberMobile').textContent = p.mobile || 'N/A';
+
+            const accSt = (p.account_status || p.status || 'INACTIVE').toUpperCase();
+            const accEl = document.getElementById('modalMemberAccountStatus');
+            if (accEl) {
+                accEl.textContent = `● ${accSt} (${p.personal_paid_purchases_count || 0} Paid Orders)`;
+                accEl.className = accSt === 'ACTIVE' ? 'badge-status badge-account-active' : 'badge-status badge-account-inactive';
+            }
+
+            const qualSt = (p.qualification_status || 'NOT_QUALIFIED').toUpperCase();
+            const qualEl = document.getElementById('modalMemberQualStatus');
+            if (qualEl) {
+                const qProg = p.qualification_progress || `${p.sales_team_purchases_count || 0} / 2 Sales Completed`;
+                qualEl.textContent = `★ ${qualSt} (${qProg})`;
+                qualEl.className = qualSt === 'QUALIFIED' ? 'badge-status badge-qual-qualified' : 'badge-status badge-qual-unqualified';
+            }
+
+            const kycSt = (p.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+            const kycEl = document.getElementById('modalMemberKycStatus');
+            if (kycEl) {
+                kycEl.textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
+                kycEl.className = kycSt === 'APPROVED' ? 'badge-status badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-status badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-status badge-kyc-rejected' : 'badge-status badge-kyc-none'));
+            }
+
+            document.getElementById('modalMemberJoinDate').textContent = p.created_at ? new Date(p.created_at).toLocaleDateString() : 'N/A';
+
+            document.getElementById('modalMemberSponsor').textContent = net.sponsor ? `${net.sponsor.full_name} (@${net.sponsor.username})` : 'Direct Company';
+            document.getElementById('modalMemberParent').textContent = (net.binary_placement && net.binary_placement.parent_username) ? `@${net.binary_placement.parent_username}` : 'Root';
+            
+            const pos = (net.binary_placement && net.binary_placement.position) ? net.binary_placement.position.toUpperCase() : 'ROOT';
+            const posEl = document.getElementById('modalMemberPosition');
+            if (posEl) {
+                posEl.textContent = pos;
+                posEl.className = pos === 'LEFT' ? 'sales-leg-badge badge-left' : (pos === 'RIGHT' ? 'sales-leg-badge badge-right' : 'badge-status');
+            }
+
+            document.getElementById('modalMemberDirectCount').textContent = `${net.direct_referrals_count || 0} Members`;
+            document.getElementById('modalMemberLeftCount').textContent = net.left_team_count || 0;
+            document.getElementById('modalMemberRightCount').textContent = net.right_team_count || 0;
+
+            document.getElementById('modalMemberPersonalBv').textContent = `රු. ${Number(bv.personal_bv || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberLeftVol').textContent = `රු. ${Number(bv.current_left_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberRightVol').textContent = `රු. ${Number(bv.current_right_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberMatchedVol').textContent = `රු. ${Number(bv.matched_volume || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberCarryVol').textContent = `L: ${Number(bv.carry_forward_left || 0).toLocaleString()} | R: ${Number(bv.carry_forward_right || 0).toLocaleString()}`;
+
+            document.getElementById('modalMemberAvailBalance').textContent = `රු. ${Number(fin.available_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberTotalEarned').textContent = `රු. ${Number(fin.total_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberDirectEarned').textContent = `රු. ${Number(fin.direct_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberBinaryEarned').textContent = `රු. ${Number(fin.binary_earned || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+            document.getElementById('modalMemberPaidBalance').textContent = `රු. ${Number(fin.paid_balance || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+
+            // Purchases Table
+            const pBody = document.getElementById('modalMemberPurchasesBody');
+            if (pBody) {
+                if (purch.length === 0) {
+                    pBody.innerHTML = `<tr><td colspan="6" style="text-align:center; color:var(--text-muted); padding:12px;">No purchases recorded.</td></tr>`;
+                } else {
+                    pBody.innerHTML = purch.map(pc => `
+                        <tr>
+                            <td><code>${pc.order_number || pc.id}</code></td>
+                            <td><strong>${pc.product_name}</strong></td>
+                            <td style="font-weight:700;">රු. ${Number(pc.price_paid || 0).toLocaleString()}</td>
+                            <td style="color:var(--brand-green-light); font-weight:700;">${Number(pc.binary_volume || 0).toLocaleString()} BV</td>
+                            <td><span class="badge-status paid">${pc.status}</span></td>
+                            <td>${pc.activated_at ? new Date(pc.activated_at).toLocaleDateString() : 'N/A'}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+
+            // Commissions Table
+            const cBody = document.getElementById('modalMemberCommissionsBody');
+            const comms = fin.commissions || [];
+            if (cBody) {
+                if (comms.length === 0) {
+                    cBody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding:12px;">No commissions recorded.</td></tr>`;
+                } else {
+                    cBody.innerHTML = comms.map(c => `
+                        <tr>
+                            <td>${c.created_at ? new Date(c.created_at).toLocaleDateString() : 'N/A'}</td>
+                            <td><span class="badge-status" style="background:rgba(240,179,35,0.15); color:var(--brand-gold);">${c.type}</span></td>
+                            <td>${c.rate || 8}%</td>
+                            <td>රු. ${Number(c.calculated_amount || c.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td style="font-weight:700; color:var(--brand-green-light);">රු. ${Number(c.eligible_amount || c.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td style="color:var(--ph-red);">රු. ${Number(c.capped_amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                            <td><span class="badge-status paid">${c.status || 'APPROVED'}</span></td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        }
+
+        let adminPollingInterval = null;
+        let adminLastEventId = null;
+
+        function startAdminLivePolling() {
+            if (adminPollingInterval) clearInterval(adminPollingInterval);
+
+            async function poll() {
+                if (document.hidden) return; // Pause polling when hidden
+
+                try {
+                    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                    const url = adminLastEventId ? `/api/admin/live-updates?sinceId=${encodeURIComponent(adminLastEventId)}` : '/api/admin/live-updates';
+                    const res = await fetch(url, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.stats) {
+                            const salesEl = document.getElementById('dashboardMonthlySales');
+                            if (salesEl) salesEl.textContent = 'රු. ' + Number(data.stats.total_sales_lkr || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
+                            const affEl = document.getElementById('dashboardActiveAffiliates');
+                            if (affEl) affEl.textContent = data.stats.total_members || 0;
+                            const paidEl = document.getElementById('dashboardPaidComm');
+                            if (paidEl) paidEl.textContent = 'රු. ' + Number(data.stats.total_commissions_paid_lkr || 0).toLocaleString(undefined, {minimumFractionDigits: 2});
+                        }
+
+                        if (data && data.events && data.events.length > 0) {
+                            data.events.forEach(evt => {
+                                adminLastEventId = evt.id;
+                                if (evt.type === 'NEW_MEMBER_REGISTERED') {
+                                    const d = evt.data || {};
+                                    showToast(`🟢 <strong>New Member Registered!</strong><br>${d.fullName || 'Member'} (@${d.username}) | Sponsor: <strong>${d.sponsor || 'None'}</strong> | Position: <strong>${d.position || 'Auto'}</strong>`);
+                                    renderRegisteredUsers();
+                                } else if (evt.type === 'ORDER_PAID') {
+                                    showToast(`💳 <strong>Payment Approved & Activated!</strong><br>${evt.message || 'Order Verified'}`);
+                                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                                }
+                            });
+                        }
+                    }
+                } catch (err) {
+                    // Silently retry on next tick
+                }
+            }
+
+            poll();
+            adminPollingInterval = setInterval(poll, 6000);
+
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) {
+                    poll();
+                }
+            });
         }
 
         async function approveRegisteredUser(email, name) {
@@ -2965,16 +4936,104 @@
         }
 
         async function deleteRegisteredUserAccount(email, name) {
-            if (confirm(`🗑️ Are you sure you want to remove user "${name}"?`)) {
-                await dbDeleteUser(email);
-                showToast(`🗑️ User account <strong>${name}</strong> removed.`);
-                renderRegisteredUsers();
+            await deleteRegisteredUser(email, name);
+        }
+
+        async function deleteRegisteredUser(identifier, name, username) {
+            if (!identifier) return;
+            const cleanIdent = String(identifier).replace(/^@+/, '').trim().toLowerCase();
+            const protectedList = ['namobuddhaya', 'admin@hapanamy.lk', 'subadmin', 'manager@hapanamy.lk', 'subadmin2', 'finance@hapanamy.lk', 'subadmin3', 'support@hapanamy.lk', 'user-namobuddhaya-root', 'user-subadmin-manager', 'user-subadmin-finance', 'user-subadmin-support'];
+            if (protectedList.includes(cleanIdent)) {
+                alert('ප්‍රධාන පරිපාලන ගිණුම් (Main Admin / Sub Admin) ඉවත් කළ නොහැක.');
+                return;
+            }
+
+            const confirmMsg = `ඔබට මෙම සාමාජික ගිණුම (${name || username || identifier}) ස්ථිරවම ඉවත් කිරීමට (Permanent Delete) අවශ්‍ය බව තහවුරු කරන්නද?\n\nAre you sure you want to permanently delete user "${name || username || identifier}"?`;
+            if (!confirm(confirmMsg)) return;
+
+            try {
+                await dbDeleteUser(identifier);
+                showToast(`🗑️ User account <strong>${name || username}</strong> permanently removed.`);
+                await loadRegisteredUsers();
+            } catch (e) {
+                console.error('Delete error:', e);
+                alert('Error deleting user: ' + e.message);
             }
         }
 
         function resetUserPasswordPrompt(userName, email) {
-            const displayEmail = email ? ` (${email})` : '';
-            alert('Password reset link has been simulated for ' + userName + displayEmail + '. In production, it sends a verification link to their email.');
+            document.getElementById('resetModalMemberName').textContent = userName || 'Member';
+            document.getElementById('resetModalMemberUsername').textContent = '@' + (userName || 'member');
+            document.getElementById('resetModalMemberEmail').textContent = email || 'N/A';
+            document.getElementById('resetModalTargetUsername').value = userName || '';
+            document.getElementById('resetModalTargetEmail').value = email || '';
+            document.getElementById('resetModalNewPass').value = 'Hapana123';
+            
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'flex';
+        }
+
+        function closeAdminPasswordResetModal() {
+            const modal = document.getElementById('adminPasswordResetModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        async function submitAdminPasswordReset(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnConfirmPasswordReset');
+            const originalText = btn ? btn.innerHTML : 'Confirm';
+            
+            const userName = document.getElementById('resetModalTargetUsername').value;
+            const email = document.getElementById('resetModalTargetEmail').value;
+            const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Hapana123';
+
+            try {
+                if (btn) {
+                    btn.disabled = true;
+                    btn.innerHTML = '<span>⏳ Reset කරමින් පවතී...</span>';
+                }
+
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
+                const response = await fetch('/api/admin/members/reset-password', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        username: userName,
+                        email: email,
+                        new_password: newPassword
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (typeof dbUpdateUser === 'function' && email) {
+                        await dbUpdateUser(email, { password: newPassword });
+                    }
+                    closeAdminPasswordResetModal();
+                    showToast(`🔑 <strong>Password Reset සාර්ථකයි!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                    alert(`✅ සාමාජික "${userName}" ගේ මුරපදය සාර්ථකව Reset කරන ලදී:\n\nනව Password: ${newPassword}\n\nදැන් මෙම මුරපදය මඟින් Login විය හැක.`);
+                    return;
+                } else {
+                    const errData = await response.json();
+                    showToast(`❌ <strong>Reset අසාර්ථක විය:</strong> ${errData.error || 'Server error'}`);
+                }
+            } catch (err) {
+                console.warn('API reset failed, applying local fallback:', err);
+                if (typeof dbUpdateUser === 'function' && email) {
+                    await dbUpdateUser(email, { password: newPassword });
+                }
+                closeAdminPasswordResetModal();
+                showToast(`🔑 <strong>Password Reset!</strong><br>Member: <strong>${userName}</strong><br>New Password: <code>${newPassword}</code>`);
+                alert(`✅ සාමාජික "${userName}" ගේ මුරපදය Reset කරන ලදී:\n\nනව Password: ${newPassword}`);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
+            }
         }
 
         // ========================================================
@@ -3204,6 +5263,13 @@
             renderRegisteredUsers(); // Initial load of registered users
             setTimeout(loadSystemSettings, 300);
             setTimeout(runEconomicsSimulation, 400);
+
+            window.addEventListener('storage', (e) => {
+                if (!e.key || e.key.startsWith('referred_users_') || e.key.includes('registered_users') || e.key.includes('bank_orders') || e.key.includes('bank_slips') || e.key.includes('payout_requests')) {
+                    renderRegisteredUsers();
+                    if (typeof loadBankReceiptsTable === 'function') loadBankReceiptsTable();
+                }
+            });
         });
     </script>
 </body>

@@ -59,9 +59,47 @@ require('./step41-product-economics-engine.test');
 require('./step42-product-economics-validation-engine.test');
 require('./step43-auth-security-audit.test');
 require('./step44-mlm-network-engine.test');
+require('./step45-live-mlm-business-flow.test');
 require('./step46-sales-team-ui-verification.test');
 require('./step47-header-cleanup-verification.test');
+require('./step48-global-ui-scale-and-banner-recovery.test');
+require('./step49-nowatrix-brand-integration.test');
+require('./step50-realtime-registration-upline-commissions.test');
+require('./step51-member-status-logic.test');
+require('./step52-student-dashboard-user-identity.test');
+require('./step53-my-team-list-verification.test');
+require('./step54-live-registration-persistence.test');
+require('./step55-new-user-zero-products-and-purchase-flow.test');
+require('./step56-admin-subadmin-role-and-registration-visibility.test');
+require('./step57-complete-purchase-active-course-mlm-flow.test');
+require('./step58-manual-bank-transfer-admin-approval-mlm-flow.test');
+require('./step59-realtime-downline-and-admin-persistence-verification.test');
+require('./step60-user-registration-identity-and-account-switching-verification.test');
+require('./step61-production-system-architecture-and-authoritative-data-flow-audit.test');
+require('./step62-production-trust-audit-authoritative-persistence-and-security.test');
+require('./step63-admin-approval-student-dashboard-course-visibility.test');
+require('./step64-star01-left-leg-downlines-and-placement.test');
+require('./step65-earlier-signups-visibility-and-preservation.test');
+require('./step66-atomic-registration-persistence.test');
+require('./step67-browser-storage-recovery-and-sync.test');
+require('./step68-client-recovery-preview-and-export.test');
+require('./step69-authoritative-server-persistence-hardening.test');
+require('./step70-admin-subadmin-configuration-and-purge.test');
+require('./step71-delete-member-and-localStorage-cleanup.test');
+require('./step72-hapana-15-binary-tree-and-tiktok-purchases.test');
+require('./step73-points-calculation-and-team-list-rendering.test');
+require('./step74-new-sale-entry-and-commission-calculation.test');
+require('./step75-live-signup-persistence-and-sponsor-fallback.test');
+require('./step76-persistence-hardening-and-concurrency.test');
+require('./step77-product-catalog-manual-purchase-correction-and-reversal.test');
+require('./step78-user-profile-kyc-and-withdrawal-bank-sync.test');
+require('./step79-referral-link-placement-and-sponsor-integrity.test');
+require('./step80-account-deletion-and-tree-cleansing.test');
+require('./step81-live-registration-referral-link-and-leg-placement.test');
+require('./step82-user-account-menu-navigation-and-drawer.test');
+require('./step83-dynamic-member-identity-and-dashboard-navigation.test');
 
 // Run
 runTests();
+
 

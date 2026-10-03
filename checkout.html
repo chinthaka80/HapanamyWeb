@@ -194,7 +194,7 @@
                     </div>
                     <div class="form-group">
                         <label for="chkReferrer">ප්‍රවර්ධක අංකය (Referrer ID - Optional)</label>
-                        <input type="text" id="chkReferrer" placeholder="Hiru">
+                        <input type="text" id="chkReferrer" placeholder="NAMOBUDDHAYA">
                     </div>
                 </div>
 
@@ -625,7 +625,7 @@
 
         // Populate referrer from localStorage
         document.addEventListener('DOMContentLoaded', () => {
-            const ref = localStorage.getItem('hapanamy_referrer') || 'Hiru';
+            const ref = localStorage.getItem('hapanamy_referrer') || 'NAMOBUDDHAYA';
             const chkRef = document.getElementById('chkReferrer');
             if (chkRef && !chkRef.value) {
                 chkRef.value = ref;

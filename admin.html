@@ -1188,7 +1188,7 @@
                         <div class="admin-stats-grid" style="margin-bottom: 25px;">
                             <div class="admin-stat-card" style="border-bottom-color: var(--brand-green-light);">
                                 <div class="admin-stat-label">සක්‍රීය සාමාජිකයින් (Active Members)</div>
-                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Hiru)</div>
+                                <div class="admin-stat-val" style="color:var(--brand-green-light);">1 Member (Root)</div>
                             </div>
                             <div class="admin-stat-card" style="border-bottom-color: var(--ph-red);">
                                 <div class="admin-stat-label">අක්‍රීය සාමාජිකයින් (Inactive Members)</div>
@@ -1208,7 +1208,7 @@
                                 </thead>
                                 <tbody>
                                     <tr>
-                                        <td><strong>Hiru</strong></td>
+                                        <td><strong>NAMOBUDDHAYA (Root)</strong></td>
                                         <td>Active Member / Affiliate</td>
                                         <td>0 Members</td>
                                         <td>0 Sales</td>
@@ -1695,7 +1695,7 @@
                     </h4>
                     <div style="font-size: 12.5px; display: flex; flex-direction: column; gap: 8px;">
                         <div><strong style="color:var(--text-muted);">Direct Sponsor:</strong> <span id="modalMemberSponsor" style="color:var(--brand-gold); font-weight:700;">Direct Admin</span></div>
-                        <div><strong style="color:var(--text-muted);">Placement Parent:</strong> <span id="modalMemberParent" style="color:var(--text-primary);">Root (@hiru)</span></div>
+                        <div><strong style="color:var(--text-muted);">Placement Parent:</strong> <span id="modalMemberParent" style="color:var(--text-primary);">Root (@NAMOBUDDHAYA)</span></div>
                         <div><strong style="color:var(--text-muted);">Placement Position:</strong> <span id="modalMemberPosition" class="sales-leg-badge badge-left">LEFT</span></div>
                         <div><strong style="color:var(--text-muted);">Direct Referrals:</strong> <span id="modalMemberDirectCount" style="font-weight:700;">0 Members</span></div>
                         <div><strong style="color:var(--text-muted);">Left Team Count:</strong> <span id="modalMemberLeftCount" style="color:#42A5F5; font-weight:700;">0</span> | <strong style="color:var(--text-muted);">Right Team:</strong> <span id="modalMemberRightCount" style="color:#BA68C8; font-weight:700;">0</span></div>
@@ -5657,7 +5657,7 @@
                 full_name: fullName || 'Member',
                 name: fullName || 'Member',
                 role: role || 'member',
-                sponsor: sponsor || 'Hiru',
+                sponsor: sponsor || 'NAMOBUDDHAYA',
                 position: position || 'LEFT',
                 email: email || ''
             };
@@ -5666,7 +5666,8 @@
             localStorage.setItem('active_token', token);
             localStorage.setItem('active_user', JSON.stringify(userObj));
             localStorage.setItem('hapanamy_user_profile', JSON.stringify(userObj));
-            window.open('dashboard.html', '_blank');
+            localStorage.setItem('is_admin_session', 'true');
+            window.open('dashboard.html?user_id=' + encodeURIComponent(id) + '&username=' + encodeURIComponent(username || id), '_blank');
         }
 
         let currentDetailMemberId = null;

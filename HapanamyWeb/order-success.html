@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapanamy.lk | ඇණවුම සාර්ථකයි! (Order Successful)</title>
+    <title>Hapanamy.lk | ඇණවුම සාර්ථකයි! | NOWATRIX Global</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -111,7 +111,7 @@
                 </div>
                 <div class="order-meta-row" id="referrerRow" style="display: none;">
                     <span data-translate="lbl_referrer">ප්‍රවර්ධකයා (Referred By):</span>
-                    <strong style="color: var(--brand-gold);" id="metaReferrer">Hiru</strong>
+                    <strong style="color: var(--brand-gold);" id="metaReferrer">NAMOBUDDHAYA</strong>
                 </div>
             </div>
 
@@ -187,6 +187,11 @@
         </div>
     </div>
 
+    <!-- Footer Attribution -->
+    <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
+        © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
+    </div>
+
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -199,6 +204,49 @@
         const urlParams = new URLSearchParams(window.location.search);
         const amount = parseFloat(urlParams.get('amount')) || 0;
         const method = urlParams.get('method') || 'payhere';
+
+        // Save purchases on payhere success
+        if (method === 'payhere') {
+            const activeUser = JSON.parse(localStorage.getItem('active_user')) || {};
+            const paramProduct = urlParams.get('product') || urlParams.get('course') || urlParams.get('id');
+            let purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
+            
+            if (purchasedList.length === 0 && paramProduct) {
+                purchasedList = [{
+                    id: paramProduct,
+                    title: paramProduct.replace(/-/g, ' ').toUpperCase(),
+                    price: amount || 7425,
+                    status: 'ACTIVE'
+                }];
+            } else if (purchasedList.length === 0) {
+                purchasedList = [{
+                    id: 'facebook-course',
+                    title: 'Facebook Monetization Masterclass',
+                    price: amount || 7425,
+                    status: 'ACTIVE'
+                }];
+            }
+            
+            if (activeUser && (activeUser.id || activeUser.email || activeUser.username)) {
+                const uid = (activeUser.id || 'user-active').toLowerCase();
+                const uname = (activeUser.username || '').toLowerCase();
+                const uemail = (activeUser.email || '').toLowerCase();
+                
+                let existing = JSON.parse(localStorage.getItem('hapanamy_purchased_courses_' + uid) || '[]');
+                purchasedList.forEach(p => {
+                    if (!existing.some(e => e.id === p.id || (e.title && p.title && e.title === p.title))) {
+                        existing.push({ ...p, status: 'ACTIVE', activated_at: new Date().toISOString() });
+                    }
+                });
+                if (uid) localStorage.setItem('hapanamy_purchased_courses_' + uid, JSON.stringify(existing));
+                if (uname) localStorage.setItem('hapanamy_purchased_courses_' + uname, JSON.stringify(existing));
+                if (uemail) localStorage.setItem('hapanamy_purchased_courses_' + uemail, JSON.stringify(existing));
+                activeUser.purchased_courses = existing;
+                activeUser.account_status = 'ACTIVE';
+                activeUser.status = 'ACTIVE';
+                localStorage.setItem('active_user', JSON.stringify(activeUser));
+            }
+        }
 
         // Handle file upload changes
         function handleBankSlipChange(event) {
@@ -217,7 +265,7 @@
 
         // Submit bank slip directly to Admin Queue in localStorage
         async function submitBankSlip() {
-            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || { name: 'Kasun Tharaka', phone: '0726090050' };
+            const billingInfo = JSON.parse(localStorage.getItem('checkout_billing')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Student Customer', phone: '07XXXXXXXX' };
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'student@hapanamy.lk' };
             
             const purchasedList = JSON.parse(localStorage.getItem('checkout_purchased_courses')) || [];
@@ -232,7 +280,7 @@
                 course: courseTitles,
                 amount: amount || 19900,
                 status: 'Pending Verification',
-                referrer: billingInfo.referrer || 'Hiru',
+                referrer: billingInfo.referrer || 'NAMOBUDDHAYA',
                 date: new Date().toLocaleDateString()
             };
 
@@ -320,7 +368,7 @@
             showToast(`🚀 <strong>පිවිසීම සාර්ථකයි!</strong> ${name} ගේ ශිෂ්‍ය උපකරණ පුවරුව පූරණය වෙමින් පවතී...`);
             
             setTimeout(() => {
-                window.location.href = 'my-account.html';
+                window.location.href = 'student-dashboard.html';
             }, 1500);
         }
 

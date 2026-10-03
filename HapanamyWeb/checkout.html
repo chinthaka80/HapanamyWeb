@@ -6,7 +6,7 @@
     <link rel="apple-touch-icon" href="assets/logo.jpg">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hapanamy.lk | Checkout (ගෙවීම් පිටුව)</title>
+    <title>Hapanamy.lk | Checkout | NOWATRIX Global</title>
     
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
@@ -194,7 +194,7 @@
                     </div>
                     <div class="form-group">
                         <label for="chkReferrer">ප්‍රවර්ධක අංකය (Referrer ID - Optional)</label>
-                        <input type="text" id="chkReferrer" placeholder="Hiru">
+                        <input type="text" id="chkReferrer" placeholder="NAMOBUDDHAYA">
                     </div>
                 </div>
 
@@ -278,6 +278,11 @@
         </div>
     </div>
 
+    <!-- Footer Attribution -->
+    <div style="text-align: center; margin: 30px auto 20px; font-size: 11.5px; color: var(--text-muted);">
+        © 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved.
+    </div>
+
     <!-- Toast Notification Container -->
     <div class="toast-container" id="toastContainer"></div>
 
@@ -287,6 +292,45 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
 
         let selectedMethod = 'payhere';
+        let currentCheckoutProduct = null;
+
+        const PRODUCT_CATALOG_MAP = {
+            'facebook-course': { id: 'facebook-course', code: 'FB-MON', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425, originalPrice: 9900, bv: 7425 },
+            'fb-mon': { id: 'facebook-course', code: 'FB-MON', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425, originalPrice: 9900, bv: 7425 },
+            'tiktok-course': { id: 'tiktok-course', code: 'TIK-MON', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 4500, originalPrice: 5000, bv: 4500 },
+            'tik-mon': { id: 'tiktok-course', code: 'TIK-MON', title: 'TikTok Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 4500, originalPrice: 5000, bv: 4500 },
+            'youtube-course': { id: 'youtube-course', code: 'YT-MON', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425, originalPrice: 9900, bv: 7425 },
+            'yt-mon': { id: 'youtube-course', code: 'YT-MON', title: 'YouTube Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 7425, originalPrice: 9900, bv: 7425 },
+            'social-media-masterclass': { id: 'social-media-masterclass', code: 'SOC-MASTER', title: '🚀 Social Media Income Masterclass 2026', price: 15992, originalPrice: 19990, bv: 15992 },
+            'soc-master': { id: 'social-media-masterclass', code: 'SOC-MASTER', title: '🚀 Social Media Income Masterclass 2026', price: 15992, originalPrice: 19990, bv: 15992 },
+            'social': { id: 'social-media-masterclass', code: 'SOC-MASTER', title: '🚀 Social Media Income Masterclass 2026', price: 15992, originalPrice: 19990, bv: 15992 },
+            'forex-course': { id: 'forex-course', code: 'FX-BEG', title: '🟢 Beginner – Forex Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'fx-beg': { id: 'forex-course', code: 'FX-BEG', title: '🟢 Beginner – Forex Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'crypto-course': { id: 'crypto-course', code: 'CRYPTO-BEG', title: '🟠 Beginner – Crypto Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'crypto-beg': { id: 'crypto-course', code: 'CRYPTO-BEG', title: '🟠 Beginner – Crypto Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'crypto': { id: 'crypto-course', code: 'CRYPTO-BEG', title: '🟠 Beginner – Crypto Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'options-course': { id: 'options-course', code: 'OPT-INT', title: '🔵 Intermediate – Options Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'opt-int': { id: 'options-course', code: 'OPT-INT', title: '🔵 Intermediate – Options Trading Course (Online Zoom)', price: 7920, originalPrice: 9900, bv: 7920 },
+            'titan-elite': { id: 'titan-elite', code: 'SMC-ADV', title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)', price: 19900, originalPrice: 24900, bv: 19900 },
+            'advanced-trading-course': { id: 'titan-elite', code: 'SMC-ADV', title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)', price: 19900, originalPrice: 24900, bv: 19900 },
+            'trading': { id: 'titan-elite', code: 'SMC-ADV', title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)', price: 19900, originalPrice: 24900, bv: 19900 },
+            'smc-adv': { id: 'titan-elite', code: 'SMC-ADV', title: '🔴 Professional – Advanced Institutional Trading (SMC / ICT)', price: 19900, originalPrice: 24900, bv: 19900 },
+            'ai-video-course': { id: 'ai-video-course', code: 'AI-VID', title: '🎬 AI Video Generation Masterclass 2026', price: 5200, originalPrice: 6500, bv: 5200 },
+            'ai-vid': { id: 'ai-video-course', code: 'AI-VID', title: '🎬 AI Video Generation Masterclass 2026', price: 5200, originalPrice: 6500, bv: 5200 },
+            'ai-mastery-course': { id: 'ai-mastery-course', code: 'AI-MAST', title: '🤖 AI Mastery Program 2026', price: 15000, originalPrice: 18750, bv: 15000 },
+            'ai-mastery': { id: 'ai-mastery-course', code: 'AI-MAST', title: '🤖 AI Mastery Program 2026', price: 15000, originalPrice: 18750, bv: 15000 },
+            'ai': { id: 'ai-mastery-course', code: 'AI-MAST', title: '🤖 AI Mastery Program 2026', price: 15000, originalPrice: 18750, bv: 15000 },
+            'ai-mast': { id: 'ai-mastery-course', code: 'AI-MAST', title: '🤖 AI Mastery Program 2026', price: 15000, originalPrice: 18750, bv: 15000 },
+            'coding-course': { id: 'coding-course', code: 'CODE-WEB', title: '💻 Coding & Web Development Masterclass 2026', price: 7200, originalPrice: 9000, bv: 7200 },
+            'code-web': { id: 'coding-course', code: 'CODE-WEB', title: '💻 Coding & Web Development Masterclass 2026', price: 7200, originalPrice: 9000, bv: 7200 },
+            'coding': { id: 'coding-course', code: 'CODE-WEB', title: '💻 Coding & Web Development Masterclass 2026', price: 7200, originalPrice: 9000, bv: 7200 },
+            'trading-ebook': { id: 'trading-ebook', code: 'EB-TRD', title: '📘 Trading E-Book A to Z (PDF Manual)', price: 3990, originalPrice: 4990, bv: 3990 },
+            'eb-trd': { id: 'trading-ebook', code: 'EB-TRD', title: '📘 Trading E-Book A to Z (PDF Manual)', price: 3990, originalPrice: 4990, bv: 3990 },
+            'motivation-ebook': { id: 'motivation-ebook', code: 'EB-MOT', title: '📖 Motivation & Self-Development Master E-Book', price: 5592, originalPrice: 6990, bv: 5592 },
+            'eb-mot': { id: 'motivation-ebook', code: 'EB-MOT', title: '📖 Motivation & Self-Development Master E-Book', price: 5592, originalPrice: 6990, bv: 5592 },
+            'ai-prompts-ebook': { id: 'ai-prompts-ebook', code: 'EB-PRM', title: '💡 AI Prompts & Templates Ultimate Collection', price: 4990, originalPrice: 5990, bv: 4990 },
+            'eb-prm': { id: 'ai-prompts-ebook', code: 'EB-PRM', title: '💡 AI Prompts & Templates Ultimate Collection', price: 4990, originalPrice: 5990, bv: 4990 }
+        };
 
         function selectPaymentMethod(method) {
             selectedMethod = method;
@@ -303,34 +347,76 @@
             }
         }
 
-        // Load cart items from localStorage
+        // Load cart items from URL param or localStorage
         function loadCheckoutCart() {
-            const cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
+            const urlParams = new URLSearchParams(window.location.search);
+            const rawParam = (urlParams.get('product') || urlParams.get('id') || urlParams.get('code') || urlParams.get('course') || urlParams.get('course_id') || '').toLowerCase().trim();
+            
+            let cart = [];
+
+            if (rawParam) {
+                const found = PRODUCT_CATALOG_MAP[rawParam];
+                if (found) {
+                    cart = [found];
+                    currentCheckoutProduct = found;
+                    localStorage.setItem('hapanamy_cart', JSON.stringify(cart));
+                }
+            }
+
+            if (cart.length === 0) {
+                cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
+                if (cart.length > 0) {
+                    currentCheckoutProduct = cart[0];
+                }
+            }
+
             const container = document.getElementById('checkoutItemsList');
             const totalValEl = document.getElementById('checkoutTotalVal');
             const btnPlaceOrder = document.getElementById('btnPlaceOrder');
 
             if (cart.length === 0) {
-                container.innerHTML = `<div style="text-align: center; color: var(--text-muted); padding: 20px;">Cart is empty. Redirecting...</div>`;
-                setTimeout(() => { window.location.href = 'index.html'; }, 2000);
+                container.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted); padding: 30px 10px;">
+                        <div style="font-size: 36px; margin-bottom: 10px;">🛒</div>
+                        <h4 style="font-size: 15px; color: var(--text-primary); margin-bottom: 6px;">ඔබ තවමත් කිසිදු පාඨමාලාවක් තෝරාගෙන නොමැත</h4>
+                        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 18px;">කරුණාකර පාඨමාලා නාමාවලියෙන් පාඨමාලාවක් තෝරාගන්න.</p>
+                        <a href="courses.html" class="btn btn-primary" style="text-decoration: none; padding: 10px 20px; font-size: 13px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+                            <span>📚 පාඨමාලා නාමාවලිය වෙත (Browse Courses)</span> ➔
+                        </a>
+                    </div>
+                `;
+                if (totalValEl) totalValEl.textContent = 'රු. 0.00';
+                if (btnPlaceOrder) {
+                    btnPlaceOrder.disabled = true;
+                    btnPlaceOrder.style.opacity = '0.5';
+                    btnPlaceOrder.textContent = 'පාඨමාලාවක් තෝරාගන්න (Select a Course)';
+                }
                 return;
+            }
+
+            if (btnPlaceOrder) {
+                btnPlaceOrder.disabled = false;
+                btnPlaceOrder.style.opacity = '1';
             }
 
             container.innerHTML = '';
             let total = 0;
 
             cart.forEach(item => {
+                const price = Number(item.price || item.selling_price || 0);
                 const itemRow = document.createElement('div');
                 itemRow.className = 'order-summary-item';
                 itemRow.innerHTML = `
-                    <div>
-                        <strong style="color: var(--text-primary); font-size: 13.5px;">${item.title}</strong>
-                        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Qty: 1</div>
+                    <div style="max-width: 75%;">
+                        <strong style="color: var(--text-primary); font-size: 13.5px; display: block; line-height: 1.3;">${item.title || item.name || 'Masterclass Program'}</strong>
+                        <div style="font-size: 11px; color: var(--brand-gold); margin-top: 4px; font-weight: 700;">
+                            Code: ${item.code || item.id || 'COURSE'} • BV Points: ${item.bv || price}
+                        </div>
                     </div>
-                    <span style="font-weight: 700; color: var(--text-primary);">රු. ${item.price.toLocaleString()}</span>
+                    <span style="font-weight: 800; color: var(--brand-orange); font-size: 15px;">රු. ${price.toLocaleString()}</span>
                 `;
                 container.appendChild(itemRow);
-                total += item.price;
+                total += price;
             });
 
             totalValEl.textContent = 'රු. ' + total.toLocaleString();
@@ -340,35 +426,120 @@
             btnPlaceOrder.textContent = `${payText} (රු. ${total.toLocaleString()})`;
         }
 
+        // Auto populate user information from active session
+        function autofillUserDetails() {
+            try {
+                const activeUser = JSON.parse(localStorage.getItem('active_user'));
+                if (activeUser) {
+                    const nameField = document.getElementById('chkName');
+                    const emailField = document.getElementById('chkEmail');
+                    const phoneField = document.getElementById('chkPhone');
+                    const refField = document.getElementById('chkReferrer');
+
+                    if (nameField && (activeUser.full_name || activeUser.name)) {
+                        nameField.value = activeUser.full_name || activeUser.name;
+                    }
+                    if (emailField && activeUser.email) {
+                        emailField.value = activeUser.email;
+                    }
+                    if (phoneField && (activeUser.phone || activeUser.mobile)) {
+                        phoneField.value = activeUser.phone || activeUser.mobile;
+                    }
+                    if (refField && (activeUser.sponsor || activeUser.referrer)) {
+                        refField.value = activeUser.sponsor || activeUser.referrer;
+                    }
+                }
+            } catch (e) {}
+        }
+
         // Handle payment form submit
-        function processPaymentSubmit(event) {
+        async function processPaymentSubmit(event) {
             event.preventDefault();
             const name = document.getElementById('chkName').value;
             const email = document.getElementById('chkEmail').value;
             const phone = document.getElementById('chkPhone').value;
             const referrer = document.getElementById('chkReferrer').value;
 
-            // Save billing details temporarily
+            // Save billing details
             localStorage.setItem('checkout_billing', JSON.stringify({ name, email, phone, referrer }));
             
-            // Save cart items to be synced with bank deposit invoice uploader
-            const cartItems = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
-            localStorage.setItem('checkout_purchased_courses', JSON.stringify(cartItems));
-
             const cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
-            let total = cart.reduce((sum, item) => sum + item.price, 0);
+            if (cart.length === 0) {
+                showToast('⚠️ කරුණාකර පළමුව පාඨමාලාවක් තෝරාගන්න.');
+                return;
+            }
+
+            const item = cart[0];
+            const price = Number(item.price || item.selling_price || 0);
+            let total = cart.reduce((sum, itm) => sum + Number(itm.price || itm.selling_price || 0), 0);
+
+            // Save purchased course record in user profile & local storage
+            localStorage.setItem('checkout_purchased_courses', JSON.stringify(cart));
+
+            // Sync with active user session
+            try {
+                const activeUser = JSON.parse(localStorage.getItem('active_user'));
+                if (activeUser && activeUser.id) {
+                    const userCourseKey = 'hapanamy_purchased_courses_' + activeUser.id.toLowerCase();
+                    let userCourses = JSON.parse(localStorage.getItem(userCourseKey)) || [];
+                    const alreadyExists = userCourses.some(c => (c.id && c.id === item.id) || (c.product_id && c.product_id === item.id));
+                    if (!alreadyExists) {
+                        userCourses.push({
+                            id: item.id,
+                            product_id: item.id,
+                            code: item.code || 'COURSE',
+                            title: item.title,
+                            name: item.title,
+                            price_paid: price,
+                            status: 'ACTIVE',
+                            purchased_at: new Date().toISOString()
+                        });
+                        localStorage.setItem(userCourseKey, JSON.stringify(userCourses));
+                    }
+                    activeUser.account_status = 'ACTIVE';
+                    activeUser.status = 'ACTIVE';
+                    activeUser.is_active = true;
+                    localStorage.setItem('active_user', JSON.stringify(activeUser));
+                }
+            } catch (e) {}
+
+            // Send purchase order to backend API if session token is available
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const txnCode = 'TXN-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
+
+            try {
+                if (token) {
+                    await fetch('/api/purchase/checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            productId: item.id,
+                            name,
+                            email,
+                            phone,
+                            referrer,
+                            amount: total,
+                            paymentMethod: selectedMethod
+                        })
+                    });
+                }
+            } catch (e) {
+                console.log('Purchase recorded locally.');
+            }
 
             if (selectedMethod === 'payhere') {
                 showToast('🔒 <strong>PayHere Secure Gateway!</strong> Redirecting to payhere checkout page...');
                 setTimeout(() => {
-                    window.location.href = `payhere-mock.html?amount=${total}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}`;
-                }, 1500);
+                    window.location.href = `payhere-mock.html?amount=${total}&name=${encodeURIComponent(name)}&email=${encodeURIComponent(email)}&product=${encodeURIComponent(item.id)}`;
+                }, 1200);
             } else {
                 showToast('🏦 <strong>Direct Bank Deposit!</strong> Generating receipt upload portal...');
                 setTimeout(() => {
-                    const txnCode = 'TXN-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
-                    window.location.href = 'order-success.html?method=bank&amount=' + total + '&txn=' + txnCode;
-                }, 2000);
+                    window.location.href = `order-success.html?method=bank&amount=${total}&txn=${txnCode}&product=${encodeURIComponent(item.id)}`;
+                }, 1500);
             }
         }
 
@@ -450,14 +621,16 @@
 
         initLanguage();
         loadCheckoutCart();
+        autofillUserDetails();
 
         // Populate referrer from localStorage
         document.addEventListener('DOMContentLoaded', () => {
-            const ref = localStorage.getItem('hapanamy_referrer') || 'Hiru';
+            const ref = localStorage.getItem('hapanamy_referrer') || 'NAMOBUDDHAYA';
             const chkRef = document.getElementById('chkReferrer');
-            if (chkRef) {
+            if (chkRef && !chkRef.value) {
                 chkRef.value = ref;
             }
+            autofillUserDetails();
         });
     </script>
 </body>
