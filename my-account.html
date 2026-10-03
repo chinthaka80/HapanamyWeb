@@ -815,44 +815,109 @@
 
                 <!-- 6. PROFILE SETTINGS PANEL -->
                 <div class="account-panel" id="panel-settings">
-                    <div class="stat-card" style="max-width: 600px;">
-                        <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">පැතිකඩ සැකසුම් (Profile Settings Database)</h3>
+                    <div class="stat-card" style="max-width: 680px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 12px; margin-bottom: 20px;">
+                            <h3 style="font-size: 16px; margin: 0; color: var(--text-primary); display: flex; align-items: center; gap: 8px;">
+                                <span>👤</span> ගිණුම් විස්තර සහ පැතිකඩ (Profile & Security Settings)
+                            </h3>
+                            <span id="accountKycStatusBadge" class="badge badge-warning" style="font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(33, 150, 243, 0.15); color: #2196F3; font-weight: 700;">🛡️ NOT SUBMITTED</span>
+                        </div>
                         
                         <form id="unifiedSettingsForm" onsubmit="saveUserProfile(event)">
-                            <div class="form-group">
-                                <label for="setUserName">සම්පූර්ණ නම (Full Name) *</label>
-                                <input type="text" id="setUserName" value="" required placeholder="Your Full Name">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
-                                <input type="email" id="setUserEmail" value="student@hapanamy.lk" required placeholder="student@hapanamy.lk">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserPhone">දුරකථන අංකය (Phone Number) *</label>
-                                <input type="tel" id="setUserPhone" value="0719226600" required placeholder="0719226600">
-                            </div>
-                            <div class="form-group">
-                                <label for="setUserAddress">ලිපිනය (Home Address) *</label>
-                                <input type="text" id="setUserAddress" value="No. 45, Temple Road, Maharagama" required placeholder="No. 45, Temple Road, Maharagama">
-                            </div>
-                            
-                            <div style="border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; margin-bottom: 20px; background-color: rgba(255,255,255,0.02);">
-                                <h4 style="font-size: 13px; margin-bottom: 12px; color: var(--brand-orange);">🏦 ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):</h4>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <div class="form-group">
-                                    <label for="setUserBankName">බැංකුවේ නම (Bank Name) *</label>
-                                    <input type="text" id="setUserBankName" value="Commercial Bank" required placeholder="Commercial Bank">
+                                    <label for="setUserName">සම්පූර්ණ නම (Full Name) *</label>
+                                    <input type="text" id="setUserName" required placeholder="ඔබගේ සම්පූර්ණ නම">
                                 </div>
-                                <div class="form-group" style="margin-top: 15px;">
-                                    <label for="setUserBankBranch">ශාඛාව (Branch) *</label>
-                                    <input type="text" id="setUserBankBranch" value="Maharagama" required placeholder="Maharagama">
-                                </div>
-                                <div class="form-group" style="margin-top: 15px;">
-                                    <label for="setUserBankAcc">ගිණුම් අංකය (Account Number) *</label>
-                                    <input type="text" id="setUserBankAcc" value="8010294851" required placeholder="8010294851">
+                                <div class="form-group">
+                                    <label for="setUserUsername">පරිශීලක නාමය (Username)</label>
+                                    <input type="text" id="setUserUsername" readonly disabled style="background: rgba(255,255,255,0.04); color: var(--brand-orange); font-weight: 700; font-family: monospace;">
                                 </div>
                             </div>
 
-                            <button type="submit" class="btn btn-primary" style="width: 100%;">සැකසුම් සුරකින්න (Save Settings)</button>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserEmail">විද්‍යුත් තැපෑල (Email Address) *</label>
+                                    <input type="email" id="setUserEmail" required placeholder="email@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserNic">ජාතික හැඳුනුම්පත (NIC / NID) *</label>
+                                    <input type="text" id="setUserNic" placeholder="199XXXXXXXXX / XXXXXXXXXV">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserPhone">දුරකථන අංකය (Phone Number) *</label>
+                                    <input type="tel" id="setUserPhone" required placeholder="07XXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserWhatsapp">WhatsApp අංකය (WhatsApp) *</label>
+                                    <input type="tel" id="setUserWhatsapp" placeholder="07XXXXXXXX">
+                                </div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                <div class="form-group">
+                                    <label for="setUserGender">ස්ත්‍රී / පුරුෂ භාවය (Sex / Gender)</label>
+                                    <select id="setUserGender" style="width: 100%; padding: 10px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
+                                        <option value="MALE">පුරුෂ (Male)</option>
+                                        <option value="FEMALE">ස්ත්‍රී (Female)</option>
+                                        <option value="OTHER">වෙනත් (Other)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="setUserDob">උපන් දිනය (Birthday / DOB)</label>
+                                    <input type="date" id="setUserDob" style="width: 100%; padding: 10px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px;">
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="setUserAddress">ලිපිනය (Home Address)</label>
+                                <input type="text" id="setUserAddress" placeholder="No. 45, Temple Road...">
+                            </div>
+
+                            <div class="form-group" style="margin-top: 15px;">
+                                <label for="setUserCity">ළඟම නගරය (Nearest City / District)</label>
+                                <input type="text" id="setUserCity" placeholder="e.g. Maharagama, Kandy...">
+                            </div>
+                            
+                            <!-- Bank Details Card -->
+                            <div style="border: 1px solid rgba(245, 124, 0, 0.4); padding: 16px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px; background-color: rgba(245, 124, 0, 0.03);">
+                                <h4 style="font-size: 13.5px; margin-bottom: 14px; color: var(--brand-orange); display: flex; align-items: center; gap: 6px;">
+                                    <span>🏦</span> ගෙවීම් බැංකු ගිණුම් විස්තර (Bank Payout Details):
+                                </h4>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                                    <div class="form-group">
+                                        <label for="setUserBankName">බැංකුවේ නම (Bank Name) *</label>
+                                        <input type="text" id="setUserBankName" required placeholder="Commercial Bank, BOC, Sampath...">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setUserBankBranch">ශාඛාව (Branch) *</label>
+                                        <input type="text" id="setUserBankBranch" required placeholder="Maharagama">
+                                    </div>
+                                </div>
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                                    <div class="form-group">
+                                        <label for="setUserBankAcc">ගිණුම් අංකය (Account Number) *</label>
+                                        <input type="text" id="setUserBankAcc" required placeholder="8010294851">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="setUserBankHolder">ගිණුමේ හිමිකරුගේ නම (Holder Name) *</label>
+                                        <input type="text" id="setUserBankHolder" required placeholder="Hiru Pathirana">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- KYC Activation Box -->
+                            <div style="background: rgba(33, 150, 243, 0.06); border: 1px dashed rgba(33, 150, 243, 0.35); border-radius: 8px; padding: 12px 14px; margin-bottom: 20px; font-size: 12.5px;">
+                                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-primary); font-weight: 600;">
+                                    <input type="checkbox" id="setUserKycCheck" style="width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;">
+                                    <span>ජාතික හැඳුනුම්පත සහ බැංකු ගිණුම් විස්තර KYC සත්‍යාපනය සඳහා යොමු කරන්න (Request KYC Verification).</span>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px; font-weight: 700; font-size: 14px;">💾 සියලු විස්තර සුරකින්න (Save Settings)</button>
                         </form>
                     </div>
 
@@ -1044,28 +1109,7 @@
                 </div>`;
         }
 
-        // Save profile
-        function saveUserProfile(event) {
-            event.preventDefault();
-            const name = document.getElementById('setUserName').value;
-            const email = document.getElementById('setUserEmail').value;
-            const phone = document.getElementById('setUserPhone').value;
-            const address = document.getElementById('setUserAddress').value;
-            const bankName = document.getElementById('setUserBankName').value;
-            const branch = document.getElementById('setUserBankBranch').value;
-            const accNumber = document.getElementById('setUserBankAcc').value;
-
-            const profile = { name, email, phone, address, bankName, branch, accNumber };
-            localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
-
-            // Sync topbar
-            document.getElementById('headerUserName').textContent = name;
-            document.getElementById('avatarLetter').textContent = name.charAt(0);
-
-            showToast('💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ සහ බැංකු විස්තර සාර්ථකව සුරැකිණි.');
-        }
-
-                let currentAccountUser = null;
+        let currentAccountUser = null;
 
         function getInitials(name) {
             if (!name || typeof name !== 'string') return '--';
@@ -1083,6 +1127,23 @@
             currentAccountUser = user;
             
             const fullName = user.full_name || user.name || user.username || 'Member';
+            const username = user.username || '';
+            const email = user.email || '';
+            const phone = user.phone || user.mobile || '';
+            const whatsapp = user.whatsapp || user.whatsapp_number || phone;
+            const nic = user.nic || user.nid || user.nic_number || '';
+            const gender = (user.gender || user.sex || 'MALE').toUpperCase();
+            const dob = user.dob || user.birthday || '';
+            const address = user.address || '';
+            const city = user.nearest_city || user.city || user.district || '';
+
+            const bank = user.bank_account || {};
+            const bankName = bank.bank_name || user.bank_name || user.bankName || '';
+            const bankBranch = bank.branch_name || user.bank_branch || user.branch || user.branchName || '';
+            const bankAcc = bank.account_number || user.bank_account_number || user.bank_account_no || user.accNumber || '';
+            const bankHolder = bank.account_holder_name || user.bank_account_name || user.bank_holder_name || fullName;
+
+            const kycStatus = (user.kyc_status || 'NOT_SUBMITTED').toUpperCase();
             const initials = getInitials(fullName);
 
             const headerName = document.getElementById('headerUserName');
@@ -1094,14 +1155,63 @@
             const nameInput = document.getElementById('setUserName');
             if (nameInput && !nameInput.matches(':focus')) nameInput.value = fullName;
 
+            const userInput = document.getElementById('setUserUsername');
+            if (userInput) userInput.value = `@${username}`;
+
             const emailInput = document.getElementById('setUserEmail');
-            if (emailInput && !emailInput.matches(':focus')) emailInput.value = user.email || '';
+            if (emailInput && !emailInput.matches(':focus')) emailInput.value = email;
 
             const phoneInput = document.getElementById('setUserPhone');
-            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = user.phone || user.mobile || '';
+            if (phoneInput && !phoneInput.matches(':focus')) phoneInput.value = phone;
+
+            const waInput = document.getElementById('setUserWhatsapp');
+            if (waInput && !waInput.matches(':focus')) waInput.value = whatsapp;
+
+            const nicInput = document.getElementById('setUserNic');
+            if (nicInput && !nicInput.matches(':focus')) nicInput.value = nic;
+
+            const genInput = document.getElementById('setUserGender');
+            if (genInput) genInput.value = ['MALE', 'FEMALE', 'OTHER'].includes(gender) ? gender : 'MALE';
+
+            const dobInput = document.getElementById('setUserDob');
+            if (dobInput && !dobInput.matches(':focus')) dobInput.value = dob;
 
             const addressInput = document.getElementById('setUserAddress');
-            if (addressInput && !addressInput.matches(':focus')) addressInput.value = user.address || '';
+            if (addressInput && !addressInput.matches(':focus')) addressInput.value = address;
+
+            const cityInput = document.getElementById('setUserCity');
+            if (cityInput && !cityInput.matches(':focus')) cityInput.value = city;
+
+            const bNameInput = document.getElementById('setUserBankName');
+            if (bNameInput && !bNameInput.matches(':focus')) bNameInput.value = bankName;
+
+            const bBranchInput = document.getElementById('setUserBankBranch');
+            if (bBranchInput && !bBranchInput.matches(':focus')) bBranchInput.value = bankBranch;
+
+            const bAccInput = document.getElementById('setUserBankAcc');
+            if (bAccInput && !bAccInput.matches(':focus')) bAccInput.value = bankAcc;
+
+            const bHolderInput = document.getElementById('setUserBankHolder');
+            if (bHolderInput && !bHolderInput.matches(':focus')) bHolderInput.value = bankHolder;
+
+            const kycBadge = document.getElementById('accountKycStatusBadge');
+            if (kycBadge) {
+                kycBadge.textContent = `🛡️ KYC ${kycStatus.replace(/_/g, ' ')}`;
+                kycBadge.className = `badge ${kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' ? 'badge-success' : (kycStatus === 'PENDING' ? 'badge-warning' : 'badge-secondary')}`;
+            }
+
+            const kycCheck = document.getElementById('setUserKycCheck');
+            if (kycCheck) {
+                kycCheck.checked = (kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' || kycStatus === 'PENDING');
+            }
+
+            // Sync with Payout Request Form bank field
+            const payoutBankArea = document.getElementById('payoutBankDetails');
+            if (payoutBankArea) {
+                if (bankName && bankAcc) {
+                    payoutBankArea.value = `${bankName} (${bankBranch || 'Main Branch'})\nAccount: ${bankAcc}\nHolder: ${bankHolder}`;
+                }
+            }
         }
 
         async function fetchAccountProfile() {
@@ -1146,12 +1256,52 @@
             const name = document.getElementById('setUserName').value.trim();
             const email = document.getElementById('setUserEmail').value.trim();
             const phone = document.getElementById('setUserPhone').value.trim();
+            const whatsapp = document.getElementById('setUserWhatsapp') ? document.getElementById('setUserWhatsapp').value.trim() : phone;
+            const nic = document.getElementById('setUserNic') ? document.getElementById('setUserNic').value.trim() : '';
+            const gender = document.getElementById('setUserGender') ? document.getElementById('setUserGender').value : 'MALE';
+            const dob = document.getElementById('setUserDob') ? document.getElementById('setUserDob').value : '';
             const address = document.getElementById('setUserAddress').value.trim();
+            const city = document.getElementById('setUserCity') ? document.getElementById('setUserCity').value.trim() : '';
+
             const bankName = document.getElementById('setUserBankName') ? document.getElementById('setUserBankName').value.trim() : '';
             const branch = document.getElementById('setUserBankBranch') ? document.getElementById('setUserBankBranch').value.trim() : '';
             const accNumber = document.getElementById('setUserBankAcc') ? document.getElementById('setUserBankAcc').value.trim() : '';
+            const bankHolder = document.getElementById('setUserBankHolder') ? document.getElementById('setUserBankHolder').value.trim() : name;
 
-            const profile = { name, full_name: name, email, phone, address, bankName, branch, accNumber };
+            const activateKyc = document.getElementById('setUserKycCheck') ? document.getElementById('setUserKycCheck').checked : false;
+
+            const profile = {
+                name,
+                full_name: name,
+                email,
+                phone,
+                mobile: phone,
+                whatsapp,
+                whatsapp_number: whatsapp,
+                nic,
+                nid: nic,
+                gender,
+                sex: gender,
+                dob,
+                birthday: dob,
+                address,
+                nearest_city: city,
+                city,
+                district: city,
+                bank_name: bankName,
+                bankName,
+                bank_branch: branch,
+                branchName: branch,
+                branch,
+                bank_account_number: accNumber,
+                accountNumber: accNumber,
+                accNumber,
+                bank_account_name: bankHolder,
+                accountHolderName: bankHolder,
+                activate_kyc: activateKyc,
+                request_kyc: activateKyc
+            };
+
             localStorage.setItem('hapanamy_user_profile', JSON.stringify(profile));
 
             const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
@@ -1160,10 +1310,10 @@
 
             updateAccountIdentityUI(updatedUser);
 
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || ('token-member-' + (activeUser.id || 'hiru'));
             if (token) {
                 try {
-                    await fetch('/api/user/profile', {
+                    const res = await fetch('/api/user/profile', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -1171,6 +1321,12 @@
                         },
                         body: JSON.stringify(profile)
                     });
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data && data.user) {
+                            localStorage.setItem('active_user', JSON.stringify({ ...updatedUser, ...data.user }));
+                        }
+                    }
                 } catch (err) {
                     console.warn('Could not sync user profile to server:', err);
                 }

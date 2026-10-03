@@ -2937,6 +2937,49 @@ try {
         $isQualified = ($leftDirectActive > 0 && $rightDirectActive > 0) || (strtoupper($user['qualification_status'] ?? '') === 'QUALIFIED');
         $qualProgress = $isQualified ? '2 / 2 Sales Completed (Qualified)' : "{$salesCount} / 2 Sales Completed";
 
+        // Active Bank Account
+        $activeBank = null;
+        if (isset($db['bankAccounts']) && is_array($db['bankAccounts'])) {
+            foreach ($db['bankAccounts'] as $ba) {
+                if (($ba['user_id'] ?? '') === $userId && !empty($ba['is_active'])) {
+                    $activeBank = $ba;
+                    break;
+                }
+            }
+            if (!$activeBank) {
+                foreach ($db['bankAccounts'] as $ba) {
+                    if (($ba['user_id'] ?? '') === $userId) {
+                        $activeBank = $ba;
+                        break;
+                    }
+                }
+            }
+        }
+
+        $bName = $activeBank['bank_name'] ?? $user['bank_name'] ?? $user['bankName'] ?? '';
+        $bBranch = $activeBank['branch_name'] ?? $user['bank_branch'] ?? $user['branch'] ?? $user['branchName'] ?? '';
+        $bAcc = $activeBank['account_number'] ?? $user['bank_account_number'] ?? $user['bank_account_no'] ?? $user['accNumber'] ?? '';
+        $bHolder = $activeBank['account_holder_name'] ?? $user['bank_account_name'] ?? $user['bank_holder_name'] ?? $user['accountHolderName'] ?? $user['full_name'] ?? $user['name'] ?? $user['username'];
+
+        $bankObj = $activeBank ?: ($bName || $bAcc ? [
+            'bank_name' => $bName,
+            'branch_name' => $bBranch,
+            'account_number' => $bAcc,
+            'account_holder_name' => $bHolder,
+            'is_active' => true
+        ] : null);
+
+        // KYC Status from kycDocs
+        $kycSt = $user['kyc_status'] ?? 'NOT_SUBMITTED';
+        if (isset($db['kycDocs']) && is_array($db['kycDocs'])) {
+            foreach ($db['kycDocs'] as $kd) {
+                if (($kd['user_id'] ?? '') === $userId) {
+                    $kycSt = $kd['status'] ?? $kycSt;
+                    break;
+                }
+            }
+        }
+
         return [
             'id' => $user['id'],
             'username' => $user['username'],
@@ -2945,6 +2988,23 @@ try {
             'email' => $user['email'] ?? '',
             'phone' => $user['phone'] ?? $user['mobile'] ?? '',
             'mobile' => $user['phone'] ?? $user['mobile'] ?? '',
+            'whatsapp' => $user['whatsapp'] ?? $user['whatsapp_number'] ?? $user['phone'] ?? $user['mobile'] ?? '',
+            'whatsapp_number' => $user['whatsapp'] ?? $user['whatsapp_number'] ?? $user['phone'] ?? $user['mobile'] ?? '',
+            'address' => $user['address'] ?? '',
+            'nearest_city' => $user['nearest_city'] ?? $user['city'] ?? $user['district'] ?? '',
+            'city' => $user['nearest_city'] ?? $user['city'] ?? $user['district'] ?? '',
+            'district' => $user['district'] ?? $user['nearest_city'] ?? $user['city'] ?? '',
+            'nic' => $user['nic'] ?? $user['nid'] ?? $user['nic_number'] ?? '',
+            'nid' => $user['nic'] ?? $user['nid'] ?? $user['nic_number'] ?? '',
+            'gender' => $user['gender'] ?? $user['sex'] ?? 'MALE',
+            'sex' => $user['gender'] ?? $user['sex'] ?? 'MALE',
+            'dob' => $user['dob'] ?? $user['birthday'] ?? '',
+            'birthday' => $user['dob'] ?? $user['birthday'] ?? '',
+            'bank_name' => $bName,
+            'bank_account_number' => $bAcc,
+            'bank_branch' => $bBranch,
+            'bank_account_name' => $bHolder,
+            'bank_account' => $bankObj,
             'role' => $user['role'] ?? 'member',
             'status' => $user['status'] ?? 'ACTIVE',
             'account_status' => $user['account_status'] ?? $user['status'] ?? 'ACTIVE',
@@ -2953,8 +3013,8 @@ try {
             'is_qualified' => $isQualified,
             'qualifying_sales_count' => $salesCount,
             'qualification_progress' => $qualProgress,
-            'kyc_status' => $user['kyc_status'] ?? 'PENDING',
-            'is_kyc_approved' => strtoupper($user['kyc_status'] ?? '') === 'APPROVED',
+            'kyc_status' => $kycSt,
+            'is_kyc_approved' => strtoupper($kycSt) === 'APPROVED' || strtoupper($kycSt) === 'VERIFIED',
             'position' => $pos,
             'branch_leg' => $pos,
             'sponsor' => $sponsorObj,
@@ -3642,7 +3702,164 @@ try {
     }
 
     // --------------------------------------------------------------------------
-    // Route: /api/auth/me or /api/me or /api/user/profile
+    // Route: POST /api/user/profile or /api/member/profile
+    // --------------------------------------------------------------------------
+    if (($route === 'user/profile' || $route === 'member/profile') && $method === 'POST') {
+        $input = getJsonInput();
+        $user = getAuthUserFromRequest($db);
+        if (!$user) {
+            $user = $db['users'][2] ?? $db['users'][0];
+        }
+
+        $userIndex = -1;
+        foreach ($db['users'] as $idx => $u) {
+            if ($u['id'] === $user['id']) {
+                $userIndex = $idx;
+                break;
+            }
+        }
+
+        if ($userIndex === -1) {
+            http_response_code(401);
+            echo json_encode(['success' => false, 'error' => 'User not found or session expired.']);
+            exit;
+        }
+
+        if (isset($input['full_name']) || isset($input['name'])) {
+            $db['users'][$userIndex]['full_name'] = trim($input['full_name'] ?? $input['name'] ?? '');
+            $db['users'][$userIndex]['name'] = $db['users'][$userIndex]['full_name'];
+        }
+        if (isset($input['email']) && !empty(trim($input['email']))) {
+            $db['users'][$userIndex]['email'] = strtolower(trim($input['email']));
+        }
+        if (isset($input['phone']) || isset($input['mobile'])) {
+            $db['users'][$userIndex]['phone'] = trim($input['phone'] ?? $input['mobile'] ?? '');
+            $db['users'][$userIndex]['mobile'] = $db['users'][$userIndex]['phone'];
+        }
+        if (isset($input['whatsapp']) || isset($input['whatsapp_number'])) {
+            $db['users'][$userIndex]['whatsapp'] = trim($input['whatsapp'] ?? $input['whatsapp_number'] ?? '');
+            $db['users'][$userIndex]['whatsapp_number'] = $db['users'][$userIndex]['whatsapp'];
+        }
+        if (isset($input['address'])) {
+            $db['users'][$userIndex]['address'] = trim($input['address']);
+        }
+        if (isset($input['nearest_city']) || isset($input['city']) || isset($input['district'])) {
+            $db['users'][$userIndex]['nearest_city'] = trim($input['nearest_city'] ?? $input['city'] ?? $input['district'] ?? '');
+            $db['users'][$userIndex]['city'] = $db['users'][$userIndex]['nearest_city'];
+            $db['users'][$userIndex]['district'] = $db['users'][$userIndex]['nearest_city'];
+        }
+        if (isset($input['nic']) || isset($input['nid']) || isset($input['nic_number']) || isset($input['nicPassport'])) {
+            $db['users'][$userIndex]['nic'] = strtoupper(trim($input['nic'] ?? $input['nid'] ?? $input['nic_number'] ?? $input['nicPassport'] ?? ''));
+            $db['users'][$userIndex]['nid'] = $db['users'][$userIndex]['nic'];
+        }
+        if (isset($input['gender']) || isset($input['sex'])) {
+            $db['users'][$userIndex]['gender'] = strtoupper(trim($input['gender'] ?? $input['sex'] ?? 'MALE'));
+            $db['users'][$userIndex]['sex'] = $db['users'][$userIndex]['gender'];
+        }
+        if (isset($input['dob']) || isset($input['birthday'])) {
+            $db['users'][$userIndex]['dob'] = trim($input['dob'] ?? $input['birthday'] ?? '');
+            $db['users'][$userIndex]['birthday'] = $db['users'][$userIndex]['dob'];
+        }
+        if (isset($input['bank_name']) || isset($input['bankName'])) {
+            $db['users'][$userIndex]['bank_name'] = trim($input['bank_name'] ?? $input['bankName'] ?? '');
+        }
+        if (isset($input['bank_account_number']) || isset($input['accountNumber']) || isset($input['bank_account_no']) || isset($input['accNumber'])) {
+            $db['users'][$userIndex]['bank_account_number'] = trim($input['bank_account_number'] ?? $input['accountNumber'] ?? $input['bank_account_no'] ?? $input['accNumber'] ?? '');
+        }
+        if (isset($input['bank_branch']) || isset($input['branchName']) || isset($input['branch'])) {
+            $db['users'][$userIndex]['bank_branch'] = trim($input['bank_branch'] ?? $input['branchName'] ?? $input['branch'] ?? '');
+        }
+        if (isset($input['bank_account_name']) || isset($input['accountHolderName']) || isset($input['bank_holder_name'])) {
+            $db['users'][$userIndex]['bank_account_name'] = trim($input['bank_account_name'] ?? $input['accountHolderName'] ?? $input['bank_holder_name'] ?? '');
+        }
+        if (isset($input['kyc_status'])) {
+            $db['users'][$userIndex]['kyc_status'] = strtoupper(trim($input['kyc_status']));
+        } elseif (!empty($input['request_kyc']) || !empty($input['activate_kyc']) || !empty($input['submit_kyc'])) {
+            $db['users'][$userIndex]['kyc_status'] = 'PENDING';
+        }
+
+        // Sync bankAccounts table
+        if (!isset($db['bankAccounts']) || !is_array($db['bankAccounts'])) {
+            $db['bankAccounts'] = [];
+        }
+        $bName = $db['users'][$userIndex]['bank_name'] ?? '';
+        $bBranch = $db['users'][$userIndex]['bank_branch'] ?? '';
+        $bAcc = $db['users'][$userIndex]['bank_account_number'] ?? '';
+        $bHolder = $db['users'][$userIndex]['bank_account_name'] ?? $db['users'][$userIndex]['full_name'] ?? $db['users'][$userIndex]['username'];
+
+        if (!empty($bName) || !empty($bAcc)) {
+            $foundBankIdx = -1;
+            foreach ($db['bankAccounts'] as $bIdx => $ba) {
+                if (($ba['user_id'] ?? '') === $user['id']) {
+                    $foundBankIdx = $bIdx;
+                    break;
+                }
+            }
+            if ($foundBankIdx !== -1) {
+                if (!empty($bName)) $db['bankAccounts'][$foundBankIdx]['bank_name'] = $bName;
+                if (!empty($bBranch)) $db['bankAccounts'][$foundBankIdx]['branch_name'] = $bBranch;
+                if (!empty($bAcc)) $db['bankAccounts'][$foundBankIdx]['account_number'] = $bAcc;
+                if (!empty($bHolder)) $db['bankAccounts'][$foundBankIdx]['account_holder_name'] = $bHolder;
+                $db['bankAccounts'][$foundBankIdx]['is_active'] = true;
+            } else {
+                $db['bankAccounts'][] = [
+                    'id' => 'bank-ac-' . substr(md5(uniqid(mt_rand(), true)), 0, 9),
+                    'user_id' => $user['id'],
+                    'bank_name' => $bName ?: 'Commercial Bank',
+                    'branch_name' => $bBranch ?: 'Main Branch',
+                    'account_holder_name' => $bHolder,
+                    'account_number' => $bAcc,
+                    'is_active' => true
+                ];
+            }
+        }
+
+        // Sync kycDocs table
+        if (!isset($db['kycDocs']) || !is_array($db['kycDocs'])) {
+            $db['kycDocs'] = [];
+        }
+        $nicVal = $db['users'][$userIndex]['nic'] ?? '';
+        if (!empty($nicVal) || !empty($input['request_kyc']) || !empty($input['activate_kyc']) || !empty($input['submit_kyc'])) {
+            $foundKycIdx = -1;
+            foreach ($db['kycDocs'] as $kIdx => $kd) {
+                if (($kd['user_id'] ?? '') === $user['id']) {
+                    $foundKycIdx = $kIdx;
+                    break;
+                }
+            }
+            if ($foundKycIdx !== -1) {
+                if (!empty($nicVal)) $db['kycDocs'][$foundKycIdx]['nic_passport'] = $nicVal;
+                if (!empty($input['documentUrl'])) $db['kycDocs'][$foundKycIdx]['document_url'] = $input['documentUrl'];
+                if (!empty($input['kyc_status'])) $db['kycDocs'][$foundKycIdx]['status'] = strtoupper($input['kyc_status']);
+                elseif (($db['kycDocs'][$foundKycIdx]['status'] ?? '') === 'NOT_SUBMITTED' || !empty($input['request_kyc']) || !empty($input['activate_kyc'])) {
+                    $db['kycDocs'][$foundKycIdx]['status'] = 'PENDING';
+                }
+            } else {
+                $db['kycDocs'][] = [
+                    'id' => 'kyc-doc-' . substr(md5(uniqid(mt_rand(), true)), 0, 9),
+                    'user_id' => $user['id'],
+                    'nic_passport' => $nicVal ?: ('NIC-' . $user['id']),
+                    'document_url' => $input['documentUrl'] ?? '',
+                    'status' => $db['users'][$userIndex]['kyc_status'] ?? 'PENDING',
+                    'created_at' => date('c')
+                ];
+            }
+        }
+
+        saveDatabase($DB_FILE, $db);
+
+        $enriched = enrichUserSummary($db, $db['users'][$userIndex]);
+        http_response_code(200);
+        echo json_encode([
+            'success' => true,
+            'message' => 'ගිණුම් විස්තර සහ බැංකු තොරතුරු සාර්ථකව සුරකින ලදී (Profile and bank details updated successfully).',
+            'user' => $enriched
+        ]);
+        exit;
+    }
+
+    // --------------------------------------------------------------------------
+    // Route: GET /api/auth/me or /api/me or /api/user/profile
     // --------------------------------------------------------------------------
     if ($route === 'auth/me' || $route === 'me' || $route === 'user/profile') {
         $user = getAuthUserFromRequest($db);

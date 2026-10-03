@@ -1020,8 +1020,26 @@ function getEnrichedAdminMemberDetail(userId) {
             id: user.id,
             username: user.username,
             full_name: user.full_name || user.name || user.username,
+            name: user.name || user.full_name || user.username,
             email: user.email,
             mobile: user.mobile || user.phone || 'N/A',
+            phone: user.phone || user.mobile || 'N/A',
+            whatsapp: user.whatsapp || user.whatsapp_number || user.phone || user.mobile || '',
+            whatsapp_number: user.whatsapp || user.whatsapp_number || user.phone || user.mobile || '',
+            address: user.address || '',
+            nearest_city: user.nearest_city || user.city || user.district || '',
+            city: user.nearest_city || user.city || user.district || '',
+            district: user.district || user.nearest_city || user.city || '',
+            nic: user.nic || user.nid || user.nic_number || (compStatus && compStatus.kyc_doc && compStatus.kyc_doc.nic_passport) || '',
+            nid: user.nic || user.nid || user.nic_number || (compStatus && compStatus.kyc_doc && compStatus.kyc_doc.nic_passport) || '',
+            gender: user.gender || user.sex || 'MALE',
+            sex: user.gender || user.sex || 'MALE',
+            dob: user.dob || user.birthday || '',
+            birthday: user.dob || user.birthday || '',
+            bank_name: (bank && bank.bank_name) || user.bank_name || user.bankName || '',
+            bank_account_number: (bank && bank.account_number) || user.bank_account_number || user.bank_account_no || user.accNumber || '',
+            bank_branch: (bank && bank.branch_name) || user.bank_branch || user.branch || user.branchName || '',
+            bank_account_name: (bank && bank.account_holder_name) || user.bank_account_name || user.bank_holder_name || user.accountHolderName || user.full_name || user.name || '',
             role: user.role || 'member',
             status: user.status === 'SUSPENDED' ? 'SUSPENDED' : compStatus.account_status,
             account_status: compStatus.account_status,
@@ -1033,7 +1051,13 @@ function getEnrichedAdminMemberDetail(userId) {
             kyc_status: compStatus.kyc_status,
             is_kyc_approved: compStatus.is_kyc_approved,
             created_at: user.created_at || '2026-09-01T00:00:00Z',
-            bank_account: bank || null,
+            bank_account: bank || (user.bank_name || user.bank_account_number ? {
+                bank_name: user.bank_name || '',
+                branch_name: user.bank_branch || '',
+                account_number: user.bank_account_number || '',
+                account_holder_name: user.bank_account_name || user.full_name || user.name || '',
+                is_active: true
+            } : null),
             display_banner: compStatus.display_banner,
             status_evidence: compStatus
         },
@@ -1722,21 +1746,47 @@ const server = http.createServer(async (req, res) => {
             return;
         }
         const fullUser = mockUsers.find(u => u.id === authUser.id) || authUser;
+        const bank = mockBankAccounts.find(b => b.user_id === fullUser.id && b.is_active) || mockBankAccounts.find(b => b.user_id === fullUser.id);
+        const kycDoc = mockKycDocs.find(d => d.user_id === fullUser.id);
+
         sendJSON(res, 200, {
             success: true,
             user: {
                 id: fullUser.id,
                 username: fullUser.username,
                 full_name: fullUser.full_name || fullUser.name || authUser.full_name || authUser.username,
+                name: fullUser.name || fullUser.full_name || authUser.name || authUser.username,
                 email: fullUser.email,
                 role: fullUser.role || 'member',
                 phone: fullUser.phone || fullUser.mobile || fullUser.mobile_number || '',
+                mobile: fullUser.phone || fullUser.mobile || fullUser.mobile_number || '',
+                whatsapp: fullUser.whatsapp || fullUser.whatsapp_number || fullUser.phone || fullUser.mobile || '',
+                whatsapp_number: fullUser.whatsapp || fullUser.whatsapp_number || fullUser.phone || fullUser.mobile || '',
                 address: fullUser.address || '',
-                district: fullUser.district || '',
+                nearest_city: fullUser.nearest_city || fullUser.city || fullUser.district || '',
+                city: fullUser.nearest_city || fullUser.city || fullUser.district || '',
+                district: fullUser.district || fullUser.nearest_city || fullUser.city || '',
+                nic: fullUser.nic || fullUser.nid || fullUser.nic_number || (kycDoc && kycDoc.nic_passport) || '',
+                nid: fullUser.nic || fullUser.nid || fullUser.nic_number || (kycDoc && kycDoc.nic_passport) || '',
+                gender: fullUser.gender || fullUser.sex || 'MALE',
+                sex: fullUser.gender || fullUser.sex || 'MALE',
+                dob: fullUser.dob || fullUser.birthday || '',
+                birthday: fullUser.dob || fullUser.birthday || '',
+                bank_name: (bank && bank.bank_name) || fullUser.bank_name || fullUser.bankName || '',
+                bank_account_number: (bank && bank.account_number) || fullUser.bank_account_number || fullUser.bank_account_no || fullUser.accNumber || '',
+                bank_branch: (bank && bank.branch_name) || fullUser.bank_branch || fullUser.branch || fullUser.branchName || '',
+                bank_account_name: (bank && bank.account_holder_name) || fullUser.bank_account_name || fullUser.bank_holder_name || fullUser.accountHolderName || fullUser.full_name || fullUser.name || '',
+                bank_account: bank || (fullUser.bank_name || fullUser.bank_account_number ? {
+                    bank_name: fullUser.bank_name || '',
+                    branch_name: fullUser.bank_branch || '',
+                    account_number: fullUser.bank_account_number || '',
+                    account_holder_name: fullUser.bank_account_name || fullUser.full_name || fullUser.name || '',
+                    is_active: true
+                } : null),
                 status: fullUser.status || 'INACTIVE',
                 account_status: fullUser.account_status || 'INACTIVE',
                 qualification_status: fullUser.qualification_status || 'NOT_QUALIFIED',
-                kyc_status: fullUser.kyc_status || 'NOT_SUBMITTED'
+                kyc_status: (kycDoc && kycDoc.status) || fullUser.kyc_status || 'NOT_SUBMITTED'
             }
         });
         return;
@@ -1751,31 +1801,157 @@ const server = http.createServer(async (req, res) => {
         }
 
         const body = await parseRequestBody(req);
-        const fullUser = mockUsers.find(u => u.id === authUser.id);
-        if (fullUser) {
-            if (body.full_name || body.name) fullUser.full_name = (body.full_name || body.name).trim();
-            if (body.phone || body.mobile) fullUser.phone = (body.phone || body.mobile).trim();
-            if (body.address) fullUser.address = body.address.trim();
-            if (body.district) fullUser.district = body.district.trim();
+        let fullUser = mockUsers.find(u => u.id === authUser.id);
+        if (!fullUser && authUser) {
+            fullUser = mockUsers.find(u => u.username === authUser.username || u.email === authUser.email);
         }
-        if (authUser) {
-            if (body.full_name || body.name) authUser.full_name = (body.full_name || body.name).trim();
+
+        if (fullUser) {
+            if (body.full_name !== undefined || body.name !== undefined) {
+                fullUser.full_name = String(body.full_name || body.name || '').trim();
+                fullUser.name = fullUser.full_name;
+            }
+            if (body.email !== undefined && String(body.email).trim()) {
+                fullUser.email = String(body.email).trim().toLowerCase();
+            }
+            if (body.phone !== undefined || body.mobile !== undefined) {
+                fullUser.phone = String(body.phone || body.mobile || '').trim();
+                fullUser.mobile = fullUser.phone;
+            }
+            if (body.whatsapp !== undefined || body.whatsapp_number !== undefined) {
+                fullUser.whatsapp = String(body.whatsapp || body.whatsapp_number || '').trim();
+                fullUser.whatsapp_number = fullUser.whatsapp;
+            }
+            if (body.address !== undefined) {
+                fullUser.address = String(body.address || '').trim();
+            }
+            if (body.nearest_city !== undefined || body.city !== undefined || body.district !== undefined) {
+                fullUser.nearest_city = String(body.nearest_city || body.city || body.district || '').trim();
+                fullUser.city = fullUser.nearest_city;
+                fullUser.district = fullUser.nearest_city;
+            }
+            if (body.nic !== undefined || body.nid !== undefined || body.nic_number !== undefined || body.nicPassport !== undefined) {
+                fullUser.nic = String(body.nic || body.nid || body.nic_number || body.nicPassport || '').trim().toUpperCase();
+                fullUser.nid = fullUser.nic;
+            }
+            if (body.gender !== undefined || body.sex !== undefined) {
+                fullUser.gender = String(body.gender || body.sex || 'MALE').trim().toUpperCase();
+                fullUser.sex = fullUser.gender;
+            }
+            if (body.dob !== undefined || body.birthday !== undefined) {
+                fullUser.dob = String(body.dob || body.birthday || '').trim();
+                fullUser.birthday = fullUser.dob;
+            }
+            if (body.bank_name !== undefined || body.bankName !== undefined) {
+                fullUser.bank_name = String(body.bank_name || body.bankName || '').trim();
+            }
+            if (body.bank_account_number !== undefined || body.accountNumber !== undefined || body.bank_account_no !== undefined || body.accNumber !== undefined) {
+                fullUser.bank_account_number = String(body.bank_account_number || body.accountNumber || body.bank_account_no || body.accNumber || '').trim();
+            }
+            if (body.bank_branch !== undefined || body.branchName !== undefined || body.branch !== undefined) {
+                fullUser.bank_branch = String(body.bank_branch || body.branchName || body.branch || '').trim();
+            }
+            if (body.bank_account_name !== undefined || body.accountHolderName !== undefined || body.bank_holder_name !== undefined) {
+                fullUser.bank_account_name = String(body.bank_account_name || body.accountHolderName || body.bank_holder_name || '').trim();
+            }
+            if (body.kyc_status !== undefined) {
+                fullUser.kyc_status = String(body.kyc_status).trim().toUpperCase();
+            } else if (body.request_kyc || body.activate_kyc || body.submit_kyc) {
+                fullUser.kyc_status = 'PENDING';
+            }
+
+            // Sync with mockBankAccounts
+            const bName = fullUser.bank_name || body.bankName || body.bank_name;
+            const bBranch = fullUser.bank_branch || body.branchName || body.branch || body.bank_branch;
+            const bAcc = fullUser.bank_account_number || body.accountNumber || body.accNumber || body.bank_account_no;
+            const bHolder = fullUser.bank_account_name || body.accountHolderName || body.bank_holder_name || fullUser.full_name || fullUser.username;
+
+            let existingBank = mockBankAccounts.find(b => b.user_id === fullUser.id && b.is_active);
+            if (!existingBank) {
+                existingBank = mockBankAccounts.find(b => b.user_id === fullUser.id);
+            }
+            if (bName || bAcc) {
+                if (existingBank) {
+                    if (bName) existingBank.bank_name = bName;
+                    if (bBranch) existingBank.branch_name = bBranch;
+                    if (bAcc) existingBank.account_number = bAcc;
+                    if (bHolder) existingBank.account_holder_name = bHolder;
+                    existingBank.is_active = true;
+                } else {
+                    const newBank = {
+                        id: 'bank-ac-' + Math.random().toString(36).substr(2, 9),
+                        user_id: fullUser.id,
+                        bank_name: bName || 'Commercial Bank',
+                        branch_name: bBranch || 'Main Branch',
+                        account_holder_name: bHolder || fullUser.full_name || fullUser.username,
+                        account_number: bAcc || '',
+                        is_active: true
+                    };
+                    mockBankAccounts.push(newBank);
+                }
+            }
+
+            // Sync with mockKycDocs
+            if (fullUser.nic || body.request_kyc || body.activate_kyc || body.submit_kyc || body.documentUrl) {
+                let existingDoc = mockKycDocs.find(d => d.user_id === fullUser.id);
+                if (existingDoc) {
+                    if (fullUser.nic) existingDoc.nic_passport = fullUser.nic;
+                    if (body.documentUrl) existingDoc.document_url = body.documentUrl;
+                    if (body.kyc_status) existingDoc.status = body.kyc_status;
+                    else if (existingDoc.status === 'NOT_SUBMITTED' || body.request_kyc || body.activate_kyc) existingDoc.status = 'PENDING';
+                } else {
+                    mockKycDocs.push({
+                        id: 'kyc-doc-' + Math.random().toString(36).substr(2, 9),
+                        user_id: fullUser.id,
+                        nic_passport: fullUser.nic || 'NIC-' + fullUser.id,
+                        document_url: body.documentUrl || '',
+                        status: fullUser.kyc_status || 'PENDING',
+                        created_at: new Date().toISOString()
+                    });
+                }
+            }
+        }
+
+        if (authUser && fullUser) {
+            authUser.full_name = fullUser.full_name;
+            authUser.name = fullUser.full_name;
         }
 
         saveDbStore();
 
+        const activeBank = mockBankAccounts.find(b => b.user_id === (fullUser ? fullUser.id : authUser.id) && b.is_active);
+        const kycDoc = mockKycDocs.find(d => d.user_id === (fullUser ? fullUser.id : authUser.id));
+
         sendJSON(res, 200, {
             success: true,
-            message: 'Profile updated successfully.',
+            message: 'ගිණුම් විස්තර සහ බැංකු තොරතුරු සාර්ථකව සුරකින ලදී (Profile and bank details updated successfully).',
             user: {
-                id: authUser.id,
-                username: authUser.username,
+                id: (fullUser && fullUser.id) || authUser.id,
+                username: (fullUser && fullUser.username) || authUser.username,
                 full_name: (fullUser && fullUser.full_name) || authUser.full_name || authUser.username,
-                email: authUser.email,
-                role: authUser.role || 'member',
+                name: (fullUser && fullUser.full_name) || authUser.full_name || authUser.username,
+                email: (fullUser && fullUser.email) || authUser.email,
+                role: (fullUser && fullUser.role) || authUser.role || 'member',
                 phone: (fullUser && fullUser.phone) || '',
+                mobile: (fullUser && fullUser.phone) || '',
+                whatsapp: (fullUser && fullUser.whatsapp) || '',
+                whatsapp_number: (fullUser && fullUser.whatsapp) || '',
                 address: (fullUser && fullUser.address) || '',
-                district: (fullUser && fullUser.district) || ''
+                nearest_city: (fullUser && fullUser.nearest_city) || '',
+                city: (fullUser && fullUser.nearest_city) || '',
+                district: (fullUser && fullUser.district) || '',
+                nic: (fullUser && fullUser.nic) || '',
+                nid: (fullUser && fullUser.nic) || '',
+                gender: (fullUser && fullUser.gender) || 'MALE',
+                sex: (fullUser && fullUser.gender) || 'MALE',
+                dob: (fullUser && fullUser.dob) || '',
+                birthday: (fullUser && fullUser.dob) || '',
+                bank_name: (activeBank && activeBank.bank_name) || (fullUser && fullUser.bank_name) || '',
+                bank_account_number: (activeBank && activeBank.account_number) || (fullUser && fullUser.bank_account_number) || '',
+                bank_branch: (activeBank && activeBank.branch_name) || (fullUser && fullUser.bank_branch) || '',
+                bank_account_name: (activeBank && activeBank.account_holder_name) || (fullUser && fullUser.bank_account_name) || '',
+                bank_account: activeBank || null,
+                kyc_status: (kycDoc && kycDoc.status) || (fullUser && fullUser.kyc_status) || 'NOT_SUBMITTED'
             }
         });
         return;
@@ -4701,15 +4877,43 @@ const server = http.createServer(async (req, res) => {
             const protocol = req.headers['x-forwarded-proto'] || 'https';
             const baseOrigin = `${protocol}://${host}`;
             const refCode = user.referral_code || user.username || (user.email ? user.email.split('@')[0] : 'NAMOBUDDHAYA');
+            const bank = mockBankAccounts.find(b => b.user_id === user.id && b.is_active) || mockBankAccounts.find(b => b.user_id === user.id);
+            const kycDoc = mockKycDocs.find(d => d.user_id === user.id);
 
             const dashboardPayload = {
                 success: true,
                 profile: {
                     id: user.id,
                     full_name: user.full_name || user.name || 'Member',
+                    name: user.name || user.full_name || 'Member',
                     username: user.username || 'member',
                     email: user.email,
                     role: user.role || 'member',
+                    phone: user.phone || user.mobile || '',
+                    mobile: user.phone || user.mobile || '',
+                    whatsapp: user.whatsapp || user.whatsapp_number || user.phone || user.mobile || '',
+                    whatsapp_number: user.whatsapp || user.whatsapp_number || user.phone || user.mobile || '',
+                    address: user.address || '',
+                    nearest_city: user.nearest_city || user.city || user.district || '',
+                    city: user.nearest_city || user.city || user.district || '',
+                    district: user.district || user.nearest_city || user.city || '',
+                    nic: user.nic || user.nid || user.nic_number || (compStatus && compStatus.kyc_doc && compStatus.kyc_doc.nic_passport) || '',
+                    nid: user.nic || user.nid || user.nic_number || (compStatus && compStatus.kyc_doc && compStatus.kyc_doc.nic_passport) || '',
+                    gender: user.gender || user.sex || 'MALE',
+                    sex: user.gender || user.sex || 'MALE',
+                    dob: user.dob || user.birthday || '',
+                    birthday: user.dob || user.birthday || '',
+                    bank_name: (bank && bank.bank_name) || user.bank_name || user.bankName || '',
+                    bank_account_number: (bank && bank.account_number) || user.bank_account_number || user.bank_account_no || user.accNumber || '',
+                    bank_branch: (bank && bank.branch_name) || user.bank_branch || user.branch || user.branchName || '',
+                    bank_account_name: (bank && bank.account_holder_name) || user.bank_account_name || user.bank_holder_name || user.accountHolderName || user.full_name || user.name || '',
+                    bank_account: bank || (user.bank_name || user.bank_account_number ? {
+                        bank_name: user.bank_name || '',
+                        branch_name: user.bank_branch || '',
+                        account_number: user.bank_account_number || '',
+                        account_holder_name: user.bank_account_name || user.full_name || user.name || '',
+                        is_active: true
+                    } : null),
                     status: user.status === 'SUSPENDED' ? 'SUSPENDED' : compStatus.account_status,
                     account_status: compStatus.account_status,
                     is_active: compStatus.is_active,

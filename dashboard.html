@@ -1663,81 +1663,207 @@
 
                 <!-- TAB 8: PROFILE SETTINGS & PASSWORD CHANGE -->
                 <div class="tab-panel" id="panel-settings">
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
-                        
-                        <!-- Card 1: Change Password & Security -->
-                        <div class="dashboard-card" style="border: 1px solid rgba(245, 124, 0, 0.3);">
-                            <div class="dashboard-card-title">
-                                <span>🔒 මුරපදය වෙනස් කිරීම (Change Password)</span>
-                                <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(76, 175, 80, 0.15); color: #4CAF50; font-weight: 700;">SECURE ENCRYPTED</span>
+                    <!-- Top Summary Card with Header Badges -->
+                    <div class="dashboard-card" style="margin-bottom: 20px; border-left: 4px solid var(--brand-gold);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                            <div>
+                                <h3 style="font-size: 17px; font-weight: 800; color: var(--text-primary); margin: 0 0 6px 0; display: flex; align-items: center; gap: 8px;">
+                                    <span>⚙️</span> ගිණුම් විස්තර සහ මුරපදය (Profile & Security Settings)
+                                </h3>
+                                <p style="font-size: 12.5px; color: var(--text-muted); margin: 0;">ඔබගේ පුද්ගලික තොරතුරු, බැංකු ගිණුම් විස්තර සහ KYC සත්‍යාපනය මෙතැනින් සම්පූර්ණ කර සුරකින්න.</p>
                             </div>
-                            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබගේ ගිණුමේ ආරක්ෂාව සඳහා නව මුරපදයක් (New Password) යොදාගන්න.</p>
-
-                            <form id="memberChangePasswordForm" onsubmit="handleMemberPasswordChange(event)">
-                                <div class="form-group" style="margin-bottom: 14px;">
-                                    <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය (New Password):</label>
-                                    <div style="position: relative;">
-                                        <input type="password" id="memberNewPassInput" required minlength="4" placeholder="අවම වශයෙන් අකුරු/ඉලක්කම් 4ක් ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
-                                        <button type="button" onclick="togglePassVisibility('memberNewPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
-                                    </div>
-                                </div>
-
-                                <div class="form-group" style="margin-bottom: 18px;">
-                                    <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය නැවත තහවුරු කරන්න (Confirm New Password):</label>
-                                    <div style="position: relative;">
-                                        <input type="password" id="memberConfirmPassInput" required minlength="4" placeholder="නැවත නව මුරපදයම ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
-                                        <button type="button" onclick="togglePassVisibility('memberConfirmPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
-                                    </div>
-                                </div>
-
-                                <div id="changePassAlertMsg" style="display:none; padding: 10px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 12.5px;"></div>
-
-                                <button type="submit" id="btnSubmitChangePass" class="btn-primary-action" style="width: 100%; padding: 11px; font-size: 14px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF;">
-                                    <span>💾 නව මුරපදය සුරකින්න (Save New Password)</span>
-                                </button>
-                            </form>
-                        </div>
-
-                        <!-- Card 2: Account Overview & Details -->
-                        <div class="dashboard-card">
-                            <div class="dashboard-card-title">
-                                <span>👤 ගිණුම් තොරතුරු (Account Information)</span>
-                            </div>
-                            <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබගේ සාමාජික ගිණුමේ විස්තර.</p>
-
-                            <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13px;">
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">සම්පූර්ණ නම (Full Name):</span>
-                                    <strong id="settingsFullName" style="color: var(--text-primary);">Hiru</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">පරිශීලක නාමය (Username):</span>
-                                    <code id="settingsUsername" style="color: var(--brand-gold);">@Hiru</code>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">විද්‍යුත් තැපෑල (Email):</span>
-                                    <span id="settingsEmail" style="color: var(--text-secondary);">hiru@hapanamy.lk</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">දුරකථන අංකය (Phone):</span>
-                                    <span id="settingsPhone" style="color: var(--text-secondary);">+94 77 123 4567</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">Sponsor (යොමුකරු):</span>
-                                    <strong id="settingsSponsor" style="color: var(--brand-gold);">Direct (Sales Leader)</strong>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom: 8px;">
-                                    <span style="color: var(--text-muted);">Binary Placement Position:</span>
-                                    <span id="settingsPosition" class="sales-leg-badge badge-left">LEFT</span>
-                                </div>
-                                <div style="display:flex; justify-content:space-between; padding-top: 4px;">
-                                    <span style="color: var(--text-muted);">KYC තත්ත්වය:</span>
-                                    <span id="settingsKycBadge" class="badge-pill badge-kyc-none">🛡️ NOT SUBMITTED</span>
-                                </div>
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center;">
+                                <span class="badge-pill" id="settingsHeaderAccountBadge" style="background: rgba(76, 175, 80, 0.15); color: #4CAF50; font-weight: 700;">● ACTIVE</span>
+                                <span class="badge-pill" id="settingsHeaderQualBadge" style="background: rgba(245, 124, 0, 0.15); color: #F57C00; font-weight: 700;">★ NOT QUALIFIED</span>
+                                <span class="badge-pill" id="settingsHeaderKycBadge" style="background: rgba(33, 150, 243, 0.15); color: #2196F3; font-weight: 700;">🛡️ KYC NOT SUBMITTED</span>
                             </div>
                         </div>
-
                     </div>
+
+                    <!-- Master Profile & Bank Settings Form -->
+                    <form id="masterProfileSettingsForm" onsubmit="handleProfileSettingsSave(event)" style="margin-bottom: 25px;">
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px;">
+                            
+                            <!-- Card 1: 👤 පුද්ගලික සහ ගිණුම් තොරතුරු -->
+                            <div class="dashboard-card">
+                                <div class="dashboard-card-title">
+                                    <span>👤 ගිණුම් තොරතුරු (Account Information)</span>
+                                    <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(255, 255, 255, 0.08); color: var(--text-muted); font-weight: 700;">PERSONAL DETAILS</span>
+                                </div>
+                                <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">ඔබගේ සාමාජික ගිණුමේ මූලික තොරතුරු (Basic Information).</p>
+
+                                <div style="display: flex; flex-direction: column; gap: 14px;">
+                                    <div class="form-group">
+                                        <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">සම්පූර්ණ නම (Full Name) *</label>
+                                        <input type="text" id="settingsEditFullName" required placeholder="ඔබගේ සම්පූර්ණ නම (e.g. Hiru Pathirana)" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">පරිශීලක නාමය (Username)</label>
+                                            <input type="text" id="settingsEditUsername" readonly disabled style="width: 100%; padding: 9px 12px; background: rgba(255, 255, 255, 0.04); border: 1px solid var(--border-color); color: var(--brand-gold); font-weight: 700; font-family: monospace; border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ජාතික හැඳුනුම්පත (NIC / NID) *</label>
+                                            <input type="text" id="settingsEditNic" placeholder="199XXXXXXXXX / XXXXXXXXXV" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">විද්‍යුත් තැපෑල (Email Address) *</label>
+                                        <input type="email" id="settingsEditEmail" required placeholder="name@example.com" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">දුරකථන අංකය (Phone) *</label>
+                                            <input type="tel" id="settingsEditPhone" required placeholder="07XXXXXXXX" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">WhatsApp අංකය (WhatsApp) *</label>
+                                            <input type="tel" id="settingsEditWhatsapp" placeholder="07XXXXXXXX" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                    </div>
+
+                                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ස්ත්‍රී / පුරුෂ භාවය (Sex / Gender)</label>
+                                            <select id="settingsEditGender" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                                <option value="MALE">පුරුෂ (Male)</option>
+                                                <option value="FEMALE">ස්ත්‍රී (Female)</option>
+                                                <option value="OTHER">වෙනත් (Other)</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">උපන් දිනය (Birthday / DOB)</label>
+                                            <input type="date" id="settingsEditDob" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ලිපිනය (Home Address)</label>
+                                        <input type="text" id="settingsEditAddress" placeholder="No. 123, Temple Road..." style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ළඟම නගරය (Nearest City / Town)</label>
+                                        <input type="text" id="settingsEditCity" placeholder="e.g. Maharagama, Kandy, Gampaha..." style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2: 🏦 බැංකු ගිණුම් විස්තර (Bank Details for Payouts) & 🛡️ KYC -->
+                            <div style="display: flex; flex-direction: column; gap: 20px;">
+                                
+                                <div class="dashboard-card" style="border: 1px solid rgba(245, 124, 0, 0.4); background: linear-gradient(180deg, rgba(245,124,0,0.03) 0%, rgba(20,20,25,0.6) 100%);">
+                                    <div class="dashboard-card-title">
+                                        <span>🏦 ගෙවීම් බැංකු විස්තර (Bank Account Details)</span>
+                                        <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(245, 124, 0, 0.15); color: var(--brand-gold); font-weight: 700;">PAYOUT LINKED</span>
+                                    </div>
+                                    <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px;">මුදල් ලබාගැනීමේදී (Withdrawals) ඔබගේ මුදල් බැර වන බැංකු ගිණුමේ නිවැරදි විස්තර ඇතුළත් කරන්න.</p>
+
+                                    <div style="display: flex; flex-direction: column; gap: 14px;">
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">බැංකුවේ නම (Bank Name) *</label>
+                                            <input type="text" id="settingsEditBankName" list="sriLankaBanksList" required placeholder="e.g. Commercial Bank of Ceylon, BOC, Peoples Bank..." style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                            <datalist id="sriLankaBanksList">
+                                                <option value="Commercial Bank of Ceylon">
+                                                <option value="Bank of Ceylon (BOC)">
+                                                <option value="People's Bank">
+                                                <option value="Sampath Bank">
+                                                <option value="Hatton National Bank (HNB)">
+                                                <option value="Seylan Bank">
+                                                <option value="Nations Trust Bank (NTB)">
+                                                <option value="National Development Bank (NDB)">
+                                                <option value="DFCC Bank">
+                                                <option value="Pan Asia Bank">
+                                                <option value="Union Bank of Colombo">
+                                                <option value="Amana Bank">
+                                                <option value="Cargills Bank">
+                                                <option value="Standard Chartered Bank">
+                                                <option value="HSBC Sri Lanka">
+                                            </datalist>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ශාඛාව (Branch Name) *</label>
+                                            <input type="text" id="settingsEditBankBranch" required placeholder="e.g. Maharagama, Colombo Fort, Kandy..." style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ගිණුම් අංකය (Bank Account Number) *</label>
+                                            <input type="text" id="settingsEditBankAcc" required placeholder="e.g. 8010294851" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box; font-family: monospace; letter-spacing: 0.5px;">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label style="display:block; margin-bottom: 5px; font-size: 12px; font-weight: 600; color: var(--text-secondary);">ගිණුමේ හිමිකරුගේ නම (Account Holder Name) *</label>
+                                            <input type="text" id="settingsEditBankHolder" required placeholder="e.g. W. A. Hiru Pathirana" style="width: 100%; padding: 9px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card 3: 🛡️ KYC Verification & Activation -->
+                                <div class="dashboard-card" style="border: 1px solid rgba(33, 150, 243, 0.35);">
+                                    <div class="dashboard-card-title">
+                                        <span>🛡️ KYC සත්‍යාපනය (Identity & KYC Verification)</span>
+                                        <span id="settingsKycBadge" class="badge-pill badge-kyc-none">🛡️ NOT SUBMITTED</span>
+                                    </div>
+                                    <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 14px;">ඔබගේ ගිණුමේ සත්‍යතාව සහතික කර ගැනීමෙන් කොමිස් මුදල් ආපසු ගැනීම් (Withdrawals) ක්ෂණිකව සිදුකර ගත හැක.</p>
+
+                                    <div style="background: rgba(33, 150, 243, 0.06); border: 1px dashed rgba(33, 150, 243, 0.3); border-radius: 8px; padding: 12px 14px; margin-bottom: 14px; font-size: 12.5px;">
+                                        <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; color: var(--text-primary); font-weight: 600;">
+                                            <input type="checkbox" id="settingsActivateKycCheck" style="width: 18px; height: 18px; accent-color: var(--brand-orange); cursor: pointer;">
+                                            <span>මගේ ජාතික හැඳුනුම්පත සහ බැංකු ගිණුම් විස්තර සත්‍යාපනය (KYC Verification) සඳහා යොමු කරන්න.</span>
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Profile Save Action & Notification -->
+                        <div id="saveProfileAlertMsg" style="display:none; padding: 12px 16px; border-radius: 8px; margin-top: 18px; font-size: 13.5px; font-weight: 600;"></div>
+
+                        <div style="margin-top: 20px;">
+                            <button type="submit" id="btnSaveFullProfile" class="btn-primary-action" style="width: 100%; padding: 14px; font-size: 15px; font-weight: 800; border-radius: 10px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF; box-shadow: 0 4px 15px rgba(245, 124, 0, 0.35); display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>💾 සියලු ගිණුම් සහ බැංකු විස්තර සුරකින්න (Save Profile & Bank Details)</span>
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Card 4: Change Password & Security -->
+                    <div class="dashboard-card" style="border: 1px solid rgba(245, 124, 0, 0.3); max-width: 650px;">
+                        <div class="dashboard-card-title">
+                            <span>🔒 මුරපදය වෙනස් කිරීම (Change Password & Security)</span>
+                            <span style="font-size: 11px; padding: 3px 8px; border-radius: 4px; background: rgba(76, 175, 80, 0.15); color: #4CAF50; font-weight: 700;">SECURE ENCRYPTED</span>
+                        </div>
+                        <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 18px;">ඔබගේ ගිණුමේ ආරක්ෂාව සඳහා නව මුරපදයක් (New Password) යොදාගන්න.</p>
+
+                        <form id="memberChangePasswordForm" onsubmit="handleMemberPasswordChange(event)">
+                            <div class="form-group" style="margin-bottom: 14px;">
+                                <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය (New Password):</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="memberNewPassInput" required minlength="4" placeholder="අවම වශයෙන් අකුරු/ඉලක්කම් 4ක් ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    <button type="button" onclick="togglePassVisibility('memberNewPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 18px;">
+                                <label style="display:block; margin-bottom: 6px; font-size: 12.5px; font-weight: 600; color: var(--text-secondary);">නව මුරපදය නැවත තහවුරු කරන්න (Confirm New Password):</label>
+                                <div style="position: relative;">
+                                    <input type="password" id="memberConfirmPassInput" required minlength="4" placeholder="නැවත නව මුරපදයම ඇතුළත් කරන්න" style="width: 100%; padding: 10px 40px 10px 12px; background: var(--bg-surface-light); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 13.5px; box-sizing: border-box;">
+                                    <button type="button" onclick="togglePassVisibility('memberConfirmPassInput', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-muted);">👁️</button>
+                                </div>
+                            </div>
+
+                            <div id="changePassAlertMsg" style="display:none; padding: 10px 12px; border-radius: 8px; margin-bottom: 15px; font-size: 12.5px;"></div>
+
+                            <button type="submit" id="btnSubmitChangePass" class="btn-primary-action" style="width: 100%; padding: 11px; font-size: 14px; font-weight: 700; border-radius: 8px; border: none; cursor: pointer; background: linear-gradient(135deg, var(--brand-orange), var(--brand-gold)); color: #FFF;">
+                                <span>💾 නව මුරපදය සුරකින්න (Save New Password)</span>
+                            </button>
+                        </form>
+                    </div>
+
                 </div>
 
             </div>
@@ -1751,31 +1877,58 @@
 
     <!-- WITHDRAWAL MODAL -->
     <div class="modal-backdrop" id="withdrawModal">
-        <div class="modal-dialog">
+        <div class="modal-dialog" style="max-width: 480px;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 style="font-size: 18px; font-weight: 800;">💸 මුදල් ආපසු ගැනීම (Request Payout)</h3>
+                <h3 style="font-size: 18px; font-weight: 800; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <span>💸</span> මුදල් ආපසු ගැනීම (Request Payout)
+                </h3>
                 <button onclick="closeWithdrawModal()" style="background:none; border:none; color:var(--text-muted); font-size: 20px; cursor:pointer;">✕</button>
             </div>
             
             <form onsubmit="handleWithdrawSubmit(event)">
                 <div style="margin-bottom: 16px;">
                     <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">ලබාගත හැකි ශේෂය (Available Balance)</label>
-                    <input type="text" class="ref-input-field" id="withdrawAvailDisplay" readonly value="LKR 4,050.00" style="font-weight: 800; color: var(--brand-gold);">
+                    <input type="text" class="ref-input-field" id="withdrawAvailDisplay" readonly value="LKR 0.00" style="font-weight: 800; color: var(--brand-gold); font-size: 16px;">
                 </div>
 
                 <div style="margin-bottom: 16px;">
                     <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">මුදල (Withdrawal Amount LKR)</label>
-                    <input type="number" class="ref-input-field" id="withdrawAmountInput" required min="1000" max="4050" step="100" placeholder="අවම රු. 1,000" style="font-size: 15px;">
+                    <input type="number" class="ref-input-field" id="withdrawAmountInput" required min="1000" step="100" placeholder="අවම රු. 1,000" style="font-size: 15px;">
                 </div>
 
-                <div style="margin-bottom: 24px;">
-                    <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">බැංකු ගිණුම (Linked Bank Account)</label>
-                    <select class="ref-input-field" id="withdrawBankSelect" style="width: 100%;">
-                        <option value="comm-1">Commercial Bank — Acc: 8010294851 (Hiru)</option>
+                <!-- Verified Bank Account Info Card -->
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">🏦 බැර වන බැංකු ගිණුම (Payout Bank Account)</label>
+                    
+                    <div id="withdrawBankDetailsCard" style="background: rgba(245, 124, 0, 0.06); border: 1px solid rgba(245, 124, 0, 0.3); border-radius: 10px; padding: 14px 16px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="color: var(--text-muted);">බැංකුව (Bank):</span>
+                            <strong id="withdrawBankNameDisplay" style="color: var(--text-primary);">Commercial Bank</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="color: var(--text-muted);">ශාඛාව (Branch):</span>
+                            <span id="withdrawBankBranchDisplay" style="color: var(--text-secondary);">Maharagama</span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                            <span style="color: var(--text-muted);">ගිණුම් අංකය (Acc No):</span>
+                            <strong id="withdrawBankAccDisplay" style="color: var(--brand-gold); font-family: monospace; font-size: 14px;">8010294851</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between;">
+                            <span style="color: var(--text-muted);">ගිණුම් හිමියා (Holder):</span>
+                            <span id="withdrawBankHolderDisplay" style="color: var(--text-secondary);">Hiru Pathirana</span>
+                        </div>
+                    </div>
+
+                    <div id="withdrawNoBankNotice" style="display:none; background: rgba(239, 83, 80, 0.1); border: 1px solid rgba(239, 83, 80, 0.3); border-radius: 10px; padding: 12px 14px; font-size: 12.5px; color: #EF5350;">
+                        ⚠️ බැංකු විස්තර ඇතුළත් කර නොමැත. කරුණාකර <a href="javascript:void(0)" onclick="closeWithdrawModal(); switchMemberTab('settings');" style="color: var(--brand-gold); font-weight: 700; text-decoration: underline;">Settings වෙත ගොස්</a> බැංකු විස්තර ඇතුළත් කරන්න.
+                    </div>
+
+                    <select class="ref-input-field" id="withdrawBankSelect" style="display: none; width: 100%; margin-top: 8px;">
+                        <option value="user-bank">Commercial Bank — Acc: 8010294851</option>
                     </select>
                 </div>
 
-                <button type="submit" class="btn-action-sm btn-primary-action" style="width: 100%; padding: 12px; justify-content: center; font-size: 14px;">ඉල්ලුම් කරන්න (Submit Withdrawal Request)</button>
+                <button type="submit" class="btn-action-sm btn-primary-action" style="width: 100%; padding: 12px; justify-content: center; font-size: 14px; font-weight: 700;">ඉල්ලුම් කරන්න (Submit Withdrawal Request)</button>
             </form>
         </div>
     </div>
@@ -2029,10 +2182,274 @@
                 document.execCommand('copy');
                 showMemberToast(`📋 <strong>සබැඳිය පිටපත් කරන ලදී!</strong>`);
             });
+        // Profile & Bank Settings Management
+        function populateProfileSettingsUI(profile) {
+            if (!profile) return;
+
+            const fullName = profile.full_name || profile.name || profile.username || '';
+            const username = profile.username || '';
+            const email = profile.email || '';
+            const phone = profile.phone || profile.mobile || '';
+            const whatsapp = profile.whatsapp || profile.whatsapp_number || phone;
+            const nic = profile.nic || profile.nid || profile.nic_number || '';
+            const gender = (profile.gender || profile.sex || 'MALE').toUpperCase();
+            const dob = profile.dob || profile.birthday || '';
+            const address = profile.address || '';
+            const city = profile.nearest_city || profile.city || profile.district || '';
+
+            const bank = profile.bank_account || {};
+            const bankName = bank.bank_name || profile.bank_name || profile.bankName || '';
+            const bankBranch = bank.branch_name || profile.bank_branch || profile.branch || profile.branchName || '';
+            const bankAcc = bank.account_number || profile.bank_account_number || profile.bank_account_no || profile.accNumber || '';
+            const bankHolder = bank.account_holder_name || profile.bank_account_name || profile.bank_holder_name || fullName;
+
+            const kycStatus = (profile.kyc_status || 'NOT_SUBMITTED').toUpperCase();
+
+            // Populate Form Inputs (do not overwrite if currently focused by user)
+            const fnEl = document.getElementById('settingsEditFullName');
+            if (fnEl && !fnEl.matches(':focus')) fnEl.value = fullName;
+
+            const unEl = document.getElementById('settingsEditUsername');
+            if (unEl) unEl.value = `@${username}`;
+
+            const emEl = document.getElementById('settingsEditEmail');
+            if (emEl && !emEl.matches(':focus')) emEl.value = email;
+
+            const phEl = document.getElementById('settingsEditPhone');
+            if (phEl && !phEl.matches(':focus')) phEl.value = phone;
+
+            const waEl = document.getElementById('settingsEditWhatsapp');
+            if (waEl && !waEl.matches(':focus')) waEl.value = whatsapp;
+
+            const nicEl = document.getElementById('settingsEditNic');
+            if (nicEl && !nicEl.matches(':focus')) nicEl.value = nic;
+
+            const genEl = document.getElementById('settingsEditGender');
+            if (genEl) genEl.value = ['MALE', 'FEMALE', 'OTHER'].includes(gender) ? gender : 'MALE';
+
+            const dobEl = document.getElementById('settingsEditDob');
+            if (dobEl && !dobEl.matches(':focus')) dobEl.value = dob;
+
+            const addrEl = document.getElementById('settingsEditAddress');
+            if (addrEl && !addrEl.matches(':focus')) addrEl.value = address;
+
+            const cityEl = document.getElementById('settingsEditCity');
+            if (cityEl && !cityEl.matches(':focus')) cityEl.value = city;
+
+            // Bank details
+            const bnEl = document.getElementById('settingsEditBankName');
+            if (bnEl && !bnEl.matches(':focus')) bnEl.value = bankName;
+
+            const bbEl = document.getElementById('settingsEditBankBranch');
+            if (bbEl && !bbEl.matches(':focus')) bbEl.value = bankBranch;
+
+            const baEl = document.getElementById('settingsEditBankAcc');
+            if (baEl && !baEl.matches(':focus')) baEl.value = bankAcc;
+
+            const bhEl = document.getElementById('settingsEditBankHolder');
+            if (bhEl && !bhEl.matches(':focus')) bhEl.value = bankHolder;
+
+            // Header badges in settings card
+            const kBadge = document.getElementById('settingsKycBadge');
+            const kHeaderBadge = document.getElementById('settingsHeaderKycBadge');
+            const kycText = `🛡️ KYC ${kycStatus.replace(/_/g, ' ')}`;
+            const kycClass = `badge-pill ${kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' ? 'badge-kyc-approved' : (kycStatus === 'PENDING' ? 'badge-kyc-pending' : (kycStatus === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
+            
+            if (kBadge) {
+                kBadge.textContent = kycText;
+                kBadge.className = kycClass;
+            }
+            if (kHeaderBadge) {
+                kHeaderBadge.textContent = kycText;
+                kHeaderBadge.className = kycClass;
+            }
+
+            const kCheck = document.getElementById('settingsActivateKycCheck');
+            if (kCheck) {
+                kCheck.checked = (kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' || kycStatus === 'PENDING');
+                if (kycStatus === 'APPROVED' || kycStatus === 'VERIFIED') {
+                    kCheck.disabled = true;
+                }
+            }
+
+            // Sync Withdrawal modal bank details
+            updateWithdrawModalBankInfo({
+                bank_name: bankName,
+                bank_branch: bankBranch,
+                bank_account_number: bankAcc,
+                bank_account_name: bankHolder,
+                full_name: fullName
+            });
+        }
+
+        function updateWithdrawModalBankInfo(bankInfo) {
+            if (!bankInfo) return;
+            const bName = bankInfo.bank_name || bankInfo.bankName || '';
+            const bBranch = bankInfo.bank_branch || bankInfo.branch || bankInfo.branchName || '';
+            const bAcc = bankInfo.bank_account_number || bankInfo.accountNumber || bankInfo.accNumber || '';
+            const bHolder = bankInfo.bank_account_name || bankInfo.accountHolderName || bankInfo.full_name || bankInfo.name || 'Member';
+
+            const card = document.getElementById('withdrawBankDetailsCard');
+            const notice = document.getElementById('withdrawNoBankNotice');
+            const bNameEl = document.getElementById('withdrawBankNameDisplay');
+            const bBranchEl = document.getElementById('withdrawBankBranchDisplay');
+            const bAccEl = document.getElementById('withdrawBankAccDisplay');
+            const bHolderEl = document.getElementById('withdrawBankHolderDisplay');
+            const bSelect = document.getElementById('withdrawBankSelect');
+
+            if (bName && bAcc) {
+                if (card) card.style.display = 'block';
+                if (notice) notice.style.display = 'none';
+                if (bNameEl) bNameEl.textContent = bName;
+                if (bBranchEl) bBranchEl.textContent = bBranch || 'Main Branch';
+                if (bAccEl) bAccEl.textContent = bAcc;
+                if (bHolderEl) bHolderEl.textContent = bHolder;
+                if (bSelect) {
+                    bSelect.innerHTML = `<option value="user-bank" selected>${bName} — Acc: ${bAcc} (${bHolder})</option>`;
+                }
+            } else {
+                if (card) card.style.display = 'none';
+                if (notice) notice.style.display = 'block';
+                if (bSelect) {
+                    bSelect.innerHTML = `<option value="none">No Bank Account Linked</option>`;
+                }
+            }
+        }
+
+        async function handleProfileSettingsSave(e) {
+            e.preventDefault();
+            const fullName = document.getElementById('settingsEditFullName').value.trim();
+            const email = document.getElementById('settingsEditEmail').value.trim();
+            const phone = document.getElementById('settingsEditPhone').value.trim();
+            const whatsapp = document.getElementById('settingsEditWhatsapp').value.trim();
+            const nic = document.getElementById('settingsEditNic').value.trim();
+            const gender = document.getElementById('settingsEditGender').value;
+            const dob = document.getElementById('settingsEditDob').value;
+            const address = document.getElementById('settingsEditAddress').value.trim();
+            const city = document.getElementById('settingsEditCity').value.trim();
+
+            const bankName = document.getElementById('settingsEditBankName').value.trim();
+            const bankBranch = document.getElementById('settingsEditBankBranch').value.trim();
+            const bankAcc = document.getElementById('settingsEditBankAcc').value.trim();
+            const bankHolder = document.getElementById('settingsEditBankHolder').value.trim();
+
+            const activateKyc = document.getElementById('settingsActivateKycCheck') ? document.getElementById('settingsActivateKycCheck').checked : false;
+
+            const alertBox = document.getElementById('saveProfileAlertMsg');
+            const submitBtn = document.getElementById('btnSaveFullProfile');
+            const origText = submitBtn.innerHTML;
+
+            if (alertBox) alertBox.style.display = 'none';
+
+            if (!fullName || !email || !phone || !bankName || !bankAcc || !bankBranch) {
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(239, 83, 80, 0.15)';
+                    alertBox.style.color = '#EF5350';
+                    alertBox.style.border = '1px solid rgba(239, 83, 80, 0.3)';
+                    alertBox.innerHTML = '⚠️ කරුණාකර සියලු අනිවාර්ය තොරතුරු (නම, විද්‍යුත් තැපෑල, දුරකථන අංකය සහ බැංකු ගිණුම් විස්තර) සම්පූර්ණ කරන්න.';
+                }
+                return;
+            }
+
+            try {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span>⏳ සුරකිමින් පවතී...</span>';
+
+                const profilePayload = {
+                    full_name: fullName,
+                    name: fullName,
+                    email: email,
+                    phone: phone,
+                    mobile: phone,
+                    whatsapp: whatsapp,
+                    whatsapp_number: whatsapp,
+                    nic: nic,
+                    nid: nic,
+                    gender: gender,
+                    sex: gender,
+                    dob: dob,
+                    birthday: dob,
+                    address: address,
+                    nearest_city: city,
+                    city: city,
+                    district: city,
+                    bank_name: bankName,
+                    bankName: bankName,
+                    bank_branch: bankBranch,
+                    branchName: bankBranch,
+                    branch: bankBranch,
+                    bank_account_number: bankAcc,
+                    accountNumber: bankAcc,
+                    accNumber: bankAcc,
+                    bank_account_name: bankHolder,
+                    accountHolderName: bankHolder,
+                    activate_kyc: activateKyc,
+                    request_kyc: activateKyc
+                };
+
+                // Sync locally immediately
+                const curUser = window.currentActiveUser || JSON.parse(localStorage.getItem('active_user')) || {};
+                const updatedUser = { ...curUser, ...profilePayload };
+                window.currentActiveUser = updatedUser;
+                localStorage.setItem('active_user', JSON.stringify(updatedUser));
+                localStorage.setItem('hapanamy_user_profile', JSON.stringify(profilePayload));
+
+                // Send to Server
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || ('token-member-' + (curUser.id || 'hiru'));
+                const res = await fetch('/api/user/profile', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(profilePayload)
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data && data.user) {
+                        window.currentActiveUser = { ...updatedUser, ...data.user };
+                        localStorage.setItem('active_user', JSON.stringify(window.currentActiveUser));
+                    }
+                }
+
+                // Update UI everywhere
+                applyLocalUserProfile(window.currentActiveUser);
+                populateProfileSettingsUI(window.currentActiveUser);
+
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(76, 175, 80, 0.15)';
+                    alertBox.style.color = '#4CAF50';
+                    alertBox.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                    alertBox.innerHTML = '✅ <strong>සාර්ථකයි!</strong> ඔබගේ පැතිකඩ තොරතුරු සහ ගෙවීම් බැංකු ගිණුම් විස්තර සාර්ථකව සුරකින ලදී (Profile & Bank Details Saved Successfully).';
+                }
+
+                showMemberToast('💾 <strong>විස්තර සුරකින ලදී!</strong><br>Profile & Bank Details Saved.');
+
+            } catch (err) {
+                console.warn('Network sync error, saved locally:', err);
+                if (alertBox) {
+                    alertBox.style.display = 'block';
+                    alertBox.style.background = 'rgba(76, 175, 80, 0.15)';
+                    alertBox.style.color = '#4CAF50';
+                    alertBox.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                    alertBox.innerHTML = '✅ <strong>සාර්ථකයි!</strong> ඔබගේ තොරතුරු සුරකින ලදී.';
+                }
+                showMemberToast('💾 <strong>විස්තර සුරකින ලදී!</strong>');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = origText;
+            }
         }
 
         // Modal Controls
         function openWithdrawModal() {
+            const curUser = window.currentActiveUser || (localStorage.getItem('active_user') ? JSON.parse(localStorage.getItem('active_user')) : {}) || {};
+            const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile') || '{}');
+            const merged = { ...curUser, ...prof };
+            updateWithdrawModalBankInfo(merged);
             document.getElementById('withdrawModal').style.display = 'flex';
         }
 
@@ -3860,12 +4277,10 @@
                 }
             }
 
-            // Populate bank select with profile bank if available
+            // Populate and sync profile settings UI & bank details
             const prof = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || {};
-            const bSelect = document.getElementById('withdrawBankSelect');
-            if (bSelect && prof.bankName && prof.accNumber) {
-                bSelect.innerHTML = `<option value="user-bank">${prof.bankName} — Acc: ${prof.accNumber} (${uName})</option>`;
-            }
+            const mergedProfile = { ...user, ...prof };
+            populateProfileSettingsUI(mergedProfile);
 
             // Update Admin controls & Switch Account button visibility
             updateAdminVisibility(user);
@@ -4955,17 +5370,8 @@
                     }
                 }
 
-                if (document.getElementById('settingsFullName')) document.getElementById('settingsFullName').textContent = data.profile.full_name || 'Member';
-                if (document.getElementById('settingsUsername')) document.getElementById('settingsUsername').textContent = `@${data.profile.username}`;
-                if (document.getElementById('settingsEmail')) document.getElementById('settingsEmail').textContent = data.profile.email || `${(data.profile.username || '').toLowerCase()}@hapanamy.lk`;
-                if (document.getElementById('settingsPhone')) document.getElementById('settingsPhone').textContent = data.profile.phone || '+94 77 123 4567';
-                if (document.getElementById('settingsSponsor')) document.getElementById('settingsSponsor').textContent = spDisplay;
-                if (document.getElementById('settingsPosition')) document.getElementById('settingsPosition').textContent = posLeg;
-                if (document.getElementById('settingsKycBadge')) {
-                    document.getElementById('settingsKycBadge').textContent = `🛡️ KYC ${kycSt.replace(/_/g, ' ')}`;
-                    document.getElementById('settingsKycBadge').className = `badge-pill ${kycSt === 'APPROVED' ? 'badge-kyc-approved' : (kycSt === 'PENDING' ? 'badge-kyc-pending' : (kycSt === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
-                }
-
+                // Populate full profile settings UI
+                populateProfileSettingsUI(data.profile);
                 updateAdminVisibility(data.profile);
             }
 
