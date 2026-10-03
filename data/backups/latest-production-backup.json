@@ -352,8 +352,11 @@
       "account_status": "ACTIVE",
       "qualification_status": "QUALIFIED",
       "position": "LEFT",
+      "branch_leg": "LEFT",
       "referral_code": "kavishkadineth4418",
-      "sponsor_id": "user-namobuddhaya-root",
+      "sponsor": "HAPANA09",
+      "sponsor_id": "user-hapana-09",
+      "sponsor_username": "HAPANA09",
       "personal_bv": 4500,
       "created_at": "2026-10-01T10:00:00.000Z"
     },
@@ -473,7 +476,7 @@
       "position": "LEFT",
       "depth": 5,
       "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-04",
-      "left_child_id": "user-kavishkadineth4418",
+      "left_child_id": null,
       "right_child_id": null,
       "created_at": "2026-10-01T23:38:10.491Z"
     },
@@ -484,7 +487,7 @@
       "position": "RIGHT",
       "depth": 5,
       "path": "/node-namobuddhaya-root/node-hapana-01/node-hapana-02/node-hapana-04",
-      "left_child_id": null,
+      "left_child_id": "user-kavishkadineth4418",
       "right_child_id": null,
       "created_at": "2026-10-01T23:39:10.491Z"
     },
@@ -557,7 +560,7 @@
     {
       "id": "node-4418",
       "user_id": "user-kavishkadineth4418",
-      "placement_parent_id": "user-hapana-08",
+      "placement_parent_id": "user-hapana-09",
       "position": "LEFT",
       "depth": 6,
       "left_child_id": "user-kavishkadineth4420",
@@ -669,7 +672,7 @@
     {
       "id": "spon-4418",
       "user_id": "user-kavishkadineth4418",
-      "sponsor_id": "user-namobuddhaya-root",
+      "sponsor_id": "user-hapana-09",
       "created_at": "2026-10-01T10:00:00.000Z"
     },
     {
@@ -4682,8 +4685,8 @@
       "created_at": "2026-10-02T22:45:03.045Z"
     },
     {
-      "id": "bv-4420-ai-user-hapana-08",
-      "user_id": "user-hapana-08",
+      "id": "bv-4420-ai-user-hapana-09",
+      "user_id": "user-hapana-09",
       "source_user_id": "user-kavishkadineth4420",
       "source_purchase_id": "purch-kavishka-4420-ai-prompts",
       "type": "SALE_VOLUME",
@@ -4699,7 +4702,7 @@
       "source_user_id": "user-kavishkadineth4420",
       "source_purchase_id": "purch-kavishka-4420-ai-prompts",
       "type": "SALE_VOLUME",
-      "leg": "LEFT",
+      "leg": "RIGHT",
       "amount": 2000,
       "volume": 2000,
       "status": "COMMITTED",

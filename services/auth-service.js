@@ -181,7 +181,8 @@ const AuthService = {
             sponsorId,
             normalizedPos,
             binaryNodes,
-            volumeLedger
+            volumeLedger,
+            users
         );
 
         if (!resolvedPlacement || !resolvedPlacement.placementParentId) {
@@ -311,11 +312,18 @@ const AuthService = {
                     username: newUser.username,
                     full_name: newUser.full_name,
                     email: newUser.email,
+                    mobile: newUser.mobile,
+                    phone: newUser.phone,
                     role: newUser.role,
                     status: newUser.status,
                     account_status: newUser.account_status,
                     qualification_status: newUser.qualification_status,
-                    kyc_status: newUser.kyc_status
+                    kyc_status: newUser.kyc_status,
+                    sponsor: effectiveSponsorCode,
+                    sponsor_id: sponsorId,
+                    sponsor_username: sponsor ? sponsor.username : effectiveSponsorCode,
+                    position: binaryNode.position,
+                    placement_parent_id: binaryNode.placement_parent_id
                 },
                 sponsor: {
                     sponsor_id: sponsorId,

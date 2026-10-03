@@ -11,15 +11,25 @@ const PlacementEngine = {
      */
     validateSponsor(sponsorId, users) {
         if (!sponsorId || !users) return false;
-        const spLower = (sponsorId || '').toLowerCase();
-        let sponsor = users.find(u => 
-            (u.id && u.id.toLowerCase() === spLower) || 
-            (u.username && u.username.toLowerCase() === spLower) ||
-            (u.referral_code && u.referral_code.toLowerCase() === spLower) ||
-            (u.email && u.email.toLowerCase() === spLower) ||
-            (u.name && u.name.toLowerCase() === spLower) ||
-            (u.full_name && u.full_name.toLowerCase() === spLower)
-        );
+        const spLower = (sponsorId || '').replace(/^@+/, '').toLowerCase().trim();
+        const spStripped = spLower.replace(/[^a-z0-9]/g, '');
+        let sponsor = users.find(u => {
+            const uId = (u.id || '').toLowerCase();
+            const uName = (u.username || '').toLowerCase();
+            const uRef = (u.referral_code || '').toLowerCase();
+            const uEmail = (u.email || '').toLowerCase();
+            const uFull = (u.full_name || u.name || '').toLowerCase();
+            return (
+                uId === spLower ||
+                uName === spLower ||
+                uRef === spLower ||
+                uEmail === spLower ||
+                uFull === spLower ||
+                (spStripped && uName.replace(/[^a-z0-9]/g, '') === spStripped) ||
+                (spStripped && uId.replace(/[^a-z0-9]/g, '') === spStripped) ||
+                (spStripped && uId.replace(/[^a-z0-9]/g, '') === ('user' + spStripped))
+            );
+        });
         if (!sponsor && (spLower === 'namobuddhaya' || spLower === 'hiru' || spLower === 'user-hiru-root' || spLower === 'sponsor-uuid-1' || spLower === 'direct' || spLower === 'company' || spLower === 'root' || spLower === 'admin' || spLower === 'main' || spLower === 'system')) {
             sponsor = users.find(u => 
                 (u.username && u.username.toLowerCase() === 'namobuddhaya') || 
@@ -361,7 +371,7 @@ const PlacementEngine = {
     /**
      * Resolves the placement parent and position based on sponsor preference or explicit request.
      */
-    resolvePlacement(sponsorId, requestedPosition = 'AUTO', binaryNodes = [], volumeLedger = []) {
+    resolvePlacement(sponsorId, requestedPosition = 'AUTO', binaryNodes = [], volumeLedger = [], users = []) {
         const posKey = (requestedPosition || 'AUTO').toUpperCase();
 
         // 1. If tree is completely empty, user is root
@@ -376,16 +386,50 @@ const PlacementEngine = {
 
         // 2. Direct sponsor exists check
         const spClean = (sponsorId || '').replace(/^@+/, '').toLowerCase().trim();
+        const spStripped = spClean.replace(/[^a-z0-9]/g, '');
+
+        let targetSponsorUserId = spClean;
+        if (users && users.length > 0) {
+            const foundU = users.find(u => {
+                const uId = (u.id || '').toLowerCase();
+                const uName = (u.username || '').toLowerCase();
+                const uRef = (u.referral_code || '').toLowerCase();
+                const uEmail = (u.email || '').toLowerCase();
+                return (
+                    uId === spClean ||
+                    uName === spClean ||
+                    uRef === spClean ||
+                    uEmail === spClean ||
+                    (spStripped && uName.replace(/[^a-z0-9]/g, '') === spStripped) ||
+                    (spStripped && uId.replace(/[^a-z0-9]/g, '') === spStripped) ||
+                    (spStripped && uId.replace(/[^a-z0-9]/g, '') === ('user' + spStripped))
+                );
+            });
+            if (foundU && foundU.id) {
+                targetSponsorUserId = foundU.id.toLowerCase();
+            }
+        }
+
         const sponsorNode = binaryNodes.find(n => {
             const nUid = (n.user_id || '').toLowerCase();
             const nId = (n.id || '').toLowerCase();
-            return nUid === spClean || nId === spClean || nUid === ('user-' + spClean) || nUid === ('user-' + spClean + '-103') || nId === ('node-' + spClean + '-103');
+            const nUidStripped = nUid.replace(/[^a-z0-9]/g, '');
+            return (
+                nUid === targetSponsorUserId ||
+                nUid === spClean ||
+                nId === spClean ||
+                nUid === ('user-' + spClean) ||
+                nUid === ('user-' + spClean + '-103') ||
+                nId === ('node-' + spClean + '-103') ||
+                (spStripped && nUidStripped === spStripped) ||
+                (spStripped && nUidStripped === ('user' + spStripped))
+            );
         });
 
         if (!sponsorNode) {
             // Default to root node if sponsor not in tree
             const root = binaryNodes.find(n => !n.placement_parent_id) || binaryNodes[0];
-            return this.resolvePlacement(root.user_id, requestedPosition, binaryNodes, volumeLedger);
+            return this.resolvePlacement(root.user_id, requestedPosition, binaryNodes, volumeLedger, users);
         }
 
         const effectiveSponsorId = sponsorNode.user_id;

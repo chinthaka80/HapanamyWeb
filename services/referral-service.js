@@ -33,14 +33,25 @@ class ReferralService {
 
         if (users && users.length > 0) {
             const trimmedLower = trimmed.toLowerCase();
-            let sponsor = users.find(u => 
-                (u.username && u.username.toLowerCase() === trimmedLower) || 
-                (u.id && u.id.toLowerCase() === trimmedLower) ||
-                (u.referral_code && u.referral_code.toLowerCase() === trimmedLower) ||
-                (u.email && u.email.toLowerCase() === trimmedLower) ||
-                (u.name && u.name.toLowerCase() === trimmedLower) ||
-                (u.full_name && u.full_name.toLowerCase() === trimmedLower)
-            );
+            const stripped = trimmedLower.replace(/[^a-z0-9]/g, '');
+            let sponsor = users.find(u => {
+                const uName = (u.username || '').toLowerCase();
+                const uId = (u.id || '').toLowerCase();
+                const uRef = (u.referral_code || '').toLowerCase();
+                const uEmail = (u.email || '').toLowerCase();
+                const uFull = (u.full_name || u.name || '').toLowerCase();
+                return (
+                    uName === trimmedLower ||
+                    uId === trimmedLower ||
+                    uRef === trimmedLower ||
+                    uEmail === trimmedLower ||
+                    uFull === trimmedLower ||
+                    (stripped && uName.replace(/[^a-z0-9]/g, '') === stripped) ||
+                    (stripped && uId.replace(/[^a-z0-9]/g, '') === stripped) ||
+                    (stripped && uId.replace(/[^a-z0-9]/g, '') === ('user' + stripped)) ||
+                    (stripped && ('user' + uName.replace(/[^a-z0-9]/g, '')) === stripped)
+                );
+            });
 
             // Resilient root sponsor resolution for direct/company/legacy alias codes
             if (!sponsor && (trimmedLower === 'namobuddhaya' || trimmedLower === 'hiru' || trimmedLower === 'user-hiru-root' || trimmedLower === 'sponsor-uuid-1' || trimmedLower === 'direct' || trimmedLower === 'company' || trimmedLower === 'root' || trimmedLower === 'admin' || trimmedLower === 'main' || trimmedLower === 'system')) {

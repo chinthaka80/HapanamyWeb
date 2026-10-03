@@ -93,6 +93,7 @@ require('./step75-live-signup-persistence-and-sponsor-fallback.test');
 require('./step76-persistence-hardening-and-concurrency.test');
 require('./step77-product-catalog-manual-purchase-correction-and-reversal.test');
 require('./step78-user-profile-kyc-and-withdrawal-bank-sync.test');
+require('./step79-referral-link-placement-and-sponsor-integrity.test');
 
 // Run
 runTests();

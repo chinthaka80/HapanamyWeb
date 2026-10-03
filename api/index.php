@@ -3437,12 +3437,27 @@ try {
 
         // Find Sponsor User
         $cleanSponsorCode = strtolower(ltrim(trim($sponsorCode), '@'));
+        $cleanStripped = preg_replace('/[^a-z0-9]/', '', $cleanSponsorCode);
         $sponsorUser = null;
         foreach ($db['users'] as $u) {
             $uName = strtolower($u['username'] ?? '');
             $uRef = strtolower($u['referral_code'] ?? '');
             $uId = strtolower($u['id'] ?? '');
-            if ($uName === $cleanSponsorCode || $uRef === $cleanSponsorCode || $uId === $cleanSponsorCode) {
+            $uEmail = strtolower($u['email'] ?? '');
+            $uFull = strtolower($u['full_name'] ?? $u['name'] ?? '');
+            $uNameStr = preg_replace('/[^a-z0-9]/', '', $uName);
+            $uIdStr = preg_replace('/[^a-z0-9]/', '', $uId);
+            if (
+                $uName === $cleanSponsorCode || 
+                $uRef === $cleanSponsorCode || 
+                $uId === $cleanSponsorCode || 
+                $uEmail === $cleanSponsorCode || 
+                $uFull === $cleanSponsorCode ||
+                ($cleanStripped && $uNameStr === $cleanStripped) ||
+                ($cleanStripped && $uIdStr === $cleanStripped) ||
+                ($cleanStripped && $uIdStr === ('user' . $cleanStripped)) ||
+                ($cleanStripped && ('user' . $uNameStr) === $cleanStripped)
+            ) {
                 $sponsorUser = $u;
                 break;
             }

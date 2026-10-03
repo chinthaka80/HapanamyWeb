@@ -520,10 +520,15 @@
                         username,
                         email,
                         mobile: phone,
+                        phone,
                         password,
                         confirmPassword,
                         sponsorCode: effectiveSponsor,
+                        sponsor: effectiveSponsor,
+                        sponsor_id: effectiveSponsor,
+                        referrer: effectiveSponsor,
                         position: effectivePosition,
+                        requestedPosition: effectivePosition,
                         role: currentRole,
                         termsAccepted: true,
                         privacyAccepted: true
@@ -535,6 +540,8 @@
                     const data = await response.json();
                     if (response.ok && data.success) {
                         const token = data.token || data.verification_token || ('token-' + data.user.id);
+                        const assignedSponsor = (data.sponsor && (data.sponsor.sponsor_username || data.sponsor.username)) || data.user.sponsor || effectiveSponsor;
+                        const assignedPosition = (data.placement && data.placement.position) || data.user.position || effectivePosition;
                         const userObj = {
                             id: data.user.id,
                             name: fullName,
@@ -546,8 +553,9 @@
                             status: 'ACTIVE',
                             account_status: 'ACTIVE',
                             qualification_status: data.user.qualification_status || 'NOT_QUALIFIED',
-                            sponsor: effectiveSponsor,
-                            position: effectivePosition,
+                            sponsor: assignedSponsor,
+                            sponsor_username: assignedSponsor,
+                            position: assignedPosition,
                             created_at: data.user.created_at || new Date().toISOString()
                         };
 
@@ -578,7 +586,7 @@
                                 username: userObj.username,
                                 email: email,
                                 mobile: phone,
-                                position: effectivePosition,
+                                position: assignedPosition,
                                 role: currentRole,
                                 status: 'Active',
                                 account_status: 'ACTIVE',
@@ -587,7 +595,16 @@
                                 created_at: userObj.created_at
                             };
 
-                            [effectiveSponsor, effectiveSponsor.toLowerCase()].forEach(k => {
+                            const spKeys = [
+                                effectiveSponsor, 
+                                effectiveSponsor.toLowerCase(), 
+                                assignedSponsor, 
+                                (assignedSponsor || '').toLowerCase(),
+                                (data.sponsor && data.sponsor.sponsor_id) || '',
+                                ((data.sponsor && data.sponsor.sponsor_id) || '').toLowerCase()
+                            ].filter(Boolean);
+
+                            Array.from(new Set(spKeys)).forEach(k => {
                                 let list = JSON.parse(localStorage.getItem('referred_users_' + k)) || [];
                                 if (!list.some(r => r.email === email || r.username === userObj.username || r.id === data.user.id)) {
                                     list.push(entry);
