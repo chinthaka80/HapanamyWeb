@@ -493,6 +493,204 @@ section {
     box-shadow: 0 6px 20px rgba(245, 124, 0, 0.45);
 }
 
+/* --------------------------------------------------------------------------
+   USER ACCOUNT MENU & DROPDOWN COMPONENT
+   -------------------------------------------------------------------------- */
+.user-account-menu-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+}
+
+.user-account-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 38px;
+    padding: 6px 14px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--brand-orange, #F47B20), var(--brand-gold, #D4AF37));
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #FFFFFF !important;
+    font-family: var(--font-body);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(244, 123, 32, 0.28);
+    transition: var(--transition-smooth);
+    user-select: none;
+    outline: none;
+    max-width: 240px;
+}
+
+.user-account-toggle-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(244, 123, 32, 0.4);
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.user-account-toggle-btn:focus-visible {
+    box-shadow: 0 0 0 3px rgba(244, 123, 32, 0.4), 0 0 0 1px #FFFFFF;
+}
+
+.user-account-avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 50%;
+    font-size: 12px;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.user-account-name {
+    display: inline-block;
+    max-width: 140px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.2;
+}
+
+.user-account-chevron {
+    font-size: 11px;
+    transition: transform 0.2s ease;
+    flex-shrink: 0;
+    opacity: 0.9;
+}
+
+.user-account-toggle-btn[aria-expanded="true"] .user-account-chevron {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.user-account-dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    min-width: 230px;
+    background-color: var(--bg-surface-elevated, #131A26);
+    border: 1px solid var(--border-color, rgba(212, 175, 55, 0.28));
+    border-radius: 12px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    padding: 8px;
+    display: none;
+    flex-direction: column;
+    gap: 2px;
+    z-index: 1001;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    animation: userDropdownFadeIn 0.18s ease-out;
+}
+
+[data-theme="light"] .user-account-dropdown {
+    background-color: #FFFFFF;
+    box-shadow: 0 14px 35px rgba(30, 41, 59, 0.15);
+    border-color: rgba(212, 175, 55, 0.35);
+}
+
+.user-account-dropdown.open {
+    display: flex;
+}
+
+@keyframes userDropdownFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.user-account-dropdown-header {
+    padding: 8px 12px 10px;
+}
+
+.user-account-dropdown-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.user-account-dropdown-handle {
+    font-size: 11.5px;
+    color: var(--brand-gold, #D4AF37);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.user-account-dropdown-divider {
+    height: 1px;
+    background: var(--border-color, rgba(255, 255, 255, 0.1));
+    margin: 4px 0;
+}
+
+.user-account-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    font-family: var(--font-body);
+}
+
+.user-account-dropdown-item:hover, .user-account-dropdown-item:focus-visible {
+    background: rgba(244, 123, 32, 0.12);
+    color: var(--brand-orange, #F47B20);
+    outline: none;
+}
+
+.user-account-dropdown-item .item-icon {
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    flex-shrink: 0;
+}
+
+.user-account-dropdown-item.logout-item {
+    color: #FF5252;
+}
+
+.user-account-dropdown-item.logout-item:hover, .user-account-dropdown-item.logout-item:focus-visible {
+    background: rgba(239, 68, 68, 0.15);
+    color: #FF7675;
+}
+
+@media (max-width: 480px) {
+    .user-account-toggle-btn {
+        max-width: 160px;
+        padding: 5px 10px;
+        font-size: 12px;
+    }
+    .user-account-name {
+        max-width: 90px;
+    }
+    .user-account-dropdown {
+        right: -10px;
+        min-width: 210px;
+    }
+}
+
 .mobile-only-auth {
     display: none !important;
 }

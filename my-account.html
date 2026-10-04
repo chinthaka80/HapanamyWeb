@@ -1286,7 +1286,7 @@
             if (!user) return;
             currentAccountUser = user;
             
-            const fullName = user.full_name || user.name || user.username || 'Member';
+            const fullName = user.full_name || user.display_name || user.name || user.username || 'Member';
             const username = user.username || '';
             const email = user.email || '';
             const phone = user.phone || user.mobile || '';

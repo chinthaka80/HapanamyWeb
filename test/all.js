@@ -98,6 +98,7 @@ require('./step80-account-deletion-and-tree-cleansing.test');
 require('./step81-live-registration-referral-link-and-leg-placement.test');
 require('./step82-user-account-menu-navigation-and-drawer.test');
 require('./step83-dynamic-member-identity-and-dashboard-navigation.test');
+require('./step84-user-account-menu-ui-and-display-name.test');
 
 // Run
 runTests();

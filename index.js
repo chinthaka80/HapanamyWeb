@@ -3372,10 +3372,77 @@ function initHeroSlider() {
     }, slideIntervalMs);
 }
 
+// Helper to get authenticated user display name according to authoritative priority:
+// 1. full_name, 2. display_name, 3. name, 4. username, 5. email prefix
+function getUserDisplayName(user) {
+    if (!user) return 'Member Profile';
+    if (typeof user === 'string') {
+        try { user = JSON.parse(user); } catch (e) { return user || 'Member Profile'; }
+    }
+    const name = user.full_name || user.display_name || user.name || user.username || (user.email ? user.email.split('@')[0] : '');
+    return name && String(name).trim() ? String(name).trim() : 'Member Profile';
+}
+
+// User Account Menu Dropdown Interactivity Setup
+function setupUserAccountDropdown() {
+    const toggleBtn = document.getElementById('userAccountMenuToggle');
+    const dropdown = document.getElementById('userAccountDropdown');
+    const wrapper = document.getElementById('headerUserAccountMenu');
+
+    if (!toggleBtn || !dropdown) return;
+
+    function toggleMenu(forceOpen) {
+        const isOpen = forceOpen !== undefined ? forceOpen : !dropdown.classList.contains('open');
+        if (isOpen) {
+            dropdown.classList.add('open');
+            toggleBtn.setAttribute('aria-expanded', 'true');
+        } else {
+            dropdown.classList.remove('open');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+        }
+    }
+
+    // Click toggle handler
+    toggleBtn.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        toggleMenu();
+    };
+
+    // Keyboard support (Enter, Space, ArrowDown, Escape)
+    toggleBtn.onkeydown = function(e) {
+        if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            toggleMenu(true);
+            const firstItem = dropdown.querySelector('a, button');
+            if (firstItem) firstItem.focus();
+        } else if (e.key === 'Escape') {
+            e.preventDefault();
+            toggleMenu(false);
+        }
+    };
+
+    // Keyboard Escape inside dropdown menu
+    dropdown.onkeydown = function(e) {
+        if (e.key === 'Escape') {
+            e.preventDefault();
+            toggleMenu(false);
+            toggleBtn.focus();
+        }
+    };
+
+    // Outside click dismiss
+    document.addEventListener('click', function(e) {
+        if (wrapper && !wrapper.contains(e.target)) {
+            toggleMenu(false);
+        }
+    });
+}
+
 // Dynamic Authenticated State Synchronization
 function syncNavAuthState() {
     const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-    const userStr = localStorage.getItem('active_user');
+    const userStr = localStorage.getItem('active_user') || localStorage.getItem('hapanamy_user_profile');
     const authBtnContainer = document.getElementById('headerAuthButtons');
     const mobileAuthContainers = document.querySelectorAll('.mobile-only-auth');
 
@@ -3384,29 +3451,87 @@ function syncNavAuthState() {
             const user = JSON.parse(userStr);
             const isAdmin = user.role === 'admin' || user.role === 'ADMIN';
             const dashLink = isAdmin ? 'hapanamy-admin-portal-9226.html' : 'dashboard.html';
+            const displayName = getUserDisplayName(user);
+            const rawHandle = user.username || (user.id ? user.id.replace('user-', '') : (user.email ? user.email.split('@')[0] : 'member'));
+            const usernameHandle = `@${rawHandle.replace(/^@+/, '')}`;
+            const initial = (displayName && displayName !== 'Member Profile' ? displayName.charAt(0) : (rawHandle ? rawHandle.charAt(0) : '👤')).toUpperCase();
 
             if (authBtnContainer) {
                 authBtnContainer.innerHTML = `
-                    <a href="${dashLink}" class="header-register-btn">
-                        <span>👤 My Dashboard</span>
-                    </a>
-                    <button onclick="handleGlobalLogout()" class="header-login-btn" style="background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; cursor:pointer;">
-                        <span>🚪 Logout</span>
-                    </button>
+                    <div class="user-account-menu-wrapper" id="headerUserAccountMenu">
+                        <button type="button" class="user-account-toggle-btn header-register-btn" id="userAccountMenuToggle" aria-expanded="false" aria-haspopup="menu" aria-label="User Account Menu: ${displayName}" title="${displayName} (${usernameHandle})">
+                            <span class="user-account-avatar" id="headerUserAvatar">${initial}</span>
+                            <span class="user-account-name" id="headerUserDisplayName">${displayName}</span>
+                            <span class="user-account-chevron" aria-hidden="true">▾</span>
+                        </button>
+                        <div class="user-account-dropdown" id="userAccountDropdown" role="menu" aria-labelledby="userAccountMenuToggle">
+                            <div class="user-account-dropdown-header">
+                                <div class="user-account-dropdown-name">${displayName}</div>
+                                <div class="user-account-dropdown-handle">${usernameHandle}</div>
+                            </div>
+                            <div class="user-account-dropdown-divider"></div>
+                            <a href="${dashLink}" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">📊</span>
+                                <span>👤 My Dashboard</span>
+                            </a>
+                            <a href="my-account.html" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">👤</span>
+                                <span>Profile</span>
+                            </a>
+                            <a href="student-dashboard.html" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">🎥</span>
+                                <span>My Learning</span>
+                            </a>
+                            <a href="dashboard.html#network" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">👥</span>
+                                <span>My Team</span>
+                            </a>
+                            <a href="dashboard.html#financial" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">💰</span>
+                                <span>Wallet</span>
+                            </a>
+                            <a href="dashboard.html#settings" class="user-account-dropdown-item" role="menuitem">
+                                <span class="item-icon">⚙️</span>
+                                <span>Settings</span>
+                            </a>
+                            ${isAdmin ? `
+                            <a href="hapanamy-admin-portal-9226.html" class="user-account-dropdown-item" role="menuitem" style="color:var(--brand-gold);">
+                                <span class="item-icon">👑</span>
+                                <span>Admin Portal</span>
+                            </a>
+                            ` : ''}
+                            <div class="user-account-dropdown-divider"></div>
+                            <button type="button" class="user-account-dropdown-item logout-item header-login-btn" role="menuitem" onclick="handleGlobalLogout()" style="width: 100%; border: none; background: transparent; text-align: left; padding: 9px 12px; cursor: pointer;">
+                                <span class="item-icon">🚪</span>
+                                <span>🚪 Logout</span>
+                            </button>
+                        </div>
+                    </div>
                 `;
+
+                setupUserAccountDropdown();
             }
 
             mobileAuthContainers.forEach(container => {
                 container.innerHTML = `
-                    <a href="${dashLink}" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;">
+                    <div style="padding: 10px 14px; background: rgba(244,123,32,0.12); border-radius: 10px; border: 1px solid rgba(244,123,32,0.3); margin-bottom: 10px; text-align: left;">
+                        <div style="font-weight: 800; font-size: 14px; color: var(--text-primary);">${displayName}</div>
+                        <div style="font-size: 12px; color: var(--brand-gold);">${usernameHandle}</div>
+                    </div>
+                    <a href="${dashLink}" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center; margin-bottom: 6px;">
                         <span>👤 My Dashboard</span>
+                    </a>
+                    <a href="student-dashboard.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center; margin-bottom: 6px;">
+                        <span>🎥 My Learning</span>
                     </a>
                     <button onclick="handleGlobalLogout()" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center; background:rgba(239,68,68,0.15); border:1px solid rgba(239,68,68,0.3); color:#ff7675 !important; cursor:pointer;">
                         <span>🚪 Logout</span>
                     </button>
                 `;
             });
-        } catch (e) {}
+        } catch (e) {
+            console.error('Error syncing nav auth state:', e);
+        }
     } else {
         if (authBtnContainer) {
             authBtnContainer.innerHTML = `
@@ -3450,8 +3575,14 @@ window.handleGlobalLogout = async function() {
     window.location.replace('login.html');
 };
 
+// Global exports
+window.getUserDisplayName = getUserDisplayName;
+window.syncNavAuthState = syncNavAuthState;
+window.setupUserAccountDropdown = setupUserAccountDropdown;
+
 // Auto-run on load
 document.addEventListener('DOMContentLoaded', () => {
-    initHeroSlider();
+    if (typeof initHeroSlider === 'function') initHeroSlider();
     syncNavAuthState();
 });
+
