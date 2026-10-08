@@ -102,6 +102,7 @@ require('./step84-user-account-menu-ui-and-display-name.test');
 require('./step85-cross-page-real-browser-account-dropdown.test');
 require('./step86-cross-page-mobile-menu-interactivity.test');
 require('./step88-cross-tab-session-synchronization.test');
+require('./step89-cart-drawer-and-checkout-lifecycle.test');
 
 // Run
 runTests();

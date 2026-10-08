@@ -204,6 +204,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const amount = parseFloat(urlParams.get('amount')) || 0;
         const method = urlParams.get('method') || 'payhere';
+        const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
+        const currentLang = localStorage.getItem('language') || 'si';
 
         // Save purchases on payhere success
         if (method === 'payhere') {
@@ -305,10 +307,12 @@
         if (!txnCode) {
             txnCode = 'TXN-' + Math.random().toString(36).substring(2, 6).toUpperCase() + '-' + Math.random().toString(36).substring(2, 6).toUpperCase();
         }
-        document.getElementById('metaTxnCode').textContent = txnCode;
+        const metaTxnCode = document.getElementById('metaTxnCode');
+        if (metaTxnCode) metaTxnCode.textContent = txnCode;
 
         // Set billing info
-        document.getElementById('metaPaidAmount').textContent = 'රු. ' + amount.toLocaleString();
+        const metaPaidAmount = document.getElementById('metaPaidAmount');
+        if (metaPaidAmount) metaPaidAmount.textContent = 'රු. ' + amount.toLocaleString();
         
         // Generate personal affiliate link for the buyer
         const buyerName = billing.name || 'Student';
@@ -329,16 +333,19 @@
         }
 
         // Show referrer row if present in billing
-        const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
         if (billing.referrer) {
-            document.getElementById('referrerRow').style.display = 'flex';
-            document.getElementById('metaReferrer').textContent = billing.referrer;
+            const referrerRow = document.getElementById('referrerRow');
+            const metaReferrer = document.getElementById('metaReferrer');
+            if (referrerRow) referrerRow.style.display = 'flex';
+            if (metaReferrer) metaReferrer.textContent = billing.referrer;
         }
-        document.getElementById('metaPayMethod').textContent = method === 'payhere' ? 'PayHere Gateway (Online)' : 'Direct Bank Deposit (Pending Receipt Verification)';
+        const metaPayMethod = document.getElementById('metaPayMethod');
+        if (metaPayMethod) metaPayMethod.textContent = method === 'payhere' ? 'PayHere Gateway (Online)' : 'Direct Bank Deposit (Pending Receipt Verification)';
         
         // Random Order ID
         const orderId = '#' + Math.floor(10430 + Math.random() * 50);
-        document.getElementById('metaOrderId').textContent = orderId;
+        const metaOrderId = document.getElementById('metaOrderId');
+        if (metaOrderId) metaOrderId.textContent = orderId;
 
         // Show bank slip upload if method is bank
         if (method === 'bank') {
@@ -358,8 +365,7 @@
 
         // Redirect helper
         function goToStudentDashboard() {
-            // Retrieve purchaser's name from localStorage
-            const billing = JSON.parse(localStorage.getItem('checkout_billing')) || {};
+            // Retrieve purchaser's name from localStorage / billing
             const name = billing.name || 'Student';
             
             // Clear cart
@@ -427,7 +433,6 @@
             });
         }
 
-        const currentLang = localStorage.getItem('language') || 'si';
         applyLanguage(currentLang);
     </script>
 </body>

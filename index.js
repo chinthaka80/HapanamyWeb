@@ -2271,6 +2271,7 @@ function toggleCartDrawer(isOpen) {
 }
 
 function addToCart(id, title, price) {
+    cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
     // Check if course already added
     const exists = cart.some(item => item.id === id);
     if (exists) {
@@ -2293,19 +2294,23 @@ function addToCart(id, title, price) {
 }
 
 function removeFromCart(index) {
-    const title = cart[index].title;
-    cart.splice(index, 1);
-    localStorage.setItem('hapanamy_cart', JSON.stringify(cart));
-    updateCartUI();
+    cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
+    if (index >= 0 && index < cart.length) {
+        const title = cart[index].title;
+        cart.splice(index, 1);
+        localStorage.setItem('hapanamy_cart', JSON.stringify(cart));
+        updateCartUI();
 
-    const currentLang = localStorage.getItem('language') || 'si';
-    showToast(currentLang === 'si'
-        ? `🗑️ <strong>ඉවත් කරන ලදී!</strong> '${title}' කරත්තයෙන් ඉවත් කරන ලදී.`
-        : `🗑️ <strong>Removed!</strong> '${title}' removed from cart.`
-    );
+        const currentLang = localStorage.getItem('language') || 'si';
+        showToast(currentLang === 'si'
+            ? `🗑️ <strong>ඉවත් කරන ලදී!</strong> '${title}' කරත්තයෙන් ඉවත් කරන ලදී.`
+            : `🗑️ <strong>Removed!</strong> '${title}' removed from cart.`
+        );
+    }
 }
 
 function updateCartUI() {
+    cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
     const countEl = document.getElementById('floatingCartCount');
     const listEl = document.getElementById('cartDrawerItemsList');
     const totalEl = document.getElementById('cartDrawerTotalVal');
@@ -2341,11 +2346,25 @@ function updateCartUI() {
 }
 
 function proceedToCheckout() {
+    cart = JSON.parse(localStorage.getItem('hapanamy_cart')) || [];
     if (cart.length === 0) {
         showToast('⚠️ <strong>කරත්තය හිස්!</strong> කරුණාකර ප්‍රථමයෙන් පාඨමාලාවක් එක් කරන්න.');
         return;
     }
     window.location.href = 'checkout.html';
+}
+
+if (typeof window !== 'undefined') {
+    window.toggleCartDrawer = toggleCartDrawer;
+    window.addToCart = addToCart;
+    window.removeFromCart = removeFromCart;
+    window.updateCartUI = updateCartUI;
+    window.proceedToCheckout = proceedToCheckout;
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'hapanamy_cart') {
+            updateCartUI();
+        }
+    });
 }
 
 // Initial UI sync
