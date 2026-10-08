@@ -351,6 +351,31 @@
             toast.style.display = 'block';
         }
 
+        function getRedirectTarget(role, serverRedirect) {
+            let targetUrl = 'dashboard.html';
+            if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin') {
+                targetUrl = 'hapanamy-admin-portal-9226.html';
+            } else if (role === 'student') {
+                targetUrl = 'student-dashboard.html';
+            }
+
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const param = urlParams.get('redirect') || urlParams.get('returnUrl') || urlParams.get('next');
+                if (param && typeof param === 'string') {
+                    const cleanParam = param.trim();
+                    if (!cleanParam.startsWith('http://') && !cleanParam.startsWith('https://') && !cleanParam.startsWith('//') && !cleanParam.startsWith('javascript:')) {
+                        return cleanParam;
+                    }
+                }
+            } catch (e) {}
+
+            if (serverRedirect) {
+                return serverRedirect;
+            }
+            return targetUrl;
+        }
+
         async function sha256Hex(text) {
             const enc = new TextEncoder().encode(text);
             const buf = await crypto.subtle.digest('SHA-256', enc);
@@ -398,13 +423,7 @@
                         }
 
                         showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${data.user.full_name || data.user.username}!`, false);
-                        let targetUrl = 'dashboard.html';
-                        if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin') {
-                            targetUrl = 'hapanamy-admin-portal-9226.html';
-                        } else if (role === 'student') {
-                            targetUrl = 'student-dashboard.html';
-                        }
-                        if (data.redirect_url) targetUrl = data.redirect_url;
+                        const targetUrl = getRedirectTarget(role, data.redirect_url);
 
                         setTimeout(() => {
                             window.location.replace(targetUrl);
@@ -501,12 +520,7 @@
                     }
 
                     showToast(`👋 <strong>ඇතුල්වීම සාර්ථකයි!</strong> සාදරයෙන් පිළිගනිමු ${matched.full_name || matched.name || matched.username}!`, false);
-                    let targetUrl = 'dashboard.html';
-                    if (role === 'admin' || role === 'subadmin' || role === 'sub_admin' || role === 'super_admin') {
-                        targetUrl = 'hapanamy-admin-portal-9226.html';
-                    } else if (role === 'student') {
-                        targetUrl = 'student-dashboard.html';
-                    }
+                    const targetUrl = getRedirectTarget(role, null);
 
                     setTimeout(() => {
                         window.location.replace(targetUrl);

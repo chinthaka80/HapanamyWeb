@@ -9,6 +9,34 @@
     <title>Hapanamy - Admin Payout Panel</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&family=Noto+Sans+Sinhala:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="index.css">
+
+    <!-- Immediate Authentication & Cross-Tab Session Guard -->
+    <script>
+        (function() {
+            function enforceAuthSession() {
+                try {
+                    const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                    const activeUser = localStorage.getItem('active_user');
+                    if (!token || !activeUser) {
+                        window.location.href = 'login.html';
+                    }
+                } catch (e) {
+                    window.location.href = 'login.html';
+                }
+            }
+            enforceAuthSession();
+            window.addEventListener('storage', (e) => {
+                if (!e.key || e.key === 'auth_token' || e.key === 'active_token' || e.key === 'active_user' || e.key === 'is_admin_session') {
+                    enforceAuthSession();
+                }
+            });
+            document.addEventListener('visibilitychange', () => {
+                if (document.visibilityState === 'visible') {
+                    enforceAuthSession();
+                }
+            });
+        })();
+    </script>
     <style>
         body {
             font-family: 'Poppins', 'Noto Sans Sinhala', sans-serif;
@@ -74,7 +102,7 @@
     </div>
 
     <script>
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
         if (!token) window.location.href = 'login.html';
 
         async function fetchPendingWithdrawals() {
