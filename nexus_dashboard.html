@@ -4372,6 +4372,11 @@
         }
 
         function handleTxModalBackdrop(event) {
+            if (event.target === document.getElementById('txDetailsModal')) {
+                closeTxModal();
+            }
+        }
+
         // ============================================================
         // PROMPT 13: WITHDRAWALS & BANK ACCOUNTS CONTROLLERS
         // ============================================================
