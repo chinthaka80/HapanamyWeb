@@ -104,6 +104,7 @@ require('./step86-cross-page-mobile-menu-interactivity.test');
 require('./step88-cross-tab-session-synchronization.test');
 require('./step89-cart-drawer-and-checkout-lifecycle.test');
 require('./step90-auth-redirect-and-subportal-session-guard.test');
+require('./step91-courses-catalog-routing-and-earnings-calculator.test');
 
 // Run
 runTests();

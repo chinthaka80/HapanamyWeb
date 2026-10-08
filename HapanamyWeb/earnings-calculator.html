@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="si" data-theme="dark">
+<head>
+    <!-- Favicon & Touch Icons -->
+    <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
+    <link rel="apple-touch-icon" href="assets/logo.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hapanamy.lk | ආදායම් ගණකය (Earnings Calculator) — Interactive Simulator</title>
+    
+    <!-- Meta tags for SEO -->
+    <meta name="description" content="Hapanamy.lk Interactive Earnings Calculator. ඔබේ සෘජු විකුණුම් (8%) සහ Binary Matching (7%) ආදායම් විභවය සජීවීව ගණනය කර බලන්න.">
+    <link rel="canonical" href="https://www.hapanamy.lk/earnings-calculator.html">
+    
+    <!-- Open Graph tags for Social Media Sharing -->
+    <meta property="og:title" content="Hapanamy.lk | ආදායම් ගණකය (Earnings Calculator)">
+    <meta property="og:description" content="ඔබේ MLM හා Affiliate ආදායම් විභවය සජීවීව ගණනය කර බලන්න.">
+    <meta property="og:image" content="assets/logo.jpg">
+    <meta property="og:url" content="https://www.hapanamy.lk/earnings-calculator.html">
+    <meta property="og:type" content="website">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="index.css">
+    <script src="config.js"></script>
+    <script src="db.js"></script>
+    <style>
+        .calc-wrapper {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 36px 30px;
+            box-shadow: var(--card-shadow);
+            max-width: 850px;
+            margin: 40px auto;
+        }
+        .calc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        @media (max-width: 768px) {
+            .calc-grid { grid-template-columns: 1fr; }
+        }
+        .calc-input-group {
+            margin-bottom: 24px;
+        }
+        .calc-input-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--text-primary);
+        }
+        .calc-input-group input[type="range"] {
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: var(--border-color);
+            outline: none;
+            accent-color: var(--brand-orange);
+            cursor: pointer;
+        }
+        .calc-val-badge {
+            background: rgba(244, 123, 32, 0.15);
+            color: var(--brand-orange);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 800;
+        }
+        .calc-results-box {
+            background: linear-gradient(135deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.04) 100%);
+            border: 1px solid rgba(244, 123, 32, 0.25);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .res-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 14px;
+        }
+        .res-row:last-child {
+            border-bottom: none;
+            padding-top: 18px;
+            margin-top: 6px;
+            border-top: 2px solid var(--border-color);
+        }
+        .res-total-num {
+            font-size: 26px;
+            font-weight: 900;
+            color: var(--brand-gold);
+            font-family: 'Poppins', sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header class="header">
+        <div class="container header-container">
+            <a href="index.html" class="logo" title="Hapanamy.lk">
+                <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; justify-content: center;">
+                    <span class="logo-text">HAPANAමයි<span>.lk</span></span>
+                    <span class="logo-slogan">Connect • Learn • Grow • Earn</span>
+                </div>
+            </a>
+            
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html#home" class="nav-link">Home</a>
+                <a href="courses.html" class="nav-link">Courses</a>
+                <a href="affiliate.html" class="nav-link">Affiliate</a>
+                <a href="earnings-calculator.html" class="nav-link active">Calculator</a>
+                <a href="testimonials.html" class="nav-link">Testimonials</a>
+                <a href="blog.html" class="nav-link">Knowledge Hub</a>
+                <a href="about-us.html" class="nav-link">About</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🔐 LOGIN</span></a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🚀 REGISTER FREE</span></a>
+                </div>
+            </nav>
+
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggleBtn" aria-label="Toggle Theme">
+                    <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+                </button>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="header-login-btn">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="header-register-btn">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <div style="padding: 90px 0 30px 0; text-align: center; background: linear-gradient(180deg, rgba(244, 123, 32, 0.08) 0%, rgba(212, 175, 55, 0.02) 100%); border-bottom: 1px solid var(--border-color);">
+        <div class="container">
+            <span class="badge-category" style="margin-bottom: 12px; display: inline-block;">INTERACTIVE SIMULATOR</span>
+            <h1 style="font-size: 34px; font-weight: 800; color: var(--text-primary); margin-bottom: 10px;">ආදායම් ගණකය (Earnings Calculator)</h1>
+            <p style="font-size: 15px; color: var(--text-muted); max-width: 650px; margin: 0 auto;">ඔබගේ සෘජු විකුණුම් සහ කණ්ඩායම් Binary Matching ආදායම පහසුවෙන් ගණනය කර බලන්න.</p>
+        </div>
+    </div>
+
+    <!-- Calculator Section -->
+    <section style="padding: 40px 0 80px 0;">
+        <div class="container">
+            <div class="calc-wrapper">
+                <h2 style="font-size: 22px; font-weight: 800; text-align: center; margin-bottom: 8px;">📊 ඔබේ ආදායම් විභවය සජීවීව පරීක්ෂා කරන්න</h2>
+                <p style="font-size: 13.5px; color: var(--text-muted); text-align: center; margin-bottom: 30px;">සෑම ගණනය කිරීමක්ම 8% සෘජු කොමිස් සහ 7% Binary Volume නීතිවලට අනුකූල වේ.</p>
+
+                <div class="calc-grid">
+                    <!-- Sliders Side -->
+                    <div>
+                        <div class="calc-input-group">
+                            <label>
+                                <span>පාඨමාලා සාමාන්‍ය මිල (Course Price):</span>
+                                <span class="calc-val-badge" id="lblCoursePrice">රු. 7,425</span>
+                            </label>
+                            <input type="range" id="rngPrice" min="3992" max="19900" step="500" value="7425" oninput="updateCalculator()">
+                        </div>
+
+                        <div class="calc-input-group">
+                            <label>
+                                <span>සෘජු විකුණුම් ගණන (Direct Referrals):</span>
+                                <span class="calc-val-badge" id="lblDirectSales">4 Members</span>
+                            </label>
+                            <input type="range" id="rngDirect" min="0" max="50" step="1" value="4" oninput="updateCalculator()">
+                        </div>
+
+                        <div class="calc-input-group">
+                            <label>
+                                <span>Left Team විකුණුම් (Left Volume Units):</span>
+                                <span class="calc-val-badge" id="lblLeftSales">10 Units</span>
+                            </label>
+                            <input type="range" id="rngLeft" min="0" max="100" step="1" value="10" oninput="updateCalculator()">
+                        </div>
+
+                        <div class="calc-input-group">
+                            <label>
+                                <span>Right Team විකුණුම් (Right Volume Units):</span>
+                                <span class="calc-val-badge" id="lblRightSales">8 Units</span>
+                            </label>
+                            <input type="range" id="rngRight" min="0" max="100" step="1" value="8" oninput="updateCalculator()">
+                        </div>
+                    </div>
+
+                    <!-- Results Box Side -->
+                    <div class="calc-results-box">
+                        <div>
+                            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-primary);">ඇස්තමේන්තුගත ආදායම් වාර්තාව</h3>
+                            
+                            <div class="res-row">
+                                <span style="color: var(--text-muted);">8% Direct Referral කොමිස්:</span>
+                                <strong id="resDirect" style="color: var(--text-primary); font-family: 'Poppins', sans-serif;">රු. 2,376.00</strong>
+                            </div>
+
+                            <div class="res-row">
+                                <span style="color: var(--text-muted);">ගැලපෙන Binary Points (BV):</span>
+                                <strong id="resMatchedBV" style="color: var(--text-primary); font-family: 'Poppins', sans-serif;">59,400 BV</strong>
+                            </div>
+
+                            <div class="res-row">
+                                <span style="color: var(--text-muted);">7% Binary Matching කොමිස්:</span>
+                                <strong id="resBinary" style="color: var(--text-primary); font-family: 'Poppins', sans-serif;">රු. 4,158.00</strong>
+                            </div>
+
+                            <div class="res-row">
+                                <span style="color: var(--text-muted);">Carry Forward ශේෂය (Strong Leg):</span>
+                                <strong id="resCarry" style="color: var(--brand-orange); font-family: 'Poppins', sans-serif;">14,850 BV</strong>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="res-row">
+                                <span style="font-size: 16px; font-weight: 800; color: var(--text-primary);">මුළු ආදායම (Total Earnings):</span>
+                                <span class="res-total-num" id="resTotal">රු. 6,534.00</span>
+                            </div>
+                            <div style="font-size: 11px; color: var(--text-muted); margin-top: 8px; text-align: right;">
+                                * දෛනික උපරිම සීමාව: රු. 30,000.00 / day
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 35px;">
+                    <a href="register.html" class="btn btn-primary" style="padding: 14px 36px; font-size: 16px; font-weight: 800; border-radius: 30px;">🚀 නොමිලේ ලියාපදිංචි වී ආරම්භ කරන්න</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer-main">
+        <div class="container footer-main-container">
+            <div class="footer-col-about">
+                <a href="index.html" class="logo" style="margin-bottom: 15px;">
+                    <img src="assets/logo.jpg" alt="HAPANAMY Logo" class="logo-img">
+                    <div style="display: flex; flex-direction: column; justify-content: center;">
+                        <span class="logo-text" style="font-weight: 900; line-height: 1.1;">HAPANAමයි<span>.lk</span></span>
+                        <span class="logo-slogan" style="font-size: 8px; font-weight: 700; color: var(--brand-gold); letter-spacing: 0.3px; margin-top: 3px; font-family: 'Poppins', sans-serif;">Connect • Learn • Grow • Earn</span>
+                    </div>
+                </a>
+                <p>ශ්‍රී ලංකාවේ ඩිජිටල් අධ්‍යාපනික සහ කුසලතා සංවර්ධන නිල වේදිකාව.</p>
+                <div class="footer-parent-attribution" style="margin: 12px 0 16px 0; padding: 10px 14px; background: rgba(212, 175, 55, 0.06); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 10px; display: inline-flex; align-items: center; gap: 10px;">
+                    <img src="assets/brand/nowatrix/nowatrix_global_logo.jpg" alt="NOWATRIX Global" style="height: 22px; width: auto; object-fit: contain; border-radius: 4px;">
+                    <div style="text-align: left;">
+                        <span style="font-size: 11px; font-weight: 800; color: var(--brand-gold); letter-spacing: 0.5px; text-transform: uppercase;">A NOWATRIX Global Company</span>
+                        <div style="font-size: 9.5px; color: var(--text-muted);">Mother Company • Parent Brand</div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html#home">Home</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="affiliate.html">Affiliate Program</a></li>
+                    <li><a href="earnings-calculator.html">Earnings Calculator</a></li>
+                    <li><a href="testimonials.html">Testimonials</a></li>
+                    <li><a href="blog.html">Knowledge Hub</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Information</h3>
+                <ul>
+                    <li><a href="about-us.html">About Us</a></li>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="privacy-policy.html">Privacy Policy</a></li>
+                    <li><a href="terms-conditions.html">Terms & Conditions</a></li>
+                    <li><a href="disclaimer.html">Disclaimer</a></li>
+                    <li><a href="refund-policy.html">Refund Policy</a></li>
+                    <li><a href="affiliate-disclosure.html">Affiliate Disclosure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h3>Contact</h3>
+                <p style="font-size: 13px; color: var(--text-muted);">Email: info@hapanamy.lk<br>Phone: +94 72 609 0050</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container footer-bottom-content">
+                <p>&copy; 2026 Hapanamy.lk — A NOWATRIX Global Company. All Rights Reserved. Sri Lanka's Digital Learning Campus.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        const themeBtn = document.getElementById('themeToggleBtn');
+        if (themeBtn) {
+            themeBtn.addEventListener('click', () => {
+                const current = document.documentElement.getAttribute('data-theme');
+                const next = current === 'dark' ? 'light' : 'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('theme', next);
+            });
+        }
+
+        function updateCalculator() {
+            const price = Number(document.getElementById('rngPrice').value);
+            const directs = Number(document.getElementById('rngDirect').value);
+            const leftUnits = Number(document.getElementById('rngLeft').value);
+            const rightUnits = Number(document.getElementById('rngRight').value);
+
+            document.getElementById('lblCoursePrice').textContent = `රු. ${price.toLocaleString()}`;
+            document.getElementById('lblDirectSales').textContent = `${directs} Members`;
+            document.getElementById('lblLeftSales').textContent = `${leftUnits} Units`;
+            document.getElementById('lblRightSales').textContent = `${rightUnits} Units`;
+
+            // 1. Direct Commission: 8%
+            const directComm = Math.round(directs * price * 0.08);
+
+            // 2. Binary Volume: 1 unit = price BV
+            const leftBV = leftUnits * price;
+            const rightBV = rightUnits * price;
+            const matchedBV = Math.min(leftBV, rightBV);
+            const carryBV = Math.abs(leftBV - rightBV);
+
+            // 3. Binary Matching Commission: 7%
+            let binaryComm = Math.round(matchedBV * 0.07);
+
+            // Daily Cap: Rs. 30,000
+            const totalBeforeCap = directComm + binaryComm;
+            const totalCapped = Math.min(totalBeforeCap, 30000);
+
+            document.getElementById('resDirect').textContent = `රු. ${directComm.toLocaleString()}.00`;
+            document.getElementById('resMatchedBV').textContent = `${matchedBV.toLocaleString()} BV`;
+            document.getElementById('resBinary').textContent = `රු. ${binaryComm.toLocaleString()}.00`;
+            document.getElementById('resCarry').textContent = `${carryBV.toLocaleString()} BV`;
+            document.getElementById('resTotal').textContent = `රු. ${totalCapped.toLocaleString()}.00`;
+        }
+
+        updateCalculator();
+    </script>
+    <script src="nav-auth.js"></script>
+</body>
+</html>

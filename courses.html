@@ -1012,7 +1012,44 @@
         window.addEventListener('DOMContentLoaded', () => {
             const curLang = localStorage.getItem('language') || 'si';
             applyLanguage(curLang);
-            renderCatalog();
+
+            // Parse URL parameters for direct category, search or modal trigger
+            try {
+                const urlParams = new URLSearchParams(window.location.search);
+                const catParam = urlParams.get('category') || urlParams.get('cat');
+                if (catParam) {
+                    const normCat = catParam.toLowerCase();
+                    const pills = Array.from(document.querySelectorAll('.cat-pill'));
+                    const matchBtn = pills.find(b => {
+                        const bText = b.textContent.toLowerCase();
+                        const bClick = (b.getAttribute('onclick') || '').toLowerCase();
+                        return bText.includes(normCat) || bClick.includes(normCat);
+                    });
+                    if (matchBtn) {
+                        pills.forEach(b => b.classList.remove('active'));
+                        matchBtn.classList.add('active');
+                        if (normCat.includes('trad')) currentCategory = 'Trading';
+                        else if (normCat.includes('social') || normCat.includes('market')) currentCategory = 'Social Media';
+                        else if (normCat.includes('ai') || normCat.includes('tech')) currentCategory = 'AI & Tech';
+                        else if (normCat.includes('ebook')) currentCategory = 'E-Books';
+                    }
+                }
+
+                const searchParam = urlParams.get('search') || urlParams.get('q');
+                const searchInput = document.getElementById('catalogSearchInput');
+                if (searchParam && searchInput) {
+                    searchInput.value = searchParam;
+                }
+
+                renderCatalog();
+
+                const modalProd = urlParams.get('modal') || urlParams.get('product') || urlParams.get('id');
+                if (modalProd) {
+                    setTimeout(() => openCourseModal(modalProd), 200);
+                }
+            } catch (e) {
+                renderCatalog();
+            }
 
             // Update user button if signed in
             const activeUser = JSON.parse(localStorage.getItem('active_user') || localStorage.getItem('hapanamy_user_profile') || 'null');
