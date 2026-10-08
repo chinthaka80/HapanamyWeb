@@ -215,6 +215,9 @@
         localStorage.removeItem('auth_token');
         localStorage.removeItem('active_token');
         localStorage.removeItem('hapanamy_user_profile');
+        localStorage.removeItem('is_admin_session');
+        localStorage.removeItem('hapanamy_student_profile');
+        localStorage.removeItem('hapanamy_affiliate_profile');
         if (typeof sessionStorage !== 'undefined' && sessionStorage.clear) {
             sessionStorage.clear();
         }
@@ -308,5 +311,10 @@
         initNavbar();
     }
     window.addEventListener('storage', syncNavAuthState);
+    document.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible') {
+            syncNavAuthState();
+        }
+    });
 
 })();

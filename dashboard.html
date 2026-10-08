@@ -7,26 +7,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hapanamy.lk | සාමාජික පාලන පුවරුව (Member Dashboard) | NOWATRIX Global</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800;900&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
-    
+
     <!-- Core styles -->
     <link rel="stylesheet" href="index.css">
-    
-    <!-- Client-Side Auth Guard -->
+
+    <!-- Client-Side Auth Guard & Cross-Tab Session Synchronizer -->
     <script>
         (function() {
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            const user = localStorage.getItem('active_user');
-            if (!token && !user) {
-                window.location.replace('login.html?redirect=dashboard');
+            function enforceAuthSession() {
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                const user = localStorage.getItem('active_user');
+                if (!token || !user) {
+                    window.location.href = 'login.html';
+                }
             }
+            enforceAuthSession();
+            window.addEventListener('storage', enforceAuthSession);
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    enforceAuthSession();
+                }
+            });
         })();
     </script>
-    
+
     <style>
         :root {
             --sidebar-width: 270px;
@@ -1173,7 +1182,7 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleMobileSidebar(false)"></div>
 
     <div class="member-layout">
-        
+
         <!-- SIDEBAR NAVIGATION -->
         <aside class="member-sidebar" id="memberSidebar">
             <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px;">
@@ -1238,7 +1247,7 @@
 
         <!-- MAIN CONTENT AREA -->
         <main class="member-content-area">
-            
+
             <!-- Topbar -->
             <header class="member-topbar">
                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -1291,7 +1300,7 @@
 
                 <!-- TAB 1: OVERVIEW & EARNINGS -->
                 <div class="tab-panel active" id="panel-overview">
-                    
+
                     <!-- EARNINGS SECTION (6 KEY FINANCIAL METRICS) -->
                     <div class="earnings-grid">
                         <div class="stat-card">
@@ -1756,7 +1765,7 @@
                     <!-- Master Profile & Bank Settings Form -->
                     <form id="masterProfileSettingsForm" onsubmit="handleProfileSettingsSave(event)" style="margin-bottom: 25px;">
                         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 20px;">
-                            
+
                             <!-- Card 1: 👤 පුද්ගලික සහ ගිණුම් තොරතුරු -->
                             <div class="dashboard-card">
                                 <div class="dashboard-card-title">
@@ -1827,7 +1836,7 @@
 
                             <!-- Card 2: 🏦 බැංකු ගිණුම් විස්තර (Bank Details for Payouts) & 🛡️ KYC -->
                             <div style="display: flex; flex-direction: column; gap: 20px;">
-                                
+
                                 <div class="dashboard-card" style="border: 1px solid rgba(245, 124, 0, 0.4); background: linear-gradient(180deg, rgba(245,124,0,0.03) 0%, rgba(20,20,25,0.6) 100%);">
                                     <div class="dashboard-card-title">
                                         <span>🏦 ගෙවීම් බැංකු විස්තර (Bank Account Details)</span>
@@ -1957,7 +1966,7 @@
                 </h3>
                 <button onclick="closeWithdrawModal()" style="background:none; border:none; color:var(--text-muted); font-size: 20px; cursor:pointer;">✕</button>
             </div>
-            
+
             <form onsubmit="handleWithdrawSubmit(event)">
                 <div style="margin-bottom: 16px;">
                     <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">ලබාගත හැකි ශේෂය (Available Balance)</label>
@@ -1972,7 +1981,7 @@
                 <!-- Verified Bank Account Info Card -->
                 <div style="margin-bottom: 20px;">
                     <label style="font-size: 12.5px; font-weight: 700; color: var(--text-muted); display:block; margin-bottom: 6px;">🏦 බැර වන බැංකු ගිණුම (Payout Bank Account)</label>
-                    
+
                     <div id="withdrawBankDetailsCard" style="background: rgba(245, 124, 0, 0.06); border: 1px solid rgba(245, 124, 0, 0.3); border-radius: 10px; padding: 14px 16px; font-size: 13px;">
                         <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                             <span style="color: var(--text-muted);">බැංකුව (Bank):</span>
@@ -2015,7 +2024,7 @@
                 </h3>
                 <button type="button" onclick="closeAccountSwitchModal()" style="background: none; border: none; font-size: 20px; color: var(--text-muted); cursor: pointer;">✕</button>
             </div>
-            
+
             <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.5;">
                 පහත ගිණුම් අතරින් ඔබට පරීක්ෂා කිරීමට අවශ්‍ය සාමාජිකයා හෝ පරිපාලක ගිණුම තෝරන්න (Select an account to view):
             </p>
@@ -2082,7 +2091,7 @@
             if (!sidebar) return;
             const isCurrentlyOpen = sidebar.classList.contains('open');
             const shouldOpen = typeof open === 'boolean' ? open : !isCurrentlyOpen;
-            
+
             sidebar.classList.toggle('open', shouldOpen);
             if (backdrop) backdrop.classList.toggle('active', shouldOpen);
             document.body.style.overflow = shouldOpen ? 'hidden' : '';
@@ -2357,7 +2366,7 @@
             const kHeaderBadge = document.getElementById('settingsHeaderKycBadge');
             const kycText = `🛡️ KYC ${kycStatus.replace(/_/g, ' ')}`;
             const kycClass = `badge-pill ${kycStatus === 'APPROVED' || kycStatus === 'VERIFIED' ? 'badge-kyc-approved' : (kycStatus === 'PENDING' ? 'badge-kyc-pending' : (kycStatus === 'REJECTED' ? 'badge-kyc-rejected' : 'badge-kyc-none'))}`;
-            
+
             if (kBadge) {
                 kBadge.textContent = kycText;
                 kBadge.className = kycClass;
@@ -2577,12 +2586,12 @@
                 const tr = document.createElement('tr');
                 const dt = tx.created_at ? new Date(tx.created_at).toLocaleString() : '2026-09-01';
                 const isCredit = tx.credit_amount > 0 || (tx.amount > 0 && tx.type !== 'WITHDRAWAL_PAID' && tx.type !== 'WITHDRAWAL_REQUEST');
-                const amtStr = isCredit 
+                const amtStr = isCredit
                     ? `+ LKR ${Number(tx.credit_amount || tx.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`
                     : `- LKR ${Number(tx.debit_amount || Math.abs(tx.amount) || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 const amtColor = isCredit ? 'var(--brand-green)' : 'var(--ph-red)';
                 const balStr = `LKR ${Number(tx.balance_after !== undefined ? tx.balance_after : (tx.balance || 0)).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                
+
                 tr.innerHTML = `
                     <td>${dt}</td>
                     <td><strong>${tx.type || 'TRANSACTION'}</strong></td>
@@ -2614,7 +2623,7 @@
                 const amtStr = `LKR ${Number(w.amount || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 const refStr = w.reference_code || w.payment_reference || w.id || 'PENDING';
                 const stClass = w.status === 'PAID' || w.status === 'APPROVED' ? 'badge-qualified' : 'badge-active';
-                
+
                 tr.innerHTML = `
                     <td>${dt}</td>
                     <td>${bInfo}</td>
@@ -2644,10 +2653,10 @@
                 const tr = document.createElement('tr');
                 const dt = r.join_date ? new Date(r.join_date).toLocaleDateString() : '2026-09-01';
                 const posClass = r.tree_position === 'LEFT' ? 'badge-active' : 'badge-qualified';
-                const prodStatus = r.has_active_purchase 
-                    ? '<span style="color: var(--brand-green); font-weight: 700;">● ACTIVE</span>' 
+                const prodStatus = r.has_active_purchase
+                    ? '<span style="color: var(--brand-green); font-weight: 700;">● ACTIVE</span>'
                     : '<span style="color: var(--text-muted);">FREE (0.00)</span>';
-                
+
                 tr.innerHTML = `
                     <td><strong>${r.full_name || r.name || 'Member'}</strong></td>
                     <td>@${r.username || ''}</td>
@@ -2708,7 +2717,7 @@
                 div.style = 'background: var(--bg-main); border: 1px solid var(--border-color); border-radius: 14px; padding: 22px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 12px;';
                 const dt = p.activated_at ? new Date(p.activated_at).toLocaleDateString() : '2026-09-01';
                 const priceStr = `LKR ${Number(p.selling_price || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                
+
                 div.innerHTML = `
                     <div>
                         <h3 style="font-size: 17px; font-weight: 800; margin-bottom: 4px;">${p.product_name || p.name || p.title || 'Masterclass'}</h3>
@@ -2814,14 +2823,14 @@
                 const posBadge = leg === 'LEFT'
                     ? '<span class="sales-leg-badge badge-left" style="font-size: 11px; padding: 3px 8px;">👈 LEFT</span>'
                     : '<span class="sales-leg-badge badge-right" style="font-size: 11px; padding: 3px 8px;">👉 RIGHT</span>';
-                
+
                 const isAct = Boolean(m.is_active || (m.status || m.account_status || '').toUpperCase() === 'ACTIVE');
                 const isQual = Boolean(m.is_qualified || (m.qualification_status || '').toUpperCase() === 'QUALIFIED');
-                
+
                 const actBadge = isAct
                     ? '<span class="badge-pill badge-account-active" style="font-size: 10.5px;">● Active</span>'
                     : '<span class="badge-pill badge-account-inactive" style="font-size: 10.5px;">● Inactive</span>';
-                
+
                 const qualBadge = isQual
                     ? '<span class="badge-pill badge-qual-qualified" style="font-size: 10.5px; margin-left: 4px;">★ Qualified</span>'
                     : '';
@@ -4255,7 +4264,7 @@
                 let matchedUser = knownAccounts.get(targetClean);
                 if (!matchedUser) {
                     for (const [k, v] of knownAccounts.entries()) {
-                        if ((v.id && v.id.toLowerCase() === targetClean) || 
+                        if ((v.id && v.id.toLowerCase() === targetClean) ||
                             (v.username && v.username.toLowerCase() === targetClean) ||
                             (v.email && v.email.toLowerCase() === targetClean)) {
                             matchedUser = v;
@@ -4637,7 +4646,7 @@
             localStorage.setItem('hapanamy_user_profile', JSON.stringify(acc));
             closeAccountSwitchModal();
             showMemberToast(`🔄 Switched active view to <strong>${acc.full_name || acc.name || acc.username}</strong> (@${acc.username})`);
-            
+
             if (acc.role === 'admin' || acc.role === 'subadmin') {
                 setTimeout(() => { window.location.href = 'hapanamy-admin-portal-9226.html'; }, 600);
             } else {
@@ -4647,7 +4656,7 @@
 
         function applyDashboardData(data) {
             if (!data) return;
-            
+
             // Validate that profile belongs to expected active user if present
             const localUserStr = localStorage.getItem('active_user');
             let expectedUsername = '';
@@ -4681,7 +4690,7 @@
                 document.getElementById('sidebarName').textContent = uName;
                 document.getElementById('profileUsernameDisplay').innerHTML = `@${uHandle} (<span>${uId}</span>)`;
                 document.getElementById('sidebarUsername').textContent = `@${uHandle}`;
-                
+
                 const initial = (uName || uHandle || 'M')[0].toUpperCase();
                 document.getElementById('profileAvatarBig').textContent = initial;
                 document.getElementById('sidebarAvatar').textContent = initial;
@@ -4788,9 +4797,9 @@
                 // Merge any client-side registered downlines for this user
                 const localDownlines = getLocalDownlinesForUser(window.currentActiveUser);
                 localDownlines.forEach(ld => {
-                    const exists = teamList.some(m => 
-                        (m.username && m.username.toLowerCase() === ld.username.toLowerCase()) || 
-                        (m.id && m.id === ld.id) || 
+                    const exists = teamList.some(m =>
+                        (m.username && m.username.toLowerCase() === ld.username.toLowerCase()) ||
+                        (m.id && m.id === ld.id) ||
                         (m.user_id && m.user_id === ld.id)
                     );
                     if (!exists) {
@@ -4821,7 +4830,7 @@
                 if (document.getElementById('bvCurrentLeft')) document.getElementById('bvCurrentLeft').textContent = `LKR ${Number(curLeft || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 if (document.getElementById('bvCurrentRight')) document.getElementById('bvCurrentRight').textContent = `LKR ${Number(curRight || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
                 if (document.getElementById('bvMatchedVol')) document.getElementById('bvMatchedVol').textContent = `LKR ${Number(matched || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                
+
                 const cLeft = (curLeft || 0) - matched;
                 const cRight = (curRight || 0) - matched;
                 if (document.getElementById('bvCarryLeft')) document.getElementById('bvCarryLeft').textContent = `LKR ${Number(cLeft || 0).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
@@ -4904,7 +4913,7 @@
                 const localDownlines = getLocalDownlinesForUser(window.currentActiveUser);
                 const curUname = ((window.currentActiveUser && window.currentActiveUser.username) || '').toLowerCase().replace(/^@+/, '');
                 const curUid = ((window.currentActiveUser && window.currentActiveUser.id) || '').toLowerCase();
-                
+
                 localDownlines.forEach(ld => {
                     const ldUname = (ld.username || '').toLowerCase().replace(/^@+/, '');
                     const ldId = (ld.id || ld.user_id || '').toLowerCase();

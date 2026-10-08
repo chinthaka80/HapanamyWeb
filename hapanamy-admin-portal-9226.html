@@ -10,13 +10,33 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>Hapanamy.lk | Admin Dashboard | NOWATRIX Global</title>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Core styles -->
     <link rel="stylesheet" href="index.css">
-    
+
+    <!-- Client-Side Auth Guard & Cross-Tab Session Synchronizer -->
+    <script>
+        (function() {
+            function enforceAuthSession() {
+                const user = localStorage.getItem('active_user');
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                if (!user || !token) {
+                    window.location.href = 'login.html';
+                }
+            }
+            enforceAuthSession();
+            window.addEventListener('storage', enforceAuthSession);
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    enforceAuthSession();
+                }
+            });
+        })();
+    </script>
+
     <style>
         /* Modal Overlay & Box Styling */
         .modal-overlay {
@@ -419,7 +439,7 @@
             height: 26px;
         }
 
-        .switch input { 
+        .switch input {
             opacity: 0;
             width: 0;
             height: 0;
@@ -495,7 +515,7 @@
                 padding: 20px !important;
             }
         }
-        
+
         /* Mobile Bottom Nav styles */
         .mobile-bottom-nav {
             display: none;
@@ -547,7 +567,7 @@
                 <img src="assets/logo.jpg" alt="Hapanamy Logo">
                 <span>HAPANAMY<span>.lk</span></span>
             </div>
-            
+
             <ul class="admin-nav">
                 <li class="admin-nav-link active" onclick="switchAdminTab('dashboard')" id="nav-dashboard">
                     <span class="admin-nav-icon">📊</span>
@@ -600,7 +620,7 @@
             <!-- Topbar -->
             <header class="admin-topbar">
                 <h1 id="adminHeaderTitle">Admin Dashboard</h1>
-                
+
                 <div class="admin-topbar-actions">
                     <!-- Lang Switcher in admin topbar -->
                     <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 12px; font-weight: 700; cursor: pointer; transition: var(--transition-smooth); display: flex; align-items: center; justify-content: center; height: 38px;">
@@ -610,7 +630,7 @@
                         <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
                         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     </button>
-                    
+
                     <div class="admin-avatar-box">
                         <div class="admin-avatar">AD</div>
                         <div class="admin-avatar-info">
@@ -623,7 +643,7 @@
 
             <!-- Main Scrollable Content -->
             <div class="admin-main-content">
-                
+
                 <!-- TAB 1: OVERVIEW DASHBOARD -->
                 <div class="admin-panel active" id="panel-dashboard">
                     <div class="admin-stats-grid">
@@ -1025,7 +1045,7 @@
                             <input type="text" id="globalTxnSearchInput" placeholder="Enter Transaction ID (e.g. TXN-WD-8291-K4A7)..." style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px; font-size: 13px; outline: none; border-color: rgba(244,123,32,0.25);">
                             <button class="btn btn-primary" onclick="searchGlobalTransaction()" style="border: none; padding: 0 20px; border-radius: 6px; font-size: 13px; cursor: pointer; background-color: var(--brand-orange); font-weight: 700;">Search</button>
                         </div>
-                        
+
                         <!-- Search Results Area -->
                         <div id="txnSearchResultBox" style="margin-top: 15px; display: none; padding: 15px; border-radius: 6px; background-color: rgba(0,0,0,0.15); border: 1px dashed var(--brand-gold); text-align: left; font-size: 13px; line-height: 1.6;">
                             <!-- Results injected dynamically -->
@@ -1263,7 +1283,7 @@
                                 <button type="submit" class="btn btn-primary" style="width:100%; padding:12px; border:none; font-weight:700; cursor: pointer;">ලිපිය සජීවීව පළ කරන්න (Publish Article)</button>
                             </form>
                         </div>
-                        
+
                         <!-- Right: Published Custom Articles List -->
                         <div class="admin-card">
                             <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; color: var(--text-primary);">📂 පළ කළ ලිපි ලැයිස්තුව (Published Custom Articles)</h3>
@@ -1289,7 +1309,7 @@
                 <div class="admin-panel" id="panel-settings">
                     <div class="admin-settings-form">
                         <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">⚙️ WooCommerce / PayHere Gateway Settings</h3>
-                        
+
                         <div class="toggle-switch-container">
                             <div class="switch-label">
                                 <h4>PayHere Sandbox Mode</h4>
@@ -1305,7 +1325,7 @@
                             <input type="text" id="merchantId" value="1210234" required placeholder=" ">
                             <label for="merchantId">PayHere Merchant ID</label>
                         </div>
-                        
+
                         <div class="form-group" style="margin-top: 15px; margin-bottom: 25px;">
                             <label for="merchantSecret">PayHere Merchant Secret</label>
                             <input type="password" id="merchantSecret" value="••••••••••••••••••••" required placeholder="PayHere Merchant Secret">
@@ -1664,15 +1684,15 @@
                 <h3 id="productModalTitle" style="font-size: 18px; margin: 0; color:var(--text-primary);">📝 Add New Course Product</h3>
                 <button type="button" onclick="closeProductModal()" style="background: none; border: none; font-size: 26px; color: var(--text-muted); cursor: pointer; line-height: 1; padding: 0 5px;" title="Close">&times;</button>
             </div>
-            
+
             <form id="productCrudForm" onsubmit="saveProductForm(event)">
                 <input type="hidden" id="crudProductId">
-                
+
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
                     <!-- Column 1: Core Details & Pricing -->
                     <div>
                         <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">1. Product Details & Cost</h4>
-                        
+
                         <div class="form-group" style="margin-bottom: 12px;">
                             <label for="crudProductCategory" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">කාණ්ඩය (Category)</label>
                             <select id="crudProductCategory" required style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px;">
@@ -1744,7 +1764,7 @@
                             <label for="crudProductImg" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පින්තූර ලිපිනය (Banner Image Path)</label>
                             <input type="text" id="crudProductImg" required placeholder="assets/trading_banner.jpg" value="assets/trading_banner.jpg" style="width:100%; padding:9px 12px; background:var(--bg-main); border:1px solid var(--border-color); color:var(--text-primary); border-radius:8px; font-size:13px; box-sizing:border-box;">
                         </div>
-                        
+
                         <div class="form-group" style="margin-bottom: 12px;">
                             <label for="crudProductDesc" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">පාඨමාලා විස්තරය (Description)</label>
                             <textarea id="crudProductDesc" required placeholder="Enter course description here..." style="width: 100%; min-height: 50px; padding: 8px 12px; background: var(--bg-main); border: 1px solid var(--border-color); color: var(--text-primary); border-radius: 8px; font-size: 12px; outline: none; resize: vertical; box-sizing:border-box;"></textarea>
@@ -1757,7 +1777,7 @@
                             <h4 style="font-size:14px; color:var(--brand-gold); margin:0;">2. Company Profit Reserves</h4>
                             <button type="button" class="btn btn-secondary" onclick="autoScaleReserves()" style="padding: 2px 8px; font-size: 11px; cursor: pointer; color: var(--brand-gold); border-color: var(--brand-gold); border-width: 1px;" title="Scale reserves proportionally to selling price">⚡ Auto-Scale</button>
                         </div>
-                        
+
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="crudProductMinProfit" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Min Profit (LKR)</label>
@@ -1815,7 +1835,7 @@
                     <!-- Column 3: MLM Settings & Safety Card -->
                     <div>
                         <h4 style="font-size:14px; color:var(--brand-gold); margin-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.05); padding-bottom:4px;">3. MLM settings</h4>
-                        
+
                         <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px; margin-bottom:12px;">
                             <div class="form-group" style="margin-bottom:0;">
                                 <label for="crudProductDirectPercent" style="display:block; margin-bottom:4px; font-size:12px; font-weight:600; color:var(--text-secondary);">Direct Comm (%)</label>
@@ -1924,15 +1944,6 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // 🔒 Session Security Guard
-        (function() {
-            const activeUser = JSON.parse(localStorage.getItem('active_user'));
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            if (!activeUser && !token) {
-                window.location.href = 'login.html';
-            }
-        })();
-        
         // Admin UI translations
         const adminTranslations = {
             si: {
@@ -1952,7 +1963,7 @@
             if (!trans) return;
 
             document.querySelector('aside div a').innerHTML = `<span class="admin-nav-icon">←</span>` + trans.viewWeb;
-            
+
             const headings = document.querySelectorAll('.admin-table-title span');
             if (headings.length >= 2) {
                 headings[0].textContent = trans.regTitle;
@@ -1968,9 +1979,9 @@
         function initAdminLanguage() {
             const langToggle = document.getElementById('langToggleBtn');
             let currentLang = localStorage.getItem('language') || 'si';
-            
+
             applyAdminLanguage(currentLang);
-            
+
             if (langToggle) {
                 langToggle.addEventListener('click', () => {
                     currentLang = currentLang === 'si' ? 'en' : 'si';
@@ -1993,7 +2004,7 @@
             themeToggleBtn.addEventListener('click', () => {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                
+
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
                 showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
@@ -2004,7 +2015,7 @@
         function searchGlobalTransaction() {
             const query = document.getElementById('globalTxnSearchInput').value.trim();
             const resultBox = document.getElementById('txnSearchResultBox');
-            
+
             if (!query) {
                 showToast('⚠️ Please enter a Transaction ID to search.');
                 return;
@@ -2107,7 +2118,7 @@
         // Load dynamic bank slips from queue and server API
         async function loadBankReceiptsTable() {
             let list = JSON.parse(localStorage.getItem('bank_slips_queue')) || [];
-            
+
             try {
                 const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token') || 'token-namobuddhaya-root';
                 const res = await fetch('/api/admin/deposits/pending', {
@@ -2154,7 +2165,7 @@
             // Append dynamic slips
             list.forEach((item, index) => {
                 const badgeClass = item.status.toLowerCase().includes('pending') ? 'pending' : 'paid';
-                const actionButtons = item.status.toLowerCase().includes('pending') 
+                const actionButtons = item.status.toLowerCase().includes('pending')
                     ? `<div style="display: flex; gap: 8px;">
                             <button class="btn btn-primary" style="padding: 6px 12px; font-size: 11.5px; border: none; background-color: var(--brand-green-light); color: #102A43; cursor: pointer;" onclick="approveBankOrder(this, '${item.orderId}', '${item.userName}', ${item.amount}, '${item.course}', ${index})">Approve</button>
                             <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 11.5px; border-width: 1px; color: var(--ph-red); cursor: pointer;" onclick="rejectBankOrder(this, ${index})">Reject</button>
@@ -2182,7 +2193,7 @@
         function approveBankOrder(btn, orderId, userName, amount, courseName, queueIndex = -1) {
             // 1. Calculate Binary MLM Direct Commission (8%)
             const commDirect = amount * 0.08;
-            
+
             let referrerCode = 'NAMOBUDDHAYA';
 
             // 2. Save approved status to queue and unlock course for student
@@ -2192,7 +2203,7 @@
                 if (item) {
                     item.status = 'Approved & Activated';
                     referrerCode = item.referrer || 'NAMOBUDDHAYA';
-                    
+
                     // Unlock the specific courses/ebooks dynamically for the buyer
                     const userEmail = item.email || 'student@hapanamy.lk';
                     let unlocked = JSON.parse(localStorage.getItem('unlocked_courses_' + userEmail)) || [];
@@ -2605,7 +2616,7 @@
 
                 if (statusCard) statusCard.className = 'safety-card ' + status.toLowerCase();
                 if (statusLabel) statusLabel.textContent = status;
-                
+
                 if (status === 'BLOCKED') {
                     if (reasonBox) {
                         reasonBox.style.display = 'block';
@@ -2663,7 +2674,7 @@
                 modal.style.visibility = 'visible';
                 modal.style.opacity = '1';
                 modal.style.pointerEvents = 'auto';
-                
+
                 const setVal = (id, val) => {
                     const el = document.getElementById(id);
                     if (el) el.value = val;
@@ -2672,7 +2683,7 @@
                 if (action === 'add') {
                     const titleElem = document.getElementById('productModalTitle');
                     if (titleElem) titleElem.textContent = '➕ Add New Course Product';
-                    
+
                     const defaultPrice = 7450;
                     setVal('crudProductId', '');
                     setVal('crudProductTitle', '');
@@ -2682,7 +2693,7 @@
                     setVal('crudProductDiscountType', 'NONE');
                     setVal('crudProductDiscountValue', '0');
                     setVal('crudProductPrice', defaultPrice);
-                    
+
                     // Proportionally scaled safe economics
                     setVal('crudProductCost', Math.round(defaultPrice * 0.20));
                     setVal('crudProductMinProfit', Math.round(defaultPrice * 0.15));
@@ -2692,7 +2703,7 @@
                     setVal('crudProductTaxReserve', Math.round(defaultPrice * 0.05));
                     setVal('crudProductOtherReserve', Math.round(defaultPrice * 0.02));
                     setVal('crudProductSafetyBuffer', Math.round(defaultPrice * 0.05));
-                    
+
                     setVal('crudProductDirectPercent', '8.0');
                     setVal('crudProductBinaryVolume', defaultPrice);
                     setVal('crudProductMaxLevels', '7');
@@ -2704,11 +2715,11 @@
                 } else {
                     const titleElem = document.getElementById('productModalTitle');
                     if (titleElem) titleElem.textContent = '✏️ Edit Course Details';
-                    
+
                     const courses = JSON.parse(localStorage.getItem('hapanamy_courses_list')) || [];
                     const c = courses.find(item => String(item.id) === String(courseId)) || {};
                     const price = Number(c.price) || 7450;
-                    
+
                     setVal('crudProductId', c.id || courseId || '');
                     setVal('crudProductCategory', c.category || 'Trading Course');
                     setVal('crudProductTitle', c.title || '');
@@ -2717,7 +2728,7 @@
                     setVal('crudProductDiscountType', c.discountType || 'NONE');
                     setVal('crudProductDiscountValue', c.discountValue !== undefined ? c.discountValue : 0);
                     setVal('crudProductPrice', c.price !== undefined ? c.price : price);
-                    
+
                     setVal('crudProductCost', c.productCost !== undefined ? c.productCost : Math.round(price * 0.20));
                     setVal('crudProductMinProfit', c.minimumCompanyProfit !== undefined ? c.minimumCompanyProfit : Math.round(price * 0.15));
                     setVal('crudProductOpReserve', c.operatingCostReserve !== undefined ? c.operatingCostReserve : Math.round(price * 0.05));
@@ -2726,7 +2737,7 @@
                     setVal('crudProductTaxReserve', c.taxReserve !== undefined ? c.taxReserve : Math.round(price * 0.05));
                     setVal('crudProductOtherReserve', c.otherReserve !== undefined ? c.otherReserve : Math.round(price * 0.02));
                     setVal('crudProductSafetyBuffer', c.commissionSafetyBuffer !== undefined ? c.commissionSafetyBuffer : Math.round(price * 0.05));
-                    
+
                     setVal('crudProductDirectPercent', c.directCommissionRate !== undefined ? c.directCommissionRate : 8.0);
                     setVal('crudProductBinaryVolume', c.binaryVolume !== undefined ? c.binaryVolume : price);
                     setVal('crudProductMaxLevels', c.maxBinaryQualifiedLevels !== undefined ? c.maxBinaryQualifiedLevels : 7);
@@ -2771,11 +2782,11 @@
         function saveProductForm(event) {
             try {
                 if (event && event.preventDefault) event.preventDefault();
-                
+
                 recalcProductEconomicsFrontend();
                 const statusLabel = document.getElementById('safetyCardStatus');
                 const isBlocked = statusLabel && statusLabel.textContent === 'BLOCKED';
-                
+
                 // If blocked, automatically resolve by setting safe binary rate
                 if (isBlocked) {
                     const rateText = document.getElementById('previewMaxSafeRate');
@@ -2808,7 +2819,7 @@
                 const discountValue = getNum('crudProductDiscountValue', 0);
                 let price = getNum('crudProductPrice', 7450);
                 if (price <= 0) price = 7450;
-                
+
                 let productCost = getNum('crudProductCost', Math.round(price * 0.20));
                 let minProfit = getNum('crudProductMinProfit', Math.round(price * 0.15));
                 let opReserve = getNum('crudProductOpReserve', Math.round(price * 0.05));
@@ -2817,13 +2828,13 @@
                 let taxReserve = getNum('crudProductTaxReserve', Math.round(price * 0.05));
                 let otherReserve = getNum('crudProductOtherReserve', Math.round(price * 0.02));
                 let safetyBuffer = getNum('crudProductSafetyBuffer', Math.round(price * 0.05));
-                
+
                 const directPercent = getNum('crudProductDirectPercent', 8.0);
                 const binaryVolume = getNum('crudProductBinaryVolume', price);
                 const maxLevels = parseInt(getVal('crudProductMaxLevels', '7')) || 7;
                 const commissionMode = getVal('crudProductCommissionMode', 'MANUAL');
                 const binaryPercent = getNum('crudProductBinaryPercent', 3.0);
-                
+
                 const image = getVal('crudProductImg', 'assets/trading_banner.jpg') || 'assets/trading_banner.jpg';
                 const description = getVal('crudProductDesc', title + ' - Practical masterclass program with lifetime access.') || (title + ' - Practical masterclass program with lifetime access.');
                 const syllabus = getVal('crudProductSyllabus', '01. Core Foundations\n02. Practical Strategies\n03. Risk Management') || '01. Core Foundations\n02. Practical Strategies\n03. Risk Management';
@@ -2935,16 +2946,16 @@
             // Remove active classes
             const tabs = document.querySelectorAll('.admin-nav-link');
             const panels = document.querySelectorAll('.admin-panel');
-            
+
             tabs.forEach(t => t.classList.remove('active'));
             panels.forEach(p => p.classList.remove('active'));
-            
+
             // Set active class
             const navElem = document.getElementById(`nav-${tabId}`);
             if (navElem) navElem.classList.add('active');
             const panelElem = document.getElementById(`panel-${tabId}`);
             if (panelElem) panelElem.classList.add('active');
-            
+
             if (tabId === 'courses') {
                 renderAdminCourses();
             }
@@ -3006,7 +3017,7 @@
         function approveAffiliate(rowId, name) {
             document.getElementById(rowId).remove();
             showToast(`✅ <strong>අනුමත කරන ලදී!</strong> ${name} සාර්ථකව Affiliate කණ්ඩායමට ඇතුළත් කරන ලදී.`);
-            
+
             // If table is empty, show empty message
             const tableBody = document.querySelector('#pendingRegTable tbody');
             if (tableBody.children.length === 0) {
@@ -3026,7 +3037,7 @@
             // Change status to approved/paid
             statusSpan.className = 'badge-status paid';
             statusSpan.textContent = 'Paid & Completed';
-            
+
             // Disable button
             payButton.disabled = true;
             payButton.textContent = 'Completed';
@@ -3047,10 +3058,10 @@
             if (!rangeEl) return;
             var range = rangeEl.value;
             var rows = document.querySelectorAll('.rep-row');
-            
+
             var totalSales = 0;
             var totalComm = 0;
-            
+
             rows.forEach(function(row) {
                 var dateTag = row.getAttribute('data-date');
                 var isMatch = false;
@@ -3064,7 +3075,7 @@
                     row.style.display = 'table-row';
                     var priceText = row.children[3] ? row.children[3].textContent.replace('රු. ', '').replace(/,/g, '') : '0';
                     var commText = row.children[5] ? row.children[5].textContent.replace('රු. ', '').replace(/,/g, '') : '0';
-                    
+
                     totalSales += (parseFloat(priceText) || 0);
                     totalComm += (parseFloat(commText) || 0);
                 } else {
@@ -3125,17 +3136,17 @@
         function renderAdminBlogArticles() {
             const blogListBody = document.getElementById('adminBlogList');
             if (!blogListBody) return;
-            
+
             blogListBody.innerHTML = '';
-            
+
             // Retrieve custom articles from localStorage
             const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
-            
+
             if (customArticles.length === 0) {
                 blogListBody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:var(--text-muted); padding:20px;">No custom articles published yet.</td></tr>`;
                 return;
             }
-            
+
             customArticles.forEach((article, idx) => {
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
@@ -3153,7 +3164,7 @@
 
         function uploadBlogImage(file) {
             if (!file) return Promise.resolve(null);
-            
+
             return new Promise((resolve, reject) => {
                 const filename = file.name;
                 fetch(`/api/upload?filename=${encodeURIComponent(filename)}`, {
@@ -3184,7 +3195,7 @@
             const content = document.getElementById('blogPostContent').value.trim();
             const fileInput = document.getElementById('blogPostImageFile');
             const file = fileInput ? fileInput.files[0] : null;
-            
+
             if (!title || !intro || !content) {
                 showToast('⚠️ Please fill in all required fields (Title, Intro, and Content)!');
                 return;
@@ -3205,7 +3216,7 @@
                 .then(uploadedPath => {
                     const finalBanner = uploadedPath || textImage || 'assets/ai_prompts_ebook_banner.jpg';
                     let customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
-                    
+
                     if (editingArticleId) {
                         // Update existing article
                         const articleIdx = customArticles.findIndex(art => art.id === editingArticleId);
@@ -3216,7 +3227,7 @@
                             customArticles[articleIdx].readTime = readTime;
                             customArticles[articleIdx].intro = intro;
                             customArticles[articleIdx].content = content;
-                            
+
                             localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
                             showToast('🎉 <strong>Success!</strong> Blog article updated successfully!');
                         }
@@ -3224,7 +3235,7 @@
                     } else {
                         // Create a new article
                         const articleId = 'custom-' + title.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-                        
+
                         const newArticle = {
                             id: articleId,
                             title: title,
@@ -3235,7 +3246,7 @@
                             content: content,
                             date: new Date().toLocaleDateString()
                         };
-                        
+
                         customArticles.push(newArticle);
                         localStorage.setItem('hapanamy_custom_articles', JSON.stringify(customArticles));
                         showToast('🎉 <strong>Success!</strong> Blog article published and live on homepage!');
@@ -3257,20 +3268,20 @@
             const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
             const article = customArticles[index];
             if (!article) return;
-            
+
             document.getElementById('blogPostTitle').value = article.title;
             document.getElementById('blogPostCategory').value = article.category;
             document.getElementById('blogPostImage').value = article.banner;
             document.getElementById('blogPostReadTime').value = article.readTime;
             document.getElementById('blogPostIntro').value = article.intro;
             document.getElementById('blogPostContent').value = article.content;
-            
+
             editingArticleId = article.id;
-            
+
             const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
             submitBtn.textContent = 'ලිපිය යාවත්කාලීන කරන්න (Update Article)';
             submitBtn.style.backgroundColor = 'var(--brand-gold)';
-            
+
             if (!document.getElementById('cancelEditBtn')) {
                 const cancelBtn = document.createElement('button');
                 cancelBtn.type = 'button';
@@ -3281,18 +3292,18 @@
                 cancelBtn.onclick = cancelEdit;
                 document.getElementById('blogPostForm').appendChild(cancelBtn);
             }
-            
+
             document.getElementById('blogPostForm').scrollIntoView({ behavior: 'smooth' });
         }
 
         function cancelEdit() {
             editingArticleId = null;
             document.getElementById('blogPostForm').reset();
-            
+
             const submitBtn = document.querySelector('#blogPostForm button[type="submit"]');
             submitBtn.textContent = 'ලිපිය සජීවීව පළ කරන්න (Publish Article)';
             submitBtn.style.backgroundColor = '';
-            
+
             const cancelBtn = document.getElementById('cancelEditBtn');
             if (cancelBtn) cancelBtn.remove();
         }
@@ -4324,12 +4335,12 @@
 
             // Merge and deduplicate all member sources
             const staleBlacklist = [
-                'ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk', 
+                'ayubocey@gmail.com', 'hiru@hapanamy.lk', 'sun@hapanamy.lk', 'sundd@hapanamy.lk', 'star01@hapanamy.lk',
                 'hiru', 'sun', 'sundd', 'star01', 'star02', 'star03',
-                'slt202077@gmail.com', 'slt202077', 'star04@gmail.com', 'star04', 
-                'star05@gmail.com', 'star05', 'star06@gmail.com', 'star06', 
+                'slt202077@gmail.com', 'slt202077', 'star04@gmail.com', 'star04',
+                'star05@gmail.com', 'star05', 'star06@gmail.com', 'star06',
                 'star07@gmail.com', 'star07', 'maxsave2505',
-                'kavishkadineth4418@gmail.com', 'kavishkadineth4418', 
+                'kavishkadineth4418@gmail.com', 'kavishkadineth4418',
                 'kavishkadineth4420@gmail.com', 'kavishkadineth4420'
             ];
 
@@ -4470,7 +4481,7 @@
             members.forEach(m => {
                 const tr = document.createElement('tr');
                 const dt = m.created_at ? new Date(m.created_at).toLocaleDateString() : '2026-09-01';
-                
+
                 // Sponsor info
                 let sponsorText = '<span style="color:var(--text-muted);">Direct (Company)</span>';
                 if (m.sponsor) {
@@ -4495,7 +4506,7 @@
                 // Position badge
                 let pos = (m.position || (m.binary_node && m.binary_node.position) || 'LEFT').toUpperCase();
                 if (r === 'admin' || r === 'subadmin' || (m.username || '').toLowerCase() === 'hiru') pos = 'ROOT';
-                
+
                 let posBadge = '<span class="badge-status" style="background:rgba(255,255,255,0.05); color:var(--text-muted);">ROOT</span>';
                 if (pos === 'LEFT') posBadge = '<span class="sales-leg-badge badge-left">👈 LEFT</span>';
                 else if (pos === 'RIGHT') posBadge = '<span class="sales-leg-badge badge-right">👉 RIGHT</span>';
@@ -4531,11 +4542,11 @@
 
                 const personalBvNum = Number(m.personal_bv !== undefined ? m.personal_bv : (m.business_volume ? m.business_volume.personal_bv : 0));
                 const personalBvStr = `රු. ${personalBvNum.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
-                
+
                 const leftVol = m.volume_summary ? Number(m.volume_summary.current_left_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_left_volume || 0).toLocaleString() : Number(m.left_volume || 0).toLocaleString());
                 const rightVol = m.volume_summary ? Number(m.volume_summary.current_right_volume || 0).toLocaleString() : (m.business_volume ? Number(m.business_volume.current_right_volume || 0).toLocaleString() : Number(m.right_volume || 0).toLocaleString());
                 const teamVolStr = `<small style="color:#42A5F5;">L: ${leftVol}</small> | <small style="color:#BA68C8;">R: ${rightVol}</small>`;
-                
+
                 const availBal = m.available_balance !== undefined ? Number(m.available_balance || 0) : (m.financial ? Number(m.financial.available_balance || 0) : 0);
                 const totComm = m.total_commission !== undefined ? Number(m.total_commission || 0) : (m.financial ? Number(m.financial.total_earned || 0) : 0);
                 const walletStr = `<strong style="color:var(--brand-gold);">රු. ${availBal.toLocaleString(undefined, {minimumFractionDigits: 2})}</strong><br><small style="color:var(--text-muted);">Earned: රු. ${totComm.toLocaleString(undefined, {minimumFractionDigits: 2})}</small>`;
@@ -4798,7 +4809,7 @@
 
             document.getElementById('modalMemberSponsor').textContent = net.sponsor ? `${net.sponsor.full_name} (@${net.sponsor.username})` : 'Direct Company';
             document.getElementById('modalMemberParent').textContent = (net.binary_placement && net.binary_placement.parent_username) ? `@${net.binary_placement.parent_username}` : 'Root';
-            
+
             const pos = (net.binary_placement && net.binary_placement.position) ? net.binary_placement.position.toUpperCase() : 'ROOT';
             const posEl = document.getElementById('modalMemberPosition');
             if (posEl) {
@@ -4968,7 +4979,7 @@
             document.getElementById('resetModalTargetUsername').value = userName || '';
             document.getElementById('resetModalTargetEmail').value = email || '';
             document.getElementById('resetModalNewPass').value = 'Hapana123';
-            
+
             const modal = document.getElementById('adminPasswordResetModal');
             if (modal) modal.style.display = 'flex';
         }
@@ -4982,7 +4993,7 @@
             e.preventDefault();
             const btn = document.getElementById('btnConfirmPasswordReset');
             const originalText = btn ? btn.innerHTML : 'Confirm';
-            
+
             const userName = document.getElementById('resetModalTargetUsername').value;
             const email = document.getElementById('resetModalTargetEmail').value;
             const newPassword = document.getElementById('resetModalNewPass').value.trim() || 'Hapana123';
@@ -5109,8 +5120,8 @@
             const grossProfitCents = sellingPriceCents - costCents;
             const grossProfit = grossProfitCents / 100;
 
-            const grossMarginPercent = sellingPriceCents > 0 
-                ? ((grossProfitCents / sellingPriceCents) * 100).toFixed(1) 
+            const grossMarginPercent = sellingPriceCents > 0
+                ? ((grossProfitCents / sellingPriceCents) * 100).toFixed(1)
                 : '0.0';
 
             const protectedAmtCents = Math.round((minProfit + opReserve + procReserve + refundReserve + taxReserve + otherReserve) * 100);

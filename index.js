@@ -13,7 +13,7 @@ const courseData = {
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 14px; color: var(--text-primary); line-height: 1.6; font-weight: 700; margin-bottom: 15px; text-align: center;">
                 ඔබේ ව්‍යාපාරය ඔබ කරගෙන යන්න. Social Media අපි බලාගන්නම්!
             </p>
@@ -52,7 +52,7 @@ const courseData = {
                     Business Owners, Shops, Restaurants, Hotels, Education Institutes, Service Providers, Online Businesses, Personal Brands, Startups සහ Content Creators.
                 </p>
             </div>
-            
+
             <div style="margin-top: 25px; background: rgba(240, 179, 35, 0.05); border: 1px dashed var(--brand-gold); padding: 15px; border-radius: 8px; font-size: 12px; color: var(--text-primary);">
                 <strong>💰 සේවා ගාස්තුව:</strong> ඔබගේ ව්‍යාපාරයේ අවශ්‍යතාවය, Social Media Platforms ගණන, Content ප්‍රමාණය සහ කළමනාකරණ අවශ්‍යතා අනුව සේවා ගාස්තුව වෙනස් වේ. ඔබගේ අවශ්‍යතාවයට ගැළපෙන Custom Package එකක් ලබාගන්න.
                 <div style="margin-top: 10px; font-weight: 700; color: var(--brand-orange);">📞 අදම විමසන්න: 072 609 0050 (WhatsApp / Normal Call)</div>
@@ -79,7 +79,7 @@ const courseData = {
                 <h4 style="color: #1877F2; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🚀 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 ආයෝජන මුදලක් නොමැතිව Facebook හරහා නීත්‍යානුකූලව Dollar Income උපයන්න අවශ්‍ය දැනුම මුල සිටම සරලව.
             </p>
@@ -116,7 +116,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Facebook Monetization මුල සිට</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -125,7 +125,7 @@ const courseData = {
                         <li>Original vs Copy-Paste Content මඟින් මුදල් සෙවීම</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Content Creation & Viral Traffic Formulas</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -185,7 +185,7 @@ const courseData = {
                 <h4 style="color: #FE2C55; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📱 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 TikTok සහ AI භාවිතයෙන් ආයෝජන මුදලක් නොමැතිව Dollar Income උපයන්න අවශ්‍ය දැනුම.
             </p>
@@ -222,7 +222,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: TikTok Setup & Niche Selection</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -231,7 +231,7 @@ const courseData = {
                         <li>TikTok Algorithm ක්‍රියාකාරීත්වය සහ Guidelines</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: AI Content Creation & Monetization Streams</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -260,7 +260,7 @@ const courseData = {
                 <h4 style="color: #FF0000; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎥 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 YouTube සහ AI භාවිතයෙන් ආයෝජන මුදලක් නොමැතිව Dollar Income උපයා ගැනීමට අවශ්‍ය සම්පූර්ණ ප්‍රායෝගික Zoom පුහුණුව.
             </p>
@@ -297,7 +297,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: YouTube Channel Setup & SEO</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -306,7 +306,7 @@ const courseData = {
                         <li>YouTube Algorithm ක්‍රියාකාරීත්වය සහ Traffic Sources</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Faceless Channels & AI Content Creation</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -366,7 +366,7 @@ const courseData = {
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 🚀 "එකම පාඨමාලාවකින් Social Media Platforms 3කින්ම Dollar Income උපයන ආකාරය ඉගෙන ගන්න!"
             </p>
@@ -406,7 +406,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Social Media Foundation</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -496,7 +496,7 @@ const courseData = {
                 <h4 style="color: #25D366; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💵 FOREX TRADING ACADEMY</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 💵 "Forex Trading ප්‍රායෝගික පාඨමාලාව - නිවැරදිව Trading කිරීම සහ Currency Pairs විශ්ලේෂණය!"
             </p>
@@ -532,7 +532,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Forex Market Fundamentals</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -541,7 +541,7 @@ const courseData = {
                         <li>Buy / Sell Orders සහ Market Sessions</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Technical Analysis & Orders</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -600,7 +600,7 @@ const courseData = {
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🪙 CRYPTOCURRENCY TRADING ACADEMY</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 🪙 "Cryptocurrency Trading ප්‍රායෝගික පාඨමාලාව - Bitcoin සහ Altcoins වෙළඳපොළ විශ්ලේෂණය!"
             </p>
@@ -636,7 +636,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Crypto & Blockchain Fundamentals</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -645,7 +645,7 @@ const courseData = {
                         <li>Spot Wallets, Funding Wallets, Transfer, සහ P2P මඟින් ගනුදෙනු කිරීම</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Technical Analysis & Spot Trading</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -703,7 +703,7 @@ const courseData = {
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📈 OPTIONS & SYNTHETIC INDICES TRADING ACADEMY</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 📈 "Options Trading ප්‍රායෝගික පාඨමාලාව - Volatility, Crash, Boom නිවැරදිව Trade කිරීම!"
             </p>
@@ -739,7 +739,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Options & Deriv Platform Setup</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -748,7 +748,7 @@ const courseData = {
                         <li>Synthetic Indices හඳුන්වාදීම</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Synthetic Indices & Volatility</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -805,7 +805,7 @@ const courseData = {
                 <h4 style="color: var(--brand-red); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🏆 INSTITUTIONAL TRADING MASTERCLASS</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 🏆 "Advanced Institutional Trading Masterclass - SMC & ICT Concepts ප්‍රායෝගිකව!"
             </p>
@@ -841,7 +841,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01-02: Advanced Market Structure & SMC Basics</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -849,7 +849,7 @@ const courseData = {
                         <li>Order Blocks, Breaker Blocks, Mitigation Blocks, FVG (Fair Value Gap)</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 03-04: Liquidity Pools & Inducements</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -907,7 +907,7 @@ const courseData = {
                 <h4 style="color: #AF87FF; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎬 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 🎥 "AI භාවිතයෙන් මිනිත්තු කිහිපයකින් Professional Videos නිර්මාණය කර Online Income උපයන්න!"
             </p>
@@ -947,7 +947,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: AI Fundamentals & Scripting</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -956,7 +956,7 @@ const courseData = {
                         <li>Viral Video Ideas, hooks, සහ Titles නිර්මාණය කරන ආකාරය</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: AI Images & Video Generation</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1023,7 +1023,7 @@ const courseData = {
                 <h4 style="color: var(--brand-orange); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🎓 HAPANAMY.LK</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 🤖 "AI ඉගෙන ගන්න... AI භාවිතයෙන් නිර්මාණ කරන්න... AI භාවිතයෙන් මුදල් උපයන්න!"
             </p>
@@ -1063,7 +1063,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: AI Foundations & ChatGPT</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1072,7 +1072,7 @@ const courseData = {
                         <li>Research, content creation, සහ learning සඳහා AI chat assistants</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: Prompt Engineering & Productivity</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1143,7 +1143,7 @@ const courseData = {
                     <li>🎁 Private Student Community & Lifetime Updates</li>
                 </ul>
             </div>
-            
+
             <div style="margin-top: 20px; background-color: rgba(244,123,32,0.05); border: 1px solid var(--border-color); padding: 15px; border-radius: 8px; text-align: left;">
                 <h4 style="color: var(--brand-orange); margin: 0 0 8px 0; font-size: 13.5px; font-weight: 700;">❤️ Lifetime Support (ජීවිත කාලයටම සහාය)</h4>
                 <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin: 0;">
@@ -1176,7 +1176,7 @@ const courseData = {
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">💻 WEB DEVELOPMENT ACADEMY</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 💻 "මුල සිටම වෘත්තීය මට්ටමේ Website Developer කෙනෙකු බවට පත්වන්න!"
             </p>
@@ -1215,7 +1215,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 සතිපතා පුහුණු විෂය මාලාව</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">Week 01: Web Fundamentals & HTML5</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1223,7 +1223,7 @@ const courseData = {
                         <li>HTML5 structure, tags, forms, tables, links, images, layout elements</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">Week 02: CSS3 & Responsive Layout Design</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1315,7 +1315,7 @@ const courseData = {
                 <h4 style="color: var(--brand-green-light); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">📊 FINANCIAL MARKETS SERIES</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 📘 "Trading ඉගෙන ගන්න... අවදානම තේරුම් ගන්න... සැලසුමක් සමඟ වෙළඳපොළට පිවිසෙන්න!" 📈
             </p>
@@ -1348,7 +1348,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 E-Book හි අඩංගු ප්‍රධාන මාතෘකා</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">🌍 මූල්‍ය වෙළඳපොළ හැඳින්වීම (Introduction to Markets)</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1356,7 +1356,7 @@ const courseData = {
                         <li>Market Sessions සහ Trading Terminology මූලික කරුණු</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">📊 Chart Reading & Candlestick Analysis</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1431,7 +1431,7 @@ const courseData = {
                 <h4 style="color: var(--brand-gold); margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🌟 SELF DEVELOPMENT SERIES</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 📖 "ඔබේ සිහින සැබෑ කරගන්න... ඔබේ ජීවිතය වෙනස් කරන්න!" 🌟
             </p>
@@ -1467,7 +1467,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 E-Book හි අඩංගු ප්‍රධාන මාතෘකා</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">🎯 ඉලක්ක සැකසීම සහ ජීවිතයේ දැක්ම</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1475,7 +1475,7 @@ const courseData = {
                         <li>කෙටි කාලීන, දිගු කාලීන, සහ දිනපතා ඉලක්ක සැලසුම් කිරීම</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">🚀 කල් දැමීමේ පුරුද්දෙන් මිදෙමු (Procrastination)</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1546,7 +1546,7 @@ const courseData = {
                 <h4 style="color: #00F2EA; margin: 0; font-size: 15px; font-weight: 800; font-family:'Outfit',sans-serif;">🤖 AI PROMPTS DIRECTORY</h4>
                 <p style="margin: 5px 0 0 0; font-size: 12.5px; color: var(--brand-gold); font-weight: 700;">සම්බන්ධ වන්න • ඉගෙන ගන්න • වර්ධනය වන්න • උපයන්න</p>
             </div>
-            
+
             <p style="font-size: 13.5px; color: var(--text-primary); line-height: 1.6; font-weight: 600; margin-bottom: 15px;">
                 📘 "AI සමඟ වැඩ කරන ඔබට අවශ්‍ය සියලුම Prompts සහ Templates එකම E-Book එකක!"
             </p>
@@ -1583,7 +1583,7 @@ const courseData = {
 
             <div style="margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 15px;">
                 <h4 style="color: var(--brand-gold); border-left: 3px solid var(--brand-orange); padding-left: 8px; font-size: 14px; margin-bottom: 15px;">📚 E-Book හි අඩංගු ප්‍රධාන කාණ්ඩ</h4>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-orange); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-orange); font-size: 13px;">ChatGPT / Claude Chat Prompt Collection</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1591,7 +1591,7 @@ const courseData = {
                         <li>Social media captions, video scripts, research papers, translation prompts</li>
                     </ul>
                 </div>
-                
+
                 <div style="background-color: var(--bg-surface); border: 1px solid var(--border-color); border-left: 4px solid var(--brand-gold); padding: 12px; border-radius: 6px; margin-bottom: 10px; text-align: left;">
                     <strong style="color: var(--brand-gold); font-size: 13px;">AI Image Generator Prompt Collection (Midjourney / FLUX)</strong>
                     <ul style="margin: 5px 0 0 15px; padding: 0; font-size: 12px; color: var(--text-muted); line-height: 1.5;">
@@ -1675,7 +1675,7 @@ function initNavigation() {
             link.addEventListener('click', () => {
                 navMenu.classList.remove('open');
                 mobileMenuBtn.classList.remove('active');
-                
+
                 // Set active link class
                 navLinks.forEach(l => l.classList.remove('active'));
                 link.classList.add('active');
@@ -1705,7 +1705,7 @@ function initNavigation() {
 function initTheme() {
     const themeToggleBtn = document.getElementById('themeToggleBtn');
     const savedTheme = localStorage.getItem('theme') || 'dark';
-    
+
     // Set initial theme
     document.documentElement.setAttribute('data-theme', savedTheme);
 
@@ -1713,10 +1713,10 @@ function initTheme() {
         themeToggleBtn.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            
+
             showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
         });
     }
@@ -1737,7 +1737,7 @@ function initCourseFilter() {
             const cardTitle = card.dataset.title || '';
             const cardCategory = card.dataset.category || '';
             const cardStatus = card.dataset.status || 'Active';
-            
+
             const matchesSearch = cardTitle.includes(query) || card.textContent.toLowerCase().includes(query);
             const matchesCategory = selectedFilter === 'all' || cardCategory === selectedFilter;
 
@@ -1765,13 +1765,13 @@ function initCourseFilter() {
 // Count Up Statistics Animation
 function initStatsCounter() {
     const stats = document.querySelectorAll('.stat-number, .stat-number-pct, .stat-number-rs');
-    
+
     const countUp = (element) => {
         const target = parseInt(element.getAttribute('data-target'), 10);
         let count = 0;
         const duration = 2000; // 2 seconds
         const stepTime = Math.max(Math.floor(duration / target), 15);
-        
+
         const isPct = element.classList.contains('stat-number-pct');
         const isRs = element.classList.contains('stat-number-rs');
 
@@ -1788,7 +1788,7 @@ function initStatsCounter() {
                 count = target;
                 clearInterval(timer);
             }
-            
+
             if (isRs) {
                 element.textContent = 'රු. ' + count.toLocaleString();
             } else if (isPct) {
@@ -1832,7 +1832,7 @@ function initCalculator() {
     const monthlyEarningsEl = document.getElementById('monthlyEarnings');
     const annualEarningsEl = document.getElementById('annualEarnings');
     const totalSalesVolumeEl = document.getElementById('totalSalesVolume');
-    
+
     // Status indicators
     const statusLevelEl = document.getElementById('statusLevel');
     const goalProgressFill = document.getElementById('goalProgressFill');
@@ -1909,7 +1909,7 @@ function initCalculator() {
         tradingSlider.addEventListener('input', updateCalculator);
         socialSlider.addEventListener('input', updateCalculator);
         aiSlider.addEventListener('input', updateCalculator);
-        
+
         // Initial run
         updateCalculator();
     }
@@ -1962,7 +1962,7 @@ function openCourseModal(courseId) {
         if (origFeeRow) origFeeRow.style.display = 'none';
         if (origPriceEl) origPriceEl.style.display = 'none';
         if (discountEl) discountEl.style.display = 'none';
-        
+
         const currPriceEl = document.getElementById('modalCurrentPrice');
         if (currPriceEl) currPriceEl.textContent = course.currentPrice;
         if (buyBtn) {
@@ -1990,10 +1990,10 @@ function openCourseModal(courseId) {
             const discText = course.discount ? (course.discount.includes('OFF') ? `🔥 ${course.discount} • Limited Offer` : course.discount) : '🔥 Limited Offer';
             discountEl.textContent = discText;
         }
-        
+
         const currPriceEl = document.getElementById('modalCurrentPrice');
         if (currPriceEl) currPriceEl.textContent = course.currentPrice;
-        
+
         if (buyBtn) {
             buyBtn.textContent = 'Enroll / Buy Course';
             buyBtn.style.background = 'var(--brand-gold)';
@@ -2013,7 +2013,7 @@ function openCourseModal(courseId) {
     const socialContainer = document.getElementById('modalSocialLinksContainer');
     if (socialContainer) {
         socialContainer.innerHTML = '';
-        
+
         // WhatsApp button
         const waLink = document.createElement('a');
         waLink.href = `https://wa.me/94726090050?text=Hi%20Hapanamy,%20I%20am%20interested%20in%20enrolling%20in%20${encodeURIComponent(course.title)}`;
@@ -2022,7 +2022,7 @@ function openCourseModal(courseId) {
         waLink.style.cssText = 'display:flex; align-items:center; justify-content:center; gap:8px; padding:10px; font-size:12px; text-decoration:none; border-width:1px; color:#25D366; border-color:#25D366; font-weight:700; border-radius:6px; cursor:pointer; margin-top: 8px; width:100%;';
         waLink.innerHTML = '💬 Chat on WhatsApp';
         socialContainer.appendChild(waLink);
-        
+
         if (course.facebookLink) {
             const fbLink = document.createElement('a');
             fbLink.href = course.facebookLink;
@@ -2052,7 +2052,7 @@ function openCourseModal(courseId) {
         modalOverlay.style.display = 'flex';
         modalOverlay.style.opacity = '1';
         modalOverlay.style.visibility = 'visible';
-        
+
         if (modalCloseBtn) {
             modalCloseBtn.onclick = closeModal;
         }
@@ -2116,7 +2116,7 @@ function handleContactSubmit(event) {
     if (purpose === 'course_income') purposeText = 'Course එක සාර්ථක කර ආදායම් මාර්ග විවෘත කර ගැනීම';
 
     showToast(`✉️ <strong>ස්තූතියි ${name}!</strong> ඔබගේ පණිවිඩය (${purposeText}) සාර්ථකව ලැබුණි. පැය 24ක් ඇතුළත අප ඔබව සම්බන්ධ කරගන්නෙමු.`);
-    
+
     // Reset form
     document.getElementById('contactForm').reset();
 }
@@ -2126,7 +2126,7 @@ function handleNewsletterSubmit(event) {
     const email = document.getElementById('newsletterEmail').value;
 
     showToast(`🔔 <strong>සාර්ථකයි!</strong> ${email} අපගේ පුවත් පත්‍රිකාවට එකතු කරන ලදී.`);
-    
+
     // Reset form
     event.target.reset();
 }
@@ -2281,12 +2281,12 @@ function addToCart(id, title, price) {
 
     cart.push({ id, title, price });
     localStorage.setItem('hapanamy_cart', JSON.stringify(cart));
-    
+
     updateCartUI();
     toggleCartDrawer(true);
-    
+
     const currentLang = localStorage.getItem('language') || 'si';
-    showToast(currentLang === 'si' 
+    showToast(currentLang === 'si'
         ? `🛒 <strong>කරත්තයට එක් කරන ලදී!</strong> '${title}' සාර්ථකව ඇතුළත් කරන ලදී.`
         : `🛒 <strong>Added to Cart!</strong> '${title}' successfully added.`
     );
@@ -2297,7 +2297,7 @@ function removeFromCart(index) {
     cart.splice(index, 1);
     localStorage.setItem('hapanamy_cart', JSON.stringify(cart));
     updateCartUI();
-    
+
     const currentLang = localStorage.getItem('language') || 'si';
     showToast(currentLang === 'si'
         ? `🗑️ <strong>ඉවත් කරන ලදී!</strong> '${title}' කරත්තයෙන් ඉවත් කරන ලදී.`
@@ -2309,14 +2309,14 @@ function updateCartUI() {
     const countEl = document.getElementById('floatingCartCount');
     const listEl = document.getElementById('cartDrawerItemsList');
     const totalEl = document.getElementById('cartDrawerTotalVal');
-    
+
     if (!countEl || !listEl || !totalEl) return;
 
     countEl.textContent = cart.length;
     listEl.innerHTML = '';
-    
+
     let total = 0;
-    
+
     if (cart.length === 0) {
         listEl.innerHTML = `<div style="text-align: center; color: var(--text-muted); margin-top: 40px; font-size: 13.5px;">කරත්තය හිස්ව පවතී (Cart is empty).</div>`;
         totalEl.textContent = 'රු. 0.00';
@@ -2365,7 +2365,7 @@ function sendChatSupportMessage(event) {
     event.preventDefault();
     const input = document.getElementById('chatInputMessage');
     const flow = document.getElementById('chatMessageFlow');
-    
+
     if (!input || !flow) return;
 
     const userText = input.value.trim();
@@ -2376,7 +2376,7 @@ function sendChatSupportMessage(event) {
     userMsg.style.cssText = 'background-color: var(--brand-orange); color: white; padding: 10px 12px; border-radius: 8px 8px 0 8px; align-self: flex-end; max-width: 85%; line-height: 1.5; font-weight: 600;';
     userMsg.textContent = userText;
     flow.appendChild(userMsg);
-    
+
     input.value = '';
     flow.scrollTop = flow.scrollHeight;
 
@@ -2399,7 +2399,7 @@ function sendChatSupportMessage(event) {
         replyMsg.style.cssText = 'background-color: var(--bg-main); padding: 10px 12px; border-radius: 8px 8px 8px 0; align-self: flex-start; max-width: 85%; color: var(--text-primary); line-height: 1.5;';
         replyMsg.innerHTML = replyText;
         flow.appendChild(replyMsg);
-        
+
         flow.scrollTop = flow.scrollHeight;
     }, 1500);
 }
@@ -2498,7 +2498,7 @@ function syncHeaderUserState() {
             // Hide the button or point to my-account.html, never admin.html for public safety
             btn.href = activeUser.role === 'admin' ? 'hapanamy-admin-portal-9226.html' : 'my-account.html';
             const span = btn.querySelector('span');
-            
+
             // If admin is logged in, show "My Account" instead of "Admin Panel" to hide admin presence from guests
             const labelText = activeUser.role === 'admin' ? 'මගේ ගිණුම (My Account)' : 'මගේ ගිණුම (My Account)';
             if (span) {
@@ -2515,7 +2515,7 @@ function syncCourseCatalogDOM() {
     syncHeaderUserState();
     let adminCourses = JSON.parse(localStorage.getItem('hapanamy_courses_list'));
     const defaultFbCourse = { id: 'facebook-course', category: 'Social Media', title: 'Facebook Monetization ප්‍රායෝගික පාඨමාලාව (Online Zoom)', price: 9900, discount: 7425, image: 'assets/facebook_course_banner.jpg', status: 'Active' };
-    
+
     if (!adminCourses || !Array.isArray(adminCourses) || adminCourses.length === 0) {
         adminCourses = [
             defaultFbCourse,
@@ -2550,7 +2550,7 @@ function syncCourseCatalogDOM() {
             localStorage.setItem('hapanamy_courses_list', JSON.stringify(adminCourses));
         }
     }
-    
+
     // Process list normally
 
     adminCourses.forEach(c => {
@@ -2683,13 +2683,13 @@ function formatArticleContent(content) {
     if (/<[a-z][\s\S]*>/i.test(content)) {
         return content;
     }
-    
+
     // Otherwise, parse plain text
     const blocks = content.split(/\n\s*\n/);
     return blocks.map(block => {
         block = block.trim();
         if (!block) return '';
-        
+
         // Blockquotes starting with >
         if (block.startsWith('>')) {
             return `<blockquote style="background: var(--bg-surface); border-left: 4px solid var(--brand-orange); padding: 15px; margin: 15px 0; border-radius: 8px; font-style: italic; color: var(--text-primary); font-size: 14.5px;">${block.substring(1).trim().replace(/\n/g, '<br>')}</blockquote>`;
@@ -2736,12 +2736,12 @@ function openBlogModal(articleId) {
 
     const article = mergedArticles[articleId];
     if (!article) return;
-    
+
     document.getElementById('blogModalBanner').src = article.banner;
     document.getElementById('blogModalCategory').textContent = article.category;
     document.getElementById('blogModalTitle').textContent = article.title;
     document.getElementById('blogModalBody').innerHTML = formatArticleContent(article.content);
-    
+
     document.getElementById('blogModal').classList.add('open');
     document.body.style.overflow = 'hidden';
 }
@@ -2754,9 +2754,9 @@ function closeBlogModal() {
 function renderBlogArticles() {
     const grid = document.getElementById('blogArticlesGrid');
     if (!grid) return;
-    
+
     grid.innerHTML = '';
-    
+
     // Default static articles
     const defaultArticles = [
         {
@@ -2818,21 +2818,21 @@ function renderBlogArticles() {
             intro: 'මුහුණ නොපෙන්වා සහ තමන්ගේම හඬ භාවිතා නොකර AI සහ විවිධ මෙවලම් ආධාරයෙන් YouTube හරහා ඩොලර් උපයන වීඩියෝ නිර්මාණය කරන සම්පූර්ණ මාර්ගෝපදේශය...'
         }
     ];
-    
+
     // Custom articles from admin
     const customArticles = JSON.parse(localStorage.getItem('hapanamy_custom_articles')) || [];
-    
+
     const allArticles = [...defaultArticles, ...customArticles];
-    
+
     allArticles.forEach(article => {
         const card = document.createElement('div');
         card.className = 'course-card';
         card.style.borderRadius = '24px';
-        
+
         let badgeColor = 'var(--brand-orange)';
         if (article.category === 'AI & Tech') badgeColor = 'var(--brand-gold)';
         else if (article.category === 'Social Media') badgeColor = 'var(--brand-red)';
-        
+
         card.innerHTML = `
              <div class="card-image-box">
                  <img src="${article.banner}" alt="${article.title}" class="card-img">
@@ -2864,7 +2864,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (blogCloseBtn) blogCloseBtn.addEventListener('click', closeBlogModal);
     if (blogCloseActionBtn) blogCloseActionBtn.addEventListener('click', closeBlogModal);
-    
+
     // Close on overlay click
     if (blogModal) {
         blogModal.addEventListener('click', (e) => {
@@ -2873,10 +2873,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-    
+
     // Render dynamic articles
     renderBlogArticles();
-    
+
     // Capture referral and position query parameters and propagate to register links
     const urlParams = new URLSearchParams(window.location.search);
     const refCode = urlParams.get('ref') || urlParams.get('sponsor') || urlParams.get('referral') || urlParams.get('sponsorCode') || urlParams.get('refCode') || urlParams.get('sponsor_code') || urlParams.get('u');
@@ -3291,7 +3291,7 @@ function renderHeroSlide(slideIdx, isInitial = false) {
                 <p class="hero-subtitle">
                     ${desc}
                 </p>
-                
+
                 <div class="hero-slide-highlights">
                     ${highlightsHTML}
                 </div>
@@ -3568,6 +3568,9 @@ window.handleGlobalLogout = function() {
     localStorage.removeItem('auth_token');
     localStorage.removeItem('active_token');
     localStorage.removeItem('hapanamy_user_profile');
+    localStorage.removeItem('is_admin_session');
+    localStorage.removeItem('hapanamy_student_profile');
+    localStorage.removeItem('hapanamy_affiliate_profile');
     if (typeof sessionStorage !== 'undefined' && sessionStorage.clear) {
         sessionStorage.clear();
     }

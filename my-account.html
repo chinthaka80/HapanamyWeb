@@ -7,12 +7,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Account | Hapanamy.lk — A NOWATRIX Global Company</title>
-    
+
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Outfit:wght@400;600;800;900&display=swap" rel="stylesheet">
-    
+
+    <!-- Client-Side Auth Guard & Cross-Tab Session Synchronizer -->
+    <script>
+        (function() {
+            function enforceAuthSession() {
+                const user = localStorage.getItem('active_user');
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                if (!user || !token) {
+                    window.location.href = 'login.html';
+                }
+            }
+            enforceAuthSession();
+            window.addEventListener('storage', enforceAuthSession);
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    enforceAuthSession();
+                }
+            });
+        })();
+    </script>
+
     <!-- Unified Dashboard Styles -->
     <style>
         :root {
@@ -21,7 +41,7 @@
             --brand-gold: #F0B323;
             --brand-green-light: #B9E769;
             --ph-red: #E53E3E;
-            
+
             /* Dark Theme variables */
             --bg-main: #0B192C;
             --bg-surface: #1E3E62;
@@ -615,7 +635,7 @@
                 </div>
                 <button class="sidebar-close-btn" onclick="closeMobileAccountSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
-            
+
             <ul class="sidebar-nav">
                 <li class="nav-link active" onclick="switchTab('dashboard')" id="nav-dashboard">
                     <span class="nav-icon">📊</span>
@@ -665,13 +685,13 @@
                     </button>
                     <div class="topbar-title" id="pageHeaderTitle" style="margin: 0;">MY ACCOUNT (මගේ ගිණුම)</div>
                 </div>
-                
+
                 <div class="topbar-controls">
                     <!-- Language selector -->
                     <button class="btn-toggle" id="langToggleBtn" onclick="toggleLanguage()">🇬🇧/🇱🇰</button>
                     <!-- Theme selector -->
                     <button class="btn-toggle" id="themeToggleBtn">🌓</button>
-                    
+
                     <div class="user-profile-badge">
                         <div class="user-avatar" id="avatarLetter">--</div>
                         <span style="font-size: 13.5px; font-weight: 700;" id="headerUserName">Loading profile...</span>
@@ -681,7 +701,7 @@
 
             <!-- Main Content Container -->
             <div class="main-content">
-                
+
                 <!-- 1. OVERVIEW PANEL -->
                 <div class="account-panel active" id="panel-dashboard">
                     <!-- BIG CTA COURSE BOARD -->
@@ -769,7 +789,7 @@
                                     <span>⏹️</span> Lesson 03: Order Blocks & FVG
                                 </li>
                             </ul>
-                            
+
                             <!-- PDF Ebooks list inside course sidebar -->
                             <div class="playlist-title" style="margin-top: 30px;">Attachments (PDF)</div>
                             <ul class="playlist-list">
@@ -788,12 +808,12 @@
 
                         <div class="workspace-content">
                             <h3 id="currentPlayingLessonTitle" style="font-size: 18px; margin-bottom: 20px;">Lesson 01: Introduction & Basics</h3>
-                            
+
                             <!-- Simulated Video Box -->
                             <div style="background-color: black; aspect-ratio: 16/9; border-radius: 8px; display: flex; align-items: center; justify-content: center; position: relative;" id="videoSimulator">
                                 <button class="btn" style="background-color: var(--brand-orange); border: none;" onclick="simulateVideoProgress()">Play Simulator Video ▶</button>
                             </div>
-                            
+
                             <div style="margin-top: 20px; display: flex; justify-content: space-between;">
                                 <button class="btn btn-secondary" onclick="alert('First lesson of course.')">Previous Lesson</button>
                                 <button class="btn btn-primary" onclick="markLessonCompleted()">Mark as Completed & Next</button>
@@ -807,7 +827,7 @@
                     <div class="admin-table-box" style="padding: 24px;">
                         <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px;">ඔබේ පොදු අනුබද්ධිත සබැඳිය (Your Main Referral Link)</h3>
                         <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">මෙම සබැඳිය සමාජ මාධ්‍ය ජාලාවල (Facebook, WhatsApp, TikTok, YouTube) ප්‍රවර්ධනය කරන්න. මෙම සබැඳිය හරහා පැමිණ මිලදී ගන්නා සියලුම ගනුදෙනු සඳහා ඔබට 15% සෘජු කොමිස් සහ මට්ටම් 5 කින් නිෂ්ක්‍රීය ආදායම් ලැබෙනු ඇත.</p>
-                        
+
                         <div style="display: flex; gap: 8px;">
                             <input type="text" id="mainReferralLinkVal" readonly value="https://hapanamy.lk/register?ref=NAMOBUDDHAYA" style="flex-grow: 1; padding: 12px; border: 1px solid var(--border-color); background-color: var(--bg-main); color: var(--text-primary); border-radius: 6px;">
                             <button class="btn btn-primary" onclick="copyReferralLink('mainReferralLinkVal')">Copy Link</button>
@@ -864,7 +884,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
                         <div class="stat-card">
                             <h3 style="font-size: 16px; margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">මුදල් ලබාගැනීමේ ඉල්ලීම (Request Payout)</h3>
-                            
+
                             <div style="margin-bottom: 20px; background-color: rgba(185, 231, 105, 0.08); padding: 15px; border-radius: 8px; border: 1px dashed var(--brand-green-light);">
                                 <span style="font-size: 12px; color: var(--text-muted); display: block;">ගෙවිය හැකි මුළු කොමිස් ශේෂය (Withdrawable Balance)</span>
                                 <span style="font-size: 22px; font-weight: 800; color: var(--brand-green-light);" id="payoutWithdrawableBalVal">රු. 23,790.00</span>
@@ -913,7 +933,7 @@
                             </h3>
                             <span id="accountKycStatusBadge" class="badge badge-warning" style="font-size: 11px; padding: 4px 8px; border-radius: 4px; background: rgba(33, 150, 243, 0.15); color: #2196F3; font-weight: 700;">🛡️ NOT SUBMITTED</span>
                         </div>
-                        
+
                         <form id="unifiedSettingsForm" onsubmit="saveUserProfile(event)">
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
                                 <div class="form-group">
@@ -972,7 +992,7 @@
                                 <label for="setUserCity">ළඟම නගරය (Nearest City / District)</label>
                                 <input type="text" id="setUserCity" placeholder="e.g. Maharagama, Kandy...">
                             </div>
-                            
+
                             <!-- Bank Details Card -->
                             <div style="border: 1px solid rgba(245, 124, 0, 0.4); padding: 16px; border-radius: 10px; margin-top: 20px; margin-bottom: 20px; background-color: rgba(245, 124, 0, 0.03);">
                                 <h4 style="font-size: 13.5px; margin-bottom: 14px; color: var(--brand-orange); display: flex; align-items: center; gap: 6px;">
@@ -1070,7 +1090,7 @@
     <div class="cart-drawer" id="passkeyModal" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 340px; height: auto; background-color: var(--bg-surface); border: 2px solid var(--brand-orange); box-shadow: 0 10px 40px rgba(0,0,0,0.5); border-radius: 12px; z-index: 2001; display: none; flex-direction: column; padding: 25px; text-align: center;">
         <h3 style="font-size: 18px; color: var(--text-primary); margin-bottom: 10px; font-family: 'Outfit', sans-serif;">🔐 Confirm Payout Passkey</h3>
         <p style="font-size: 12.5px; color: var(--text-muted); margin-bottom: 20px;">ගනුදෙනුව තහවුරු කිරීම සඳහා ඔබ සැකසූ 4-6 අංක ගෙවීම් මුරපදය (Passkey) ඇතුළත් කරන්න.</p>
-        
+
         <form onsubmit="verifyAndSubmitPayout(event)">
             <div class="form-group" style="margin-bottom: 20px;">
                 <input type="password" id="confirmPasskeyInput" required maxlength="6" placeholder=" " style="text-align: center; font-size: 20px; letter-spacing: 5px; background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-primary);">
@@ -1082,7 +1102,7 @@
             </div>
         </form>
     </div>
-    
+
     <!-- Modal backdrop -->
     <div id="modalBackdrop" style="position: fixed; inset: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); z-index: 2000; display: none;" onclick="closePasskeyModal()"></div>
 
@@ -1090,15 +1110,6 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // 🔒 Session Security Guard
-        (function() {
-            const activeUser = JSON.parse(localStorage.getItem('active_user'));
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            if (!activeUser && !token) {
-                window.location.href = 'login.html';
-            }
-        })();
-
         // Theme and Theme settings init
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -1139,7 +1150,7 @@
         function switchTab(tabId) {
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             document.querySelectorAll('.account-panel').forEach(p => p.classList.remove('active'));
-            
+
             const activeLink = document.getElementById('nav-' + tabId);
             const activePanel = document.getElementById('panel-' + tabId);
             if (activeLink) activeLink.classList.add('active');
@@ -1184,7 +1195,7 @@
         function filterDownlineNetwork() {
             const query = document.getElementById('downlineSearchInput').value.toLowerCase();
             const members = document.querySelectorAll('.network-member-item');
-            
+
             members.forEach(item => {
                 const nameNode = item.querySelector('.network-member-name');
                 if (nameNode) {
@@ -1202,7 +1213,7 @@
         function loadDynamicDownlines() {
             const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || JSON.parse(localStorage.getItem('active_user')) || { username: 'NAMOBUDDHAYA' };
             const myRefCode = (profile.username || profile.name || 'NAMOBUDDHAYA').toLowerCase().replace(/[^a-z0-9]/g, '_');
-            
+
             // Containers
             const l1Container = document.getElementById('level1DownlinesList');
             const leftContainer = document.getElementById('leftLegDownlinesList');
@@ -1212,7 +1223,7 @@
             const rightVolEl = document.getElementById('rightLegVolText');
 
             const directMembers = JSON.parse(localStorage.getItem('referred_users_' + myRefCode)) || [];
-            
+
             if (l1Container) {
                 if (directMembers.length === 0) {
                     l1Container.innerHTML = `<div style="text-align:center; padding:15px; color:var(--text-muted); font-size:12px; font-style:italic;">තවමත් සෘජු සාමාජිකයින් නොමැත (0 Direct Members).</div>`;
@@ -1285,7 +1296,7 @@
         function updateAccountIdentityUI(user) {
             if (!user) return;
             currentAccountUser = user;
-            
+
             const fullName = user.full_name || user.display_name || user.name || user.username || 'Member';
             const username = user.username || '';
             const email = user.email || '';
@@ -1506,7 +1517,7 @@
         function getAffiliateBalance() {
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
             const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
-            
+
             let balance = localStorage.getItem('affiliate_balance_' + userSlug);
             if (balance === null) {
                 if (userSlug === 'affiliate') {
@@ -1558,7 +1569,7 @@
             event.preventDefault();
             const pin = document.getElementById('payoutPasskeyVal').value;
             localStorage.setItem('payout_passkey', pin);
-            
+
             showToast('🔐 <strong>මුරපදය සුරැකිණි!</strong> ඔබගේ මුදල් ලබාගැනීමේ ආරක්ෂණ මුරපදය (Passkey) සාර්ථකව සුරකින ලදී.');
             document.getElementById('payoutPasskeyVal').value = '';
         }
@@ -1612,14 +1623,14 @@
 
             if (typedPIN === savedPasskey) {
                 closePasskeyModal();
-                
+
                 const balance = getAffiliateBalance();
                 const newBalance = balance - tempPayoutAmount;
                 const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
                 const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');
                 localStorage.setItem('affiliate_balance_' + userSlug, newBalance.toString());
                 const profile = JSON.parse(localStorage.getItem('hapanamy_user_profile')) || JSON.parse(localStorage.getItem('active_user')) || { name: 'Member' };
-                
+
                 const payoutReq = {
                     id: 'payout-' + Math.floor(1000 + Math.random() * 9000),
                     name: profile.name,
@@ -1747,7 +1758,7 @@
             renderStudentPurchasedCourses();
             loadUserProfile();
             loadPayoutHistory();
-            
+
             // Prefill dynamic user-specific referral link
             const activeUser = JSON.parse(localStorage.getItem('active_user')) || { email: 'affiliate@hapanamy.lk' };
             const userSlug = activeUser.email.split('@')[0].toLowerCase().replace(/[^a-z0-9]/g, '_');

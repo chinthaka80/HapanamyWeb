@@ -101,6 +101,7 @@ require('./step83-dynamic-member-identity-and-dashboard-navigation.test');
 require('./step84-user-account-menu-ui-and-display-name.test');
 require('./step85-cross-page-real-browser-account-dropdown.test');
 require('./step86-cross-page-mobile-menu-interactivity.test');
+require('./step88-cross-tab-session-synchronization.test');
 
 // Run
 runTests();

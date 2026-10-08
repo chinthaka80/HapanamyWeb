@@ -7,13 +7,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hapanamy.lk | ශිෂ්‍ය උපකරණ පුවරුව (Student Dashboard) | NOWATRIX Global</title>
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <!-- Core styles -->
     <link rel="stylesheet" href="index.css">
-    
+
+    <!-- Client-Side Auth Guard & Cross-Tab Session Synchronizer -->
+    <script>
+        (function() {
+            function enforceAuthSession() {
+                const user = localStorage.getItem('active_user');
+                const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
+                if (!user || !token) {
+                    window.location.href = 'login.html';
+                }
+            }
+            enforceAuthSession();
+            window.addEventListener('storage', enforceAuthSession);
+            document.addEventListener('visibilitychange', function() {
+                if (document.visibilityState === 'visible') {
+                    enforceAuthSession();
+                }
+            });
+        })();
+    </script>
+
     <style>
         /* Specific Student layout */
         .student-layout {
@@ -531,7 +551,7 @@
                 padding: 20px 15px !important;
             }
         }
-        
+
         /* Mobile Bottom Nav styles */
         .mobile-bottom-nav {
             display: none;
@@ -588,7 +608,7 @@
                 </div>
                 <button class="student-sidebar-close-btn" onclick="closeMobileStudentSidebar()" style="display: none; background: rgba(255,255,255,0.12); border: none; color: #fff; font-size: 20px; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; align-items: center; justify-content: center; line-height: 1;" aria-label="Close Sidebar">&times;</button>
             </div>
-            
+
             <ul class="student-nav">
                 <li class="student-nav-link active" onclick="switchStudentTab('dashboard')" id="nav-dashboard">
                     <span class="student-nav-icon">📊</span>
@@ -638,7 +658,7 @@
                     </button>
                     <h1 id="studentHeaderTitle" data-translate="title_dashboard" style="font-size: 20px; margin: 0;">My Learning Dashboard</h1>
                 </div>
-                
+
                 <div class="student-topbar-actions">
                     <!-- Lang Switcher in student topbar -->
                     <!-- Quick Buy Course CTA Button -->
@@ -654,7 +674,7 @@
                         <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
                         <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
                     </button>
-                    
+
                     <div class="student-avatar-box" onclick="switchStudentTab('settings')" style="cursor: pointer;" title="Profile Settings">
                         <div class="student-avatar" id="headerAvatar">--</div>
                         <div class="student-avatar-info">
@@ -667,7 +687,7 @@
 
             <!-- Main Content Area -->
             <div class="student-main-content">
-                
+
                 <!-- TAB 1: OVERVIEW DASHBOARD -->
                 <div class="student-panel active" id="panel-dashboard">
                     <div class="student-stats-grid">
@@ -707,7 +727,7 @@
                     <!-- Hidden Video Player Interface -->
                     <div id="coursePlayerBox" style="display: none;">
                         <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 12px; margin-bottom: 20px; border-width: 1px;" onclick="closeCoursePlayer()">← Back to Courses</button>
-                        
+
                         <div class="player-layout">
                             <!-- Screen side -->
                             <div>
@@ -719,7 +739,7 @@
                                             <h3 id="playerLessonTitle" style="font-size: 18px; margin-bottom: 8px; color: white;">Lesson 1: Welcome & Course Overview</h3>
                                             <p style="font-size: 13px; color: rgba(255,255,255,0.7);" id="playerCourseName">Crypto Trading Course</p>
                                         </div>
-                                        
+
                                         <!-- Loading Spinner overlay -->
                                         <div id="videoLoadingOverlay" style="display: none; text-align: center; z-index: 10;">
                                             <div style="border: 4px solid rgba(255,255,255,0.1); width: 45px; height: 45px; border-radius: 50%; border-left-color: var(--brand-orange); animation: spin 1s linear infinite; margin: 0 auto 15px;"></div>
@@ -745,14 +765,14 @@
                                 <div style="padding: 24px;">
                                     <h2 id="playerLessonTitleDetail" style="font-size: 20px; margin-bottom: 10px;">Lesson 1: Welcome & Course Overview</h2>
                                     <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6;" data-translate="video_desc">මෙම පාඩම මඟින් පාඨමාලාවේ මූලික සැලසුම, අන්තර්ගතය සහ සාර්ථකව හැදෑරීම සඳහා අවශ්‍ය මෘදුකාංග සකසා ගන්නා ආකාරය සරලව සාකච්ඡා කෙරේ.</p>
-                                    
+
                                     <div style="margin-top: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
                                         <button class="btn btn-primary" style="padding: 10px 20px; font-size: 13.5px; border: none; cursor: pointer;" onclick="openCourseQuiz()">📝 Take Course Quiz</button>
                                         <button class="btn-live-zoom" style="padding: 10px 20px; font-size: 13.5px; border: none; cursor: pointer; display: none; background-color: var(--brand-gold); color: #102A43;" id="btnViewCertificate" onclick="openCertificateModal()">🎓 View Certificate</button>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Playlist side -->
                             <div class="player-playlist-side">
                                 <div class="playlist-header" data-translate="course_outline">Course Outline & Lessons</div>
@@ -811,7 +831,7 @@
                 <div class="student-panel" id="panel-settings">
                     <div class="admin-settings-form" style="max-width: 600px; margin: 0 auto; background-color: var(--bg-surface); padding: 30px; border-radius: 12px; border: 1px solid var(--border-color);">
                         <h3 style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;" data-translate="settings_title">පැතිකඩ සහ ගිණුම් සැකසුම් (Profile Settings)</h3>
-                        
+
                         <form id="studentSettingsForm" onsubmit="saveStudentProfile(event)">
                             <div class="form-group" style="margin-bottom: 20px;">
                                 <label for="setStudentName">සම්පූර්ණ නම (Full Name) *</label>
@@ -885,7 +905,7 @@
     <div class="modal-overlay" id="courseQuizModal" style="z-index: 2000;">
         <div class="modal-box" style="max-width: 600px; padding: 30px;">
             <h3 style="font-size: 18.5px; margin-bottom: 20px; color: var(--text-primary); border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">📝 පාඨමාලා පරික්ෂණය (Course Competency Quiz)</h3>
-            
+
             <form id="quizForm" onsubmit="submitCourseQuiz(event)">
                 <div style="margin-bottom: 20px;">
                     <p style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--text-primary);">1. Smart Money Concepts (SMC) හි CHOCH යනු කුමක්ද?</p>
@@ -920,16 +940,16 @@
     <div class="modal-overlay" id="certificateModal" style="z-index: 2001;">
         <div class="modal-box" style="max-width: 700px; padding: 30px; text-align: center; border: 4px double var(--brand-gold); background-color: #FFFDF8; color: #102A43;">
             <button onclick="closeCertificateModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; font-size: 28px; color: #102A43; cursor: pointer;">&times;</button>
-            
+
             <div style="border: 2px solid var(--brand-gold); padding: 40px; border-radius: 8px; background-color: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05);">
                 <div style="font-size: 14px; font-weight: 800; letter-spacing: 2px; color: var(--brand-orange); margin-bottom: 15px;">HAPANAMY EDUCATION</div>
                 <h1 style="font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 800; margin-bottom: 10px; color: #102A43;">CERTIFICATE OF COMPLETION</h1>
                 <p style="font-style: italic; font-size: 15px; margin-bottom: 30px; color: #486581;">This is proudly presented to</p>
-                
+
                 <h2 style="font-family: 'Outfit', sans-serif; font-size: 26px; border-bottom: 2px solid var(--brand-gold); display: inline-block; padding-bottom: 8px; margin-bottom: 30px; min-width: 250px; color: #102A43;" id="certificateStudentName">Loading...</h2>
-                
+
                 <p style="font-size: 14.5px; line-height: 1.6; max-width: 500px; margin: 0 auto 35px; color: #486581;">for successfully completing the advanced competency examinations for the <strong>AI Mastery & Advanced Financial Trading Program</strong> on Hapanamy.lk.</p>
-                
+
                 <div style="display: flex; justify-content: space-between; align-items: center; max-width: 450px; margin: 0 auto;">
                     <div style="text-align: center;">
                         <div style="font-family: cursive; font-size: 16px; margin-bottom: 4px; color: #102A43;">CNGunasekara</div>
@@ -980,14 +1000,6 @@
     <div class="toast-container" id="toastContainer"></div>
 
     <script>
-        // 🔒 Session Security Guard
-        (function() {
-            const activeUser = JSON.parse(localStorage.getItem('active_user'));
-            const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            if (!activeUser && !token) {
-                window.location.href = 'login.html';
-            }
-        })();
         // Init theme from localStorage
         const savedTheme = localStorage.getItem('theme') || 'dark';
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -998,7 +1010,7 @@
             themeToggleBtn.addEventListener('click', () => {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-                
+
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem('theme', newTheme);
                 showToast(`Theme changed to ${newTheme === 'dark' ? 'Dark Mode' : 'Light Mode'} 🌓`);
@@ -1031,16 +1043,16 @@
         function switchStudentTab(tabId) {
             const tabs = document.querySelectorAll('.student-nav-link');
             const panels = document.querySelectorAll('.student-panel');
-            
+
             tabs.forEach(t => t.classList.remove('active'));
             panels.forEach(p => p.classList.remove('active'));
-            
+
             const activeTab = document.getElementById(`nav-${tabId}`);
             if (activeTab) activeTab.classList.add('active');
-            
+
             const activePanel = document.getElementById(`panel-${tabId}`);
             if (activePanel) activePanel.classList.add('active');
-            
+
             // Sync mobile tab icons
             const mobItems = document.querySelectorAll('.mobile-nav-item');
             mobItems.forEach(i => i.classList.remove('active'));
@@ -1065,12 +1077,12 @@
                     'settings': 'Account Profile Settings'
                 }
             };
-            
+
             const titleEl = document.getElementById('studentHeaderTitle');
             if (titleEl && headerTitles[currentLang] && headerTitles[currentLang][tabId]) {
                 titleEl.textContent = headerTitles[currentLang][tabId];
             }
-            
+
             // Auto close video player if switching tabs
             if (tabId !== 'courses') {
                 closeCoursePlayer();
@@ -1314,7 +1326,7 @@
             const uemail = (user.email || '').toLowerCase().trim();
 
             let courses = [];
-            
+
             // 1. Check user-specific localStorage keys
             const keysToCheck = [
                 'hapanamy_purchased_courses_' + uid,
@@ -1492,7 +1504,7 @@
                         if (rawKey.includes('ai') || rawKey.includes('chatgpt') || rawKey.includes('prompt')) resolvedKey = 'ai';
                         else if (rawKey.includes('social') || rawKey.includes('facebook') || rawKey.includes('marketing')) resolvedKey = 'social';
                         else if (rawKey.includes('coding') || rawKey.includes('web') || rawKey.includes('dev')) resolvedKey = 'coding';
-                        
+
                         const meta = COURSE_CATALOG[resolvedKey] || {
                             id: resolvedKey,
                             title: c.product_name || c.title || c.name || 'Masterclass Program',
@@ -1513,7 +1525,7 @@
                             <div class="learning-card-body">
                                 <h3 style="font-size: 16px; margin-bottom: 8px;">${cardTitle}</h3>
                                 <p style="font-size: 12px; color: var(--text-muted);">${meta.instructor}</p>
-                                
+
                                 <div class="learning-progress-container">
                                     <div class="learning-progress-text">
                                         <span>Progress</span>
@@ -1576,7 +1588,7 @@
 
             const key = playlists[courseKey] ? courseKey : 'crypto';
             const meta = COURSE_CATALOG[key] || COURSE_CATALOG['crypto'];
-            
+
             document.getElementById('playerCourseName').textContent = meta.title;
 
             // Load playlist
@@ -1585,20 +1597,20 @@
                 const li = document.createElement('li');
                 li.className = 'playlist-item' + (index === 0 ? ' active' : '');
                 li.innerHTML = `<span class="playlist-item-status">${index === 0 ? '▶' : '○'}</span> <span>${lesson}</span>`;
-                
+
                 li.addEventListener('click', () => {
                     document.querySelectorAll('.playlist-item').forEach(el => el.classList.remove('active'));
                     document.querySelectorAll('.playlist-item-status').forEach(el => el.textContent = '○');
-                    
+
                     li.classList.add('active');
                     li.querySelector('.playlist-item-status').textContent = '▶';
-                    
+
                     // Update player details
                     document.getElementById('playerLessonTitle').textContent = lesson;
                     document.getElementById('playerLessonTitleDetail').textContent = lesson;
                     showToast(`Loading Lesson: ${lesson}... 🎥`);
                 });
-                
+
                 playlistUl.appendChild(li);
             });
 
@@ -1690,7 +1702,7 @@
         function updateUserIdentityUI(user) {
             if (!user) return;
             currentStudentUser = user;
-            
+
             const fullName = user.full_name || user.display_name || user.name || user.username || 'Student Member';
             const firstName = getFirstName(fullName);
             const initials = getInitials(fullName);
@@ -1699,7 +1711,7 @@
             // Topbar avatar & name
             const headerAvatar = document.getElementById('headerAvatar');
             if (headerAvatar) headerAvatar.textContent = initials;
-            
+
             const headerName = document.getElementById('headerStudentName');
             if (headerName) headerName.textContent = fullName;
 
@@ -1838,15 +1850,15 @@
         function initStudentLanguage() {
             const langToggle = document.getElementById('langToggleBtn');
             let currentLang = localStorage.getItem('language') || 'si';
-            
+
             applyStudentLanguage(currentLang);
-            
+
             if (langToggle) {
                 langToggle.addEventListener('click', () => {
                     currentLang = currentLang === 'si' ? 'en' : 'si';
                     localStorage.setItem('language', currentLang);
                     applyStudentLanguage(currentLang);
-                    
+
                     // Update header title based on active tab
                     const activeLink = document.querySelector('.student-nav-link.active');
                     if (activeLink) {
@@ -1865,7 +1877,7 @@
             document.getElementById('ebookReaderTitle').textContent = title;
             document.getElementById('ebookReaderModal').classList.add('open');
             document.body.style.overflow = 'hidden';
-            
+
             // Reset page view
             currentEbookPage = 1;
             changeEbookPage(0);
@@ -1878,7 +1890,7 @@
 
         function changeEbookPage(direction) {
             currentEbookPage += direction;
-            
+
             const page1 = document.getElementById('ebookPage1');
             const page2 = document.getElementById('ebookPage2');
             const btnPrev = document.getElementById('btnPrevPage');
@@ -1910,7 +1922,7 @@
                 if (items.length > 0) {
                     activeLessonLi = items[0];
                 }
-                
+
                 items.forEach(li => {
                     li.addEventListener('click', () => {
                         activeLessonLi = li;
@@ -1935,15 +1947,15 @@
             setTimeout(() => {
                 document.getElementById('videoLoadingOverlay').style.display = 'none';
                 document.getElementById('videoPlayingOverlay').style.display = 'block';
-                
+
                 let width = 0;
                 const bar = document.getElementById('videoProgressBar');
                 bar.style.width = '0%';
-                
+
                 playInterval = setInterval(() => {
                     width += 5;
                     bar.style.width = width + '%';
-                    
+
                     if (width >= 100) {
                         clearInterval(playInterval);
                         document.getElementById('videoPlayingOverlay').style.display = 'none';
@@ -1959,10 +1971,10 @@
                 if (statusSpan) statusSpan.textContent = '✅';
                 activeLessonLi.style.opacity = '0.7';
             }
-            
+
             resetVideoPlayerView();
             showToast('🎉 <strong>පාඩම සාර්ථකව අවසන්!</strong> ඔබගේ ඉගෙනුම් දර්ශකය යාවත්කාලීන විය.');
-            
+
             const fill = document.querySelector('.learning-progress-fill');
             const txt = document.querySelector('.learning-progress-text span:last-child');
             if (fill && txt) {
@@ -1981,11 +1993,11 @@
         }
 
         function openCertificateModal() {
-            const fullName = (currentStudentUser && (currentStudentUser.full_name || currentStudentUser.name)) 
-                || document.getElementById('setStudentName').value 
+            const fullName = (currentStudentUser && (currentStudentUser.full_name || currentStudentUser.name))
+                || document.getElementById('setStudentName').value
                 || 'Student Member';
             document.getElementById('certificateStudentName').textContent = fullName;
-            
+
             const today = new Date();
             const dateStr = today.getFullYear() + '.' + String(today.getMonth() + 1).padStart(2, '0') + '.' + String(today.getDate()).padStart(2, '0');
             document.getElementById('certificateDate').textContent = dateStr;
@@ -2019,7 +2031,7 @@
                 showToast('🎉 <strong>සුභ පැතුම්!</strong> ඔබ පරීක්ෂණය සමත් විය. ලකුණු: ' + score + '/3');
                 const certBtn = document.getElementById('btnViewCertificate');
                 if (certBtn) certBtn.style.display = 'block';
-                
+
                 setTimeout(openCertificateModal, 1200);
             } else {
                 showToast('❌ <strong>නැවත උත්සාහ කරන්න!</strong> ඔබ පරීක්ෂණය අසමත් විය. ලකුණු: ' + score + '/3 (සමත් වීමට 2ක් නිවැරදි විය යුතුය)');
@@ -2075,7 +2087,7 @@
             }
 
             const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-            
+
             const activeUser = JSON.parse(localStorage.getItem('active_user') || '{}');
             const updatedUser = { ...activeUser, ...profileData };
             localStorage.setItem('active_user', JSON.stringify(updatedUser));
@@ -2106,8 +2118,8 @@
             }
 
             const currentLang = localStorage.getItem('language') || 'si';
-            showToast(currentLang === 'si' ? 
-                '💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව සුරැකිණි.' : 
+            showToast(currentLang === 'si' ?
+                '💾 <strong>සැකසුම් සුරකින ලදී!</strong> ඔබගේ පැතිකඩ විස්තර සාර්ථකව සුරැකිණි.' :
                 '💾 <strong>Settings Saved!</strong> Your profile details have been successfully saved.');
         }
 
@@ -2115,7 +2127,7 @@
         function loadStudentProfile() {
             fetchStudentProfile();
         }
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             initStudentLanguage();
             fetchStudentProfile();
