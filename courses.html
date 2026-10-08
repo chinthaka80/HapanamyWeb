@@ -436,19 +436,33 @@
                 </div>
             </a>
             
-            <nav class="nav" id="navMenu">
-                <ul class="nav-list">
-                    <li class="nav-item"><a href="index.html" class="nav-link" data-translate="nav_home">Home</a></li>
-                    <li class="nav-item"><a href="courses.html" class="nav-link active" data-translate="nav_courses">Courses</a></li>
-                    <li class="nav-item"><a href="student-dashboard.html" class="nav-link" data-translate="nav_classroom">Classroom</a></li>
-                    <li class="nav-item"><a href="dashboard.html" class="nav-link" data-translate="nav_affiliate">Affiliate Hub</a></li>
-                    <li class="nav-item"><a href="about-us.html" class="nav-link" data-translate="nav_about">About Us</a></li>
-                </ul>
+            <nav class="nav-menu" id="navMenu">
+                <a href="index.html" class="nav-link" data-translate="nav_home">Home</a>
+                <a href="courses.html" class="nav-link active" data-translate="nav_courses">Courses</a>
+                <a href="student-dashboard.html" class="nav-link" data-translate="nav_classroom">Classroom</a>
+                <a href="dashboard.html" class="nav-link" data-translate="nav_affiliate">Affiliate Hub</a>
+                <a href="about-us.html" class="nav-link" data-translate="nav_about">About Us</a>
+                <div class="mobile-only-auth" style="display: flex; flex-direction: column; gap: 8px; margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <a href="login.html" class="header-login-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🔐 LOGIN</span></a>
+                    <a href="register.html" class="header-register-btn" style="justify-content: center; width: 100%; text-align: center;"><span>🚀 REGISTER FREE</span></a>
+                </div>
             </nav>
 
-            <div style="display: flex; gap: 12px; align-items: center;">
+            <div class="header-actions" style="display: flex; gap: 12px; align-items: center;">
                 <button class="lang-toggle" id="langToggleBtn" style="background: none; border: 1px solid var(--border-color); color: var(--text-primary); padding: 0 12px; border-radius: 20px; font-size: 13px; font-weight: 700; cursor: pointer; height: 38px;">EN</button>
-                <a href="student-dashboard.html" class="btn btn-secondary" style="border-width: 1px; padding: 8px 16px; font-size: 13px;" id="navUserIdentityBtn">My Account</a>
+                <div id="headerAuthButtons" style="display: inline-flex; align-items: center; gap: 8px;">
+                    <a href="login.html" class="header-login-btn" id="headerLoginBtn">
+                        <span>🔐 LOGIN</span>
+                    </a>
+                    <a href="register.html" class="header-register-btn" id="headerRegisterBtn">
+                        <span>🚀 REGISTER FREE</span>
+                    </a>
+                </div>
+                <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open Menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </header>
@@ -1009,5 +1023,7 @@
             }
         });
     </script>
+    <!-- Navbar Auth State Synchronization & Dropdown Interactivity -->
+    <script src="nav-auth.js"></script>
 </body>
 </html>

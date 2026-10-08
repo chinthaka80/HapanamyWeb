@@ -308,15 +308,7 @@
                 localStorage.setItem('theme', next);
             });
         }
-
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navMenu = document.getElementById('navMenu');
-        if (mobileMenuBtn && navMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                navMenu.classList.toggle('active');
-            });
-        }
     </script>
+    <script src="nav-auth.js"></script>
 </body>
 </html>

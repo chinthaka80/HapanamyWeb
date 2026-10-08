@@ -318,15 +318,6 @@
             });
         }
 
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navMenu = document.getElementById('navMenu');
-        if (mobileMenuBtn && navMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                navMenu.classList.toggle('active');
-            });
-        }
-
         function updateCalculator() {
             const price = Number(document.getElementById('rngPrice').value);
             const directs = Number(document.getElementById('rngDirect').value);
@@ -363,5 +354,6 @@
 
         updateCalculator();
     </script>
+    <script src="nav-auth.js"></script>
 </body>
 </html>

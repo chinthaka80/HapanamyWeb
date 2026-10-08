@@ -521,6 +521,8 @@ section {
     user-select: none;
     outline: none;
     max-width: 240px;
+    position: relative;
+    pointer-events: auto;
 }
 
 .user-account-toggle-btn:hover {
@@ -544,6 +546,7 @@ section {
     font-size: 12px;
     font-weight: 800;
     flex-shrink: 0;
+    pointer-events: none;
 }
 
 .user-account-name {
@@ -553,6 +556,7 @@ section {
     text-overflow: ellipsis;
     white-space: nowrap;
     line-height: 1.2;
+    pointer-events: none;
 }
 
 .user-account-chevron {
@@ -560,6 +564,7 @@ section {
     transition: transform 0.2s ease;
     flex-shrink: 0;
     opacity: 0.9;
+    pointer-events: none;
 }
 
 .user-account-toggle-btn[aria-expanded="true"] .user-account-chevron {

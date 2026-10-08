@@ -242,15 +242,6 @@
             });
         }
 
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navMenu = document.getElementById('navMenu');
-        if (mobileMenuBtn && navMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                navMenu.classList.toggle('active');
-            });
-        }
-
         function handleContactPageSubmit(e) {
             e.preventDefault();
             const name = document.getElementById('cName').value;
@@ -268,5 +259,6 @@
             setTimeout(() => t.remove(), 4000);
         }
     </script>
+    <script src="nav-auth.js"></script>
 </body>
 </html>

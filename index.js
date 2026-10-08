@@ -2853,22 +2853,9 @@ function renderBlogArticles() {
 
 // Hook Blog Close buttons & Mobile Navigation Toggle
 document.addEventListener('DOMContentLoaded', () => {
-    // Mobile menu toggle
-    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-    const navMenu = document.getElementById('navMenu');
-    if (mobileMenuBtn && navMenu) {
-        mobileMenuBtn.addEventListener('click', () => {
-            mobileMenuBtn.classList.toggle('active');
-            navMenu.classList.toggle('active');
-            document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
-        });
-        navMenu.querySelectorAll('.nav-link').forEach(link => {
-            link.addEventListener('click', () => {
-                mobileMenuBtn.classList.remove('active');
-                navMenu.classList.remove('active');
-                document.body.classList.remove('menu-open');
-            });
-        });
+    // Mobile menu toggle - delegate to universal setupMobileMenu
+    if (typeof window.setupMobileMenu === 'function') {
+        window.setupMobileMenu();
     }
 
     const blogCloseBtn = document.getElementById('blogModalCloseBtn');
@@ -3383,6 +3370,27 @@ function getUserDisplayName(user) {
     return name && String(name).trim() ? String(name).trim() : 'Member Profile';
 }
 
+// Global toggle for user account dropdown menu
+function toggleUserAccountDropdown(event, forceOpen) {
+    if (event) {
+        if (typeof event.preventDefault === 'function') event.preventDefault();
+        if (typeof event.stopPropagation === 'function') event.stopPropagation();
+    }
+    const dropdown = document.getElementById('userAccountDropdown');
+    const toggleBtn = document.getElementById('userAccountMenuToggle');
+    if (!dropdown) return;
+
+    const isOpen = forceOpen !== undefined ? Boolean(forceOpen) : !dropdown.classList.contains('open');
+    if (isOpen) {
+        dropdown.classList.add('open');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'true');
+    } else {
+        dropdown.classList.remove('open');
+        if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+    }
+}
+window.toggleUserAccountDropdown = toggleUserAccountDropdown;
+
 // User Account Menu Dropdown Interactivity Setup
 function setupUserAccountDropdown() {
     const toggleBtn = document.getElementById('userAccountMenuToggle');
@@ -3391,34 +3399,21 @@ function setupUserAccountDropdown() {
 
     if (!toggleBtn || !dropdown) return;
 
-    function toggleMenu(forceOpen) {
-        const isOpen = forceOpen !== undefined ? forceOpen : !dropdown.classList.contains('open');
-        if (isOpen) {
-            dropdown.classList.add('open');
-            toggleBtn.setAttribute('aria-expanded', 'true');
-        } else {
-            dropdown.classList.remove('open');
-            toggleBtn.setAttribute('aria-expanded', 'false');
-        }
-    }
-
-    // Click toggle handler
+    // Direct click handler
     toggleBtn.onclick = function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        toggleMenu();
+        toggleUserAccountDropdown(e);
     };
 
     // Keyboard support (Enter, Space, ArrowDown, Escape)
     toggleBtn.onkeydown = function(e) {
         if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
             e.preventDefault();
-            toggleMenu(true);
+            toggleUserAccountDropdown(e, true);
             const firstItem = dropdown.querySelector('a, button');
             if (firstItem) firstItem.focus();
         } else if (e.key === 'Escape') {
             e.preventDefault();
-            toggleMenu(false);
+            toggleUserAccountDropdown(e, false);
         }
     };
 
@@ -3426,17 +3421,27 @@ function setupUserAccountDropdown() {
     dropdown.onkeydown = function(e) {
         if (e.key === 'Escape') {
             e.preventDefault();
-            toggleMenu(false);
+            toggleUserAccountDropdown(e, false);
             toggleBtn.focus();
         }
     };
 
-    // Outside click dismiss
-    document.addEventListener('click', function(e) {
-        if (wrapper && !wrapper.contains(e.target)) {
-            toggleMenu(false);
+    // Outside click dismiss - idempotent registration
+    if (window._userAccountOutsideClickListener) {
+        document.removeEventListener('click', window._userAccountOutsideClickListener);
+    }
+    window._userAccountOutsideClickListener = function(e) {
+        const wrapper = document.getElementById('headerUserAccountMenu');
+        const dropdown = document.getElementById('userAccountDropdown');
+        const toggleBtn = document.getElementById('userAccountMenuToggle');
+        if (dropdown && dropdown.classList.contains('open')) {
+            if (!wrapper || !wrapper.contains(e.target)) {
+                dropdown.classList.remove('open');
+                if (toggleBtn) toggleBtn.setAttribute('aria-expanded', 'false');
+            }
         }
-    });
+    };
+    document.addEventListener('click', window._userAccountOutsideClickListener);
 }
 
 // Dynamic Authenticated State Synchronization
@@ -3459,7 +3464,7 @@ function syncNavAuthState() {
             if (authBtnContainer) {
                 authBtnContainer.innerHTML = `
                     <div class="user-account-menu-wrapper" id="headerUserAccountMenu">
-                        <button type="button" class="user-account-toggle-btn header-register-btn" id="userAccountMenuToggle" aria-expanded="false" aria-haspopup="menu" aria-label="User Account Menu: ${displayName}" title="${displayName} (${usernameHandle})">
+                        <button type="button" class="user-account-toggle-btn header-register-btn" id="userAccountMenuToggle" onclick="window.toggleUserAccountDropdown && window.toggleUserAccountDropdown(event)" aria-expanded="false" aria-haspopup="menu" aria-label="User Account Menu: ${displayName}" title="${displayName} (${usernameHandle})">
                             <span class="user-account-avatar" id="headerUserAvatar">${initial}</span>
                             <span class="user-account-name" id="headerUserDisplayName">${displayName}</span>
                             <span class="user-account-chevron" aria-hidden="true">▾</span>
@@ -3557,22 +3562,26 @@ function syncNavAuthState() {
 }
 
 // Global Logout Handler
-window.handleGlobalLogout = async function() {
+window.handleGlobalLogout = function() {
     const token = localStorage.getItem('auth_token') || localStorage.getItem('active_token');
-    try {
-        if (token) {
-            await fetch('/api/auth/logout', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-        }
-    } catch (e) {}
     localStorage.removeItem('active_user');
     localStorage.removeItem('auth_token');
     localStorage.removeItem('active_token');
     localStorage.removeItem('hapanamy_user_profile');
-    sessionStorage.clear();
-    window.location.replace('login.html');
+    if (typeof sessionStorage !== 'undefined' && sessionStorage.clear) {
+        sessionStorage.clear();
+    }
+    try {
+        if (token && typeof fetch === 'function') {
+            fetch('/api/auth/logout', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}` }
+            }).catch(() => {});
+        }
+    } catch (e) {}
+    if (typeof window !== 'undefined' && window.location && typeof window.location.replace === 'function') {
+        window.location.replace('login.html');
+    }
 };
 
 // Global exports

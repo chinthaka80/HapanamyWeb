@@ -158,3 +158,86 @@ test('Step 84: Core MLM business invariants and persistence integrity preserved'
     const binaryComm = QualifiedUplineCommissionEngine.calculateBinaryCommission(4500, 7.00);
     assert.strictEqual(binaryComm, 315.00, 'Binary commission on 4,500 BV must remain exactly Rs. 315.00 (7%)');
 });
+
+test('Step 84: User Account Menu Toggle Click Handler & Pointer Event Invariants', () => {
+    const jsPath = path.join(rootDir, 'index.js');
+    const cssPath = path.join(rootDir, 'index.css');
+    const jsContent = fs.readFileSync(jsPath, 'utf-8');
+    const cssContent = fs.readFileSync(cssPath, 'utf-8');
+
+    // 1. toggleUserAccountDropdown defined and exported
+    assert.ok(
+        jsContent.includes('function toggleUserAccountDropdown'),
+        'index.js must define toggleUserAccountDropdown function'
+    );
+    assert.ok(
+        jsContent.includes('window.toggleUserAccountDropdown = toggleUserAccountDropdown'),
+        'toggleUserAccountDropdown must be exposed on window'
+    );
+
+    // 2. Inline onclick binding on toggle button
+    assert.ok(
+        jsContent.includes('onclick="window.toggleUserAccountDropdown && window.toggleUserAccountDropdown(event)"'),
+        'userAccountMenuToggle button must have inline onclick handler for immediate click responsiveness'
+    );
+
+    // 3. Pointer events safety on child elements in CSS
+    assert.ok(
+        cssContent.includes('.user-account-avatar') && cssContent.includes('pointer-events: none'),
+        'user-account-avatar must have pointer-events: none to avoid child element click interception'
+    );
+    assert.ok(
+        cssContent.includes('.user-account-name') && cssContent.includes('pointer-events: none'),
+        'user-account-name must have pointer-events: none to avoid child element click interception'
+    );
+    assert.ok(
+        cssContent.includes('.user-account-chevron') && cssContent.includes('pointer-events: none'),
+        'user-account-chevron must have pointer-events: none to avoid child element click interception'
+    );
+});
+
+test('Step 84: Universal Cross-Page Navbar Auth Synchronization (nav-auth.js included across all consumer pages)', () => {
+    const navAuthPath = path.join(rootDir, 'nav-auth.js');
+    assert.strictEqual(fs.existsSync(navAuthPath), true, 'nav-auth.js must exist');
+    const navAuthContent = fs.readFileSync(navAuthPath, 'utf-8');
+
+    assert.ok(navAuthContent.includes('function getUserDisplayName'), 'nav-auth.js must define getUserDisplayName');
+    assert.ok(navAuthContent.includes('function toggleUserAccountDropdown'), 'nav-auth.js must define toggleUserAccountDropdown');
+    assert.ok(navAuthContent.includes('function setupUserAccountDropdown'), 'nav-auth.js must define setupUserAccountDropdown');
+    assert.ok(navAuthContent.includes('function syncNavAuthState'), 'nav-auth.js must define syncNavAuthState');
+    assert.ok(navAuthContent.includes('function handleGlobalLogout'), 'nav-auth.js must define handleGlobalLogout');
+
+    const pagesWithHeader = [
+        'index.html',
+        'courses.html',
+        'about-us.html',
+        'affiliate.html',
+        'affiliate-disclosure.html',
+        'blog.html',
+        'contact-us.html',
+        'contact.html',
+        'disclaimer.html',
+        'earnings-calculator.html',
+        'privacy-policy.html',
+        'refund-policy.html',
+        'terms-conditions.html',
+        'testimonials.html',
+        '404.html'
+    ];
+
+    pagesWithHeader.forEach(page => {
+        const pagePath = path.join(rootDir, page);
+        assert.strictEqual(fs.existsSync(pagePath), true, `${page} must exist`);
+        const content = fs.readFileSync(pagePath, 'utf-8');
+        assert.ok(
+            content.includes('id="headerAuthButtons"'),
+            `${page} must contain #headerAuthButtons container`
+        );
+        assert.ok(
+            content.includes('nav-auth.js'),
+            `${page} must include nav-auth.js to enable cross-page dropdown and auth state synchronization`
+        );
+    });
+});
+
+

@@ -107,25 +107,7 @@
         }
     </style>
     <!-- Supabase Cloud DB Core -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2">
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navMenu = document.getElementById('navMenu');
-        if (mobileMenuBtn && navMenu) {
-            mobileMenuBtn.addEventListener('click', () => {
-                mobileMenuBtn.classList.toggle('active');
-                navMenu.classList.toggle('active');
-                document.body.classList.toggle('menu-open', navMenu.classList.contains('active'));
-            });
-            navMenu.querySelectorAll('.nav-link').forEach(link => {
-                link.addEventListener('click', () => {
-                    mobileMenuBtn.classList.remove('active');
-                    navMenu.classList.remove('active');
-                    document.body.classList.remove('menu-open');
-                });
-            });
-        }
-  
-    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="config.js"></script>
     <script src="db.js"></script>
     <!-- Google AdSense (Auto Ads & Manual Units) -->
@@ -298,5 +280,6 @@
             });
         }
     </script>
+    <script src="nav-auth.js"></script>
 </body>
 </html>
