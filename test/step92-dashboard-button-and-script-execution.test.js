@@ -136,3 +136,74 @@ test('Step 92: 3. nexus_dashboard.html script compilation and modal backdrop han
         }, `Script ${scriptIdx} in nexus_dashboard.html must parse with zero syntax errors`);
     });
 });
+
+test('Step 92: 4. dashboard.html dynamically resolves and updates user full name in topbar, banner, and document title', () => {
+    const html = fs.readFileSync(path.join(rootDir, 'dashboard.html'), 'utf8');
+    const scripts = [...html.matchAll(/<script([^>]*)>([\s\S]*?)<\/script>/gi)];
+    const mainScript = scripts[scripts.length - 1][2];
+
+    const mockProfileElements = {
+        'profileFullName': { textContent: '' },
+        'sidebarName': { textContent: '' },
+        'profileUsernameDisplay': { innerHTML: '' },
+        'sidebarUsername': { textContent: '' },
+        'profileAvatarBig': { textContent: '' },
+        'sidebarAvatar': { textContent: '' },
+        'topbarSectionTitle': { textContent: '' },
+        'topbarSectionIcon': { textContent: '' },
+        'leftRefLinkInput': { value: '' },
+        'tabLeftRefLink': { value: '' },
+        'rightRefLinkInput': { value: '' },
+        'tabRightRefLink': { value: '' },
+        'tabGeneralRefLink': { value: '' },
+        'settingsFullName': { textContent: '' },
+        'settingsUsername': { textContent: '' },
+        'settingsEmail': { textContent: '' },
+        'settingsPhone': { textContent: '' }
+    };
+
+    const userObj = {
+        id: 'user-hapana-09',
+        username: 'hapana09',
+        full_name: 'Kavishka Sandaruwan',
+        email: 'kavishka@hapanamy.lk',
+        phone: '+94 77 123 4567',
+        role: 'member'
+    };
+
+    const sandbox = {
+        console,
+        document: {
+            title: '',
+            documentElement: { setAttribute: () => {}, getAttribute: () => 'dark' },
+            getElementById: (id) => mockProfileElements[id] || null,
+            querySelectorAll: () => [],
+            querySelector: () => null,
+            addEventListener: () => {},
+            hidden: false,
+            body: { style: { overflow: '' } }
+        },
+        localStorage: {
+            getItem: (k) => k === 'active_user' ? JSON.stringify(userObj) : null,
+            setItem: () => {}
+        },
+        location: { origin: 'http://localhost:3000' },
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        setTimeout: () => {},
+        setInterval: () => {},
+        clearInterval: () => {}
+    };
+    sandbox.window = sandbox;
+
+    const context = vm.createContext(sandbox);
+    vm.runInContext(mainScript, context);
+
+    // Call applyLocalUserProfile
+    sandbox.applyLocalUserProfile(userObj);
+
+    assert.equal(mockProfileElements['profileFullName'].textContent, 'Kavishka Sandaruwan', 'Profile banner must display user full name');
+    assert.equal(mockProfileElements['sidebarName'].textContent, 'Kavishka Sandaruwan', 'Sidebar user pill must display user full name');
+    assert.ok(mockProfileElements['topbarSectionTitle'].textContent.includes('Kavishka Sandaruwan'), 'Topbar title must include user full name');
+    assert.ok(sandbox.document.title.includes('Kavishka Sandaruwan'), 'Document title must include user full name');
+});

@@ -2119,8 +2119,12 @@
             if (nav) nav.classList.add('active');
             if (mob) mob.classList.add('active');
 
+            const curUser = window.currentActiveUser || (localStorage.getItem('active_user') ? JSON.parse(localStorage.getItem('active_user')) : null);
+            const uName = curUser ? (curUser.full_name || curUser.display_name || curUser.name || curUser.username || '') : '';
+            const overviewTitle = uName ? `සාමාජික පාලන පුවරුව (Member Dashboard) - ${uName}` : 'සාමාජික පාලන පුවරුව (Member Dashboard)';
+
             const sectionTitles = {
-                'overview': 'සාමාජික පාලන පුවරුව (Member Dashboard)',
+                'overview': overviewTitle,
                 'earnings': 'ඉපැයීම් විස්තර (Earnings Breakdown)',
                 'network': 'My Sales Team (විකුණුම් කණ්ඩායම)',
                 'referrals': 'සෘජු යොමුකිරීම් (Direct Referrals)',
@@ -4438,6 +4442,13 @@
             if (pfAvBig) pfAvBig.textContent = initial;
             if (sbAvEl) sbAvEl.textContent = initial;
 
+            const topbarTitleEl = document.getElementById('topbarSectionTitle');
+            const activePanel = document.querySelector('.tab-panel.active');
+            if (topbarTitleEl && (!activePanel || activePanel.id === 'panel-overview')) {
+                topbarTitleEl.textContent = `සාමාජික පාලන පුවරුව (Member Dashboard) - ${uName}`;
+            }
+            document.title = `Hapanamy.lk | ${uName} - සාමාජික පාලන පුවරුව (Member Dashboard) | NOWATRIX Global`;
+
             const baseOrigin = window.location.origin;
             const leftL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=left`;
             const rightL = `${baseOrigin}/register?ref=${encodeURIComponent(uHandle)}&position=right`;
@@ -4696,6 +4707,13 @@
                 const initial = (uName || uHandle || 'M')[0].toUpperCase();
                 document.getElementById('profileAvatarBig').textContent = initial;
                 document.getElementById('sidebarAvatar').textContent = initial;
+
+                const topbarTitleEl = document.getElementById('topbarSectionTitle');
+                const activePanel = document.querySelector('.tab-panel.active');
+                if (topbarTitleEl && (!activePanel || activePanel.id === 'panel-overview')) {
+                    topbarTitleEl.textContent = `සාමාජික පාලන පුවරුව (Member Dashboard) - ${uName}`;
+                }
+                document.title = `Hapanamy.lk | ${uName} - සාමාජික පාලන පුවරුව (Member Dashboard) | NOWATRIX Global`;
 
                 // Sync referral links
                 const baseOrigin = window.location.origin;
